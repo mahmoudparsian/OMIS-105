@@ -1,0 +1,86 @@
+digraph ER {
+  rankdir=LR;
+  bgcolor="transparent";
+  node  [shape=plaintext, fontname="Helvetica"];
+  edge  [color="#B5122A", arrowhead=crow, penwidth=1.3];
+
+  stores [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>stores</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  store_id</TD></TR>
+      <TR><TD ALIGN="LEFT">store_name, city, state</TD></TR></TABLE>>];
+
+  menu_categories [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>menu_categories</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  category_id</TD></TR>
+      <TR><TD ALIGN="LEFT">category_name</TD></TR></TABLE>>];
+
+  sizes [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>sizes</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  size_id</TD></TR>
+      <TR><TD ALIGN="LEFT">size_name</TD></TR></TABLE>>];
+
+  menu_items [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>menu_items</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  item_id</TD></TR>
+      <TR><TD ALIGN="LEFT">FK  category_id</TD></TR>
+      <TR><TD ALIGN="LEFT">item_name, is_secret_menu</TD></TR></TABLE>>];
+
+  item_prices [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#FFC72C"><B>item_prices</B>  (bridge)</TD></TR>
+      <TR><TD ALIGN="LEFT">PK,FK  item_id</TD></TR>
+      <TR><TD ALIGN="LEFT">PK,FK  size_id</TD></TR>
+      <TR><TD ALIGN="LEFT">price</TD></TR></TABLE>>];
+
+  modifiers [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>modifiers</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  modifier_id</TD></TR>
+      <TR><TD ALIGN="LEFT">modifier_name, price_delta</TD></TR></TABLE>>];
+
+  combos [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>combos</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  combo_id</TD></TR>
+      <TR><TD ALIGN="LEFT">FK  burger_item_id</TD></TR>
+      <TR><TD ALIGN="LEFT">price</TD></TR></TABLE>>];
+
+  orders [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>orders</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  order_id</TD></TR>
+      <TR><TD ALIGN="LEFT">UQ  transaction_id</TD></TR>
+      <TR><TD ALIGN="LEFT">FK  store_id</TD></TR>
+      <TR><TD ALIGN="LEFT">order_ts, total</TD></TR></TABLE>>];
+
+  order_items [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#E31837"><FONT COLOR="white"><B>order_items</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">PK  order_item_id</TD></TR>
+      <TR><TD ALIGN="LEFT">FK  order_id</TD></TR>
+      <TR><TD ALIGN="LEFT">FK  item_id  (nullable)</TD></TR>
+      <TR><TD ALIGN="LEFT">FK  combo_id (nullable)</TD></TR>
+      <TR><TD ALIGN="LEFT">FK  size_id</TD></TR></TABLE>>];
+
+  order_item_modifiers [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#FFC72C"><B>order_item_modifiers</B>  (bridge)</TD></TR>
+      <TR><TD ALIGN="LEFT">PK,FK  order_item_id</TD></TR>
+      <TR><TD ALIGN="LEFT">PK,FK  modifier_id</TD></TR></TABLE>>];
+
+  menu_categories -> menu_items;
+  menu_items      -> item_prices;
+  sizes           -> item_prices;
+  menu_items      -> combos;
+  stores          -> orders;
+  orders          -> order_items;
+  menu_items      -> order_items;
+  combos          -> order_items;
+  sizes           -> order_items;
+  order_items     -> order_item_modifiers;
+  modifiers       -> order_item_modifiers;
+}

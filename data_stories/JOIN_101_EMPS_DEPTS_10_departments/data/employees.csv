@@ -1,0 +1,26 @@
+employee_id,first_name,last_name,department_id,job_title,salary,hire_date,city
+1,Alice,Johnson,10,Software Engineer,95000,2019-03-15,San Jose
+2,Bob,Smith,20,Marketing Manager,82000,2018-07-22,San Francisco
+3,Carol,Williams,10,Senior Engineer,115000,2016-01-10,San Jose
+4,David,Brown,30,Sales Representative,68000,2020-11-05,Los Angeles
+5,Eva,Davis,40,HR Specialist,72000,2021-02-28,Chicago
+6,Frank,Miller,10,DevOps Engineer,98000,2017-09-14,San Jose
+7,Grace,Wilson,20,Content Strategist,76000,2022-04-03,San Francisco
+8,Henry,Moore,30,Account Executive,79000,2019-08-19,Los Angeles
+9,Iris,Taylor,50,Data Scientist,108000,2018-12-01,New York
+10,James,Anderson,40,Recruiter,65000,2023-01-17,Chicago
+11,Karen,Thomas,10,QA Engineer,88000,2020-06-30,San Jose
+12,Leo,Jackson,60,Finance Analyst,91000,2017-04-25,New York
+13,Maria,White,20,Brand Manager,86000,2019-10-11,San Francisco
+14,Nathan,Harris,30,Regional Sales Lead,92000,2016-05-08,Los Angeles
+15,Olivia,Martin,50,ML Engineer,120000,2021-07-15,New York
+16,Paul,Garcia,70,Operations Manager,84000,2018-03-20,Dallas
+17,Quinn,Martinez,10,Frontend Developer,93000,2022-09-01,San Jose
+18,Rachel,Robinson,40,Benefits Coordinator,67000,2020-02-14,Chicago
+19,Sam,Clark,99,Consultant,105000,2019-11-30,Remote
+20,Tina,Rodriguez,10,Backend Developer,97000,2021-05-22,San Jose
+21,Uma,Lewis,20,Digital Marketer,78000,2022-08-10,San Francisco
+22,Victor,Lee,88,Freelancer,55000,2023-03-05,Remote
+23,Wendy,Walker,30,Sales Analyst,71000,2020-09-18,Los Angeles
+24,Xavier,Hall,50,Research Scientist,112000,2017-11-27,New York
+25,Yara,Allen,40,HR Manager,89000,2018-06-14,Chicago

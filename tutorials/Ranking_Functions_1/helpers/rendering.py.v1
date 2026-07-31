@@ -1,0 +1,56 @@
+
+from IPython.display import display, HTML
+import pandas as pd
+
+
+def _format_value(value):
+    if pd.isna(value):
+        return ""
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        if float(value).is_integer():
+            return f"{int(value):,}"
+        return f"{value:,.2f}"
+    return str(value)
+
+
+def show(df, title=None, max_rows=30):
+    """Render a DuckDB/Pandas result as a polished teaching table."""
+    if not isinstance(df, pd.DataFrame):
+        df = df.df()
+
+    total_rows = len(df)
+    view = df.head(max_rows).copy()
+
+    html = []
+    html.append("""
+    <style>
+    .duck-table-wrap { margin: 18px 0 26px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .duck-title { font-weight: 750; font-size: 18px; color: #0b1f3a; margin-bottom: 8px; }
+    .duck-count { color: #475569; font-size: 13px; margin: 7px 0 0 0; }
+    table.duck-table { border-collapse: collapse; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.10); }
+    table.duck-table th { background: #071A33; color: white; padding: 10px 12px; text-align: left; font-size: 13px; letter-spacing: 0.02em; }
+    table.duck-table td { padding: 9px 12px; border-bottom: 1px solid #e5e7eb; font-size: 13px; color: #111827; }
+    table.duck-table tr:nth-child(even) td { background: #f8fafc; }
+    table.duck-table tr:nth-child(odd) td { background: #ffffff; }
+    table.duck-table tr:hover td { background: #e0f2fe; }
+    .duck-note { font-size: 12px; color: #64748b; margin-top: 6px; }
+    </style>
+    """)
+    html.append('<div class="duck-table-wrap">')
+    if title:
+        html.append(f'<div class="duck-title">{title}</div>')
+    html.append('<table class="duck-table"><thead><tr>')
+    for col in view.columns:
+        html.append(f'<th>{col}</th>')
+    html.append('</tr></thead><tbody>')
+    for _, row in view.iterrows():
+        html.append('<tr>')
+        for value in row:
+            html.append(f'<td>{_format_value(value)}</td>')
+        html.append('</tr>')
+    html.append('</tbody></table>')
+    html.append(f'<div class="duck-count">Showing {len(view):,} of {total_rows:,} row(s)</div>')
+    if total_rows > max_rows:
+        html.append(f'<div class="duck-note">Output truncated for readability. Increase max_rows in show(...) to see more.</div>')
+    html.append('</div>')
+    display(HTML(''.join(html)))

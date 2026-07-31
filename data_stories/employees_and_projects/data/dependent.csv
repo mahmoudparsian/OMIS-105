@@ -1,0 +1,17 @@
+ssn,dependent_name,gender,birth_date,relationship
+333445555,Alice,F,1986-04-04,Daughter
+333445555,Theodore,M,1983-10-25,Son
+333445555,Joy,F,1958-05-03,Spouse
+987654321,Abner,M,1942-02-28,Spouse
+123456789,Michael,M,1988-01-04,Son
+123456789,Alice,F,1988-12-30,Daughter
+123456789,Elizabeth,F,1967-05-05,Spouse
+111223333,Sofia,F,2005-07-12,Daughter
+111223333,Pedro,M,1974-01-20,Spouse
+222334444,Emily,F,2010-03-18,Daughter
+444556666,James,M,2008-11-05,Son
+777889999,Raj,M,1975-09-30,Spouse
+111334455,Oliver,M,2012-06-15,Son
+555778899,Anna,F,2015-03-22,Daughter
+555778899,Dmitri,M,1984-07-10,Spouse
+666889900,Jasmine,F,2000-09-18,Daughter

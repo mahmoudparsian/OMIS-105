@@ -1,0 +1,11 @@
+emp_id,emp_name,department,salary,gender,degree,hire_date,country,image_url,age
+1001,John Smith,SALES,92000,MALE,BA,2015-01-12,USA,https://i.pravatar.cc/150?img=11,29
+1002,Emily Johnson,IT,128000,FEMALE,MS,2015-03-08,USA,https://i.pravatar.cc/150?img=32,34
+1003,Liam Brown,AI,167000,MALE,BS,2015-02-19,CANADA,https://i.pravatar.cc/150?img=12,31
+1004,Sophia Martin,BUSINESS,118000,FEMALE,MIS,2015-09-22,CANADA,https://i.pravatar.cc/150?img=47,38
+1005,Luca Rossi,MARKETING,101000,MALE,BA,2015-05-14,ITALY,https://i.pravatar.cc/150?img=15,42
+1006,Giulia Bianchi,AI,181000,FEMALE,PHD,2015-11-03,ITALY,https://i.pravatar.cc/150?img=45,36
+1007,Hans Müller,IT,145000,MALE,BS,2015-04-27,GERMANY,https://i.pravatar.cc/150?img=16,45
+1008,Anna Schneider,BUSINESS,134000,FEMALE,MS,2015-08-16,GERMANY,https://i.pravatar.cc/150?img=44,33
+1009,Wei Zhang,AI,219000,MALE,PHD,2015-06-30,CHINA,https://i.pravatar.cc/150?img=18,40
+1010,Mei Chen,MARKETING,97000,FEMALE,MIS,2015-12-09,CHINA,https://i.pravatar.cc/150?img=49,28

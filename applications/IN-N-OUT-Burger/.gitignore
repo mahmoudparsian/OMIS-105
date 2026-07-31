@@ -1,0 +1,12 @@
+# Secrets — never commit your API key
+.env
+.streamlit/secrets.toml
+
+# Generated database (rebuild with: python build_db.py)
+innout.duckdb
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

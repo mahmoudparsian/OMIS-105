@@ -1,0 +1,34 @@
+# Male Avatars
+
+Alex
+https://api.dicebear.com/7.x/adventurer/svg?seed=Alex
+
+Jeff
+https://api.dicebear.com/7.x/adventurer/svg?seed=Jeff
+
+Rafa
+https://api.dicebear.com/7.x/adventurer/svg?seed=Rafa
+
+Dara
+https://api.dicebear.com/7.x/adventurer/svg?seed=Dara
+
+
+# Female Avatars
+
+Susan
+https://api.dicebear.com/7.x/adventurer/svg?seed=Susan
+
+Jen
+https://api.dicebear.com/7.x/adventurer/svg?seed=Jen
+
+Barb
+https://api.dicebear.com/7.x/adventurer/svg?seed=Barb
+
+Venus
+https://api.dicebear.com/7.x/adventurer/svg?seed=Venus
+
+Margie
+https://api.dicebear.com/7.x/adventurer/svg?seed=Margie
+
+Betty
+https://api.dicebear.com/7.x/adventurer/svg?seed=Betty

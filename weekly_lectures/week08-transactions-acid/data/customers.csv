@@ -1,0 +1,41 @@
+customer_id,first_name,last_name,email,city,state,join_date
+1,Alice,Smith,alice.smith@email.com,New York,NY,2024-06-25
+2,Bob,Johnson,bob.johnson@email.com,Austin,TX,2024-07-20
+3,Carol,Lee,carol.lee@email.com,San Jose,CA,2024-11-27
+4,David,Brown,david.brown@email.com,San Francisco,CA,2024-11-29
+5,Eva,Garcia,eva.garcia@email.com,Boston,MA,2023-10-01
+6,Frank,Martinez,frank.martinez@email.com,Denver,CO,2023-04-25
+7,Grace,Anderson,grace.anderson@email.com,Austin,TX,2024-03-21
+8,Henry,Taylor,henry.taylor@email.com,Seattle,WA,2024-04-09
+9,Ivy,Thomas,ivy.thomas@email.com,San Jose,CA,2023-09-27
+10,Jack,Wilson,jack.wilson@email.com,Boston,MA,2023-07-02
+11,Karen,Moore,karen.moore@email.com,Boston,MA,2023-04-19
+12,Leo,Jackson,leo.jackson@email.com,Austin,TX,2024-10-16
+13,Mia,White,mia.white@email.com,Boston,MA,2024-09-15
+14,Noah,Harris,noah.harris@email.com,Portland,OR,2023-06-06
+15,Olivia,Clark,olivia.clark@email.com,Denver,CO,2023-06-15
+16,Pete,Lewis,pete.lewis@email.com,Boston,MA,2024-06-27
+17,Quinn,Hall,quinn.hall@email.com,San Jose,CA,2024-09-05
+18,Rosa,Young,rosa.young@email.com,Denver,CO,2024-05-15
+19,Sam,Allen,sam.allen@email.com,San Jose,CA,2023-04-25
+20,Tina,King,tina.king@email.com,Denver,CO,2023-11-11
+21,Uma,Wright,uma.wright@email.com,Portland,OR,2023-03-01
+22,Vic,Lopez,vic.lopez@email.com,Portland,OR,2024-08-03
+23,Wendy,Hill,wendy.hill@email.com,San Francisco,CA,2023-03-29
+24,Xander,Scott,xander.scott@email.com,New York,NY,2023-03-12
+25,Yara,Green,yara.green@email.com,Boston,MA,2023-05-09
+26,Zach,Adams,zach.adams@email.com,Seattle,WA,2024-11-06
+27,Aria,Baker,aria.baker@email.com,New York,NY,2024-07-16
+28,Blake,Nelson,blake.nelson@email.com,Seattle,WA,2023-09-29
+29,Cora,Carter,cora.carter@email.com,Boston,MA,2024-09-13
+30,Derek,Mitchell,derek.mitchell@email.com,Chicago,IL,2023-08-05
+31,Elena,Perez,elena.perez@email.com,Boston,MA,2023-07-25
+32,Finn,Roberts,finn.roberts@email.com,Austin,TX,2024-02-13
+33,Gina,Turner,gina.turner@email.com,Denver,CO,2024-03-24
+34,Hugo,Phillips,hugo.phillips@email.com,Boston,MA,2024-04-07
+35,Iris,Campbell,iris.campbell@email.com,San Francisco,CA,2023-09-11
+36,Joel,Parker,joel.parker@email.com,Portland,OR,2023-03-07
+37,Kira,Evans,kira.evans@email.com,Denver,CO,2023-01-22
+38,Liam,Edwards,liam.edwards@email.com,Miami,FL,2024-07-21
+39,Nora,Collins,nora.collins@email.com,Portland,OR,2024-08-25
+40,Omar,Stewart,omar.stewart@email.com,Portland,OR,2023-01-08

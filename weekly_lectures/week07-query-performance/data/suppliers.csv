@@ -1,0 +1,11 @@
+supplier_id,supplier_name,email,city,state,partner_since
+1,TechWorld Inc,techworld@supply.com,San Jose,CA,2020-01-15
+2,BookHouse Ltd,bookhouse@supply.com,New York,NY,2019-06-01
+3,Fashion Forward,fashion@supply.com,Los Angeles,CA,2021-03-10
+4,HomeGoods Co,homegoods@supply.com,Chicago,IL,2018-11-20
+5,SportZone,sportzone@supply.com,Denver,CO,2020-07-05
+6,ToyLand Inc,toyland@supply.com,Seattle,WA,2022-01-01
+7,BeautyCare,beautycare@supply.com,Miami,FL,2021-09-15
+8,FreshFoods,freshfoods@supply.com,Portland,OR,2019-02-28
+9,GlobalTech,globaltech@supply.com,Austin,TX,2020-12-01
+10,QualityFirst,qualityfirst@supply.com,Boston,MA,2017-05-10

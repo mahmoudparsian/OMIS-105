@@ -1,0 +1,6 @@
+# Python dependencies for the Marimo notebooks.
+#   pip install -r requirements.txt
+marimo[sql]      # marimo notebook runtime + duckdb + a dataframe lib
+duckdb           # (also pulled in by marimo[sql]) used by the notebooks directly
+pandas           # dataframe library marimo falls back to (polars optional)
+matplotlib       # all charts in plot_util.py

@@ -1,0 +1,21 @@
+order_id,customer_name,customer_city,customer_tier,product_name,category,unit_price,quantity,order_date
+1,Alice,San Jose,Gold,Laptop,Electronics,999.99,1,2025-01-10
+2,Alice,San Jose,Gold,Mouse,Electronics,29.99,2,2025-01-10
+3,Bob,Santa Clara,Silver,Notebook,Office,12.99,5,2025-01-15
+4,Bob,Santa Clara,Silver,Pen Set,Office,8.99,3,2025-01-15
+5,Carol,San Jose,Gold,Laptop,Electronics,999.99,1,2025-02-01
+6,Carol,San Jose,Gold,Backpack,Accessories,49.99,1,2025-02-01
+7,David,San Francisco,Bronze,Mouse,Electronics,29.99,1,2025-02-05
+8,David,San Francisco,Bronze,USB Cable,Electronics,9.99,4,2025-02-05
+9,Eva,Santa Clara,Silver,Laptop,Electronics,999.99,1,2025-02-10
+10,Eva,Santa Clara,Silver,Notebook,Office,12.99,3,2025-02-10
+11,Frank,San Jose,Gold,Pen Set,Office,8.99,10,2025-02-15
+12,Frank,San Jose,Gold,USB Cable,Electronics,9.99,5,2025-02-15
+13,Alice,San Jose,Gold,Backpack,Accessories,49.99,2,2025-03-01
+14,Alice,San Jose,Gold,Notebook,Office,12.99,4,2025-03-01
+15,Bob,Santa Clara,Silver,Laptop,Electronics,999.99,1,2025-03-05
+16,David,San Francisco,Bronze,Backpack,Accessories,49.99,2,2025-03-10
+17,Eva,Santa Clara,Silver,Mouse,Electronics,29.99,2,2025-03-15
+18,Frank,San Jose,Gold,Laptop,Electronics,999.99,1,2025-03-20
+19,Carol,San Jose,Gold,Pen Set,Office,8.99,6,2025-03-25
+20,David,San Francisco,Bronze,Notebook,Office,12.99,2,2025-03-28

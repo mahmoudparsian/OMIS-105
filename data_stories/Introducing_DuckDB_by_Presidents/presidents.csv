@@ -1,0 +1,48 @@
+sequence,last_name,first_name,term_start,term_end,party_id
+1,Washington,George,1789-04-30,1797-03-04,10
+2,Adams,John,1797-03-04,1801-03-04,20
+3,Jefferson,Thomas,1801-03-04,1809-03-04,30
+4,Madison,James,1809-03-04,1817-03-04,30
+5,Monroe,James,1817-03-04,1825-03-04,30
+6,Adams,John Quincy,1825-03-04,1829-03-04,20
+7,Jackson,Andrew,1829-03-04,1837-03-04,40
+8,Van Buren,Martin,1837-03-04,1841-03-04,40
+9,Harrison,William Henry,1841-03-04,1841-04-04,50
+10,Tyler,John,1841-04-04,1845-03-04,50
+11,Polk,James K.,1845-03-04,1849-03-04,40
+12,Taylor,Zachary,1849-03-04,1850-07-09,50
+13,Fillmore,Millard,1850-07-09,1853-03-04,50
+14,Pierce,Franklin,1853-03-04,1857-03-04,40
+15,Buchanan,James,1857-03-04,1861-03-04,40
+16,Lincoln,Abraham,1861-03-04,1865-04-15,60
+17,Johnson,Andrew,1865-04-15,1869-03-04,70
+18,Grant,Ulysses S.,1869-03-04,1877-03-04,60
+19,Hayes,Rutherford B.,1877-03-04,1881-03-04,60
+20,Garfield,James A.,1881-03-04,1881-09-19,60
+21,Arthur,Chester A.,1881-09-19,1885-03-04,60
+22,Cleveland,Grover,1885-03-04,1889-03-04,40
+23,Harrison,Benjamin,1889-03-04,1893-03-04,60
+24,Cleveland,Grover,1893-03-04,1897-03-04,40
+25,McKinley,William,1897-03-04,1901-09-14,60
+26,Roosevelt,Theodore,1901-09-14,1909-03-04,60
+27,Taft,William Howard,1909-03-04,1913-03-04,60
+28,Wilson,Woodrow,1913-03-04,1921-03-04,40
+29,Harding,Warren G.,1921-03-04,1923-08-02,60
+30,Coolidge,Calvin,1923-08-02,1929-03-04,60
+31,Hoover,Herbert,1929-03-04,1933-03-04,60
+32,Roosevelt,Franklin D.,1933-03-04,1945-04-12,40
+33,Truman,Harry S.,1945-04-12,1953-01-20,40
+34,Eisenhower,Dwight D.,1953-01-20,1961-01-20,60
+35,Kennedy,John F.,1961-01-20,1963-11-22,40
+36,Johnson,Lyndon B.,1963-11-22,1969-01-20,40
+37,Nixon,Richard,1969-01-20,1974-08-09,60
+38,Ford,Gerald,1974-08-09,1977-01-20,60
+39,Carter,Jimmy,1977-01-20,1981-01-20,40
+40,Reagan,Ronald,1981-01-20,1989-01-20,60
+41,Bush,George H. W.,1989-01-20,1993-01-20,60
+42,Clinton,Bill,1993-01-20,2001-01-20,40
+43,Bush,George W.,2001-01-20,2009-01-20,60
+44,Obama,Barack,2009-01-20,2017-01-20,40
+45,Trump,Donald,2017-01-20,2021-01-20,60
+46,Biden,Joe,2021-01-20,2025-01-20,40
+47,Trump,Donald,2025-01-20,2029-01-20,60

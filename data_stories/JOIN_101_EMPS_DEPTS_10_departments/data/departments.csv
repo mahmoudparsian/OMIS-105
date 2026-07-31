@@ -1,0 +1,10 @@
+department_id,department_name,budget,location,manager_name
+10,Engineering,2500000,San Jose,Carol Williams
+20,Marketing,1200000,San Francisco,Bob Smith
+30,Sales,1800000,Los Angeles,Nathan Harris
+40,Human Resources,900000,Chicago,Yara Allen
+50,Data Science,1600000,New York,Xavier Hall
+60,Finance,1100000,New York,Leo Jackson
+70,Operations,1300000,Dallas,Paul Garcia
+80,Legal,750000,New York,Patricia Nguyen
+90,Customer Success,980000,Austin,Daniel Kim
