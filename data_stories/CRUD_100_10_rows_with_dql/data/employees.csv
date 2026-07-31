@@ -1,0 +1,11 @@
+emp_id,emp_name,department,salary,gender,image_url
+100,Alex,SALES,120000,MALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Alex
+200,Jeff,SALES,140000,MALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Jeff
+300,Rafa,BUSINESS,150000,MALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Rafa
+400,Susan,SALES,150000,FEMALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Susan
+500,Jen,BUSINESS,160000,FEMALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Jen
+600,Barb,BUSINESS,180000,FEMALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Barb
+700,Dara,AI,190000,MALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Dara
+800,Venus,AI,200000,FEMALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Venus
+900,Margie,SALES,140000,FEMALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Margie
+910,Betty,SALES,170000,FEMALE,https://api.dicebear.com/7.x/adventurer/svg?seed=Betty

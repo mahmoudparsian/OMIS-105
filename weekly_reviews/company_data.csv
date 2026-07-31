@@ -1,0 +1,31 @@
+emp_id,emp_name,gender,dept_id,dept_name,dept_location,salary,hire_date,manager_id
+1,Alice,F,10,Engineering,San Jose,175000,2018-03-15,
+2,Bob,M,10,Engineering,San Jose,145000,2019-06-01,1
+3,Carol,F,10,Engineering,San Jose,155000,2019-08-20,1
+4,David,M,10,Engineering,San Jose,130000,2020-01-10,1
+5,Eva,F,10,Engineering,San Jose,140000,2020-07-22,1
+6,Frank,M,10,Engineering,San Jose,125000,2021-03-05,2
+7,Grace,F,20,Marketing,San Francisco,135000,2018-06-12,
+8,Henry,M,20,Marketing,San Francisco,115000,2019-11-04,7
+9,Ivy,F,20,Marketing,San Francisco,120000,2020-04-18,7
+10,Jack,M,20,Marketing,San Francisco,105000,2021-09-30,7
+11,Karen,F,20,Marketing,San Francisco,110000,2022-02-14,8
+12,Leo,M,30,Sales,Santa Clara,125000,2018-09-01,
+13,Mia,F,30,Sales,Santa Clara,130000,2019-03-22,12
+14,Noah,M,30,Sales,Santa Clara,115000,2020-08-15,12
+15,Olivia,F,30,Sales,Santa Clara,120000,2021-01-07,12
+16,Paul,M,30,Sales,Santa Clara,105000,2021-11-20,13
+17,Quinn,F,30,Sales,Santa Clara,100000,2022-06-10,13
+18,Ryan,M,40,Finance,Palo Alto,160000,2018-01-20,
+19,Sara,F,40,Finance,Palo Alto,145000,2019-05-11,18
+20,Tom,M,40,Finance,Palo Alto,140000,2020-02-28,18
+21,Uma,F,40,Finance,Palo Alto,135000,2021-07-15,18
+22,Victor,M,40,Finance,Palo Alto,130000,2022-10-01,19
+23,Wendy,F,50,HR,San Jose,120000,2019-04-08,
+24,Xavier,M,50,HR,San Jose,100000,2020-12-15,23
+25,Yara,F,50,HR,San Jose,105000,2021-06-20,23
+26,Zack,M,,,,95000,2022-03-01,
+27,Amy,F,,,,90000,2023-01-15,
+28,Ben,M,,,,88000,2023-08-10,
+29,Chloe,F,10,Engineering,San Jose,160000,2023-11-01,1
+30,Derek,M,20,Marketing,San Francisco,98000,2024-02-15,7

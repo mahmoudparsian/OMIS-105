@@ -1,0 +1,29 @@
+applications  % ./create_seed_data.sh
+Creating database at: /Users/max/mp/santa_clara_univ/OMIS_105/applications/bookstore.duckdb
+Inserting students   ... 10 rows
+Inserting courses    ... 8 rows
+Inserting books      ... 20 rows
+Inserting course_books... 20 rows
+Inserting purchases  ... 60 rows
+
+── Row counts ──────────────────────────────
+  students          10 rows
+  courses            8 rows
+  books             20 rows
+  course_books      20 rows
+  purchases         60 rows
+
+── Story checks ────────────────────────────
+  Revenue by department:
+    Computer Science               $2,299.65
+    Electrical Engineering         $2,229.89
+    Business Analytics             $  645.92
+    English Literature             $  186.95
+  Revenue by semester:
+    Fall 2025       $3,062.62
+    Spring 2026     $2,299.79
+  Required vs optional purchases:
+    Optional    26 purchases  $1,942.74
+    Required    25 purchases  $3,419.67
+
+✓ bookstore.duckdb is ready.

@@ -1,0 +1,21 @@
+first_name,middle_init,last_name,ssn,birth_date,address,gender,salary,super_ssn,dno,image_url
+John,B,Smith,123456789,1965-01-09,"731 Fondren, Houston TX",M,30000,333445555,5,https://api.dicebear.com/7.x/personas/svg?seed=JohnSmith
+Franklin,T,Wong,333445555,1965-12-08,"638 Voss, Houston TX",M,40000,888665555,5,https://api.dicebear.com/7.x/personas/svg?seed=FranklinWong
+Alicia,J,Zelaya,999887777,1968-01-19,"3321 Castle, Spring TX",F,25000,987654321,4,https://api.dicebear.com/7.x/personas/svg?seed=AliciaZelaya
+Jennifer,S,Wallace,987654321,1941-06-20,"291 Berry, Bellaire TX",F,43000,888665555,4,https://api.dicebear.com/7.x/personas/svg?seed=JenniferWallace
+Ramesh,K,Narayan,666884444,1962-09-15,"975 Fire Oak, Humble TX",M,38000,333445555,5,https://api.dicebear.com/7.x/personas/svg?seed=RameshNarayan
+Joyce,A,English,453453453,1972-07-31,"5631 Rice, Houston TX",F,25000,333445555,5,https://api.dicebear.com/7.x/personas/svg?seed=JoyceEnglish
+Ahmad,V,Jabbar,987987987,1969-03-29,"980 Dallas, Houston TX",M,25000,987654321,4,https://api.dicebear.com/7.x/personas/svg?seed=AhmadJabbar
+James,E,Borg,888665555,1937-11-10,"450 Stone, Houston TX",M,55000,,1,https://api.dicebear.com/7.x/personas/svg?seed=JamesBorg
+Maria,L,Garcia,111223333,1975-06-15,"1200 Main, Sugar Land TX",F,35000,333445555,5,https://api.dicebear.com/7.x/personas/svg?seed=MariaGarcia
+Robert,D,Chen,222334444,1980-03-22,"450 Westheimer, Houston TX",M,42000,987654321,4,https://api.dicebear.com/7.x/personas/svg?seed=RobertChen
+Susan,M,Park,444556666,1971-11-30,"789 Kirby, Houston TX",F,37000,333445555,5,https://api.dicebear.com/7.x/personas/svg?seed=SusanPark
+David,R,Kim,555667777,1983-08-14,"321 Montrose, Houston TX",M,29000,987654321,4,https://api.dicebear.com/7.x/personas/svg?seed=DavidKim
+Lisa,A,Patel,777889999,1978-04-02,"567 Richmond, Houston TX",F,46000,888665555,1,https://api.dicebear.com/7.x/personas/svg?seed=LisaPatel
+Carlos,F,Martinez,888990000,1985-12-20,"234 Shepherd, Houston TX",M,32000,333445555,5,https://api.dicebear.com/7.x/personas/svg?seed=CarlosMartinez
+Nora,K,Williams,111334455,1979-08-25,"890 Bissonnet, Houston TX",F,41000,222334444,6,https://api.dicebear.com/7.x/personas/svg?seed=NoraWilliams
+Kevin,J,Brown,222445566,1988-02-17,"145 Gessner, Houston TX",M,28000,777889999,7,https://api.dicebear.com/7.x/personas/svg?seed=KevinBrown
+Priya,S,Sharma,333556677,1990-11-03,"678 Hillcroft, Houston TX",F,34000,222334444,6,https://api.dicebear.com/7.x/personas/svg?seed=PriyaSharma
+Tom,W,Jackson,444667788,1982-05-19,"432 Bellaire Blvd, Houston TX",M,31000,777889999,7,https://api.dicebear.com/7.x/personas/svg?seed=TomJackson
+Elena,R,Petrova,555778899,1986-09-07,"567 Westpark, Houston TX",F,39000,333445555,5,https://api.dicebear.com/7.x/personas/svg?seed=ElenaPetrova
+Marcus,T,Lee,666889900,1974-01-28,"321 Wilcrest, Houston TX",M,48000,888665555,1,https://api.dicebear.com/7.x/personas/svg?seed=MarcusLee

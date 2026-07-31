@@ -1,0 +1,5 @@
+dept_id,dept_name,dept_location,budget
+10,SALES,New York,500000
+20,ENGINEERING,San Jose,800000
+30,MARKETING,Chicago,400000
+40,LEGAL,Boston,300000

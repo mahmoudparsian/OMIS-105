@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 650">
+    <!-- Styles -->
+    <defs>
+        <style>
+            .title { font-family: Arial; font-size: 24px; font-weight: bold; }
+            .subtitle { font-family: Arial; font-size: 18px; font-weight: bold; fill: #FFFFFF; }
+            .label { font-family: Arial; font-size: 14px; }
+            .item { fill: #FFFFFF; stroke: #FFFFFF; stroke-width: 1; }
+        </style>
+    </defs>
+
+    <!-- Title -->
+    <text x="500" y="40" text-anchor="middle" class="title">DuckDB Ecosystem</text>
+
+    <!-- Language Drivers Section -->
+    <rect x="50" y="80" width="200" height="200" rx="10" fill="#FF6B6B"/>
+    <text x="150" y="110" text-anchor="middle" class="subtitle">Language Drivers</text>
+    <rect x="70" y="130" width="160" height="25" rx="5" class="item"/>
+    <text x="150" y="147" text-anchor="middle" class="label">Python</text>
+    <rect x="70" y="165" width="160" height="25" rx="5" class="item"/>
+    <text x="150" y="182" text-anchor="middle" class="label">R</text>
+    <rect x="70" y="200" width="160" height="25" rx="5" class="item"/>
+    <text x="150" y="217" text-anchor="middle" class="label">Java</text>
+    <rect x="70" y="235" width="160" height="25" rx="5" class="item"/>
+    <text x="150" y="252" text-anchor="middle" class="label">Node.js</text>
+
+    <!-- Integration Tools Section -->
+    <rect x="300" y="80" width="200" height="200" rx="10" fill="#4ECDC4"/>
+    <text x="400" y="110" text-anchor="middle" class="subtitle">Integration Tools</text>
+    <rect x="320" y="130" width="160" height="25" rx="5" class="item"/>
+    <text x="400" y="147" text-anchor="middle" class="label">pandas</text>
+    <rect x="320" y="165" width="160" height="25" rx="5" class="item"/>
+    <text x="400" y="182" text-anchor="middle" class="label">Polars</text>
+    <rect x="320" y="200" width="160" height="25" rx="5" class="item"/>
+    <text x="400" y="217" text-anchor="middle" class="label">Apache Arrow</text>
+    <rect x="320" y="235" width="160" height="25" rx="5" class="item"/>
+    <text x="400" y="252" text-anchor="middle" class="label">dbt Core</text>
+
+    <!-- File Formats Section -->
+    <rect x="550" y="80" width="200" height="200" rx="10" fill="#45B7D1"/>
+    <text x="650" y="110" text-anchor="middle" class="subtitle">File Formats</text>
+    <rect x="570" y="130" width="160" height="25" rx="5" class="item"/>
+    <text x="650" y="147" text-anchor="middle" class="label">Parquet</text>
+    <rect x="570" y="165" width="160" height="25" rx="5" class="item"/>
+    <text x="650" y="182" text-anchor="middle" class="label">CSV</text>
+    <rect x="570" y="200" width="160" height="25" rx="5" class="item"/>
+    <text x="650" y="217" text-anchor="middle" class="label">JSON</text>
+    <rect x="570" y="235" width="160" height="25" rx="5" class="item"/>
+    <text x="650" y="252" text-anchor="middle" class="label">SQLite</text>
+
+    <!-- Extensions Section -->
+    <rect x="800" y="80" width="200" height="200" rx="10" fill="#96CEB4"/>
+    <text x="900" y="110" text-anchor="middle" class="subtitle">Extensions</text>
+    <rect x="820" y="130" width="160" height="25" rx="5" class="item"/>
+    <text x="900" y="147" text-anchor="middle" class="label">Spatial</text>
+    <rect x="820" y="165" width="160" height="25" rx="5" class="item"/>
+    <text x="900" y="182" text-anchor="middle" class="label">Full Text Search</text>
+    <rect x="820" y="200" width="160" height="25" rx="5" class="item"/>
+    <text x="900" y="217" text-anchor="middle" class="label">HTTP</text>
+    <rect x="820" y="235" width="160" height="25" rx="5" class="item"/>
+    <text x="900" y="252" text-anchor="middle" class="label">JSON</text>
+
+    <!-- Key Features Section -->
+    <rect x="175" y="330" width="650" height="150" rx="10" fill="#FFD93D"/>
+    <text x="500" y="360" text-anchor="middle" class="subtitle">Key Features</text>
+    <rect x="195" y="380" width="190" height="25" rx="5" class="item"/>
+    <text x="290" y="397" text-anchor="middle" class="label">ACID Transactions</text>
+    <rect x="405" y="380" width="190" height="25" rx="5" class="item"/>
+    <text x="500" y="397" text-anchor="middle" class="label">Parallel Execution</text>
+    <rect x="615" y="380" width="190" height="25" rx="5" class="item"/>
+    <text x="710" y="397" text-anchor="middle" class="label">Vectorized Execution</text>
+    <rect x="195" y="425" width="190" height="25" rx="5" class="item"/>
+    <text x="290" y="442" text-anchor="middle" class="label">Query Optimization</text>
+    <rect x="405" y="425" width="190" height="25" rx="5" class="item"/>
+    <text x="500" y="442" text-anchor="middle" class="label">In-Memory Processing</text>
+    <rect x="615" y="425" width="190" height="25" rx="5" class="item"/>
+    <text x="710" y="442" text-anchor="middle" class="label">Column-Oriented Storage</text>
+
+    <!-- Development Tools Section -->
+    <rect x="175" y="530" width="650" height="100" rx="10" fill="#6C5B7B"/>
+    <text x="500" y="560" text-anchor="middle" class="subtitle">Development Tools</text>
+    <rect x="195" y="580" width="145" height="25" rx="5" class="item"/>
+    <text x="267" y="597" text-anchor="middle" class="label">CLI</text>
+    <rect x="360" y="580" width="145" height="25" rx="5" class="item"/>
+    <text x="432" y="597" text-anchor="middle" class="label">Jupyter Notebooks</text>
+    <rect x="525" y="580" width="145" height="25" rx="5" class="item"/>
+    <text x="597" y="597" text-anchor="middle" class="label">VS Code Extension</text>
+    <rect x="690" y="580" width="115" height="25" rx="5" class="item"/>
+    <text x="747" y="597" text-anchor="middle" class="label">Browser Tools</text>
+</svg>

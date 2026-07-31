@@ -1,0 +1,90 @@
+You are the duckdb and jupyter notebook expert.
+
+1. My files are here:
+
+insurance_dataset  % pwd
+/Users/max/mp/santa_clara_univ/OMIS_105/data_stories/insurance_dataset
+insurance_dataset  % ls -l insurance.csv
+-rw-r--r--@ 1 max  staff  72807 Jun  1 20:36 insurance.csv
+insurance_dataset  % head insurance.csv
+age,gender,bmi,children,smoker,region,charges
+19,female,27.9,0,yes,southwest,16884.924
+18,male,33.77,1,no,southeast,1725.5523
+28,male,33,3,no,southeast,4449.462
+33,male,22.705,0,no,northwest,21984.47061
+32,male,28.88,0,no,northwest,3866.8552
+31,female,25.74,0,no,southeast,3756.6216
+46,female,33.44,1,no,southeast,8240.5896
+37,female,27.74,3,no,northwest,7281.5056
+37,male,29.83,2,no,northeast,6406.4107
+insurance_dataset  % wc -l insurance.csv
+    1774 insurance.csv
+    
+2. First notebook:
+ Build a notebook to read insurance.csv and 
+ build a duckdb database: insurance_db.duckdb
+ 
+ 2.1 Identify all duplicate rows. Show/display them
+ 
+ 2.2 delete the duplicate rows
+ 
+ 2.3 the insurance_db.duckdb will have a single table "insurance"
+ with no duplicate rows.
+ 
+ 2.4 verify that the database has no duplicate rows.
+ 
+3. Second notebook: 
+  Build another notebook, which we are teaching SQL queries
+  using insurance_db.duckdb
+  
+  3.0  ADD new derived columns if necessary 
+  
+  3.1  5 simple queries
+  
+  3.2  5 simple+ queries
+  
+  3.3  5 intermediate queries
+  
+  3.4  5 intermediate+ queries (Top-N queries, 
+  ranking functions, subqueries using "WITH")
+
+  3.5 Enables key SQL concepts (proper to notebooks)
+
+
+4. for each notebook cell: 
+
+1. what are we doing? Explain well.
+ 
+2. sql solution (very nice formatted), 
+
+3. result displyed
+
+4. result in plot when possible 
+
+5. plotting code must be decoupled from main notebook:
+   you can create a util_plot.py and put all plotting
+   code in it.
+
+===
+
+claude:
+
+Let me first examine the full data to understand distributions, then build everything.DuckDB isn't available in my sandbox, so I'll create the notebooks and utility file for you to run locally. Let me build them all.Now let me create Notebook 1:Now the big one — Notebook 2 with 20+ SQL queries:Let me verify the notebooks are valid JSON and well-structured:I can't delete from the sandbox — let me clean those up via the file tools. Actually, those are temporary build scripts. Let me just note them for you.All three files are created in your `insurance_dataset` folder:
+
+**`util_plot.py`** — 13 reusable plotting functions (bar, grouped bar, pie, scatter, histogram, boxplot, heatmap, lollipop, line, etc.) plus a `highlight_duplicates` helper.
+
+**`01_build_database.ipynb`** (10 code cells) — Loads CSV → finds & displays duplicates → removes them with `ROW_NUMBER()` → persists clean table to `insurance_db.duckdb` → verifies zero duplicates.
+
+**`02_sql_queries_tutorial.ipynb`** (38 code cells) — Adds 4 derived columns (age_group, bmi_category, charge_level, cost_per_child), then walks through 20 queries across 4 difficulty tiers plus a concepts summary:
+- **3.1 Simple** (Q1–Q5): COUNT, ORDER BY, DISTINCT, WHERE
+- **3.2 Simple+** (Q6–Q10): AVG, GROUP BY, HAVING, BETWEEN
+- **3.3 Intermediate** (Q11–Q15): CASE, conditional aggregation, scalar subqueries, STDDEV
+- **3.4 Intermediate+** (Q16–Q20): ROW_NUMBER, DENSE_RANK, PERCENT_RANK, NTILE, CTEs, running totals, JOINs
+- **3.5 Concepts** — 7 concept summaries with syntax templates
+
+Each query cell has an explanation, formatted SQL, result display, and a plot where applicable (all using `util_plot`).
+
+You can delete `build_nb1.py` and `build_nb2.py` — those were just my generator scripts. Run Notebook 1 first, then Notebook 2.
+
+
+

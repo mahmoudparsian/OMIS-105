@@ -1,0 +1,9 @@
+# Pin the app to a light theme so text is always dark-on-light and readable,
+# regardless of the user's system / Streamlit dark-mode setting.
+[theme]
+base = "light"
+primaryColor = "#E31837"
+backgroundColor = "#FFFDF7"
+secondaryBackgroundColor = "#FFF3D6"
+textColor = "#1A1A1A"
+font = "sans serif"

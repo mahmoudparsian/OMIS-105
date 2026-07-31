@@ -1,0 +1,6 @@
+dept_id,dept_name,dept_location,budget
+10,SALES,Sunnyvale CA,4000000
+20,BUSINESS,Dallas TX,3000000
+30,AI,Cupertino CA,8000000
+40,MARKETING,New York NY,2000000
+50,HARDWARE,Austin TX,4000000

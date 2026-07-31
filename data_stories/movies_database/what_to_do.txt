@@ -1,0 +1,103 @@
+# movies database in duckdb
+
+You are the duckdb and Marimo notebook expert.
+
+since this a not a small task: create and update CLAUDE.md
+for every iteration of the project
+
+1. folder is:
+
+% pwd
+/Users/max/mp/santa_clara_univ/OMIS_105/data_stories/movies_database
+
+2. files in folder:
+
+movies_database  % ls -1
+01_reference_data.sql
+02_keyword.sql
+03_person.sql
+04_production_company.sql
+05_movie.sql
+06_movie_cast.sql
+07_movie_company.sql
+08_movie_crew.sql
+09_movie_genres.sql
+10_movie_keywords.sql
+11_movie_languages.sql
+12_production_country.sql
+blog
+table_creation.log
+what_to_do.txt
+
+2.1  the *sql files create a mysql database: but I want
+     you convert everything to duckdb: convert *.sql files to
+     be duckdb compatiable sql files, so that we can create 
+     a proper duckdb database
+
+2.2  make sure that all column names are lowercase with "_",
+     no space in table/column names (lowercase SQL-style snake_case)
+
+2.3  the "blog" folder has some web files and some metadata 
+     information: you can study them for creating Marimo notebooks
+
+2.4 Then create a shell script to create a movies_db.duckdb
+
+2.5 validate that the database is properly created
+
+---
+
+# After we have created a movies_db.duckdb
+
+---
+
+3. Using movies_db.duckdb, Create 2 Marimo notebooks:
+   
+   * use PURE SQL cells as much as possible 
+
+   * Enable key SQL concepts (proper to notebooks)
+
+---
+
+3.1 First notebook: show very basic queries for this notebook
+   
+  1.  5 simple queries
+  
+  2.  5 simple+ queries
+  
+  3.  5 intermediate queries, joins, aggregations  
+
+---
+
+3.2 Second notebook: intermediate to intermediate+
+  
+  1.  5 simple+ queries
+  
+  2.  5 intermediate queries, joins, aggregations
+  
+  3.  10 intermediate+ queries (Top-N queries, 
+       ranking functions, subqueries using "WITH")
+
+
+---
+
+4. for each notebook cell: Explain clear and well and in detail
+
+1. what are we doing? Explain well.
+ 
+2. PURE sql solution (very nice beautifully formatted), 
+
+3. result displayed (nice displayed)
+
+4. result in plot when possible (using plotting provided by Marimo)
+
+5. Use marimo plotting as much as possible, but if plotting is 
+   not suitable in Marimo, then plotting code must be decoupled 
+   from main notebook: you can create a plot_util.py and put all 
+   plotting code in it. Make plotting the best you can
+
+---
+
+5. create CLAUDE.md
+===
+
+

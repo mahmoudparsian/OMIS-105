@@ -1,0 +1,11 @@
+emp_id,emp_name,department,salary,gender,degree,hire_date,country,image_url,age
+1,James Carter,SALES,95000,MALE,BA,2015-03-12,USA,https://api.dicebear.com/7.x/personas/svg?seed=JamesCarter,38
+2,Emily Chen,IT,145000,FEMALE,MS,2015-07-22,USA,https://api.dicebear.com/7.x/personas/svg?seed=EmilyChen,29
+3,Luca Rossi,MARKETING,88000,MALE,BS,2015-02-14,ITALY,https://api.dicebear.com/7.x/personas/svg?seed=LucaRossi,34
+4,Sofia Esposito,AI,192000,FEMALE,PHD,2015-09-01,ITALY,https://api.dicebear.com/7.x/personas/svg?seed=SofiaEsposito,41
+5,Hans Mueller,BUSINESS,115000,MALE,MIS,2015-05-18,GERMANY,https://api.dicebear.com/7.x/personas/svg?seed=HansMueller,45
+6,Klara Becker,AI,210000,FEMALE,PHD,2015-11-03,GERMANY,https://api.dicebear.com/7.x/personas/svg?seed=KlaraBecker,36
+7,Wei Zhang,IT,138000,MALE,MS,2015-04-27,CHINA,https://api.dicebear.com/7.x/personas/svg?seed=WeiZhang,31
+8,Li Mei,MARKETING,82000,FEMALE,BA,2015-08-15,CHINA,https://api.dicebear.com/7.x/personas/svg?seed=LiMei,27
+9,Olivia Tremblay,SALES,99000,FEMALE,BS,2015-01-09,CANADA,https://api.dicebear.com/7.x/personas/svg?seed=OliviaTremblay,33
+10,Marcus Lefebvre,BUSINESS,125000,MALE,MIS,2015-06-20,CANADA,https://api.dicebear.com/7.x/personas/svg?seed=MarcusLefebvre,52

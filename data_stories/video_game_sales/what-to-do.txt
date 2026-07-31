@@ -1,0 +1,139 @@
+You are the duckdb and jupyter notebook expert.
+
+1. My files are here:
+
+/Users/max/mp/santa_clara_univ/OMIS_105/data_stories/video_game_sales/
+
+metadata.txt : describes data and metadata
+
+what to do:
+/Users/max/mp/santa_clara_univ/OMIS_105/data_stories/video_game_sales/what-to-do.txt
+---
+    
+2. First notebook:
+ Build a notebook to read video_game_sales.csv and 
+ build a duckdb database: sales_db.duckdb
+ 
+ 2.0 convert column names to lowercase camel 
+     with underscores (_), there should not
+     be a space in column names
+     
+ 
+ 2.1 Identify all duplicate rows. Show/display them
+ 
+ 2.2 delete the duplicate rows
+ 
+ 2.3 the sales_db.duckdb will have a single table "sales"
+ with no duplicate rows.
+ 
+ 2.4 verify that the database has no duplicate rows.
+
+  NOTE: the last 4 columns are sales voules:
+  
+  NA_Sales - Sales in North America (in millions)
+  EU_Sales - Sales in Europe (in millions)
+  JP_Sales - Sales in Japan (in millions)
+  Other_Sales - Sales in the rest of the world (in millions)
+  
+  Do we need another tables for these???
+  
+Build this notebook and then I will verify. 
+After verification you will build the 2nd notebook
+---
+
+3. Second notebook: 
+  Build another notebook, which we are teaching SQL queries
+  using sales_db.duckdb
+  
+
+  
+  
+  3.0  ADD new derived columns if necessary 
+  
+  3.1  5 simple queries
+  
+  3.2  5 simple+ queries
+  
+  3.3  5 intermediate queries
+  
+  3.4  5 intermediate+ queries (Top-N queries, 
+  ranking functions, subqueries using "WITH")
+
+  3.5 Enables key SQL concepts (proper to notebooks)
+
+There is interesting anotebook in this directory from kaggle.com
+called: video-games-sales-analysis-and-visualization.ipynb
+See if you can use some of its queries in the 2nd notebook
+
+---
+
+4. for each notebook cell: Explain clear and well:
+
+1. what are we doing? Explain well.
+ 
+2. sql solution (very nice formatted), 
+
+3. result displyed
+
+4. result in plot when possible 
+
+5. plotting code must be decoupled from main notebook:
+   you can create a util_plot.py and put all plotting
+   code in it.
+
+---
+
+5. create CLAUDE.md
+===
+
+I'll start by reading your task file.I don't have access to that folder yet. Let me request it.Let me explore the directory contents and the metadata.Let me inspect the data more closely before building.I have a clear picture. Key finding on duplicates: there are **no fully-identical rows** (the `Rank` column makes every row unique), but there is exactly **1 true duplicate** — "Wii de Asobu: Metroid Prime" (Wii) appears twice, identical in every field except `Rank`. (The Madden NFL 13 pair shares Name/Platform/Year but has *different* sales, so it's not a true duplicate.)
+
+Let me set up task tracking and verify my tooling.No PyPI access for duckdb in the sandbox. Let me check what's available.PyPI is blocked in the sandbox, so I can't run duckdb here — but I can validate the cleaning logic with pandas (available) and build a correct, self-contained notebook for you to run in your own environment. Per your workflow, I'll build **notebook 1 only** now, then wait for your verification before notebook 2.Validated: snake_case columns, exactly 1 duplicate to drop, 16598 → 16597 rows, zero remaining. Now creating the files.Now I'll build notebook 1 by generating the `.ipynb` JSON with a script.The notebook is written and valid. Let me clean up the generator script.Now CLAUDE.md.Notebook 1 is built and waiting for your verification. I created three files in your folder.
+
+**`01_build_database.ipynb`** — 20 cells, each explaining what it does before the code:
+- **2.0** snake_case all columns (`NA_Sales` → `na_sales`)
+- **2.1** finds duplicates and displays them — with a teaching note on the key subtlety: there are **zero** rows identical across *all* columns because `rank` is a unique id, but **one** true duplicate when you ignore `rank` (`Wii de Asobu: Metroid Prime`). The `Madden NFL 13` pair is correctly *not* flagged since its sales differ.
+- **2.2** drops it: 16,598 → 16,597 rows
+- **2.3** builds `sales_db.duckdb` with a single `sales` table (also casts `year` to nullable INTEGER so it reads `2006` not `2006.0`)
+- **2.4** verifies zero duplicates *in SQL* via `GROUP BY ALL ... HAVING COUNT(*) > 1`
+
+**`util_plot.py`** — all matplotlib lives here (bar, grouped_bar, line, hist, pie), so notebook cells stay focused on the SQL. **`CLAUDE.md`** documents the project.
+
+On your question *"do we need another table for the sales columns?"* — the notebook answers no: the four regional columns are measurements at the same grain (one game-platform), so they belong in the one wide `sales` table; splitting them would force a join on every query for no benefit. I noted you can make a *view* for long-format charts in Notebook 2 if needed.
+
+One note: I couldn't execute the notebook here 
+(the sandbox has no internet to install duckdb), 
+but I validated the cleaning logic — duplicate count 
+and final row count — with pandas. 
+Please **run it top-to-bottom and verify**. Once you confirm, 
+I'll build Notebook 2 (the 20 graded SQL queries, drawing ideas 
+from the Kaggle notebook).
+
+
+Notebook 1 verified — thanks. Let me look at the Kaggle reference notebook and the data distributions to design good progressive queries.Good ideas there (genre/platform/publisher rollups, regional splits, top-N per year). Let me check key distributions so my queries use sensible filters.Distributions look good (12 genres, 31 platforms, years 1980–2020). I have everything I need. Let me validate the trickier query results with pandas before writing the notebook.All query logic validated against the data. Now generating Notebook 2.Now the notebook 2 generator.Notebook 2 is valid — 51 cells, 20 query blocks. Let me update the project doc to reflect completion.`02_sql_queries.ipynb` is built — **20 queries in four graded tiers**, each cell following your required rhythm: explanation → formatted SQL → result table → chart (via `util_plot`).
+
+- **3.0 Derived columns** — adds `decade` and `region_sum` (idempotent, safe to re-run).
+- **3.1 Simple (Q1–5)** — `ORDER BY`/`LIMIT`, `COUNT(DISTINCT)`, `WHERE`, `SELECT DISTINCT`.
+- **3.2 Simple+ (Q6–10)** — `GROUP BY` with `SUM`/`AVG`/`COUNT`, plus a regional pie via `UNION ALL`.
+- **3.3 Intermediate (Q11–15)** — `HAVING` vs `WHERE`, regional grouped bars, `CASE` sales tiers, a NULL audit.
+- **3.4 Intermediate+ (Q16–20)** — CTEs (`WITH`), `RANK`/`QUALIFY`, a running-total market-share curve, Top-N-per-group with `ROW_NUMBER`, and YoY growth with `LAG`.
+- **3.5** — a recap table mapping every query to the concept it teaches.
+
+I pulled several ideas from the Kaggle notebook 
+(regional split by genre, top publishers, sales-by-platform) 
+and re-expressed them in SQL. I extended `util_plot.py` with 
+an `area` helper for the cumulative chart.
+
+One caveat: I couldn't execute this notebook here 
+(the sandbox has no internet to install duckdb), 
+so I validated every query's logic against the CSV with 
+pandas — counts, tiers, top-N, and YoY all matched. 
+Please run it top-to-bottom against your `sales_db.duckdb`. 
+It uses DuckDB-specific features 
+(`QUALIFY`, `//`, `ADD COLUMN IF NOT EXISTS`); 
+if your DuckDB version is older and any of those error, 
+tell me and I'll adjust. Want me to spot-check anything 
+specific once you've run it?
+
+
+

@@ -1,0 +1,65 @@
+product_id,product_name,category,price,stock_quantity
+1,Smartphone X12,Electronics,321.52,12
+2,Laptop Pro 15,Electronics,372.07,125
+3,Wireless Earbuds,Electronics,115.49,377
+4,USB-C Hub,Electronics,55.74,379
+5,Tablet Air,Electronics,446.63,44
+6,Bluetooth Speaker,Electronics,297.29,16
+7,Webcam HD,Electronics,19.75,111
+8,Mechanical Keyboard,Electronics,120.17,308
+9,Python Crash Course,Books,8.85,101
+10,Database Fundamentals,Books,108.82,359
+11,The Great Novel,Books,84.02,112
+12,History of Computing,Books,70.14,142
+13,SQL Cookbook,Books,122.37,3
+14,Data Science Handbook,Books,115.03,81
+15,Clean Code,Books,106.23,174
+16,Design Patterns,Books,45.29,110
+17,Cotton T-Shirt,Clothing,143.8,172
+18,Denim Jeans,Clothing,19.82,194
+19,Running Shoes,Clothing,19.02,433
+20,Winter Jacket,Clothing,54.87,135
+21,Wool Sweater,Clothing,122.03,373
+22,Silk Scarf,Clothing,71.62,63
+23,Cargo Shorts,Clothing,146.1,193
+24,Baseball Cap,Clothing,16.43,150
+25,Coffee Maker,Home & Kitchen,125.26,316
+26,Desk Lamp,Home & Kitchen,133.39,185
+27,Throw Pillow,Home & Kitchen,88.72,360
+28,Cutting Board,Home & Kitchen,15.09,338
+29,Blender Pro,Home & Kitchen,38.05,148
+30,Shower Curtain,Home & Kitchen,147.86,437
+31,Wall Clock,Home & Kitchen,38.75,51
+32,Bookshelf,Home & Kitchen,60.12,232
+33,Yoga Mat,Sports,97.17,186
+34,Dumbbells Set,Sports,28.58,181
+35,Tennis Racket,Sports,35.38,136
+36,Running Watch,Sports,106.76,349
+37,Cycling Helmet,Sports,98.97,311
+38,Jump Rope,Sports,97.07,273
+39,Resistance Bands,Sports,110.72,83
+40,Water Bottle,Sports,72.03,138
+41,Building Blocks,Toys,148.48,327
+42,Board Game Classic,Toys,104.78,112
+43,Puzzle 1000pc,Toys,104.27,431
+44,RC Car,Toys,116.41,28
+45,Stuffed Bear,Toys,38.21,16
+46,Card Game,Toys,121.73,205
+47,Art Kit,Toys,43.82,108
+48,Science Set,Toys,137.4,290
+49,Face Moisturizer,Beauty,132.07,161
+50,Sunscreen SPF50,Beauty,35.83,255
+51,Lip Balm Set,Beauty,62.37,468
+52,Shampoo Natural,Beauty,98.21,73
+53,Hand Cream,Beauty,43.41,126
+54,Eye Serum,Beauty,113.02,275
+55,Body Lotion,Beauty,43.1,299
+56,Nail Kit,Beauty,67.12,298
+57,Organic Granola,Food & Grocery,62.91,112
+58,Green Tea Box,Food & Grocery,149.61,70
+59,Dark Chocolate,Food & Grocery,78.88,46
+60,Trail Mix,Food & Grocery,114.59,440
+61,Protein Bars,Food & Grocery,20.9,321
+62,Olive Oil Extra,Food & Grocery,28.2,348
+63,Honey Jar,Food & Grocery,66.21,32
+64,Almond Butter,Food & Grocery,60.79,305

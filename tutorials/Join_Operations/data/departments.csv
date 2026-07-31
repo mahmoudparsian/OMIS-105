@@ -1,0 +1,8 @@
+dept_id,dept_name,dept_location,dept_manager,created_date
+D001,SALES,New York,James Mitchell,2010-03-15
+D002,BUSINESS,Chicago,Sandra Williams,2011-07-22
+D003,MARKETING,Los Angeles,Robert Chen,2012-01-10
+D004,SOFTWARE,San Francisco,Emily Rodriguez,2013-05-30
+D005,HARDWARE,Austin,David Kim,2014-09-18
+D006,AI,Seattle,Lisa Patel,2020-02-01
+D007,IT,Denver,Mark Thompson,2019-06-14

@@ -1,0 +1,71 @@
+You are the duckdb and jupyter notebook expert.
+
+1. My 2 files are here: parties.csv and presidents.csv
+
+% head parties.csv
+party_id,party_name
+10,Unaffiliated
+20,Federalist
+30,Democratic-Republican
+40,Democratic
+50,Whig
+60,Republican
+70,National Union
+
+% head presidents.csv
+sequence,last_name,first_name,term_start,term_end,party_id
+1,Washington,George,1789-04-30,1797-03-04,10
+2,Adams,John,1797-03-04,1801-03-04,20
+3,Jefferson,Thomas,1801-03-04,1809-03-04,30
+4,Madison,James,1809-03-04,1817-03-04,30
+5,Monroe,James,1817-03-04,1825-03-04,30
+6,Adams,John Quincy,1825-03-04,1829-03-04,20
+7,Jackson,Andrew,1829-03-04,1837-03-04,40
+8,Van Buren,Martin,1837-03-04,1841-03-04,40
+9,Harrison,William Henry,1841-03-04,1841-04-04,50
+
+---
+    
+2. Build a notebook to read parties.csv and presidents.csv
+ and build a duckdb database: presidents_db.duckdb
+ 
+---
+
+3  ADD new derived columns if necessary 
+  
+4. queries
+
+  4.1  5 simple queries
+  
+  4.2  5 simple+ queries
+  
+  4.3  5 intermediate queries, joins, aggregations
+  
+  4.4  5 intermediate+ queries (Top-N queries, 
+       ranking functions, subqueries using "WITH")
+
+  4.5 Enables key SQL concepts (proper to notebooks)
+
+---
+
+5. for each notebook cell: Explain clear and well and in detail
+
+1. what are we doing? Explain well.
+ 
+2. sql solution (very nice beautifully formatted), 
+
+3. result displayed (nice displayed)
+
+4. result in plot when possible 
+
+5. plotting code must be decoupled from main notebook:
+   you can create a util_plot.py and put all plotting
+   code in it. Make plotting the best you can
+
+---
+
+6. create CLAUDE.md
+===
+
+claude:
+

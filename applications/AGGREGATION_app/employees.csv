@@ -1,0 +1,20 @@
+emp_id,emp_name,department,job_title,salary,hire_date,city
+E01,Alice,Engineering,Software Engineer,120000,2020-03-15,New York
+E02,Bob,Engineering,Software Engineer,115000,2021-06-01,New York
+E03,Charlie,Engineering,Senior Engineer,145000,2019-01-10,Chicago
+E04,Diana,Engineering,Tech Lead,160000,2018-07-20,Chicago
+E05,Eve,Engineering,Junior Engineer,85000,2023-09-05,New York
+E06,Frank,Marketing,Marketing Manager,110000,2020-02-01,New York
+E07,Grace,Marketing,Content Specialist,72000,2022-04-15,Toronto
+E08,Hank,Marketing,SEO Analyst,68000,2023-01-10,Toronto
+E09,Ivy,Marketing,Marketing Manager,108000,2019-11-20,Chicago
+E10,Jack,Sales,Sales Representative,65000,2022-08-01,New York
+E11,Karen,Sales,Sales Manager,105000,2020-05-15,Chicago
+E12,Leo,Sales,Sales Representative,62000,2023-03-20,Toronto
+E13,Mia,Sales,Account Executive,78000,2021-10-01,New York
+E14,Nathan,HR,HR Manager,98000,2019-06-01,Chicago
+E15,Olivia,HR,Recruiter,70000,2022-02-10,New York
+E16,Paul,HR,HR Coordinator,58000,2023-07-01,Toronto
+E17,Quinn,Finance,Finance Manager,115000,2018-12-01,New York
+E18,Rachel,Finance,Accountant,75000,2021-03-15,Chicago
+E19,Sam,Finance,Financial Analyst,82000,2022-06-20,Toronto

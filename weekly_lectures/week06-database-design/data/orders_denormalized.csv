@@ -1,0 +1,101 @@
+order_id,order_date,status,customer_id,customer_name,customer_email,customer_city,product_id,product_name,category_name,unit_price,quantity,line_price
+1,2024-12-28,processing,5,Eva Garcia,eva.garcia@email.com,Boston,60,Trail Mix,Food & Grocery,114.59,4,114.59
+1,2024-12-28,processing,5,Eva Garcia,eva.garcia@email.com,Boston,53,Hand Cream,Beauty,43.41,4,43.41
+1,2024-12-28,processing,5,Eva Garcia,eva.garcia@email.com,Boston,7,Webcam HD,Electronics,19.75,1,19.75
+1,2024-12-28,processing,5,Eva Garcia,eva.garcia@email.com,Boston,25,Coffee Maker,Home & Kitchen,125.26,2,125.26
+1,2024-12-28,processing,5,Eva Garcia,eva.garcia@email.com,Boston,47,Art Kit,Toys,43.82,3,43.82
+2,2024-01-17,cancelled,5,Eva Garcia,eva.garcia@email.com,Boston,17,Cotton T-Shirt,Clothing,143.8,1,143.8
+2,2024-01-17,cancelled,5,Eva Garcia,eva.garcia@email.com,Boston,37,Cycling Helmet,Sports,98.97,2,98.97
+2,2024-01-17,cancelled,5,Eva Garcia,eva.garcia@email.com,Boston,57,Organic Granola,Food & Grocery,62.91,2,62.91
+2,2024-01-17,cancelled,5,Eva Garcia,eva.garcia@email.com,Boston,63,Honey Jar,Food & Grocery,66.21,3,66.21
+2,2024-01-17,cancelled,5,Eva Garcia,eva.garcia@email.com,Boston,16,Design Patterns,Books,45.29,1,45.29
+3,2024-05-01,completed,33,Gina Turner,gina.turner@email.com,Denver,53,Hand Cream,Beauty,43.41,1,43.41
+3,2024-05-01,completed,33,Gina Turner,gina.turner@email.com,Denver,12,History of Computing,Books,70.14,2,70.14
+3,2024-05-01,completed,33,Gina Turner,gina.turner@email.com,Denver,29,Blender Pro,Home & Kitchen,38.05,4,38.05
+3,2024-05-01,completed,33,Gina Turner,gina.turner@email.com,Denver,15,Clean Code,Books,106.23,3,106.23
+3,2024-05-01,completed,33,Gina Turner,gina.turner@email.com,Denver,60,Trail Mix,Food & Grocery,114.59,3,114.59
+4,2024-10-03,completed,14,Noah Harris,noah.harris@email.com,Portland,62,Olive Oil Extra,Food & Grocery,28.2,2,28.2
+4,2024-10-03,completed,14,Noah Harris,noah.harris@email.com,Portland,61,Protein Bars,Food & Grocery,20.9,4,20.9
+4,2024-10-03,completed,14,Noah Harris,noah.harris@email.com,Portland,32,Bookshelf,Home & Kitchen,60.12,2,60.12
+4,2024-10-03,completed,14,Noah Harris,noah.harris@email.com,Portland,59,Dark Chocolate,Food & Grocery,78.88,2,78.88
+5,2024-10-22,completed,37,Kira Evans,kira.evans@email.com,Denver,36,Running Watch,Sports,106.76,4,106.76
+6,2024-07-27,completed,31,Elena Perez,elena.perez@email.com,Boston,35,Tennis Racket,Sports,35.38,3,35.38
+6,2024-07-27,completed,31,Elena Perez,elena.perez@email.com,Boston,1,Smartphone X12,Electronics,321.52,4,321.52
+6,2024-07-27,completed,31,Elena Perez,elena.perez@email.com,Boston,37,Cycling Helmet,Sports,98.97,2,98.97
+7,2024-06-30,completed,28,Blake Nelson,blake.nelson@email.com,Seattle,62,Olive Oil Extra,Food & Grocery,28.2,4,28.2
+7,2024-06-30,completed,28,Blake Nelson,blake.nelson@email.com,Seattle,45,Stuffed Bear,Toys,38.21,3,38.21
+7,2024-06-30,completed,28,Blake Nelson,blake.nelson@email.com,Seattle,43,Puzzle 1000pc,Toys,104.27,2,104.27
+7,2024-06-30,completed,28,Blake Nelson,blake.nelson@email.com,Seattle,49,Face Moisturizer,Beauty,132.07,2,132.07
+8,2024-12-10,processing,4,David Brown,david.brown@email.com,San Francisco,50,Sunscreen SPF50,Beauty,35.83,4,35.83
+8,2024-12-10,processing,4,David Brown,david.brown@email.com,San Francisco,30,Shower Curtain,Home & Kitchen,147.86,4,147.86
+8,2024-12-10,processing,4,David Brown,david.brown@email.com,San Francisco,53,Hand Cream,Beauty,43.41,4,43.41
+8,2024-12-10,processing,4,David Brown,david.brown@email.com,San Francisco,6,Bluetooth Speaker,Electronics,297.29,2,297.29
+8,2024-12-10,processing,4,David Brown,david.brown@email.com,San Francisco,41,Building Blocks,Toys,148.48,4,148.48
+9,2024-02-01,completed,7,Grace Anderson,grace.anderson@email.com,Austin,17,Cotton T-Shirt,Clothing,143.8,3,143.8
+10,2024-05-07,completed,7,Grace Anderson,grace.anderson@email.com,Austin,57,Organic Granola,Food & Grocery,62.91,1,62.91
+11,2024-03-12,completed,29,Cora Carter,cora.carter@email.com,Boston,59,Dark Chocolate,Food & Grocery,78.88,1,78.88
+11,2024-03-12,completed,29,Cora Carter,cora.carter@email.com,Boston,2,Laptop Pro 15,Electronics,372.07,4,372.07
+11,2024-03-12,completed,29,Cora Carter,cora.carter@email.com,Boston,19,Running Shoes,Clothing,19.02,3,19.02
+11,2024-03-12,completed,29,Cora Carter,cora.carter@email.com,Boston,53,Hand Cream,Beauty,43.41,3,43.41
+11,2024-03-12,completed,29,Cora Carter,cora.carter@email.com,Boston,20,Winter Jacket,Clothing,54.87,4,54.87
+12,2024-05-07,cancelled,30,Derek Mitchell,derek.mitchell@email.com,Chicago,43,Puzzle 1000pc,Toys,104.27,4,104.27
+13,2024-10-08,completed,29,Cora Carter,cora.carter@email.com,Boston,63,Honey Jar,Food & Grocery,66.21,2,66.21
+13,2024-10-08,completed,29,Cora Carter,cora.carter@email.com,Boston,5,Tablet Air,Electronics,446.63,3,446.63
+13,2024-10-08,completed,29,Cora Carter,cora.carter@email.com,Boston,9,Python Crash Course,Books,8.85,2,8.85
+14,2024-01-08,completed,35,Iris Campbell,iris.campbell@email.com,San Francisco,56,Nail Kit,Beauty,67.12,1,67.12
+15,2024-03-26,completed,16,Pete Lewis,pete.lewis@email.com,Boston,57,Organic Granola,Food & Grocery,62.91,2,62.91
+16,2024-07-24,completed,14,Noah Harris,noah.harris@email.com,Portland,4,USB-C Hub,Electronics,55.74,1,55.74
+16,2024-07-24,completed,14,Noah Harris,noah.harris@email.com,Portland,6,Bluetooth Speaker,Electronics,297.29,3,297.29
+16,2024-07-24,completed,14,Noah Harris,noah.harris@email.com,Portland,42,Board Game Classic,Toys,104.78,3,104.78
+17,2024-07-18,completed,1,Alice Smith,alice.smith@email.com,New York,56,Nail Kit,Beauty,67.12,4,67.12
+17,2024-07-18,completed,1,Alice Smith,alice.smith@email.com,New York,19,Running Shoes,Clothing,19.02,2,19.02
+17,2024-07-18,completed,1,Alice Smith,alice.smith@email.com,New York,32,Bookshelf,Home & Kitchen,60.12,2,60.12
+18,2024-05-26,completed,30,Derek Mitchell,derek.mitchell@email.com,Chicago,11,The Great Novel,Books,84.02,2,84.02
+18,2024-05-26,completed,30,Derek Mitchell,derek.mitchell@email.com,Chicago,49,Face Moisturizer,Beauty,132.07,4,132.07
+19,2024-12-04,processing,36,Joel Parker,joel.parker@email.com,Portland,19,Running Shoes,Clothing,19.02,3,19.02
+19,2024-12-04,processing,36,Joel Parker,joel.parker@email.com,Portland,30,Shower Curtain,Home & Kitchen,147.86,1,147.86
+19,2024-12-04,processing,36,Joel Parker,joel.parker@email.com,Portland,60,Trail Mix,Food & Grocery,114.59,4,114.59
+19,2024-12-04,processing,36,Joel Parker,joel.parker@email.com,Portland,33,Yoga Mat,Sports,97.17,3,97.17
+19,2024-12-04,processing,36,Joel Parker,joel.parker@email.com,Portland,59,Dark Chocolate,Food & Grocery,78.88,2,78.88
+20,2024-05-31,completed,13,Mia White,mia.white@email.com,Boston,57,Organic Granola,Food & Grocery,62.91,3,62.91
+21,2025-01-11,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,39,Resistance Bands,Sports,110.72,4,110.72
+21,2025-01-11,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,55,Body Lotion,Beauty,43.1,4,43.1
+21,2025-01-11,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,33,Yoga Mat,Sports,97.17,1,97.17
+21,2025-01-11,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,59,Dark Chocolate,Food & Grocery,78.88,2,78.88
+21,2025-01-11,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,26,Desk Lamp,Home & Kitchen,133.39,4,133.39
+22,2024-01-30,completed,21,Uma Wright,uma.wright@email.com,Portland,46,Card Game,Toys,121.73,1,121.73
+22,2024-01-30,completed,21,Uma Wright,uma.wright@email.com,Portland,38,Jump Rope,Sports,97.07,1,97.07
+22,2024-01-30,completed,21,Uma Wright,uma.wright@email.com,Portland,3,Wireless Earbuds,Electronics,115.49,4,115.49
+22,2024-01-30,completed,21,Uma Wright,uma.wright@email.com,Portland,51,Lip Balm Set,Beauty,62.37,3,62.37
+22,2024-01-30,completed,21,Uma Wright,uma.wright@email.com,Portland,36,Running Watch,Sports,106.76,2,106.76
+23,2024-09-28,completed,33,Gina Turner,gina.turner@email.com,Denver,46,Card Game,Toys,121.73,1,121.73
+23,2024-09-28,completed,33,Gina Turner,gina.turner@email.com,Denver,29,Blender Pro,Home & Kitchen,38.05,1,38.05
+23,2024-09-28,completed,33,Gina Turner,gina.turner@email.com,Denver,25,Coffee Maker,Home & Kitchen,125.26,3,125.26
+23,2024-09-28,completed,33,Gina Turner,gina.turner@email.com,Denver,33,Yoga Mat,Sports,97.17,4,97.17
+23,2024-09-28,completed,33,Gina Turner,gina.turner@email.com,Denver,18,Denim Jeans,Clothing,19.82,1,19.82
+24,2024-02-11,cancelled,33,Gina Turner,gina.turner@email.com,Denver,47,Art Kit,Toys,43.82,4,43.82
+24,2024-02-11,cancelled,33,Gina Turner,gina.turner@email.com,Denver,17,Cotton T-Shirt,Clothing,143.8,2,143.8
+24,2024-02-11,cancelled,33,Gina Turner,gina.turner@email.com,Denver,12,History of Computing,Books,70.14,2,70.14
+24,2024-02-11,cancelled,33,Gina Turner,gina.turner@email.com,Denver,38,Jump Rope,Sports,97.07,2,97.07
+24,2024-02-11,cancelled,33,Gina Turner,gina.turner@email.com,Denver,42,Board Game Classic,Toys,104.78,3,104.78
+25,2024-02-04,processing,39,Nora Collins,nora.collins@email.com,Portland,35,Tennis Racket,Sports,35.38,3,35.38
+25,2024-02-04,processing,39,Nora Collins,nora.collins@email.com,Portland,22,Silk Scarf,Clothing,71.62,1,71.62
+25,2024-02-04,processing,39,Nora Collins,nora.collins@email.com,Portland,33,Yoga Mat,Sports,97.17,4,97.17
+25,2024-02-04,processing,39,Nora Collins,nora.collins@email.com,Portland,62,Olive Oil Extra,Food & Grocery,28.2,1,28.2
+25,2024-02-04,processing,39,Nora Collins,nora.collins@email.com,Portland,38,Jump Rope,Sports,97.07,2,97.07
+26,2024-03-02,shipped,26,Zach Adams,zach.adams@email.com,Seattle,51,Lip Balm Set,Beauty,62.37,1,62.37
+26,2024-03-02,shipped,26,Zach Adams,zach.adams@email.com,Seattle,47,Art Kit,Toys,43.82,4,43.82
+27,2024-01-21,shipped,39,Nora Collins,nora.collins@email.com,Portland,34,Dumbbells Set,Sports,28.58,1,28.58
+28,2024-10-16,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,48,Science Set,Toys,137.4,2,137.4
+28,2024-10-16,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,34,Dumbbells Set,Sports,28.58,4,28.58
+28,2024-10-16,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,49,Face Moisturizer,Beauty,132.07,1,132.07
+28,2024-10-16,shipped,38,Liam Edwards,liam.edwards@email.com,Miami,14,Data Science Handbook,Books,115.03,3,115.03
+29,2024-04-14,processing,17,Quinn Hall,quinn.hall@email.com,San Jose,29,Blender Pro,Home & Kitchen,38.05,1,38.05
+29,2024-04-14,processing,17,Quinn Hall,quinn.hall@email.com,San Jose,9,Python Crash Course,Books,8.85,2,8.85
+29,2024-04-14,processing,17,Quinn Hall,quinn.hall@email.com,San Jose,60,Trail Mix,Food & Grocery,114.59,1,114.59
+29,2024-04-14,processing,17,Quinn Hall,quinn.hall@email.com,San Jose,39,Resistance Bands,Sports,110.72,1,110.72
+29,2024-04-14,processing,17,Quinn Hall,quinn.hall@email.com,San Jose,53,Hand Cream,Beauty,43.41,3,43.41
+30,2024-05-15,completed,16,Pete Lewis,pete.lewis@email.com,Boston,15,Clean Code,Books,106.23,4,106.23
+30,2024-05-15,completed,16,Pete Lewis,pete.lewis@email.com,Boston,13,SQL Cookbook,Books,122.37,4,122.37
+30,2024-05-15,completed,16,Pete Lewis,pete.lewis@email.com,Boston,31,Wall Clock,Home & Kitchen,38.75,3,38.75
+30,2024-05-15,completed,16,Pete Lewis,pete.lewis@email.com,Boston,18,Denim Jeans,Clothing,19.82,4,19.82

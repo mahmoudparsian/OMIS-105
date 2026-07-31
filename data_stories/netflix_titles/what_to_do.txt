@@ -1,0 +1,75 @@
+You are the duckdb and Marimo notebook expert.
+
+1. folder is:
+
+netflix_titles  % pwd
+/Users/max/mp/santa_clara_univ/OMIS_105/data_stories/netflix_titles
+
+netflix_titles  % ls -l
+drwxr-xr-x@ 6 max  staff      192 Jun 16 13:18 kaggle_notebooks
+-rw-r--r--@ 1 max  staff  3399671 Sep 27  2021 netflix_titles.csv
+-rw-r--r--@ 1 max  staff     2869 Jun 16 13:20 what_to_do.txt
+
+netflix_titles  % ls -l kaggle_notebooks
+total 6472
+-rw-r--r--@ 1 max  staff  2074959 Jun  2 19:49 netflix-data-visualization.ipynb
+-rw-r--r--@ 1 max  staff   307034 Jun  2 19:49 netflix-shows-and-movies-exploratory-analysis.ipynb
+-rw-r--r--@ 1 max  staff   926202 Jun  2 19:50 netflix-visualizations-recommendation-eda.ipynb
+
+
+---
+2. First notebook:
+   Build a duckdb (call it netflix.duckdb) from netflix_titles.csv
+   rename all column names to SQL lowercase with underscore: 
+   for example (column names: lowercase SQL-style snake_case):
+   
+   "daysPassed"  becomes "days_passed"
+   "days passed" becomes "days_passed"
+   
+   show very basic queries for this notebook
+   
+  
+
+
+---
+
+3. 2nd notebook: ADD new derived columns if necessary 
+
+4. Study and learn from the queries from here: kaggle_notebooks/*.ipynb
+  
+5. queries (use PURE SQL cells as much as possible)
+
+  1.  5 simple queries
+  
+  2.  5 simple+ queries
+  
+  3.  5 intermediate queries, joins, aggregations
+  
+  4.  5 intermediate+ queries (Top-N queries, 
+       ranking functions, subqueries using "WITH")
+
+  5. Enables key SQL concepts (proper to notebooks)
+
+---
+
+6. for each notebook cell: Explain clear and well and in detail
+
+1. what are we doing? Explain well.
+ 
+2. PURE sql solution (very nice beautifully formatted), 
+
+3. result displayed (nice displayed)
+
+4. result in plot when possible (using plotting provided by Marimo)
+
+5. if plotting is not suitable in Marimo,
+   then plotting code must be decoupled from main notebook:
+   you can create a util_plot.py and put all plotting
+   code in it. Make plotting the best you can
+
+---
+
+7. create CLAUDE.md
+===
+
+

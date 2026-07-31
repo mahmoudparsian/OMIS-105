@@ -1,0 +1,288 @@
+sample_database_movies  % pwd
+/Users/max/mp/dominican_university/sample_database_movies
+sample_database_movies  % ls -l
+total 28944
+-rw-r--r--@ 1 max  staff     7156 Sep 21 19:32 01_reference_data.sql
+-rw-r--r--@ 1 max  staff   227662 Sep 21 19:32 02_keyword.sql
+-rw-r--r--@ 1 max  staff  2806119 Sep 21 19:32 03_person.sql
+-rw-r--r--@ 1 max  staff   155934 Sep 21 19:32 04_production_company.sql
+-rw-r--r--@ 1 max  staff  2165806 Sep 21 19:32 05_movie.sql
+-rw-r--r--@ 1 max  staff  3809181 Sep 21 19:32 06_movie_cast.sql
+-rw-r--r--@ 1 max  staff   185620 Sep 21 19:32 07_movie_company.sql
+-rw-r--r--@ 1 max  staff  4498422 Sep 21 19:32 08_movie_crew.sql
+-rw-r--r--@ 1 max  staff   149140 Sep 21 19:32 09_movie_genres.sql
+-rw-r--r--@ 1 max  staff   508566 Sep 21 19:32 10_movie_keywords.sql
+-rw-r--r--@ 1 max  staff   196534 Sep 21 19:32 11_movie_languages.sql
+-rw-r--r--@ 1 max  staff    82106 Sep 21 19:32 12_production_country.sql
+
+sample_database_movies  % mysql -h localhost -uroot -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 9.2.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> source 01_reference_data.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 1 row affected (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 88 rows affected (0.00 sec)
+Records: 88  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 20 rows affected (0.00 sec)
+Records: 20  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 88 rows affected (0.01 sec)
+Records: 88  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 12 rows affected (0.00 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 02_keyword.sql;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 9794 rows affected (0.06 sec)
+Records: 9794  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 03_person.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 41071 rows affected (0.12 sec)
+Records: 41071  Duplicates: 0  Warnings: 0
+
+Query OK, 38081 rows affected (0.07 sec)
+Records: 38081  Duplicates: 0  Warnings: 0
+
+Query OK, 25690 rows affected (0.05 sec)
+Records: 25690  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 04_production_company.sql;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 5047 rows affected (0.05 sec)
+Records: 5047  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 05_movie.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 2329 rows affected (0.05 sec)
+Records: 2329  Duplicates: 0  Warnings: 0
+
+Query OK, 2302 rows affected (0.02 sec)
+Records: 2302  Duplicates: 0  Warnings: 0
+
+Query OK, 172 rows affected (0.00 sec)
+Records: 172  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 06_movie_cast.sql;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 29777 rows affected (0.19 sec)
+Records: 29777  Duplicates: 0  Warnings: 0
+
+Query OK, 29419 rows affected (0.14 sec)
+Records: 29419  Duplicates: 0  Warnings: 0
+
+Query OK, 28050 rows affected (0.13 sec)
+Records: 28050  Duplicates: 0  Warnings: 0
+
+Query OK, 19011 rows affected (0.10 sec)
+Records: 19011  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 07_movie_company.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 13677 rows affected (0.09 sec)
+Records: 13677  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 08_movie_crew.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+Query OK, 30276 rows affected (0.18 sec)
+Records: 30276  Duplicates: 0  Warnings: 0
+
+Query OK, 31274 rows affected (0.14 sec)
+Records: 31274  Duplicates: 0  Warnings: 0
+
+Query OK, 30234 rows affected (0.14 sec)
+Records: 30234  Duplicates: 0  Warnings: 0
+
+Query OK, 28853 rows affected (0.14 sec)
+Records: 28853  Duplicates: 0  Warnings: 0
+
+Query OK, 8944 rows affected (0.05 sec)
+Records: 8944  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 09_movie_genres.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 12160 rows affected (0.07 sec)
+Records: 12160  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 10_movie_keywords.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 36162 rows affected (0.17 sec)
+Records: 36162  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 11_movie_languages.sql;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+Query OK, 11740 rows affected (0.09 sec)
+Records: 11740  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> source 12_production_country.sql;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+Query OK, 6436 rows affected (0.05 sec)
+Records: 6436  Duplicates: 0  Warnings: 0
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| company            |
+| homeworks          |
+| information_schema |
+| movies             |
+| mysql              |
+| performance_schema |
+| sys                |
+| test_db            |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> use movies;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++--------------------+
+| Tables_in_movies   |
++--------------------+
+| country            |
+| department         |
+| gender             |
+| genre              |
+| keyword            |
+| language           |
+| language_role      |
+| movie              |
+| movie_cast         |
+| movie_company      |
+| movie_crew         |
+| movie_genres       |
+| movie_keywords     |
+| movie_languages    |
+| person             |
+| production_company |
+| production_country |
++--------------------+
+17 rows in set (0.00 sec)
+
+mysql> select count(*) from movie;
++----------+
+| count(*) |
++----------+
+|     4803 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select * from movie limit 5;
++----------+-----------------+----------+---------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+--------------+-----------+---------+--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------------+
+| movie_id | title           | budget   | homepage                                                      | overview                                                                                                                                                                                                                                                                                                                                                                                                               | popularity | release_date | revenue   | runtime | movie_status | tagline                                                                                                                                                     | vote_average | vote_count |
++----------+-----------------+----------+---------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+--------------+-----------+---------+--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------------+
+|        5 | Four Rooms      |  4000000 |                                                               | It's Ted the Bellhop's first night on the job...and the hotel's very unusual guests are about to place him in some outrageous predicaments. It seems that this evening's room service is serving up one unbelievable happening after another.                                                                                                                                                                          |  22.876230 | 1995-12-09   |   4300000 |      98 | Released     | Twelve outrageous guests. Four scandalous requests. And one lone bellhop, in his first day on the job, who's in for the wildest New year's Eve of his life. |         6.50 |        530 |
+|       11 | Star Wars       | 11000000 | http://www.starwars.com/films/star-wars-episode-iv-a-new-hope | Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.                                                                                               | 126.393695 | 1977-05-25   | 775398007 |     121 | Released     | A long time ago in a galaxy far, far away...                                                                                                                |         8.10 |       6624 |
+|       12 | Finding Nemo    | 94000000 | http://movies.disney.com/finding-nemo                         | Nemo, an adventurous young clownfish, is unexpectedly taken from his Great Barrier Reef home to a dentist's office aquarium. It's up to his worrisome father Marlin and a friendly but forgetful fish Dory to bring Nemo home -- meeting vegetarian sharks, surfer dude turtles, hypnotic jellyfish, hungry seagulls, and more along the way.                                                                          |  85.688789 | 2003-05-30   | 940335536 |     100 | Released     | There are 3.7 trillion fish in the ocean, they're looking for one.                                                                                          |         7.60 |       6122 |
+|       13 | Forrest Gump    | 55000000 |                                                               | A man with a low IQ has accomplished great things in his life and been present during significant historic events - in each case, far exceeding what anyone imagined he could do. Yet, despite all the things he has attained, his one true love eludes him. 'Forrest Gump' is the story of a man who rose above his challenges, and who proved that determination, courage, and love are more important than ability. | 138.133331 | 1994-07-06   | 677945399 |     142 | Released     | The world will never be the same, once you've seen it through the eyes of Forrest Gump.                                                                     |         8.20 |       7927 |
+|       14 | American Beauty | 15000000 | http://www.dreamworks.com/ab/                                 | Lester Burnham, a depressed suburban father in a mid-life crisis, decides to turn his hectic life around after developing an infatuation with his daughter's attractive friend.                                                                                                                                                                                                                                        |  80.878605 | 1999-09-15   | 356296601 |     122 | Released     | Look closer.                                                                                                                                                |         7.90 |       3313 |
++----------+-----------------+----------+---------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+--------------+-----------+---------+--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------+------------+
+5 rows in set (0.00 sec)
+
+mysql>

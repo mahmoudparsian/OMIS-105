@@ -1,0 +1,102 @@
+You are the duckdb and jupyter notebook expert.
+
+1. My files are here:
+
+auto_insurance  % ls -l auto_insurance.csv
+-rw-r--r--@ 1 max  staff  1589254 Oct 24  2019 auto_insurance.csv
+auto_insurance  % wc -l auto_insurance.csv
+    9135 auto_insurance.csv
+auto_insurance  % head auto_insurance.csv
+Customer,State,Customer Lifetime Value,Response,Coverage,Education,Effective To Date,EmploymentStatus,Gender,Income,Location Code,Marital Status,Monthly Premium Auto,Months Since Last Claim,Months Since Policy Inception,Number of Open Complaints,Number of Policies,Policy Type,Policy,Renew Offer Type,Sales Channel,Total Claim Amount,Vehicle Class,Vehicle Size
+BU79786,Washington,2763.519279,No,Basic,Bachelor,2/24/11,Employed,F,56274,Suburban,Married,69,32,5,0,1,Corporate Auto,Corporate L3,Offer1,Agent,384.811147,Two-Door Car,Medsize
+QZ44356,Arizona,6979.535903,No,Extended,Bachelor,1/31/11,Unemployed,F,0,Suburban,Single,94,13,42,0,8,Personal Auto,Personal L3,Offer3,Agent,1131.464935,Four-Door Car,Medsize
+AI49188,Nevada,12887.43165,No,Premium,Bachelor,2/19/11,Employed,F,48767,Suburban,Married,108,18,38,0,2,Personal Auto,Personal L3,Offer1,Agent,566.472247,Two-Door Car,Medsize
+WW63253,California,7645.861827,No,Basic,Bachelor,1/20/11,Unemployed,M,0,Suburban,Married,106,18,65,0,7,Corporate Auto,Corporate L2,Offer1,Call Center,529.881344,SUV,Medsize
+HB64268,Washington,2813.692575,No,Basic,Bachelor,3/2/2011,Employed,M,43836,Rural,Single,73,12,44,0,1,Personal Auto,Personal L1,Offer1,Agent,138.130879,Four-Door Car,Medsize
+OC83172,Oregon,8256.2978,Yes,Basic,Bachelor,1/25/11,Employed,F,62902,Rural,Married,69,14,94,0,2,Personal Auto,Personal L3,Offer2,Web,159.383042,Two-Door Car,Medsize
+XZ87318,Oregon,5380.898636,Yes,Basic,College,2/24/11,Employed,F,55350,Suburban,Married,67,0,13,0,9,Corporate Auto,Corporate L3,Offer1,Agent,321.6,Four-Door Car,Medsize
+CF85061,Arizona,7216.100311,No,Premium,Master,1/18/11,Unemployed,M,0,Urban,Single,101,0,68,0,4,Corporate Auto,Corporate L3,Offer1,Agent,363.02968,Four-Door Car,Medsize
+DY87989,Oregon,24127.50402,Yes,Basic,Bachelor,1/26/11,Medical Leave,M,14072,Suburban,Divorced,71,13,3,0,2,Corporate Auto,Corporate L3,Offer1,Agent,511.2,Four-Door Car,Medsize
+
+---
+    
+2. First notebook:
+ Build a notebook to read auto_insurance.csv and 
+ build a duckdb database: auto_insurance_db.duckdb
+ 
+ 2.0 convert column names to lowercase camel 
+     with underscores (_), there should not
+     be a space in column names
+     
+ 
+ 2.1 Identify all duplicate rows. Show/display them
+ 
+ 2.2 delete the duplicate rows
+ 
+ 2.3 the insurance_db.duckdb will have a single table "insurance"
+ with no duplicate rows.
+ 
+ 2.4 verify that the database has no duplicate rows.
+
+---
+
+3. Second notebook: 
+  Build another notebook, which we are teaching SQL queries
+  using insurance_db.duckdb
+  
+  3.0  ADD new derived columns if necessary 
+  
+  3.1  5 simple queries
+  
+  3.2  5 simple+ queries
+  
+  3.3  5 intermediate queries
+  
+  3.4  5 intermediate+ queries (Top-N queries, 
+  ranking functions, subqueries using "WITH")
+
+  3.5 Enables key SQL concepts (proper to notebooks)
+
+There is interesting anotebook in this directory from kaggle.com
+called: jenks-natural-breaks-and-k-means-clustering.ipynb
+See if you can use some of its queries in the 2nd notebook
+
+---
+
+4. for each notebook cell: Explain clear and well:
+
+1. what are we doing? Explain well.
+ 
+2. sql solution (very nice formatted), 
+
+3. result displyed
+
+4. result in plot when possible 
+
+5. plotting code must be decoupled from main notebook:
+   you can create a util_plot.py and put all plotting
+   code in it.
+
+---
+
+5. create CLAUDE.md
+===
+
+claude:
+
+Good — the Kaggle notebook uses clustering on income/CLV/employment. I'll incorporate segmentation-style queries into the advanced section. Now let me build Notebook 2.Notebook 2 is ready. Here's what it contains:
+
+**3.0 Derived columns** — adds `claim_to_premium_ratio`, `income_group`, and `clv_group` to the database.
+
+**3.1 Simple (Q1–Q5)** — SELECT/WHERE/ORDER BY/LIMIT: top customers by CLV, filtering by state + premium, DISTINCT, zero-income responders, high claim-to-premium ratios.
+
+**3.2 Simple+ (Q6–Q10)** — GROUP BY with aggregates: customers per state, avg premium by vehicle class, total claims by coverage, CLV by education, response rate by sales channel.
+
+**3.3 Intermediate (Q11–Q15)** — CASE WHEN, multi-column GROUP BY, HAVING: income group distribution, CLV by state+gender, high-claim vehicle classes, employment vs. response rate, policy/coverage crosstab.
+
+**3.4 Intermediate+ (Q16–Q20)** — CTEs and window functions: top-3 per state (ROW_NUMBER), claim quartiles (NTILE), running totals, states above average CLV (CTE + CROSS JOIN), RANK within vehicle class.
+
+**3.5 Bonus (A–C)** — Segmentation heatmap (inspired by the Kaggle K-Means notebook), CLV percentile distribution with markers, premium vs. claims scatter by vehicle class.
+
+Every query has an explanation, formatted SQL, displayed result, and a plot using `util_plot.py`.
+
