@@ -1,0 +1,130 @@
+	"why do I need to learn SQL, I can 
+	ask AI/LLM to generate it for me"?
+
+Great question — and you'll definitely get it. 
+Here's how I'd frame the answer:
+
+You wouldn't trust a financial report you can't 
+read. Same principle applies here. AI can generate 
+SQL, but if you don't understand what it wrote, you 
+can't tell whether it gave you the right answer or 
+a plausible-sounding wrong one. And in business, 
+acting on a wrong query — the wrong revenue number, 
+the wrong customer count, the wrong inventory total 
+— has real consequences.
+
+Think of SQL like reading a balance sheet. 
+Could you ask someone else to read it for you? 
+Sure. But no hiring manager wants a finance 
+professional who can't read a balance sheet 
+themselves. 
+
+The same is true for data. Employers expect 
+business professionals to be able to ask questions 
+of data directly, verify the answers, and have an 
+informed conversation with engineers and analysts. 
+"I just ask AI" is not a skill you put on a resume.
+
+There's also a practical reality: AI works best 
+when you can guide it. If you know SQL, you can 
+write a precise prompt, catch mistakes in the output, 
+and fix edge cases. If you don't know SQL, you're 
+guessing whether the AI got it right — and you'll 
+never know when it didn't.
+
+The goal of this course isn't to compete with AI. 
+It's to make you the person who knows enough to 
+use AI effectively and catch it when it's wrong.
+
+
+You don’t need to memorize every SQL command anymore. 
+But you do need enough SQL to know whether the AI 
+gave you the right answer—or merely a convincing one.
+
+For example, suppose you ask:
+
+> “Show me revenue by customer.”
+
+The AI generates:
+
+```sql
+SELECT c.name, 
+       SUM(o.total) AS revenue
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+JOIN order_items i ON o.id = i.order_id
+GROUP BY c.name;
+```
+
+It looks reasonable, but joining `order_items` 
+duplicates each order once per item. A three-item 
+order worth $100 becomes $300. The query runs 
+successfully and produces polished—but incorrect—results. 
+Understanding joins and cardinality helps you catch that.
+
+Or you ask:
+
+> “Find customers who haven’t ordered this year.”
+
+The AI uses:
+
+```sql
+WHERE customer_id NOT IN (
+  SELECT customer_id FROM orders
+);
+```
+
+If the subquery contains even one `NULL`, 
+the query may return no customers at all. 
+Knowing how `NULL` works tells you that 
+`NOT EXISTS` is usually safer.
+
+There are also questions AI cannot resolve 
+from the schema alone. If you ask for 
+“active customers,” does that mean customers 
+who logged in recently, placed an order, have 
+a paid subscription, or have not cancelled? 
+AI can write valid SQL for any of those 
+definitions—but only you can confirm which 
+definition matches the business question.
+
+And sometimes the risk is operational. 
+An AI-generated statement such as:
+
+```sql
+UPDATE subscriptions
+SET status = 'expired'
+WHERE renewal_date < CURRENT_DATE;
+```
+
+might expire trials, accounts in a grace period, 
+or subscriptions with pending payments. Before 
+executing it, you need to inspect the condition, 
+preview the affected rows with `SELECT`, understand 
+transactions, and know how to roll back safely.
+
+So the goal is not to beat AI at remembering syntax. 
+Learn the durable concepts:
+
+- tables, keys, and relationships;
+- joins and row duplication;
+- filtering, grouping, and aggregation;
+- `NULL` behavior;
+- transactions and safe updates;
+- basic query performance;
+- validation techniques such as row counts and spot checks.
+
+
+Then use AI for what it does well: 
+
+* recalling syntax, 
+* producing boilerplate, 
+* explaining unfamiliar queries, and 
+* suggesting alternatives.
+
+> AI can remove much of the typing. It cannot take responsibility for the result.
+
+Learning SQL turns AI from a confident query generator 
+into a tool you can direct, challenge, and trust appropriately.
+
+
