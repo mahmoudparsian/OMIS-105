@@ -1,0 +1,2924 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>why_you_must_learn_SQL</title>
+
+
+<style type="text/css">
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb
+}
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+  body {
+    padding: 2cm; 
+  }
+}
+</style>
+
+<style type="text/css">
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: black;
+	background: none;
+	text-shadow: 0 1px white;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+@media print {
+	code[class*="language-"],
+	pre[class*="language-"] {
+		text-shadow: none;
+	}
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #f5f2f0;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: slategray;
+}
+
+.token.punctuation {
+	color: #999;
+}
+
+.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #905;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #690;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+	color: #a67f59;
+	background: hsla(0, 0%, 100%, .5);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+	color: #07a;
+}
+
+.token.function {
+	color: #DD4A68;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+	color: #e90;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<h1 id="toc_0">Can AI Write Your SQL? Yes. <br> Should You Trust It? Let&rsquo;s Find Out.</h1>
+
+<ul>
+<li><strong>Course:</strong> OMIS 105 — Introduction to Database Management Systems</li>
+<li><strong>Quarter:</strong> Fall 2026</li>
+<li><strong>Author:</strong> Dr. Mahmoud Parsian</li>
+<li><strong>Last updated:</strong> July 31, 2026</li>
+</ul>
+
+<hr>
+
+<h2 id="toc_1">Table of Contents</h2>
+
+<p><strong>Part I — When AI Gets It Wrong</strong></p>
+
+<ol>
+<li><a href="#section-1">The Question Every Student Asks</a></li>
+<li><a href="#section-2">The Company: BrightCart Retail</a></li>
+<li><a href="#section-3">The Database Schema</a></li>
+<li><a href="#section-4">Setting Up the Data in qStudio</a></li>
+<li><a href="#section-5">Example 1: The Missing Customers — AI Drops Data You Need</a></li>
+<li><a href="#section-6">Example 2: The Wrong Revenue — AI Uses the Wrong Price</a></li>
+<li><a href="#section-7">Example 3: The Inflated Numbers — AI Counts Cancelled Orders</a></li>
+<li><a href="#section-8">Example 4: The NULL Trap — AI Forgets About Missing Data</a></li>
+<li><a href="#section-9">Example 5: The Wrong Average — AI Confuses Rows with Orders</a></li>
+<li><a href="#section-10">Example 6: The Broken Ranking — AI Ignores Ties</a></li>
+<li><a href="#section-11">Example 7: The LIMIT Illusion — AI Can&rsquo;t Do &ldquo;Per Customer&rdquo;</a></li>
+</ol>
+
+<p><strong>Part II — When AI Gets It Right</strong></p>
+
+<ol>
+<li><a href="#section-12">Example 8: Top 3 Customers — Can You Verify It?</a></li>
+<li><a href="#section-13">Example 9: Revenue by Category — Can You Prove It?</a></li>
+<li><a href="#section-14">Example 10: Department Salary Report — AI Remembers NULL</a></li>
+<li><a href="#section-15">Example 11: Full Product Catalog with Sales — AI Uses a Subquery</a></li>
+</ol>
+
+<p><strong>Closing</strong></p>
+
+<ol>
+<li><a href="#section-16">The Verdict</a></li>
+<li><a href="#section-17">Summary of Lessons</a></li>
+<li><a href="#section-18">How to Prompt AI Better</a></li>
+</ol>
+
+<hr>
+
+<h1 id="toc_2">Part I — When AI Gets It Wrong</h1>
+
+<hr>
+
+<p><a id="section-1"></a></p>
+
+<h2 id="toc_3">1 — The Question Every Student Asks</h2>
+
+<blockquote>
+<p>&ldquo;Why do I need to learn SQL? I can just ask AI to write it for me.&rdquo;</p>
+</blockquote>
+
+<p>Fair question. AI tools like ChatGPT and Claude <strong>can</strong> generate SQL.
+The queries they produce often look correct, run without errors,
+and return a table of results. So what&rsquo;s the problem?</p>
+
+<p><strong>The problem is that &ldquo;runs without errors&rdquo; and &ldquo;gives the right answer&rdquo;
+are two completely different things.</strong></p>
+
+<p>A query can execute perfectly and still return the <strong>wrong number</strong>.
+The wrong revenue. The wrong customer count. The wrong average.
+The wrong ranking. And if you don&rsquo;t know SQL, you will never notice.</p>
+
+<p>In this document, we will use a realistic retail database to show you
+<strong>seven real examples</strong> where AI-generated SQL runs successfully but
+produces an incorrect answer — the kind of mistake that could cost a
+company money, damage a report, or lead to a bad business decision.</p>
+
+<p>We will also show you <strong>four examples</strong> where AI gets it right — and
+explain why <strong>you still need SQL knowledge</strong> to verify and trust the
+output.</p>
+
+<blockquote>
+<p><strong>Note:</strong> You don&rsquo;t need to understand every SQL keyword in this
+document yet. Focus on the <strong>results</strong> — what the AI got wrong and
+why it matters. You will learn all of these techniques during the course.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-2"></a></p>
+
+<h2 id="toc_4">2 — The Company: BrightCart Retail</h2>
+
+<p>BrightCart is a small online retailer that sells office supplies and
+electronics. They have been in business since 2023 and track everything
+in a database: customers, products, orders, line items, and employees.</p>
+
+<p>You are a new business analyst at BrightCart. Your manager gives you
+questions about the business, and you decide to let AI write the SQL.
+Let&rsquo;s see how that goes.</p>
+
+<hr>
+
+<p><a id="section-3"></a></p>
+
+<h2 id="toc_5">3 — The Database Schema</h2>
+
+<p>BrightCart&rsquo;s database has five tables. Here is what each one stores:</p>
+
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What It Stores</th>
+<th>Key Columns</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>customers</code></td>
+<td>People who have accounts</td>
+<td>name, city, state, join date</td>
+</tr>
+<tr>
+<td><code>products</code></td>
+<td>Items for sale</td>
+<td>name, category, current price</td>
+</tr>
+<tr>
+<td><code>orders</code></td>
+<td>Purchase transactions</td>
+<td>customer, date, status (Delivered / Cancelled / Returned / Pending)</td>
+</tr>
+<tr>
+<td><code>order_items</code></td>
+<td>Individual line items within an order</td>
+<td>product, quantity, price at time of sale</td>
+</tr>
+<tr>
+<td><code>employees</code></td>
+<td>Company staff</td>
+<td>name, department, salary, manager</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_6">How the Tables Connect</h3>
+
+<div><pre><code class="language-none">┌────────────┐    1:N    ┌────────────┐    1:N    ┌──────────────┐    N:1    ┌────────────┐
+│ customers  │──────────&gt;│   orders   │──────────&gt;│  order_items │&lt;──────────│  products  │
+│ (8 rows)   │           │ (10 rows)  │           │  (15 rows)   │           │ (6 rows)   │
+└────────────┘           └────────────┘           └──────────────┘           └────────────┘
+                                                         
+┌────────────┐
+│ employees  │
+│ (7 rows)   │──── manager_id references employee_id (self-join)
+└────────────┘</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>Foreign Key</th>
+<th>In Table</th>
+<th>Column</th>
+<th>References</th>
+<th>Meaning</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Customer → Orders</td>
+<td><code>orders</code></td>
+<td><code>customer_id</code></td>
+<td><code>customers.customer_id</code></td>
+<td>Each order belongs to one customer; one customer can have many orders</td>
+</tr>
+<tr>
+<td>Order → Line Items</td>
+<td><code>order_items</code></td>
+<td><code>order_id</code></td>
+<td><code>orders.order_id</code></td>
+<td>Each line item belongs to one order; one order can have many line items</td>
+</tr>
+<tr>
+<td>Product → Line Items</td>
+<td><code>order_items</code></td>
+<td><code>product_id</code></td>
+<td><code>products.product_id</code></td>
+<td>Each line item refers to one product; one product can appear in many line items</td>
+</tr>
+<tr>
+<td>Manager → Employee</td>
+<td><code>employees</code></td>
+<td><code>manager_id</code></td>
+<td><code>employees.employee_id</code></td>
+<td>Each employee may report to one manager, who is also an employee</td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>order_items</code> table sits at the center — it connects orders to
+products and stores the actual quantity and price for each purchase.
+This is a common pattern in retail databases.</p>
+
+<p>Two important things to notice:</p>
+
+<ol>
+<li><p><strong><code>products.unit_price</code></strong> is the <strong>current</strong> catalog price. But prices
+change over time. The price a customer actually paid is stored in
+<strong><code>order_items.sale_price</code></strong>. These two numbers can be different.</p></li>
+<li><p><strong><code>orders.status</code></strong> tells you whether an order was actually fulfilled.
+Not every order in the database represents real revenue — some were
+cancelled, returned, or are still pending.</p></li>
+</ol>
+
+<hr>
+
+<p><a id="section-4"></a></p>
+
+<h2 id="toc_7">4 — Setting Up the Data in qStudio</h2>
+
+<p>Open qStudio, connect to DuckDB, and run the following SQL blocks
+one at a time. This creates the five tables and fills them with
+realistic data.</p>
+
+<h3 id="toc_8">4.1 — Create the Tables</h3>
+
+<div><pre><code class="language-sql">CREATE OR REPLACE TABLE customers (
+    customer_id   INTEGER PRIMARY KEY,
+    first_name    VARCHAR,
+    last_name     VARCHAR,
+    city          VARCHAR,
+    state         VARCHAR,
+    join_date     DATE
+);
+
+CREATE OR REPLACE TABLE products (
+    product_id    INTEGER PRIMARY KEY,
+    product_name  VARCHAR,
+    category      VARCHAR,
+    unit_price    DECIMAL(10,2),
+    discontinued  BOOLEAN
+);
+
+CREATE OR REPLACE TABLE orders (
+    order_id      INTEGER PRIMARY KEY,
+    customer_id   INTEGER REFERENCES customers(customer_id),
+    order_date    DATE,
+    status        VARCHAR
+);
+
+CREATE OR REPLACE TABLE order_items (
+    item_id       INTEGER PRIMARY KEY,
+    order_id      INTEGER REFERENCES orders(order_id),
+    product_id    INTEGER REFERENCES products(product_id),
+    quantity      INTEGER,
+    sale_price    DECIMAL(10,2)
+);
+
+CREATE OR REPLACE TABLE employees (
+    employee_id   INTEGER PRIMARY KEY,
+    first_name    VARCHAR,
+    last_name     VARCHAR,
+    department    VARCHAR,
+    hire_date     DATE,
+    salary        DECIMAL(10,2),
+    manager_id    INTEGER REFERENCES employees(employee_id)
+);</code></pre></div>
+
+<h3 id="toc_9">4.2 — Insert the Data</h3>
+
+<div><pre><code class="language-sql">-- 8 customers (two of them have never placed an order)
+INSERT INTO customers VALUES
+    (1, &#39;Alice&#39;, &#39;Chen&#39;,     &#39;San Jose&#39;,      &#39;CA&#39;, &#39;2023-01-15&#39;),
+    (2, &#39;Bob&#39;,   &#39;Martinez&#39;, &#39;San Francisco&#39;, &#39;CA&#39;, &#39;2023-03-22&#39;),
+    (3, &#39;Carol&#39;, &#39;Johnson&#39;,  &#39;Seattle&#39;,       &#39;WA&#39;, &#39;2023-06-10&#39;),
+    (4, &#39;David&#39;, &#39;Kim&#39;,      &#39;Portland&#39;,      &#39;OR&#39;, &#39;2023-09-01&#39;),
+    (5, &#39;Emma&#39;,  &#39;Williams&#39;, &#39;San Jose&#39;,      &#39;CA&#39;, &#39;2024-01-05&#39;),
+    (6, &#39;Frank&#39;, &#39;Brown&#39;,    &#39;Denver&#39;,        &#39;CO&#39;, &#39;2024-02-14&#39;),
+    (7, &#39;Grace&#39;, &#39;Lee&#39;,      &#39;Austin&#39;,        &#39;TX&#39;, &#39;2024-04-20&#39;),
+    (8, &#39;Henry&#39;, &#39;Davis&#39;,    &#39;Phoenix&#39;,       &#39;AZ&#39;, &#39;2024-06-30&#39;);</code></pre></div>
+
+<div><pre><code class="language-sql">-- 6 products (the Mouse and Desk Mat have had price increases)
+-- Mouse was $24.99, now $29.99
+-- Desk Mat was $39.99, now $45.99
+INSERT INTO products VALUES
+    (101, &#39;Wireless Mouse&#39;,    &#39;Electronics&#39;, 29.99, false),
+    (102, &#39;USB-C Hub&#39;,         &#39;Electronics&#39;, 49.99, false),
+    (103, &#39;Notebook 3-Pack&#39;,   &#39;Office&#39;,      12.99, false),
+    (104, &#39;Standing Desk Mat&#39;, &#39;Furniture&#39;,   45.99, false),
+    (105, &#39;Webcam HD&#39;,         &#39;Electronics&#39;, 79.99, false),
+    (106, &#39;Paper Shredder&#39;,    &#39;Office&#39;,      89.99, true);</code></pre></div>
+
+<div><pre><code class="language-sql">-- 10 orders (not all were successfully delivered)
+INSERT INTO orders VALUES
+    (1001, 1, &#39;2024-10-05&#39;, &#39;Delivered&#39;),
+    (1002, 1, &#39;2024-11-12&#39;, &#39;Delivered&#39;),
+    (1003, 2, &#39;2024-10-18&#39;, &#39;Delivered&#39;),
+    (1004, 2, &#39;2024-11-25&#39;, &#39;Cancelled&#39;),
+    (1005, 3, &#39;2024-10-02&#39;, &#39;Delivered&#39;),
+    (1006, 3, &#39;2024-12-01&#39;, &#39;Returned&#39;),
+    (1007, 4, &#39;2024-10-20&#39;, &#39;Delivered&#39;),
+    (1008, 5, &#39;2024-11-01&#39;, &#39;Delivered&#39;),
+    (1009, 5, &#39;2024-12-10&#39;, &#39;Pending&#39;),
+    (1010, 6, &#39;2024-10-10&#39;, &#39;Delivered&#39;);</code></pre></div>
+
+<div><pre><code class="language-sql">-- 15 line items (sale_price = what customer actually paid)
+INSERT INTO order_items VALUES
+    (1,  1001, 101, 2, 24.99),
+    (2,  1001, 103, 1, 12.99),
+    (3,  1002, 102, 1, 49.99),
+    (4,  1003, 105, 1, 79.99),
+    (5,  1003, 101, 1, 24.99),
+    (6,  1004, 104, 2, 39.99),
+    (7,  1005, 102, 1, 49.99),
+    (8,  1005, 103, 3, 12.99),
+    (9,  1006, 105, 1, 79.99),
+    (10, 1007, 101, 3, 24.99),
+    (11, 1007, 104, 1, 39.99),
+    (12, 1008, 102, 2, 49.99),
+    (13, 1008, 103, 1, 12.99),
+    (14, 1009, 105, 1, 79.99),
+    (15, 1010, 101, 1, 24.99);</code></pre></div>
+
+<div><pre><code class="language-sql">-- 7 employees 
+
+-- ----------------
+-- 2 managers first
+-- ----------------
+INSERT INTO employees VALUES   
+    (1, &#39;Sarah&#39;,  &#39;Wilson&#39;,   &#39;Sales&#39;,       &#39;2020-03-15&#39;, 75000, NULL),
+    (4, &#39;James&#39;,  &#39;Thomas&#39;,   &#39;Engineering&#39;, &#39;2022-01-20&#39;, 95000, NULL);
+    
+-- ----------------------------------
+-- 5 others: rest of employees
+-- 2 have no department assigned yet
+-- ----------------------------------
+INSERT INTO employees VALUES   
+    (2, &#39;Mike&#39;,   &#39;Taylor&#39;,   &#39;Sales&#39;,       &#39;2021-06-01&#39;, 62000, 1),
+    (3, &#39;Lisa&#39;,   &#39;Anderson&#39;, &#39;Marketing&#39;,   &#39;2021-09-10&#39;, 68000, 1),
+    (5, &#39;Nina&#39;,   &#39;Patel&#39;,    &#39;Engineering&#39;, &#39;2022-08-15&#39;, 85000, 4),
+    (6, &#39;Carlos&#39;, &#39;Rivera&#39;,    NULL,         &#39;2024-07-01&#39;, 55000, 1),
+    (7, &#39;Amy&#39;,    &#39;Zhang&#39;,     NULL,         &#39;2024-07-15&#39;, 58000, 4);</code></pre></div>
+
+<h3 id="toc_10">4.3 — Verify the Data</h3>
+
+<p>Run this quick check to confirm everything loaded:</p>
+
+<div><pre><code class="language-sql">SELECT &#39;customers&#39;   AS table_name, COUNT(*) AS rows FROM customers
+UNION ALL
+SELECT &#39;products&#39;,    COUNT(*) FROM products
+UNION ALL
+SELECT &#39;orders&#39;,      COUNT(*) FROM orders
+UNION ALL
+SELECT &#39;order_items&#39;, COUNT(*) FROM order_items
+UNION ALL
+SELECT &#39;employees&#39;,   COUNT(*) FROM employees;</code></pre></div>
+
+<p>You should see: </p>
+
+<div><pre><code class="language-none">┌─────────────┬───────┐
+│ table_name  │ rows  │
+│   varchar   │ int64 │
+├─────────────┼───────┤
+│ customers   │     8 │
+│ products    │     6 │
+│ orders      │    10 │
+│ order_items │    15 │
+│ employees   │     7 │
+└─────────────┴───────┘</code></pre></div>
+
+<hr>
+
+<p><a id="section-5"></a></p>
+
+<h2 id="toc_11">5 — Example 1: The Missing Customers</h2>
+
+<h3 id="toc_12">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;How many orders has each customer placed?
+I want to see all customers, including those who haven&rsquo;t ordered yet.&rdquo;</strong></p>
+
+<h3 id="toc_13">What You Asked AI</h3>
+
+<p>You open a chatbot and type:</p>
+
+<blockquote>
+<p>&ldquo;Using DuckDB, write SQL to show how many orders each customer has
+placed. I want to see all customers, including those with no orders.
+Tables: customers and orders, linked by customer_id.&rdquo;</p>
+</blockquote>
+
+<p>The prompt is clear — it even says &ldquo;including those with no orders.&rdquo;
+Let&rsquo;s see what the AI produces.</p>
+
+<h3 id="toc_14">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   c.first_name,
+         c.last_name,
+         COUNT(o.order_id) AS total_orders
+FROM     customers c
+         JOIN orders o
+           ON c.customer_id = o.customer_id
+GROUP BY c.first_name, c.last_name
+ORDER BY total_orders DESC;</code></pre></div>
+
+<h3 id="toc_15">The AI&rsquo;s Answer</h3>
+
+<div><pre><code class="language-none">┌────────────┬───────────┬──────────────┐
+│ first_name │ last_name │ total_orders │
+│  varchar   │  varchar  │    int64     │
+├────────────┼───────────┼──────────────┤
+│ Alice      │ Chen      │            2 │
+│ Carol      │ Johnson   │            2 │
+│ Bob        │ Martinez  │            2 │
+│ Emma       │ Williams  │            2 │
+│ David      │ Kim       │            1 │
+│ Frank      │ Brown     │            1 │
+└────────────┴───────────┴──────────────┘</code></pre></div>
+
+<p>The query runs perfectly. No errors. Six customers, 
+each with at least one order. Looks good, right?</p>
+
+<h3 id="toc_16">What&rsquo;s Wrong</h3>
+
+<p>BrightCart has <strong>8</strong> customers, not 6. Where are Grace Lee and Henry Davis?</p>
+
+<p>The AI used a <strong>JOIN</strong> (also called an INNER JOIN), which only returns
+customers that have a <strong>matching</strong> row in the orders table. Grace and
+Henry have never placed an order, so they have no match — and they
+silently disappear from the results.</p>
+
+<p>The manager explicitly asked for <strong>all customers, including those who
+haven&rsquo;t ordered</strong>. The AI ignored that requirement.</p>
+
+<h3 id="toc_17">The Correct SQL</h3>
+
+<div><pre><code class="language-sql">SELECT   c.first_name,
+         c.last_name,
+         COUNT(o.order_id) AS total_orders
+FROM     customers c
+         LEFT JOIN orders o
+           ON c.customer_id = o.customer_id
+GROUP BY c.first_name, c.last_name
+ORDER BY total_orders DESC;</code></pre></div>
+
+<h3 id="toc_18">The Correct Answer</h3>
+
+<div><pre><code class="language-none">┌────────────┬───────────┬──────────────┐
+│ first_name │ last_name │ total_orders │
+│  varchar   │  varchar  │    int64     │
+├────────────┼───────────┼──────────────┤
+│ Alice      │ Chen      │            2 │
+│ Emma       │ Williams  │            2 │
+│ Carol      │ Johnson   │            2 │
+│ Bob        │ Martinez  │            2 │
+│ David      │ Kim       │            1 │
+│ Frank      │ Brown     │            1 │
+│ Grace      │ Lee       │            0 │
+│ Henry      │ Davis     │            0 │
+└────────────┴───────────┴──────────────┘</code></pre></div>
+
+<p>Now we see all 8 customers. Grace and Henry show 0 
+orders — exactly the information the manager needed.</p>
+
+<h3 id="toc_19">The Business Impact</h3>
+
+<p>If you used the AI&rsquo;s answer, you would report:
+<em>&ldquo;Our least active customer has 1 order. Everyone is buying.&rdquo;</em>
+In reality, 25% of your customers have <strong>never purchased anything</strong>.
+That&rsquo;s critical information for a re-engagement campaign. The AI&rsquo;s
+answer hid it completely.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> <code>JOIN</code> and <code>LEFT JOIN</code> are not the same thing.
+A single wrong word can make entire rows of data disappear
+from your results — and the query will still run without any error.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-6"></a></p>
+
+<h2 id="toc_20">6 — Example 2: The Wrong Revenue</h2>
+
+<h3 id="toc_21">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;What was our total revenue from all orders?&rdquo;</strong></p>
+
+<h3 id="toc_22">What You Asked AI</h3>
+
+<blockquote>
+<p>&ldquo;Write a DuckDB query to calculate total revenue from all orders.
+Tables: customers, products, orders, order_items.&rdquo;</p>
+</blockquote>
+
+<p>Notice what&rsquo;s missing from the prompt: you didn&rsquo;t specify <strong>which price
+column</strong> to use — because you don&rsquo;t know there are two. The AI has to
+guess, and it guesses wrong.</p>
+
+<h3 id="toc_23">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT SUM(oi.quantity * p.unit_price) AS total_revenue
+FROM   order_items oi
+       JOIN products p
+         ON oi.product_id = p.product_id;</code></pre></div>
+
+<h3 id="toc_24">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>total_revenue</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>852.78</td>
+</tr>
+</tbody>
+</table>
+
+<p>The query runs. One clean number. You report $852.78 to your manager.</p>
+
+<h3 id="toc_25">What&rsquo;s Wrong</h3>
+
+<p>The AI calculated revenue using <strong><code>products.unit_price</code></strong> — the <strong>current</strong>
+catalog price. But two products have had price increases since these
+orders were placed:</p>
+
+<table>
+<thead>
+<tr>
+<th><code>Product</code></th>
+<th><code>Price When Sold</code></th>
+<th><code>Current Price</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Wireless Mouse</td>
+<td>$24.99</td>
+<td>$29.99</td>
+</tr>
+<tr>
+<td>Standing Desk Mat</td>
+<td>$39.99</td>
+<td>$45.99</td>
+</tr>
+</tbody>
+</table>
+
+<p>The price customers <strong>actually paid</strong> is stored in
+<strong><code>order_items.sale_price</code></strong>. The AI joined to the wrong table and used
+the wrong price column.</p>
+
+<h3 id="toc_26">The Correct SQL</h3>
+
+<div><pre><code class="language-sql">SELECT SUM(quantity * sale_price) AS total_revenue
+FROM   order_items;</code></pre></div>
+
+<h3 id="toc_27">The Correct Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>total_revenue</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>799.78</td>
+</tr>
+</tbody>
+</table>
+
+<p>The real revenue is <strong>$799.78</strong>, not $852.78.
+The AI&rsquo;s answer was <strong>$53.00 too high</strong> — a 6.6% overstatement.</p>
+
+<h3 id="toc_28">The Business Impact</h3>
+
+<p>A 6.6% revenue overstatement in a report might seem small on 10 orders.
+On a company doing $10 million in annual sales, the same mistake
+overstates revenue by <strong>$660,000</strong>. That&rsquo;s the kind of error that leads
+to wrong financial forecasts, incorrect tax filings, and very difficult
+conversations with auditors.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> Databases often store the same type of information
+(like &ldquo;price&rdquo;) in multiple places. The <strong>current</strong> price and the
+<strong>historical</strong> price are different numbers. AI doesn&rsquo;t understand your
+business well enough to know which one to use. You do — but only
+if you understand the schema and the SQL.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-7"></a></p>
+
+<h2 id="toc_29">7 — Example 3: The Inflated Numbers</h2>
+
+<h3 id="toc_30">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;How many orders did we successfully deliver in Q4 2024?&rdquo;</strong></p>
+
+<h3 id="toc_31">What You Asked AI</h3>
+
+<blockquote>
+<p>&ldquo;How many orders were delivered in Q4 2024? Table: orders.&rdquo;</p>
+</blockquote>
+
+<p>You said &ldquo;delivered,&rdquo; but you didn&rsquo;t tell the AI that the table has a
+<code>status</code> column that needs to be filtered. The AI treats &ldquo;delivered&rdquo;
+as a time-range description, not as a SQL filter condition.</p>
+
+<h3 id="toc_32">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT COUNT(*) AS orders_delivered
+FROM   orders
+WHERE  order_date BETWEEN &#39;2024-10-01&#39; AND &#39;2024-12-31&#39;;</code></pre></div>
+
+<h3 id="toc_33">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>orders_delivered</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+
+<p>Ten orders delivered in Q4. You put &ldquo;10&rdquo; in the quarterly report.</p>
+
+<h3 id="toc_34">What&rsquo;s Wrong</h3>
+
+<p>The AI counted <strong>all</strong> orders in that date range, regardless of status.
+But not all orders were delivered:</p>
+
+<table>
+<thead>
+<tr>
+<th><code>order_id</code></th>
+<th><code>status</code></th>
+<th><code>Should Count?</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1001</td>
+<td>Delivered</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>Delivered</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>Delivered</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>1004</td>
+<td><strong>Cancelled</strong></td>
+<td><strong>No</strong></td>
+</tr>
+<tr>
+<td>1005</td>
+<td>Delivered</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>1006</td>
+<td><strong>Returned</strong></td>
+<td><strong>No</strong></td>
+</tr>
+<tr>
+<td>1007</td>
+<td>Delivered</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>1008</td>
+<td>Delivered</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>1009</td>
+<td><strong>Pending</strong></td>
+<td><strong>No</strong></td>
+</tr>
+<tr>
+<td>1010</td>
+<td>Delivered</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+<p>Three orders were not successfully delivered: one was cancelled,
+one was returned, and one is still pending.</p>
+
+<h3 id="toc_35">The Correct SQL</h3>
+
+<div><pre><code class="language-sql">SELECT COUNT(*) AS orders_delivered
+FROM   orders
+WHERE  order_date BETWEEN &#39;2024-10-01&#39; AND &#39;2024-12-31&#39;
+  AND  status = &#39;Delivered&#39;;</code></pre></div>
+
+<h3 id="toc_36">The Correct Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>orders_delivered</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+
+<p>The real answer is <strong>7</strong>, not 10.
+The AI inflated the count by <strong>43%</strong>.</p>
+
+<h3 id="toc_37">The Business Impact</h3>
+
+<p>If you report 10 deliveries when only 7 actually shipped, 
+your fulfillment metrics look artificially strong. The 
+operations team thinks everything is fine. Meanwhile, 
+30% of orders are failing — a serious problem that nobody 
+is investigating because the report said 10.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> AI doesn&rsquo;t understand your business rules. It doesn&rsquo;t
+know that &ldquo;delivered&rdquo; means <code>status = &#39;Delivered&#39;</code>, not just &ldquo;exists
+in the orders table.&rdquo; Business logic lives in the data, and only
+someone who understands both SQL and the domain can write the correct
+filter.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-8"></a></p>
+
+<h2 id="toc_38">8 — Example 4: The NULL Trap</h2>
+
+<h3 id="toc_39">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;List all employees who are NOT in the Sales department.&rdquo;</strong></p>
+
+<h3 id="toc_40">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT first_name,
+       last_name,
+       department
+FROM   employees
+WHERE  department != &#39;Sales&#39;;</code></pre></div>
+
+<h3 id="toc_41">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>first_name</code></th>
+<th><code>last_name</code></th>
+<th><code>department</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Lisa</td>
+<td>Anderson</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>James</td>
+<td>Thomas</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>Nina</td>
+<td>Patel</td>
+<td>Engineering</td>
+</tr>
+</tbody>
+</table>
+
+<p>Three employees. The rest must all be in Sales, right?</p>
+
+<h3 id="toc_42">What&rsquo;s Wrong</h3>
+
+<p>BrightCart has <strong>7</strong> employees. Two are in Sales (Sarah and Mike).
+That leaves <strong>5</strong> who are not in Sales. But the AI only found 3.</p>
+
+<p>Where are Carlos Rivera and Amy Zhang? They are recent hires whose
+department has not been assigned yet — their <code>department</code> column is
+<strong>NULL</strong> (empty/unknown).</p>
+
+<p>In SQL, <code>NULL</code> is special. It does not equal anything, and it does
+not <em>not-equal</em> anything either. The comparison <code>NULL != &#39;Sales&#39;</code> does
+not return TRUE — it returns <strong>NULL</strong>, which SQL treats as &ldquo;unknown,&rdquo;
+and the row is excluded.</p>
+
+<p>This is one of the most common mistakes in SQL, and AI makes it
+frequently.</p>
+
+<h3 id="toc_43">The Correct SQL</h3>
+
+<div><pre><code class="language-sql">SELECT first_name,
+       last_name,
+       department
+FROM   employees
+WHERE  department != &#39;Sales&#39;
+   OR  department IS NULL;</code></pre></div>
+
+<h3 id="toc_44">The Correct Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>first_name</code></th>
+<th><code>last_name</code></th>
+<th><code>department</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Lisa</td>
+<td>Anderson</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>James</td>
+<td>Thomas</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>Nina</td>
+<td>Patel</td>
+<td>Engineering</td>
+</tr>
+<tr>
+<td>Carlos</td>
+<td>Rivera</td>
+<td><em>NULL</em></td>
+</tr>
+<tr>
+<td>Amy</td>
+<td>Zhang</td>
+<td><em>NULL</em></td>
+</tr>
+</tbody>
+</table>
+
+<p>Now we see all 5 employees who are not in Sales, 
+including the two unassigned new hires.</p>
+
+<h3 id="toc_45">The Business Impact</h3>
+
+<p>If you used the AI&rsquo;s answer to send a company-wide 
+announcement to &ldquo;everyone outside Sales,&rdquo; Carlos and 
+Amy would never receive it.  If you used it to calculate 
+headcount for budget planning, your non-Sales departments 
+would appear to have 3 people instead of 5 — understaffed 
+by 40%.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> NULL is not a value — it means &ldquo;unknown.&rdquo; Standard
+comparisons (<code>=</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>) do not work with NULL. You must
+use <code>IS NULL</code> or <code>IS NOT NULL</code>. AI frequently forgets this rule,
+and the query runs without any error or warning.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-9"></a></p>
+
+<h2 id="toc_46">9 — Example 5: The Wrong Average</h2>
+
+<h3 id="toc_47">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;What is our average order value for delivered orders?&rdquo;</strong></p>
+
+<h3 id="toc_48">What You Asked AI</h3>
+
+<blockquote>
+<p>&ldquo;Calculate the average order value for delivered orders.
+Tables: orders and order<em>items, linked by order</em>id.&rdquo;</p>
+</blockquote>
+
+<p>&ldquo;Average order value&rdquo; sounds clear in English, but it is ambiguous in
+SQL: do you mean the average of each <strong>line item&rsquo;s value</strong>, or the
+average of each <strong>order&rsquo;s total</strong>? The AI picks the simpler
+interpretation — and gets the wrong number.</p>
+
+<h3 id="toc_49">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT ROUND(AVG(quantity * sale_price), 2) AS avg_order_value
+FROM   order_items oi
+       JOIN orders o
+         ON oi.order_id = o.order_id
+WHERE  o.status = &#39;Delivered&#39;;</code></pre></div>
+
+<h3 id="toc_50">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>avg_order_value</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>46.65</td>
+</tr>
+</tbody>
+</table>
+
+<p>$46.65 per order. You put this number in the financial summary.</p>
+
+<h3 id="toc_51">What&rsquo;s Wrong</h3>
+
+<p>The AI averaged the <strong>individual line items</strong>, not the <strong>order totals</strong>.</p>
+
+<p>Here are the delivered orders and their actual totals:</p>
+
+<table>
+<thead>
+<tr>
+<th><code>order_id</code></th>
+<th>Line Items</th>
+<th>Order Total</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1001</td>
+<td>(2 × $24.99) + (1 × $12.99)</td>
+<td>$62.97</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>(1 × $49.99)</td>
+<td>$49.99</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>(1 × $79.99) + (1 × $24.99)</td>
+<td>$104.98</td>
+</tr>
+<tr>
+<td>1005</td>
+<td>(1 × $49.99) + (3 × $12.99)</td>
+<td>$88.96</td>
+</tr>
+<tr>
+<td>1007</td>
+<td>(3 × $24.99) + (1 × $39.99)</td>
+<td>$114.96</td>
+</tr>
+<tr>
+<td>1008</td>
+<td>(2 × $49.99) + (1 × $12.99)</td>
+<td>$112.97</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>(1 × $24.99)</td>
+<td>$24.99</td>
+</tr>
+</tbody>
+</table>
+
+<p>The average of these 7 order totals is:
+($62.97 + $49.99 + $104.98 + $88.96 + $114.96 + $112.97 + $24.99) ÷ 7 = <strong>$79.97</strong></p>
+
+<p>The AI&rsquo;s answer of <code>$46.65</code> is <strong>42% too low</strong> because it 
+averaged 12 line items instead of 7 order totals. An order 
+with 3 line items got 3 times the weight of an order with 
+1 line item.</p>
+
+<h3 id="toc_52">The Correct SQL</h3>
+
+<div><pre><code class="language-sql">SELECT ROUND(AVG(order_total), 2) AS avg_order_value
+FROM (
+    SELECT   o.order_id,
+             SUM(oi.quantity * oi.sale_price) AS order_total
+    FROM     orders o
+             JOIN order_items oi
+               ON o.order_id = oi.order_id
+    WHERE    o.status = &#39;Delivered&#39;
+    GROUP BY o.order_id
+) AS order_totals;</code></pre></div>
+
+<h3 id="toc_53">The Correct Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>avg_order_value</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>79.97</td>
+</tr>
+</tbody>
+</table>
+
+<p>The real average order value is <strong>$79.97</strong>, not $46.65.</p>
+
+<h3 id="toc_54">The Business Impact</h3>
+
+<p>Average order value is a key metric for pricing strategy, 
+marketing spend, and revenue forecasting. If you report 
+<code>$47</code> instead of <code>$80</code>, management might conclude that 
+customers aren&rsquo;t spending enough and launch unnecessary 
+discounts — cutting into margins to solve a problem
+that doesn&rsquo;t exist.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> &ldquo;Average&rdquo; depends on <strong>what you&rsquo;re averaging</strong>. Are
+you averaging line items or orders? AI often gets the &ldquo;grain&rdquo; wrong —
+it computes the average at the wrong level of detail. The query runs
+fine. The number looks reasonable. But it&rsquo;s the wrong number.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-10"></a></p>
+
+<h2 id="toc_55">10 — Example 6: The Broken Ranking — AI Ignores Ties</h2>
+
+<h3 id="toc_56">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;Rank our products by total units sold from
+delivered orders. If two products sold the same quantity, they must
+share the same rank.&rdquo;</strong></p>
+
+<h3 id="toc_57">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   p.product_name,
+         SUM(oi.quantity) AS units_sold,
+         ROW_NUMBER() OVER (ORDER BY SUM(oi.quantity) DESC) AS sales_rank
+FROM     order_items oi
+         JOIN products p
+           ON oi.product_id = p.product_id
+         JOIN orders o
+           ON oi.order_id = o.order_id
+WHERE    o.status = &#39;Delivered&#39;
+GROUP BY p.product_name;</code></pre></div>
+
+<h3 id="toc_58">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>product_name</code></th>
+<th><code>units_sold</code></th>
+<th><code>sales_rank</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Wireless Mouse</td>
+<td>7</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Notebook 3-Pack</td>
+<td>5</td>
+<td>2</td>
+</tr>
+<tr>
+<td>USB-C Hub</td>
+<td>4</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Standing Desk Mat</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Webcam HD</td>
+<td>1</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+
+<p>Five products, each with a unique rank. Looks clean, right?</p>
+
+<h3 id="toc_59">What&rsquo;s Wrong</h3>
+
+<p>Look at the bottom two products: the Standing Desk Mat and the
+Webcam HD <strong>both sold exactly 1 unit</strong>. They are tied. The manager
+explicitly asked for tied products to share the same rank.</p>
+
+<p>But the AI used <strong><code>ROW_NUMBER()</code></strong>, which assigns a unique sequential
+number to every row — it <strong>never produces ties</strong>. The Desk Mat got
+rank 4 and the Webcam got rank 5 purely based on arbitrary internal
+ordering, not on actual performance.</p>
+
+<p>The correct function is <strong><code>RANK()</code></strong>, which gives tied rows the same
+rank number.</p>
+
+<h3 id="toc_60">The Correct SQL</h3>
+
+<div><pre><code class="language-sql">SELECT   p.product_name,
+         SUM(oi.quantity) AS units_sold,
+         RANK() OVER (ORDER BY SUM(oi.quantity) DESC) AS sales_rank
+FROM     order_items oi
+         JOIN products p
+           ON oi.product_id = p.product_id
+         JOIN orders o
+           ON oi.order_id = o.order_id
+WHERE    o.status = &#39;Delivered&#39;
+GROUP BY p.product_name;</code></pre></div>
+
+<h3 id="toc_61">The Correct Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>product_name</code></th>
+<th><code>units_sold</code></th>
+<th><code>sales_rank</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Wireless Mouse</td>
+<td>7</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Notebook 3-Pack</td>
+<td>5</td>
+<td>2</td>
+</tr>
+<tr>
+<td>USB-C Hub</td>
+<td>4</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Standing Desk Mat</td>
+<td>1</td>
+<td><strong>4</strong></td>
+</tr>
+<tr>
+<td>Webcam HD</td>
+<td>1</td>
+<td><strong>4</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p>Now both products that sold 1 unit share <strong>rank 4</strong> — exactly what
+the manager asked for.</p>
+
+<h3 id="toc_62">The Business Impact</h3>
+
+<p>Imagine the ranking is used to decide which products to 
+discontinue: <em>&ldquo;Cut the lowest-ranked product.&rdquo;</em> With the 
+AI&rsquo;s answer, only the Webcam (rank 5) gets flagged. The 
+Desk Mat (rank 4) looks like it performed better — even 
+though they had identical sales. You might discontinue 
+one product while keeping another that performed exactly
+the same. Fair decisions require accurate rankings.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> <code>ROW_NUMBER()</code>, <code>RANK()</code>, and <code>DENSE_RANK()</code> are
+three different functions that look similar but behave differently
+with ties. AI frequently picks the wrong one. If your business
+question involves ties, you need to know the difference — and verify
+which function the AI chose.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-11"></a></p>
+
+<h2 id="toc_63">11 — Example 7: The LIMIT Illusion — AI Can&rsquo;t Do &ldquo;Per Customer&rdquo;</h2>
+
+<h3 id="toc_64">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;For each customer who has placed an order,
+show me their single most recent order with the order date and status.&rdquo;</strong></p>
+
+<h3 id="toc_65">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   c.first_name,
+         c.last_name,
+         o.order_id,
+         o.order_date,
+         o.status
+FROM     customers c
+         JOIN orders o
+           ON c.customer_id = o.customer_id
+ORDER BY o.order_date DESC
+LIMIT    6;</code></pre></div>
+
+<h3 id="toc_66">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>first_name</code></th>
+<th><code>last_name</code></th>
+<th><code>order_id</code></th>
+<th><code>order_date</code></th>
+<th><code>status</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Emma</td>
+<td>Williams</td>
+<td>1009</td>
+<td>2024-12-10</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>Carol</td>
+<td>Johnson</td>
+<td>1006</td>
+<td>2024-12-01</td>
+<td>Returned</td>
+</tr>
+<tr>
+<td>Bob</td>
+<td>Martinez</td>
+<td>1004</td>
+<td>2024-11-25</td>
+<td>Cancelled</td>
+</tr>
+<tr>
+<td>Alice</td>
+<td>Chen</td>
+<td>1002</td>
+<td>2024-11-12</td>
+<td>Delivered</td>
+</tr>
+<tr>
+<td>Emma</td>
+<td>Williams</td>
+<td>1008</td>
+<td>2024-11-01</td>
+<td>Delivered</td>
+</tr>
+<tr>
+<td>David</td>
+<td>Kim</td>
+<td>1007</td>
+<td>2024-10-20</td>
+<td>Delivered</td>
+</tr>
+</tbody>
+</table>
+
+<p>Six rows. Six customers have orders, 
+so one row per customer, right?</p>
+
+<h3 id="toc_67">What&rsquo;s Wrong</h3>
+
+<p>Look carefully: <strong>Emma Williams appears twice</strong> 
+(orders 1009 and 1008). And <strong>Frank Brown is completely 
+missing</strong> — his most recent order (1010, October 10) 
+didn&rsquo;t make the global top-6 cutoff.</p>
+
+<p>The AI used <code>ORDER BY ... LIMIT 6</code>, which returns the 
+<strong>6 most recent orders across all customers</strong>. It does 
+not return the most recent order <strong>for each</strong> customer. 
+<code>LIMIT</code> is a global cap — it has no concept of &ldquo;per group.&rdquo;</p>
+
+<p>To get one row per customer, you need a <strong>window function</strong> 
+that partitions the data by customer and picks the top row 
+within each partition.</p>
+
+<h3 id="toc_68">The Correct SQL</h3>
+
+<div><pre><code class="language-sql">SELECT first_name,
+       last_name,
+       order_id,
+       order_date,
+       status
+FROM (
+    SELECT c.first_name,
+           c.last_name,
+           o.order_id,
+           o.order_date,
+           o.status,
+           ROW_NUMBER() OVER (
+               PARTITION BY c.customer_id
+               ORDER BY o.order_date DESC
+           ) AS rn
+    FROM   customers c
+           JOIN orders o
+             ON c.customer_id = o.customer_id
+) AS ranked
+WHERE  rn = 1
+ORDER BY order_date DESC;</code></pre></div>
+
+<h3 id="toc_69">The Correct Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>first_name</code></th>
+<th><code>last_name</code></th>
+<th><code>order_id</code></th>
+<th><code>order_date</code></th>
+<th><code>status</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Emma</td>
+<td>Williams</td>
+<td>1009</td>
+<td>2024-12-10</td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>Carol</td>
+<td>Johnson</td>
+<td>1006</td>
+<td>2024-12-01</td>
+<td>Returned</td>
+</tr>
+<tr>
+<td>Bob</td>
+<td>Martinez</td>
+<td>1004</td>
+<td>2024-11-25</td>
+<td>Cancelled</td>
+</tr>
+<tr>
+<td>Alice</td>
+<td>Chen</td>
+<td>1002</td>
+<td>2024-11-12</td>
+<td>Delivered</td>
+</tr>
+<tr>
+<td>David</td>
+<td>Kim</td>
+<td>1007</td>
+<td>2024-10-20</td>
+<td>Delivered</td>
+</tr>
+<tr>
+<td>Frank</td>
+<td>Brown</td>
+<td>1010</td>
+<td>2024-10-10</td>
+<td>Delivered</td>
+</tr>
+</tbody>
+</table>
+
+<p>Now each customer appears <strong>exactly once</strong> with their 
+most recent order. Frank is back.</p>
+
+<h3 id="toc_70">The Business Impact</h3>
+
+<p>If you used the AI&rsquo;s answer to contact each customer 
+about their most recent experience, Emma would receive 
+<strong>two messages</strong> while Frank would receive <strong>none</strong>. 
+You would also miss that Frank&rsquo;s last order was back 
+in October — he may be at risk of churning and could
+benefit from a follow-up. Meanwhile, the duplicated 
+effort on Emma wastes resources and looks unprofessional.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> <code>LIMIT</code> restricts the total number of rows returned —
+it cannot select &ldquo;the top N per group.&rdquo; Whenever you need the top
+row (or top N rows) <strong>within each group</strong>, you need a window function
+like <code>ROW_NUMBER() OVER (PARTITION BY ...)</code>. AI frequently reaches for
+<code>LIMIT</code> when a window function is required.</p>
+</blockquote>
+
+<hr>
+
+<h1 id="toc_71">Part II — When AI Gets It Right</h1>
+
+<p>The examples above might make it seem like AI always fails. It doesn&rsquo;t.
+AI <strong>can</strong> produce correct SQL — and when it does, it saves time.
+But here&rsquo;s the catch: <strong>you can only benefit from AI&rsquo;s correct answers
+if you have the knowledge to recognize them as correct.</strong></p>
+
+<hr>
+
+<p><a id="section-12"></a></p>
+
+<h2 id="toc_72">12 — Example 8: Top 3 Customers — Can You Verify It?</h2>
+
+<h3 id="toc_73">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;Who are our top 3 customers by total spending
+on delivered orders?&rdquo;</strong></p>
+
+<h3 id="toc_74">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   c.first_name,
+         c.last_name,
+         SUM(oi.quantity * oi.sale_price) AS total_spent
+FROM     customers c
+         JOIN orders o
+           ON c.customer_id = o.customer_id
+         JOIN order_items oi
+           ON o.order_id = oi.order_id
+WHERE    o.status = &#39;Delivered&#39;
+GROUP BY c.first_name, c.last_name
+ORDER BY total_spent DESC
+LIMIT    3;</code></pre></div>
+
+<h3 id="toc_75">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>first_name</code></th>
+<th><code>last_name</code></th>
+<th><code>total_spent</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>David</td>
+<td>Kim</td>
+<td>114.96</td>
+</tr>
+<tr>
+<td>Emma</td>
+<td>Williams</td>
+<td>112.97</td>
+</tr>
+<tr>
+<td>Alice</td>
+<td>Chen</td>
+<td>112.96</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_76">Is This Correct?</h3>
+
+<p>Yes. This query is correct. It joins the right tables, filters by
+delivered status, uses <code>sale_price</code> (not <code>unit_price</code>), groups by
+customer, sorts descending, and limits to the top 3.</p>
+
+<h3 id="toc_77">So Why Do You Still Need to Know SQL?</h3>
+
+<p>Because <strong>how would you know it&rsquo;s correct if you didn&rsquo;t understand
+the SQL?</strong></p>
+
+<p>To verify this answer, you need to understand:</p>
+
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Why You Need It</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>JOIN</code> (three tables)</td>
+<td>Are customers, orders, and items connected correctly?</td>
+</tr>
+<tr>
+<td><code>WHERE status = &#39;Delivered&#39;</code></td>
+<td>Did the AI exclude non-delivered orders? (Example 3 showed it doesn&rsquo;t always do this)</td>
+</tr>
+<tr>
+<td><code>SUM(oi.quantity * oi.sale_price)</code></td>
+<td>Did it use the right price column? (Example 2 showed it sometimes picks the wrong one)</td>
+</tr>
+<tr>
+<td><code>GROUP BY</code></td>
+<td>Is it grouping by customer, not by order or by line item? (Example 5 showed the grain matters)</td>
+</tr>
+<tr>
+<td><code>ORDER BY ... DESC</code></td>
+<td>Is it sorting highest-to-lowest?</td>
+</tr>
+<tr>
+<td><code>LIMIT 3</code></td>
+<td>Is it showing the top 3, not the bottom 3?</td>
+</tr>
+</tbody>
+</table>
+
+<p>If you cannot read the SQL, you cannot answer any of these 
+questions. You are forced to <strong>blindly trust</strong> that the AI 
+got it right — even though the seven examples above proved 
+it often doesn&rsquo;t.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> Even when AI writes correct SQL, your job is to
+<strong>verify</strong> it. Verification requires understanding. Understanding
+requires learning. There is no shortcut.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-13"></a></p>
+
+<h2 id="toc_78">13 — Example 9: Revenue by Category — Can You Prove It?</h2>
+
+<h3 id="toc_79">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;Show me total revenue by product category for
+delivered orders only. Include the number of orders and total units
+sold for each category. Use the actual price the customer paid.&rdquo;</strong></p>
+
+<h3 id="toc_80">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   p.category,
+         COUNT(DISTINCT o.order_id) AS num_orders,
+         SUM(oi.quantity)           AS total_units,
+         SUM(oi.quantity * oi.sale_price) AS total_revenue
+FROM     order_items oi
+         JOIN orders o
+           ON oi.order_id = o.order_id
+         JOIN products p
+           ON oi.product_id = p.product_id
+WHERE    o.status = &#39;Delivered&#39;
+GROUP BY p.category
+ORDER BY total_revenue DESC;</code></pre></div>
+
+<h3 id="toc_81">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>category</code></th>
+<th><code>num_orders</code></th>
+<th><code>total_units</code></th>
+<th><code>total_revenue</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Electronics</td>
+<td>7</td>
+<td>12</td>
+<td>454.88</td>
+</tr>
+<tr>
+<td>Office</td>
+<td>3</td>
+<td>5</td>
+<td>64.95</td>
+</tr>
+<tr>
+<td>Furniture</td>
+<td>1</td>
+<td>1</td>
+<td>39.99</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_82">Is This Correct?</h3>
+
+<p>Yes. This query is correct. But don&rsquo;t take our word for it —
+<strong>prove it yourself.</strong></p>
+
+<h3 id="toc_83">Student Challenge</h3>
+
+<blockquote>
+<p><strong>Your task:</strong> This query is correct, but can you explain <strong>why</strong>?
+Examine the SQL carefully and identify <strong>at least five things</strong> the
+AI got right. For each one, reference which earlier example showed
+AI getting that same thing wrong.</p>
+</blockquote>
+
+<p>Here is a checklist to guide your analysis:</p>
+
+<table>
+<thead>
+<tr>
+<th>What to Check</th>
+<th>Which Example Showed This Going Wrong?</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Does the JOIN type matter here? Could <code>LEFT JOIN</code> change the result?</td>
+<td>Example 1 (The Missing Customers)</td>
+</tr>
+<tr>
+<td>Which price column does the query use — <code>sale_price</code> or <code>unit_price</code>?</td>
+<td>Example 2 (The Wrong Revenue)</td>
+</tr>
+<tr>
+<td>Does the query filter by order status?</td>
+<td>Example 3 (The Inflated Numbers)</td>
+</tr>
+<tr>
+<td>Could NULL values in any column affect the result?</td>
+<td>Example 4 (The NULL Trap)</td>
+</tr>
+<tr>
+<td>Is the <code>GROUP BY</code> at the right level of detail? Is <code>COUNT(DISTINCT ...)</code> necessary?</td>
+<td>Example 5 (The Wrong Average)</td>
+</tr>
+<tr>
+<td>Does the query need <code>RANK()</code> or <code>ROW_NUMBER()</code>? Why or why not?</td>
+<td>Example 6 (The Broken Ranking)</td>
+</tr>
+<tr>
+<td>Does <code>LIMIT</code> appear? Should it?</td>
+<td>Example 7 (The LIMIT Illusion)</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_84">Bonus Verification</h3>
+
+<p>If you want to double-check the numbers, you can verify the
+Electronics total manually. The delivered orders containing
+electronics products are:</p>
+
+<table>
+<thead>
+<tr>
+<th><code>order_id</code></th>
+<th><code>product</code></th>
+<th><code>qty</code></th>
+<th><code>sale_price</code></th>
+<th><code>line_total</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1001</td>
+<td>Wireless Mouse</td>
+<td>2</td>
+<td>$24.99</td>
+<td>$49.98</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>USB-C Hub</td>
+<td>1</td>
+<td>$49.99</td>
+<td>$49.99</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>Webcam HD</td>
+<td>1</td>
+<td>$79.99</td>
+<td>$79.99</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>Wireless Mouse</td>
+<td>1</td>
+<td>$24.99</td>
+<td>$24.99</td>
+</tr>
+<tr>
+<td>1005</td>
+<td>USB-C Hub</td>
+<td>1</td>
+<td>$49.99</td>
+<td>$49.99</td>
+</tr>
+<tr>
+<td>1007</td>
+<td>Wireless Mouse</td>
+<td>3</td>
+<td>$24.99</td>
+<td>$74.97</td>
+</tr>
+<tr>
+<td>1008</td>
+<td>USB-C Hub</td>
+<td>2</td>
+<td>$49.99</td>
+<td>$99.98</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>Wireless Mouse</td>
+<td>1</td>
+<td>$24.99</td>
+<td>$24.99</td>
+</tr>
+</tbody>
+</table>
+
+<p>Electronics total: <br></p>
+
+<p><code>$49.98</code> + <code>$49.99</code> + <code>$79.99</code> + <code>$24.99</code> + <code>$49.99</code> +
+<code>$74.97</code> + <code>$99.98</code> + <code>$24.99</code> = <strong><code>$454.88</code></strong> ✓</p>
+
+<p>All three categories combined: <br></p>
+
+<p><code>$454.88</code> + <code>$64.95</code> + <code>$39.99</code> = <strong><code>$559.82</code></strong></p>
+
+<p>— which matches the total delivered revenue from our earlier examples.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> The best way to trust AI output is to <strong>understand it
+deeply enough to verify it yourself</strong>. When you can read the SQL,
+check the logic, and confirm the numbers, AI becomes a powerful
+accelerator. Without that understanding, it&rsquo;s just a black box.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-14"></a></p>
+
+<h2 id="toc_85">14 — Example 10: Department Salary Report — AI Remembers NULL</h2>
+
+<h3 id="toc_86">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;For each department that has employees assigned,
+show the headcount, average salary, lowest salary, and highest salary.&rdquo;</strong></p>
+
+<h3 id="toc_87">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   department,
+         COUNT(*)              AS num_employees,
+         ROUND(AVG(salary), 0) AS avg_salary,
+         MIN(salary)           AS min_salary,
+         MAX(salary)           AS max_salary
+FROM     employees
+WHERE    department IS NOT NULL
+GROUP BY department
+ORDER BY avg_salary DESC;</code></pre></div>
+
+<h3 id="toc_88">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>department</code></th>
+<th><code>num_employees</code></th>
+<th><code>avg_salary</code></th>
+<th><code>min_salary</code></th>
+<th><code>max_salary</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Engineering</td>
+<td>2</td>
+<td>90000</td>
+<td>85000</td>
+<td>95000</td>
+</tr>
+<tr>
+<td>Sales</td>
+<td>2</td>
+<td>68500</td>
+<td>62000</td>
+<td>75000</td>
+</tr>
+<tr>
+<td>Marketing</td>
+<td>1</td>
+<td>68000</td>
+<td>68000</td>
+<td>68000</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_89">Is This Correct?</h3>
+
+<p>Yes. Let&rsquo;s verify against the raw data:</p>
+
+<table>
+<thead>
+<tr>
+<th><code>employee</code></th>
+<th><code>department</code></th>
+<th><code>salary</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Sarah Wilson</td>
+<td>Sales</td>
+<td>$75,000</td>
+</tr>
+<tr>
+<td>Mike Taylor</td>
+<td>Sales</td>
+<td>$62,000</td>
+</tr>
+<tr>
+<td>Lisa Anderson</td>
+<td>Marketing</td>
+<td>$68,000</td>
+</tr>
+<tr>
+<td>James Thomas</td>
+<td>Engineering</td>
+<td>$95,000</td>
+</tr>
+<tr>
+<td>Nina Patel</td>
+<td>Engineering</td>
+<td>$85,000</td>
+</tr>
+<tr>
+<td>Carlos Rivera</td>
+<td><em>NULL</em></td>
+<td>$55,000</td>
+</tr>
+<tr>
+<td>Amy Zhang</td>
+<td><em>NULL</em></td>
+<td>$58,000</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Engineering:</strong> 2 employees, avg ($95,000 + $85,000) ÷ 2 = $90,000 ✓</p>
+
+<p><strong>Sales:</strong> 2 employees, avg ($75,000 + $62,000) ÷ 2 = $68,500 ✓</p>
+
+<p><strong>Marketing:</strong> 1 employee, avg $68,000 ✓</p>
+
+<p>Carlos and Amy are correctly excluded by <code>WHERE department IS NOT NULL</code>.</p>
+
+<h3 id="toc_90">Why This Matters</h3>
+
+<p>Remember Example 4? There the AI <strong>forgot</strong> about NULL 
+and silently dropped employees from the result. Here, 
+the AI handled NULL correctly — it used <code>IS NOT NULL</code> 
+to exclude unassigned employees, which is exactly
+what the manager requested.</p>
+
+<p>But you could only confirm this by reading the SQL. 
+If you didn&rsquo;t understand the <code>WHERE department IS NOT NULL</code> 
+clause, you might not realize that two employees were 
+intentionally excluded — or worse, you might not notice 
+they were missing at all.</p>
+
+<h3 id="toc_91">Think About It</h3>
+
+<blockquote>
+<p><strong>Question for you:</strong> What would happen if we <strong>removed</strong> the
+<code>WHERE department IS NOT NULL</code> line? Would the query still run?
+What would appear in the <code>department</code> column for Carlos and Amy?
+Would the averages change?</p>
+
+<p>Try it in qStudio and see for yourself.</p>
+
+<p><strong>The Lesson:</strong> When AI gets NULL handling right, it&rsquo;s because
+the pattern happened to match its training data — not because it
+understood your business rules. Your job is to confirm that the
+NULL handling matches what the manager actually wanted.</p>
+</blockquote>
+
+<hr>
+
+<p><a id="section-15"></a></p>
+
+<h2 id="toc_92">15 — Example 11: Full Product Catalog with Sales — AI Uses a Subquery</h2>
+
+<h3 id="toc_93">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;Show me every product in our catalog — including
+products that have never been sold — along with their total units sold
+and total revenue from delivered orders. Products with no sales should
+show zero.&rdquo;</strong></p>
+
+<p>This is a challenging query because it combines two separate ideas:
+&ldquo;all products&rdquo; (even unsold ones) and &ldquo;only delivered revenue.&rdquo;</p>
+
+<h3 id="toc_94">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   p.product_name,
+         p.category,
+         p.unit_price              AS current_price,
+         COALESCE(d.total_units, 0)   AS total_units_sold,
+         COALESCE(d.total_revenue, 0) AS total_revenue
+FROM     products p
+         LEFT JOIN (
+             SELECT   oi.product_id,
+                      SUM(oi.quantity)                AS total_units,
+                      SUM(oi.quantity * oi.sale_price) AS total_revenue
+             FROM     order_items oi
+                      JOIN orders o
+                        ON oi.order_id = o.order_id
+             WHERE    o.status = &#39;Delivered&#39;
+             GROUP BY oi.product_id
+         ) d ON p.product_id = d.product_id
+ORDER BY total_revenue DESC;</code></pre></div>
+
+<h3 id="toc_95">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>product_name</code></th>
+<th><code>category</code></th>
+<th><code>current_price</code></th>
+<th><code>total_units_sold</code></th>
+<th><code>total_revenue</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>USB-C Hub</td>
+<td>Electronics</td>
+<td>49.99</td>
+<td>4</td>
+<td>199.96</td>
+</tr>
+<tr>
+<td>Wireless Mouse</td>
+<td>Electronics</td>
+<td>29.99</td>
+<td>7</td>
+<td>174.93</td>
+</tr>
+<tr>
+<td>Webcam HD</td>
+<td>Electronics</td>
+<td>79.99</td>
+<td>1</td>
+<td>79.99</td>
+</tr>
+<tr>
+<td>Notebook 3-Pack</td>
+<td>Office</td>
+<td>12.99</td>
+<td>5</td>
+<td>64.95</td>
+</tr>
+<tr>
+<td>Standing Desk Mat</td>
+<td>Furniture</td>
+<td>45.99</td>
+<td>1</td>
+<td>39.99</td>
+</tr>
+<tr>
+<td>Paper Shredder</td>
+<td>Office</td>
+<td>89.99</td>
+<td>0</td>
+<td>0.00</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_96">Is This Correct?</h3>
+
+<p>Yes. This is a sophisticated query, and the AI nailed it. Let&rsquo;s
+break down <strong>why</strong> it works:</p>
+
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Why It&rsquo;s Here</th>
+<th>Which Lesson Applies</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>LEFT JOIN</code> to the subquery</td>
+<td>Ensures <strong>all</strong> products appear, even the Paper Shredder with zero sales</td>
+<td>Example 1 (Missing Customers)</td>
+</tr>
+<tr>
+<td>Subquery uses <code>sale_price</code></td>
+<td>Revenue is based on what customers paid, not today&rsquo;s catalog price</td>
+<td>Example 2 (Wrong Revenue)</td>
+</tr>
+<tr>
+<td>Subquery filters <code>status = &#39;Delivered&#39;</code></td>
+<td>Only counts revenue from fulfilled orders</td>
+<td>Example 3 (Inflated Numbers)</td>
+</tr>
+<tr>
+<td><code>COALESCE(d.total_units, 0)</code></td>
+<td>Converts NULL (from the LEFT JOIN) to 0 for unsold products</td>
+<td>Example 4 (NULL Trap)</td>
+</tr>
+<tr>
+<td><code>GROUP BY oi.product_id</code> in subquery</td>
+<td>Aggregates at the product level before joining back</td>
+<td>Example 5 (Wrong Average)</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_97">Verification</h3>
+
+<p>The six product totals add up: </p>
+
+<p><code>$199.96</code> + <code>$174.93</code> + <code>$79.99</code> + <code>$64.95</code> + <code>$39.99</code> + <code>$0.00</code> = <strong><code>$559.82</code></strong> </p>
+
+<p>— which matches the total delivered
+revenue we verified in earlier examples. ✓</p>
+
+<p>Notice that the Paper Shredder (product 106, discontinued) 
+is included with zero sales. It was never ordered, so the 
+<code>LEFT JOIN</code> produces <code>NULL</code> values, and <code>COALESCE</code> converts 
+them to <code>0</code>.  This is exactly what the manager asked for.</p>
+
+<h3 id="toc_98">Think About It</h3>
+
+<blockquote>
+<p><strong>Question for you:</strong> The <code>current_price</code> column shows today&rsquo;s
+catalog price ($29.99 for the Wireless Mouse), but the <code>total_revenue</code>
+column is based on the historical <code>sale_price</code> ($24.99 per unit).
+That means $29.99 × 7 units = $209.93, but the actual revenue is
+$174.93. Why is this difference a feature, not a bug? What would
+go wrong if the query used <code>current_price</code> to calculate revenue?</p>
+
+<p><em>(Hint: Review Example 2.)</em></p>
+
+<p><strong>The Lesson:</strong> When AI produces a correct complex query, every
+piece of it — the JOIN type, the price column, the status filter,
+the NULL handling, the aggregation level — represents a decision
+that could have gone wrong. You saw seven examples where it did.
+The ability to read this query and confirm that <strong>every decision
+was the right one</strong> is exactly why you need to learn SQL.</p>
+</blockquote>
+
+<hr>
+
+<h1 id="toc_99">Closing</h1>
+
+<hr>
+
+<p><a id="section-16"></a></p>
+
+<h2 id="toc_100">16 — The Verdict</h2>
+
+<p>AI is a powerful tool. It can save time, suggest 
+approaches  you haven&rsquo;t considered, and help you 
+write SQL faster — <strong>once you already understand SQL</strong>.</p>
+
+<p>But AI is not a substitute for understanding. Here is 
+what we demonstrated across eleven examples:</p>
+
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>AI&rsquo;s Answer</th>
+<th>Correct Answer</th>
+<th>Error</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1. Customer count</td>
+<td>6 customers</td>
+<td>8 customers</td>
+<td><strong>2 customers missing (25%)</strong></td>
+</tr>
+<tr>
+<td>2. Total revenue</td>
+<td>$852.78</td>
+<td>$799.78</td>
+<td><strong>$53.00 overstated (6.6%)</strong></td>
+</tr>
+<tr>
+<td>3. Delivered orders</td>
+<td>10 orders</td>
+<td>7 orders</td>
+<td><strong>3 extra counted (43% inflated)</strong></td>
+</tr>
+<tr>
+<td>4. Non-Sales employees</td>
+<td>3 employees</td>
+<td>5 employees</td>
+<td><strong>2 employees invisible (40%)</strong></td>
+</tr>
+<tr>
+<td>5. Average order value</td>
+<td>$46.65</td>
+<td>$79.97</td>
+<td><strong>$33.32 too low (42%)</strong></td>
+</tr>
+<tr>
+<td>6. Product ranking</td>
+<td>5 unique ranks</td>
+<td>2 products share rank 4</td>
+<td><strong>Tied products given different ranks</strong></td>
+</tr>
+<tr>
+<td>7. Most recent order</td>
+<td>Emma appears twice</td>
+<td>Each customer once</td>
+<td><strong>1 customer duplicated, 1 missing</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p>Every one of these queries ran without a single error message.
+Every one returned a clean, professional-looking table.
+<strong>Every one was wrong.</strong></p>
+
+<p>In a real company, these mistakes lead to:</p>
+
+<ul>
+<li>Wrong financial reports sent to executives</li>
+<li>Marketing campaigns that target the wrong customers</li>
+<li>Inventory decisions based on inflated demand</li>
+<li>Budget allocations based on missing headcount</li>
+<li>Strategic plans built on incorrect metrics</li>
+<li>Unfair product or employee evaluations</li>
+<li>Duplicated outreach and missed at-risk customers</li>
+</ul>
+
+<p><strong>You would not trust a financial report you cannot read.
+Do not trust a SQL query you cannot read either.</strong></p>
+
+<hr>
+
+<p><a id="section-17"></a></p>
+
+<h2 id="toc_101">17 — Summary of Lessons</h2>
+
+<p><strong>Part I — When AI Gets It Wrong</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Trap</th>
+<th>What AI Did Wrong</th>
+<th>What You Need to Know</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1</td>
+<td>Wrong JOIN type</td>
+<td>Used <code>JOIN</code> instead of <code>LEFT JOIN</code> — dropped customers with no orders</td>
+<td>The difference between <code>JOIN</code> and <code>LEFT JOIN</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Wrong price column</td>
+<td>Used the current catalog price instead of the historical sale price</td>
+<td>How to read a schema and pick the right column</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Missing business filter</td>
+<td>Counted all orders, not just delivered ones</td>
+<td>How to apply business rules with <code>WHERE</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>NULL behavior</td>
+<td>Used <code>!=</code> which silently skips NULL values</td>
+<td>How NULL works in SQL comparisons</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Wrong aggregation grain</td>
+<td>Averaged line items instead of order totals</td>
+<td>How <code>GROUP BY</code> and subqueries control the level of detail</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Wrong ranking function</td>
+<td>Used <code>ROW_NUMBER()</code> instead of <code>RANK()</code> — ignored ties</td>
+<td>The difference between <code>ROW_NUMBER()</code>, <code>RANK()</code>, and <code>DENSE_RANK()</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>LIMIT instead of window</td>
+<td>Used <code>LIMIT</code> for a &ldquo;per group&rdquo; question — duplicated some, missed others</td>
+<td>How <code>ROW_NUMBER() OVER (PARTITION BY ...)</code> solves per-group problems</td>
+</tr>
+</tbody>
+</table>
+
+<p><strong>Part II — When AI Gets It Right</strong></p>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>What AI Got Right</th>
+<th>Why You Still Need SQL</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>8</td>
+<td>Top 3 customers — correct JOINs, filter, price column, grouping</td>
+<td>You must verify each decision the AI made; blind trust is not an option</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Revenue by category — correct across all dimensions</td>
+<td>Systematic verification ties back to every lesson in Part I</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Department salaries — correctly handled NULL exclusion</td>
+<td>Confirming NULL logic requires understanding <code>IS NOT NULL</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Product catalog with sales — LEFT JOIN, subquery, COALESCE, status filter</td>
+<td>Every technique from Part I appears in one query; you must verify them all</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="toc_102">The Bottom Line</h3>
+
+<p>Learn SQL <strong>first</strong>. Then use AI to write it <strong>faster</strong>.
+Never the other way around.</p>
+
+<hr>
+
+<p><a id="section-18"></a></p>
+
+<h2 id="toc_103">18 — How to Prompt AI Better</h2>
+
+<p>This document proved that blind trust in AI-generated SQL 
+is dangerous.  But the answer is not to avoid AI — it is 
+to <strong>use it properly</strong>. Once you understand SQL, AI becomes 
+a powerful accelerator. Here are six rules for getting 
+better results.</p>
+
+<h3 id="toc_104">Rule 1 — Include the Schema</h3>
+
+<p>Don&rsquo;t say &ldquo;write a query for our orders database.&rdquo; Give the AI the
+actual <code>CREATE TABLE</code> statements. The more context it has about your
+columns, types, and relationships, the better its choices will be.</p>
+
+<p><strong>Weak prompt:</strong></p>
+
+<blockquote>
+<p>&ldquo;Write SQL to find total revenue by customer.&rdquo;</p>
+</blockquote>
+
+<p><strong>Strong prompt:</strong></p>
+
+<blockquote>
+<p>&ldquo;Given these tables: [paste your CREATE TABLE statements]. Write SQL
+to find total revenue per customer. Revenue should use
+<code>order_items.sale_price</code> (the price at time of sale), not
+<code>products.unit_price</code> (the current catalog price). Only include orders
+where <code>status = &#39;Delivered&#39;</code>.&rdquo;</p>
+</blockquote>
+
+<p>The strong prompt eliminates Examples 2 and 3 before the AI even starts.</p>
+
+<h3 id="toc_105">Rule 2 — State the Business Rules Explicitly</h3>
+
+<p>AI does not know your business. If &ldquo;revenue&rdquo; only counts 
+delivered orders, say so. If employees with NULL departments 
+should be excluded, say so. If tied products must share the 
+same rank, say so. Every unstated assumption is an opportunity 
+for a mistake.</p>
+
+<p>Think of it this way: the seven failures in Part I all came 
+from business rules the AI had to <strong>guess</strong>. The fewer guesses, 
+the fewer errors.</p>
+
+<h3 id="toc_106">Rule 3 — Specify Edge Cases</h3>
+
+<p>Mention NULLs, ties, cancelled orders, customers with no purchases —
+whatever applies to your data. Examples 1, 4, 6, and 7 all involved
+edge cases that the AI ignored.</p>
+
+<p>A useful prompt addition:</p>
+
+<blockquote>
+<p>&ldquo;Note: some employees have NULL in the department column. Handle
+them according to [your requirement].&rdquo;</p>
+</blockquote>
+
+<h3 id="toc_107">Rule 4 — Ask the AI to Explain Its Choices</h3>
+
+<p>After the AI generates SQL, ask follow-up questions:</p>
+
+<blockquote>
+<p>&ldquo;Why did you use JOIN instead of LEFT JOIN?&rdquo;</p>
+
+<p>&ldquo;Why did you use ROW_NUMBER instead of RANK?&rdquo;</p>
+
+<p>&ldquo;Which price column did you choose and why?&rdquo;</p>
+
+<p>&ldquo;How does this query handle NULL values?&rdquo;</p>
+</blockquote>
+
+<p>If the AI cannot justify its decisions clearly, 
+that is a red flag. A correct query should have 
+a clear explanation for every choice.</p>
+
+<h3 id="toc_108">Rule 5 — Verify with Known Data</h3>
+
+<p>Run the AI&rsquo;s query on a small dataset where you already know the
+correct answer — like the BrightCart data in this document. If the
+numbers don&rsquo;t match your hand calculations, you have caught a bug
+before it reaches a real report.</p>
+
+<p>This is the same verification technique we used in Examples 8–11.
+It works because you built the knowledge to check the output.</p>
+
+<h3 id="toc_109">Rule 6 — Read the SQL Before You Run It</h3>
+
+<p>Even if you trust the AI, <strong>read the query first.</strong> Use this checklist:</p>
+
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>What to Look For</th>
+<th>Which Example Showed This Failing</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>JOIN type</td>
+<td><code>JOIN</code> vs <code>LEFT JOIN</code> — will any rows be silently dropped?</td>
+<td>Example 1</td>
+</tr>
+<tr>
+<td>Price column</td>
+<td><code>sale_price</code> vs <code>unit_price</code> — historical or current?</td>
+<td>Example 2</td>
+</tr>
+<tr>
+<td>Status filter</td>
+<td>Is <code>WHERE status = &#39;Delivered&#39;</code> present when needed?</td>
+<td>Example 3</td>
+</tr>
+<tr>
+<td>NULL handling</td>
+<td>Does the query use <code>IS NULL</code> / <code>IS NOT NULL</code> correctly?</td>
+<td>Example 4</td>
+</tr>
+<tr>
+<td>Aggregation level</td>
+<td>Is <code>GROUP BY</code> at the right grain (orders vs line items)?</td>
+<td>Example 5</td>
+</tr>
+<tr>
+<td>Ranking function</td>
+<td><code>ROW_NUMBER()</code> vs <code>RANK()</code> vs <code>DENSE_RANK()</code> — does it handle ties?</td>
+<td>Example 6</td>
+</tr>
+<tr>
+<td>LIMIT vs window</td>
+<td>Is <code>LIMIT</code> being used where <code>PARTITION BY</code> is needed?</td>
+<td>Example 7</td>
+</tr>
+</tbody>
+</table>
+
+<p>This checklist is exactly what you built by studying the 
+eleven examples in this document. It turns you from a passive 
+consumer of AI output into an active, critical reviewer.</p>
+
+<h3 id="toc_110">The Real Skill</h3>
+
+<p>The goal of this course is not to make AI unnecessary — it is to make
+<strong>you</strong> the person who can tell whether AI&rsquo;s answer is right or wrong.</p>
+
+<p>That is a skill no AI can replace.</p>
+
+<hr>
+
+<h1 id="toc_111">References</h1>
+
+<p><a href="https://mavenanalytics.io/blog/do-you-still-need-to-learn-sql-in-the-age-of-ai">1. Do You Still Need to Learn SQL in the Age of AI?</a></p>
+
+<p><a href="https://medium.com/codex/why-you-should-still-learn-sql-even-when-ai-can-write-it-for-you-12f4518f58ee">2. Why You Should Still Learn SQL — Even When AI Can Write It For You</a></p>
+
+<p><a href="https://sqlpatterns.com/p/should-you-still-learn-sql-in-the">3. Should you still learn SQL (in the age of LLMs)?</a></p>
+
+<p><a href="https://sqlcrashcoursebook.com/blog/sql-in-age-of-ai-llms/">4. Is SQL Still Relevant in 2026? SQL in the Age of LLMs</a></p>
+
+<p><a href="https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude">5. How Anthropic enables self-service data analytics with Claude</a></p>
+
+<p><a href="https://joseparreogarcia.substack.com/p/anthropic-agentic-data-analytics">6. Anthropic is telling you that Agentic Analytics is not just text-to-SQL</a></p>
+
+<hr>
+
+<p><em>OMIS 105 — Introduction to Database Management Systems — Fall 2026</em></p>
+
+
+
+<script type="text/javascript">
+var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(\w+)\b/i,t=0,n=_self.Prism={util:{encode:function(e){return e instanceof a?new a(e.type,n.util.encode(e.content),e.alias):"Array"===n.util.type(e)?e.map(n.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++t}),e.__id},clone:function(e){var t=n.util.type(e);switch(t){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=n.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return n.util.clone(e)})}return e}},languages:{extend:function(e,t){var a=n.util.clone(n.languages[e]);for(var r in t)a[r]=t[r];return a},insertBefore:function(e,t,a,r){r=r||n.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==t)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return n.languages.DFS(n.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,t,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(t.call(e,l,e[l],a||l),"Object"!==n.util.type(e[l])||r[n.util.objId(e[l])]?"Array"!==n.util.type(e[l])||r[n.util.objId(e[l])]||(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,l,r)):(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,null,r)))}},plugins:{},highlightAll:function(e,t){var a={callback:t,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};n.hooks.run("before-highlightall",a);for(var r,l=a.elements||document.querySelectorAll(a.selector),i=0;r=l[i++];)n.highlightElement(r,e===!0,a.callback)},highlightElement:function(t,a,r){for(var l,i,o=t;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=n.languages[l]),t.className=t.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=t.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=t.textContent,u={element:t,language:l,grammar:i,code:s};if(!s||!i)return n.hooks.run("complete",u),void 0;if(n.hooks.run("before-highlight",u),a&&_self.Worker){var c=new Worker(n.filename);c.onmessage=function(e){u.highlightedCode=e.data,n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=n.highlight(u.code,u.grammar,u.language),n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(t),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},highlight:function(e,t,r){var l=n.tokenize(e,t);return a.stringify(n.util.encode(l),r)},tokenize:function(e,t){var a=n.Token,r=[e],l=t.rest;if(l){for(var i in l)t[i]=l[i];delete t.rest}e:for(var i in t)if(t.hasOwnProperty(i)&&t[i]){var o=t[i];o="Array"===n.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],c=u.inside,g=!!u.lookbehind,h=!!u.greedy,f=0,d=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var m=r[p];if(r.length>e.length)break e;if(!(m instanceof a)){u.lastIndex=0;var y=u.exec(m),v=1;if(!y&&h&&p!=r.length-1){var b=r[p+1].matchedStr||r[p+1],k=m+b;if(p<r.length-2&&(k+=r[p+2].matchedStr||r[p+2]),u.lastIndex=0,y=u.exec(k),!y)continue;var w=y.index+(g?y[1].length:0);if(w>=m.length)continue;var _=y.index+y[0].length,P=m.length+b.length;if(v=3,P>=_){if(r[p+1].greedy)continue;v=2,k=k.slice(0,P)}m=k}if(y){g&&(f=y[1].length);var w=y.index+f,y=y[0].slice(f),_=w+y.length,S=m.slice(0,w),O=m.slice(_),j=[p,v];S&&j.push(S);var A=new a(i,c?n.tokenize(y,c):y,d,y,h);j.push(A),O&&j.push(O),Array.prototype.splice.apply(r,j)}}}}}return r},hooks:{all:{},add:function(e,t){var a=n.hooks.all;a[e]=a[e]||[],a[e].push(t)},run:function(e,t){var a=n.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(t)}}},a=n.Token=function(e,t,n,a,r){this.type=e,this.content=t,this.alias=n,this.matchedStr=a||null,this.greedy=!!r};if(a.stringify=function(e,t,r){if("string"==typeof e)return e;if("Array"===n.util.type(e))return e.map(function(n){return a.stringify(n,t,e)}).join("");var l={type:e.type,content:a.stringify(e.content,t,r),tag:"span",classes:["token",e.type],attributes:{},language:t,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===n.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}n.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var t=JSON.parse(e.data),a=t.language,r=t.code,l=t.immediateClose;_self.postMessage(n.highlight(r,n.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var r=document.currentScript||[].slice.call(document.getElementsByTagName("script")).pop();return r&&(n.filename=r.src,document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",n.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
+</script>
+
+<script type="text/javascript">
+Prism.languages.sql={comment:{pattern:/(^|[^\\])(?:\/\*[\w\W]*?\*\/|(?:--|\/\/|#).*)/,lookbehind:!0},string:{pattern:/(^|[^@\\])("|')(?:\\?[\s\S])*?\2/,lookbehind:!0},variable:/@[\w.$]+|@("|'|`)(?:\\?[\s\S])+?\1/,"function":/\b(?:COUNT|SUM|AVG|MIN|MAX|FIRST|LAST|UCASE|LCASE|MID|LEN|ROUND|NOW|FORMAT)(?=\s*\()/i,keyword:/\b(?:ACTION|ADD|AFTER|ALGORITHM|ALL|ALTER|ANALYZE|ANY|APPLY|AS|ASC|AUTHORIZATION|BACKUP|BDB|BEGIN|BERKELEYDB|BIGINT|BINARY|BIT|BLOB|BOOL|BOOLEAN|BREAK|BROWSE|BTREE|BULK|BY|CALL|CASCADED?|CASE|CHAIN|CHAR VARYING|CHARACTER (?:SET|VARYING)|CHARSET|CHECK|CHECKPOINT|CLOSE|CLUSTERED|COALESCE|COLLATE|COLUMN|COLUMNS|COMMENT|COMMIT|COMMITTED|COMPUTE|CONNECT|CONSISTENT|CONSTRAINT|CONTAINS|CONTAINSTABLE|CONTINUE|CONVERT|CREATE|CROSS|CURRENT(?:_DATE|_TIME|_TIMESTAMP|_USER)?|CURSOR|DATA(?:BASES?)?|DATETIME|DBCC|DEALLOCATE|DEC|DECIMAL|DECLARE|DEFAULT|DEFINER|DELAYED|DELETE|DENY|DESC|DESCRIBE|DETERMINISTIC|DISABLE|DISCARD|DISK|DISTINCT|DISTINCTROW|DISTRIBUTED|DO|DOUBLE(?: PRECISION)?|DROP|DUMMY|DUMP(?:FILE)?|DUPLICATE KEY|ELSE|ENABLE|ENCLOSED BY|END|ENGINE|ENUM|ERRLVL|ERRORS|ESCAPE(?:D BY)?|EXCEPT|EXEC(?:UTE)?|EXISTS|EXIT|EXPLAIN|EXTENDED|FETCH|FIELDS|FILE|FILLFACTOR|FIRST|FIXED|FLOAT|FOLLOWING|FOR(?: EACH ROW)?|FORCE|FOREIGN|FREETEXT(?:TABLE)?|FROM|FULL|FUNCTION|GEOMETRY(?:COLLECTION)?|GLOBAL|GOTO|GRANT|GROUP|HANDLER|HASH|HAVING|HOLDLOCK|IDENTITY(?:_INSERT|COL)?|IF|IGNORE|IMPORT|INDEX|INFILE|INNER|INNODB|INOUT|INSERT|INT|INTEGER|INTERSECT|INTO|INVOKER|ISOLATION LEVEL|JOIN|KEYS?|KILL|LANGUAGE SQL|LAST|LEFT|LIMIT|LINENO|LINES|LINESTRING|LOAD|LOCAL|LOCK|LONG(?:BLOB|TEXT)|MATCH(?:ED)?|MEDIUM(?:BLOB|INT|TEXT)|MERGE|MIDDLEINT|MODIFIES SQL DATA|MODIFY|MULTI(?:LINESTRING|POINT|POLYGON)|NATIONAL(?: CHAR VARYING| CHARACTER(?: VARYING)?| VARCHAR)?|NATURAL|NCHAR(?: VARCHAR)?|NEXT|NO(?: SQL|CHECK|CYCLE)?|NONCLUSTERED|NULLIF|NUMERIC|OFF?|OFFSETS?|ON|OPEN(?:DATASOURCE|QUERY|ROWSET)?|OPTIMIZE|OPTION(?:ALLY)?|ORDER|OUT(?:ER|FILE)?|OVER|PARTIAL|PARTITION|PERCENT|PIVOT|PLAN|POINT|POLYGON|PRECEDING|PRECISION|PREV|PRIMARY|PRINT|PRIVILEGES|PROC(?:EDURE)?|PUBLIC|PURGE|QUICK|RAISERROR|READ(?:S SQL DATA|TEXT)?|REAL|RECONFIGURE|REFERENCES|RELEASE|RENAME|REPEATABLE|REPLICATION|REQUIRE|RESTORE|RESTRICT|RETURNS?|REVOKE|RIGHT|ROLLBACK|ROUTINE|ROW(?:COUNT|GUIDCOL|S)?|RTREE|RULE|SAVE(?:POINT)?|SCHEMA|SELECT|SERIAL(?:IZABLE)?|SESSION(?:_USER)?|SET(?:USER)?|SHARE MODE|SHOW|SHUTDOWN|SIMPLE|SMALLINT|SNAPSHOT|SOME|SONAME|START(?:ING BY)?|STATISTICS|STATUS|STRIPED|SYSTEM_USER|TABLES?|TABLESPACE|TEMP(?:ORARY|TABLE)?|TERMINATED BY|TEXT(?:SIZE)?|THEN|TIMESTAMP|TINY(?:BLOB|INT|TEXT)|TOP?|TRAN(?:SACTIONS?)?|TRIGGER|TRUNCATE|TSEQUAL|TYPES?|UNBOUNDED|UNCOMMITTED|UNDEFINED|UNION|UNIQUE|UNPIVOT|UPDATE(?:TEXT)?|USAGE|USE|USER|USING|VALUES?|VAR(?:BINARY|CHAR|CHARACTER|YING)|VIEW|WAITFOR|WARNINGS|WHEN|WHERE|WHILE|WITH(?: ROLLUP|IN)?|WORK|WRITE(?:TEXT)?)\b/i,"boolean":/\b(?:TRUE|FALSE|NULL)\b/i,number:/\b-?(?:0x)?\d*\.?[\da-f]+\b/,operator:/[-+*\/=%^~]|&&?|\|?\||!=?|<(?:=>?|<|>)?|>[>=]?|\b(?:AND|BETWEEN|IN|LIKE|NOT|OR|IS|DIV|REGEXP|RLIKE|SOUNDS LIKE|XOR)\b/i,punctuation:/[;[\]()`,.]/};
+</script>
+
+
+</body>
+
+</html>
