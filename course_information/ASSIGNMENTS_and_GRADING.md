@@ -1,4 +1,4 @@
-# OMIS 105 — Assignments and Grading
+# OMIS 105 <br>  Assignments and Grading
 
 **Course:** OMIS 105 — Introduction to Database Management Systems  
 **Quarter:** Fall 2026  
@@ -9,10 +9,9 @@
 
 | Component                                | Total Points |
 |------------------------------------------|-------------:|
-| `40` In-Class Labs (`10` points each)<br> `40 = 10 weeks * 2 classes * 2 lab`    | `400`        |
-| `4` Out-of-Class Labs (`50` points each) | `200`        |
-| Midterm Exam (in-class, closed books)                  | `200`        |
-| Final Exam (in-class, closed books)                    | `200`        |
+| ✅ `20` In-Class Labs <br> ✅ Each Lab = `30` points <br> ✅ `One Lab per class` <br> ✅ `20 * 30 = 600`   | `600`        |
+| ✏️ Midterm Exam (in-class, closed books)                  | `200`        |
+| ✏️ Final Exam (in-class, closed books)                    | `200`        |
 | **Total**                                | **`1000`**   |
 
 * **In-Class Lab**: The student completes the 
