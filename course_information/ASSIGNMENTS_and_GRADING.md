@@ -14,17 +14,25 @@
 | ✏️ Final Exam (in-class, closed books)                    | `200`        |
 | **Total**                                | **`1000`**   |
 
-* **In-Class Lab**: The student completes the 
-  lab during class and submits it before the 
-  end of the class session.
+* **In-Class Lab**: 
+	* The student completes the lab during class, and 
+	* The Student submits it before the end of the class session.
 
-* **Out-of-Class Lab**: The student completes 
-  the lab within the given period and submits 
-  it by the due date.
+---
+## 2. Class Attendance
+
+**Attendance is mandatory.** 
+
+Each in-class lab must be completed and submitted 
+during the class session in which it is assigned. 
+If you are absent, you receive a zero ( `0` ) on 
+that lab (`30 points`). There is no way to make up 
+a missed lab, because the lab environment and 
+instructor support are only available during class.
 
 ---
 
-## 2. Course Policies
+## 3. Course Policies
 
 1. The lowest in-class lab score will be dropped.
 
@@ -40,13 +48,7 @@
    are graded more heavily than minor formatting 
    or syntax issues.
 
-5. Students are expected to actively participate 
-   during in-class lab sessions.
-
-6. Late submissions lose 10% per day for up to 3 days. 
-  After 3 days, no credit will be awarded.
-
-7. NO-COPY-PASTE: you may use any appropriate resources 
+5. NO-COPY-PASTE: you may use any appropriate resources 
    to help you understand and complete your labs and 
    assignments. However, the work you submit must reflect 
    your own understanding and effort.
@@ -54,13 +56,14 @@
 ---
 
 
-## 3. Transparent 1000-Point System
+## 4. Transparent 1000-Point System
 
 The 1000-point grading scale keeps grading 
 simple, transparent, and easy to understand.
 
 - Students always know exactly where they stand.
 - No percentage conversions are required.
+
 - Example:
 
 ```text
