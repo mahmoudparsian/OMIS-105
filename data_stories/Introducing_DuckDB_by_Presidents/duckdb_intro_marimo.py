@@ -31,9 +31,9 @@ def _(mo):
 
     > **Data files required** (in the same directory as this notebook):
 
-    1. `presidents.csv`
+    1. `data/presidents.csv`
 
-    2. `parties.csv`
+    2. `data/parties.csv`
     """)
     return
 
@@ -157,7 +157,7 @@ def _(con):
             CAST(term_start AS DATE) AS term_start,
             CAST(term_end AS DATE) AS term_end,
             party_id
-        FROM read_csv_auto('presidents.csv');
+        FROM read_csv_auto('data/presidents.csv');
     """)
 
     con.execute("""
@@ -183,7 +183,7 @@ def _(con):
     con.execute("""
         CREATE TABLE parties AS
         SELECT *
-        FROM read_csv_auto('parties.csv');
+        FROM read_csv_auto('data/parties.csv');
     """)
 
     con.execute("""
