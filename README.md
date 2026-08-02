@@ -1,4 +1,4 @@
-# OMIS-105 : <br> Database Management Systems
+# OMIS-105 : <br> Introduction to Database Management Systems
 
 @author: Dr. Mahmoud Parsian
 
@@ -14,7 +14,49 @@
 
 ---
 
-# 1. What is a Database Management System?
+# 1. What is a Database?
+
+A database is an organized collection 
+of digital data or information stored 
+electronically in a system. It allows 
+users to store, access, update, and 
+manage information quickly.
+
+## How It Works
+
+* Managed by a Database Management 
+  System (DBMS) software that controls 
+  access and security.
+  
+* Uses query languages like SQL 
+  (Structured Query Language) to 
+  find and change data.
+
+* Handles multiple users at the same 
+  time without losing data.
+  
+## Common Types
+
+* **Relational Databases**: Store data in 
+  tables with rows and columns; examples:
+   
+	* DuckDB
+	* PostgreSQL
+	* MySQL
+
+* **NoSQL Databases**: Store flexible or 
+  unstructured data like emails and videos.
+ 
+* **Cloud Databases**: Built and accessed 
+  through virtual cloud platforms; examples:
+  
+	* Snowflake
+	* Amazon RDS
+	* Google Cloud SQL
+  
+---
+
+# 2. What is a Database Management System?
 
 * A Database Management System (DBMS) is the 
   core software used to **create**, **store**, 
@@ -25,7 +67,7 @@
   interacting with it, keeping data consistent, 
   secure, and easily accessible.
 
-# 2. What is a Relational Database Management System?
+# 3. What is a Relational Database Management System?
 
 * An RDBMS (Relational Database Management System) 
   is software used to store, manage, and retrieve 
@@ -47,13 +89,13 @@
   be logically linked, or related, to one another using 
   shared data values.
 
-# 3. Classic Architecture of DBMS
+# 4. Classic Architecture of DBMS
 
 ![](./images/dbms.webp)
 
 ---
 
-# 4. Key Concepts of "Relational" Data
+# 5. Key Concepts of "Relational" Data
 
 * **Tables** (Relations): Data is stored in two-dimensional grids. 
 
@@ -74,13 +116,13 @@
 
 ---
 
-# 5. A Table in RDBMS
+# 6. A Table in RDBMS
 
 ![](./images/table.webp)
 
 ---
 
-# 6. Set of Tables in RDBMS
+# 7. Set of Tables in RDBMS
 
 ![](./images/rdbms.webp)
 
@@ -90,7 +132,7 @@
 
 ---
 
-# 7. 🦆 DuckDB as RDBMS
+# 8. 🦆 DuckDB as RDBMS
 
 * DuckDB is an analytical in-process SQL 
   database management system.
@@ -112,15 +154,15 @@
   files (like Parquet and CSV) directly from 
   your local disk or cloud storage.
 
-# 8. 📊 Integration of Data Sources
+# 9. 📊 Integration of Data Sources
 
 ![](./images/duckdb_echo_system.webp)
 
-# 9. 🔧 DuckDB Ecosystem
+# 10. 🔧 DuckDB Ecosystem
 
 ![](./images/duckdb_ecosystem_svg.svg)
 
-# 10. 🧑‍🎓  Target Students
+# 11. 🧑‍🎓  Target Students
 
 * This course is designed for undergraduate students 
 at the department of
@@ -129,7 +171,7 @@ Santa Clara University.
 
 ---
 
-# 11. 🏛️  Course Description 
+# 12. 🏛️  Course Description 
 
 * [This course](source: 
 https://www.scu.edu/business/isa/academics/courses/) 
@@ -149,13 +191,13 @@ on the issues of managing a database environment.
 
 ---
 
-# 12. Course Prerequisite: 
+# 13. Course Prerequisite: 
 
 * OMIS-30: Introduction to Programming
 
 ---
 
-# 13. 🗄️ Files/Folders
+# 14. 🗄️ Files/Folders
 
 | File Name                    | Description     |
 |------------------------------|-----------------|
@@ -182,7 +224,7 @@ on the issues of managing a database environment.
 
 ---
 
-# 14. References
+# 15. References
 
 [1. What is a Relational Database - Google](https://cloud.google.com/learn/what-is-a-relational-database)
 
