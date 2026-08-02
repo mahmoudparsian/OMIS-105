@@ -1,6 +1,6 @@
 # OMIS-105 : <br> Introduction to Database Management Systems
 
-@author: Dr. Mahmoud Parsian
+@author: [Dr. Mahmoud Parsian](https://www.scu.edu/business/isa/faculty/parsian/)
 
 	In this course, you will learn  the  fundamentals of 
 	modern  relational  data management.  Topics include  
