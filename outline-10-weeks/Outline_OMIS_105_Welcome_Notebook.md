@@ -1,19 +1,20 @@
-# CLAUDE.md — OMIS 105 Welcome Notebook
+# OMIS 105 Welcome Notebook
 
 ## Purpose
 
 Day-one onboarding notebook for **OMIS 105 — Introduction to Database Management Systems**, Fall 2026. This is the first thing students open. It introduces Marimo, the concept of a database, and their very first SQL queries — all in one self-guided, interactive notebook.
 
-**Instructor:** Dr. Mahmoud Parsian (mparsian@scu.edu)
-**Tech stack:** Python · DuckDB · Marimo
-**Audience:** Senior business students with zero prior exposure to notebooks, SQL, or databases.
+* **Instructor:** Dr. Mahmoud Parsian (mparsian@scu.edu)
+* **Tech stack:** Python · DuckDB · Marimo
+* **Audience:** Junior/Senior business students with zero prior exposure to notebooks, SQL, or databases.
 
 ## Files in This Folder
 
 | File | Purpose |
 |------|---------|
+| `SQL_101_DuckDB_Notebook_1.py` | Interactive Marimo notebook — the day-one student experience |
 | `SQL_101_DuckDB_Notebook_2.py` | Interactive Marimo notebook — the day-one student experience |
-| `CLAUDE.md` | This file — project context for AI-assisted editing |
+| `Outline_OMIS_105_10_weeks.md` | Outline of the course for 10 weeks |
 
 ## Notebook Structure
 
@@ -56,6 +57,6 @@ The welcome notebook has a deliberate progression:
 
 | Folder | Content |
 |--------|---------|
-| `OMIS_105/weekly_reviews/` | Weeks 1–3 and 4–6 notebooks (Jupyter + Marimo), CSV datasets, plot helpers, teaching plans |
-| `OMIS_105/software_installation/` | Python install guides (Mac/Windows), setup script, verification notebook |
-| `OMIS_105/data_stories/` | Standalone Python+DuckDB CRUD demos |
+| `OMIS-105/weekly_reviews/` | Weeks 1–3 and 4–6 notebooks (Jupyter + Marimo), CSV datasets, plot helpers, teaching plans |
+| `OMIS-105/software_installation/` | Python install guides (Mac/Windows), setup script, verification notebook |
+| `OMIS-105/data_stories/` | Standalone Python+DuckDB CRUD demos |
