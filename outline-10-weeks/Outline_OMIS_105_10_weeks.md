@@ -121,7 +121,6 @@ By the end of this course, you will be able to:
 | **Python** | Programming language | Industry standard, DuckDB integration |
 | **Marimo Notebooks** | Interactive coding | Run SQL, see results instantly, document work |
 | **qStudio** | SQL Editing | Run SQL, see results instantly |
-| **Marp** | Slide format | Markdown-based, version-controllable |
 
 All tools are **free** and **open source**.
 
@@ -611,12 +610,11 @@ Knowing relational databases gives you the vocabulary to evaluate and adopt any 
 
 # Grading Breakdown
 
-| Component | Weight | Description |
-|-----------|--------|-------------|
-| In-Class-Labs  | 40% | Lab in class with Marimo Notebook & DuckDB |
-| Out-of-Class-Labs | 20% | Lab out of class with Marimo Notebook & DuckDB |
-| Midterm Exam | 20% | Comprehensive, covers Weeks 1–5 |
-| Final Exam | 20% | Comprehensive, covers Weeks 1–10 |
+| Component      | Weight | Description |
+|----------------|--------|-------------|
+| In-Class-Labs  | 60%    | Lab in class with Marimo Notebook & DuckDB |
+| Midterm Exam   | 20%    | Comprehensive, covers Weeks 1–5 |
+| Final Exam     | 20%    | Comprehensive, covers Weeks 1–10 |
 
 * **Midterm Exam**: closed books/notes/internet/software
 * **Final Exam**: closed books/notes/internet/software
@@ -627,8 +625,8 @@ Knowing relational databases gives you the vocabulary to evaluate and adopt any 
 
 | Activity | When | Duration |
 |----------|------|----------|
-| **Session 1**: <br> Lecture + live demo + labs | Day 1 | 2 hours |
-| **Session 2**: <br> Lecture + live demo + labs | Day 2 | 2 hours |
+| **Session 1**: <br> Lecture + live demo + in-class-lab | Day 1 | 2 hours |
+| **Session 2**: <br> Lecture + live demo + in-class-lab | Day 2 | 2 hours |
 | **Lab due** | End of the same class period | 40 to 60 minutes |
 
 ---
