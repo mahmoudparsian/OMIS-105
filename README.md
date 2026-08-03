@@ -107,6 +107,10 @@ find and change data fast.
   central database and the users or applications 
   interacting with it, keeping data consistent, 
   secure, and easily accessible.
+  
+![](https://databasetown.com/wp-content/uploads/2023/03/What-is-DBMS-Components-of-DBMS-Copy-min.jpg)
+
+---
 
 # 4. What is a Relational Database Management System?
 
