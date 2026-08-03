@@ -117,6 +117,8 @@ find and change data fast.
 * An RDBMS (Relational Database Management System) 
   is software used to store, manage, and retrieve 
   structured data as **tables of rows and columns**.
+  
+![](https://media.geeksforgeeks.org/wp-content/uploads/20260124115821542989/rdbms-2.webp)
 
 * Data is organized into **tables of rows and columns**, 
   and these tables are linked using keys to ensure data 
@@ -133,6 +135,10 @@ find and change data fast.
   **tables of rows and columns**, and these tables can 
   be logically linked, or related, to one another using 
   shared data values.
+  
+ 
+ 
+---
 
 # 5. Classic Architecture of DBMS
 
