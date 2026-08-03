@@ -266,7 +266,7 @@ on the issues of managing a database environment.
 |[`books`](./books) | DuckDB and Database Books |
 |[`data_stories`](./data_stories) | Data Stories: Marimo notebooks for deep learning|
 |[`duckdb_resources`](./duckdb_resources)| DuckDB Resources and Examples| 
-|[`tutorials`](./tutorials) | Database Tutorials: Jupyter Notebooks|
+|[`tutorials`](./tutorials) | Database Tutorials and Notebooks|
 |[`applications`](./applications) | Sample Streamlit apps built by DuckDB |
 |[`data`](./data) | Sample data files (CSV and Parquet) |
 |[`software_installation`](./software_installation) | Steps to make sure Python, DuckDB, and Marimo are installed properly|
