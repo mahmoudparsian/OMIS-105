@@ -1,16 +1,21 @@
-# OMIS 105 Welcome Notebook
+# OMIS-105 Welcome Notebook
 
-## Purpose
-
-Day-one onboarding notebook for **OMIS 105 — Introduction to Database Management Systems**, Fall 2026. 
-
-This is the first thing students open. 
-
-It introduces Marimo, the concept of a database, and their very first SQL queries — all in one self-guided, interactive notebook.
-
+* **Quarter**: Fall 2026
 * **Instructor:** Dr. Mahmoud Parsian (mparsian@scu.edu)
 * **Tech stack:** Python · DuckDB · Marimo
 * **Audience:** Junior/Senior business students with zero prior exposure to notebooks, SQL, or databases.
+
+
+## Purpose
+
+Day-one onboarding notebook for **OMIS 105 — Introduction to Database Management Systems** 
+
+This is the first thing students open. 
+
+* It introduces Marimo, 
+* the concept of a database, and 
+* very first SQL queries — all in one self-guided, interactive notebook.
+
 
 ## Files in This Folder
 
