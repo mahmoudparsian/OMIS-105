@@ -53,10 +53,51 @@ manage information quickly.
 	* Snowflake
 	* Amazon RDS
 	* Google Cloud SQL
-  
+
 ---
 
-# 2. What is a Database Management System?
+# 2. Example of a Database
+
+Common database examples include relational 
+systems like DuckDB, MySQL, PostgreSQL, and 
+document systems like MongoDB. These digital 
+storage tools organize information into rows, 
+columns, or files so computer programs can 
+find and change data fast.
+
+## Relational Databases (SQL)
+
+* **DuckDB**: is an in-process, high-performance 
+  analytical SQL database. DuckDB is a fast, 
+  embeddable relational database management 
+  system designed to run inside host applications 
+  without a separate server process, using a 
+  columnar storage layout and vectorized query 
+  execution to make large-scale data analysis 
+  blazing fast.
+
+* **MySQL**: Free software used for websites 
+  and online stores.
+
+* **PostgreSQL**: Strong system used in banks 
+  and money apps.
+
+* **Microsoft SQL Server**: Tool that works 
+  well with Windows programs.
+
+## Non-Relational Databases (NoSQL)
+
+* **MongoDB**: Saves data in flexible, text-like 
+  files instead of strict tables.
+* **Redis**: Stores quick key-value pairs for 
+  fast memory lookups.
+* **Apache Cassandra**: Handles massive columns 
+  of data across many servers.
+
+
+---
+
+# 3. What is a Database Management System?
 
 * A Database Management System (DBMS) is the 
   core software used to **create**, **store**, 
@@ -67,7 +108,7 @@ manage information quickly.
   interacting with it, keeping data consistent, 
   secure, and easily accessible.
 
-# 3. What is a Relational Database Management System?
+# 4. What is a Relational Database Management System?
 
 * An RDBMS (Relational Database Management System) 
   is software used to store, manage, and retrieve 
@@ -89,13 +130,13 @@ manage information quickly.
   be logically linked, or related, to one another using 
   shared data values.
 
-# 4. Classic Architecture of DBMS
+# 5. Classic Architecture of DBMS
 
 ![](./images/dbms.webp)
 
 ---
 
-# 5. Key Concepts of "Relational" Data
+# 6. Key Concepts of "Relational" Data
 
 * **Tables** (Relations): Data is stored in two-dimensional grids. 
 
@@ -116,13 +157,13 @@ manage information quickly.
 
 ---
 
-# 6. A Table in RDBMS
+# 7. A Table in RDBMS
 
 ![](./images/table.webp)
 
 ---
 
-# 7. Set of Tables in RDBMS
+# 8. Set of Tables in RDBMS
 
 ![](./images/rdbms.webp)
 
@@ -132,7 +173,7 @@ manage information quickly.
 
 ---
 
-# 8. 🦆 DuckDB as RDBMS
+# 9. 🦆 DuckDB as RDBMS
 
 * DuckDB is an analytical in-process SQL 
   database management system.
@@ -154,15 +195,15 @@ manage information quickly.
   files (like Parquet and CSV) directly from 
   your local disk or cloud storage.
 
-# 9. 📊 Integration of Data Sources
+# 10. 📊 Integration of Data Sources
 
 ![](./images/duckdb_echo_system.webp)
 
-# 10. 🔧 DuckDB Ecosystem
+# 11. 🔧 DuckDB Ecosystem
 
 ![](./images/duckdb_ecosystem_svg.svg)
 
-# 11. 🧑‍🎓  Target Students
+# 12. 🧑‍🎓  Target Students
 
 * This course is designed for undergraduate students 
 at the department of
@@ -171,7 +212,7 @@ Santa Clara University.
 
 ---
 
-# 12. 🏛️  Course Description 
+# 13. 🏛️  Course Description 
 
 * [This course](source: 
 https://www.scu.edu/business/isa/academics/courses/) 
@@ -191,13 +232,13 @@ on the issues of managing a database environment.
 
 ---
 
-# 13. Course Prerequisite: 
+# 14. Course Prerequisite: 
 
 * OMIS-30: Introduction to Programming
 
 ---
 
-# 14. 🗄️ Files/Folders
+# 15. 🗄️ Files/Folders
 
 | File Name                    | Description     |
 |------------------------------|-----------------|
@@ -224,7 +265,7 @@ on the issues of managing a database environment.
 
 ---
 
-# 15. References
+# 16. References
 
 [1. What is a Relational Database - Google](https://cloud.google.com/learn/what-is-a-relational-database)
 
