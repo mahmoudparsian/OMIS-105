@@ -45,7 +45,15 @@
 
 ---
 
-## 6. Sample Data
+## 6. Marimo Notebooks
+
+[1. A curated collection of educational marimo notebooks](https://github.com/marimo-team/learn)
+
+[2. Learn DuckDb with Marimo](https://github.com/marimo-team/learn/tree/main/duckdb)
+
+---
+
+## 7. Sample Data
 
 [1. Sample CSV files](https://github.com/datablist/sample-csv-files)
 
