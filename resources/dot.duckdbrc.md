@@ -1,6 +1,6 @@
 # DuckDB Configuration File — ~/.duckdbrc
 
-## What is ~/.duckdbrc?
+## What is `~/.duckdbrc`?
 
 `~/.duckdbrc` is a startup configuration file for the DuckDB command-line interface (CLI).
 
