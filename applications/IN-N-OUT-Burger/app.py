@@ -7,7 +7,7 @@ database, plus a live analytics dashboard and a SQL playground.
 
 Run:
     pip install -r requirements.txt
-    python build_db.py        # one-time: creates innout.duckdb with demo data
+    python build_duckdb.py    # one-time: creates innout.duckdb with demo data
     streamlit run app.py
 """
 
@@ -51,44 +51,133 @@ _load_dotenv()
 
 RED = "#E31837"
 YELLOW = "#FFC72C"
+LOGO = os.path.join(HERE, "assets", "logo.svg")
+LOGO_ICON = os.path.join(HERE, "assets", "logo_icon.svg")
+HERO = os.path.join(HERE, "assets", "hero.svg")
 
 st.set_page_config(page_title="In-N-Out POS · DuckDB",
                    page_icon="🍔", layout="wide")
 
 # ---------------------------------------------------------------------------
-# Styling — In-N-Out red & yellow
+# Design system — modern, clean dashboard (pure CSS, no extra packages)
 # ---------------------------------------------------------------------------
-st.markdown(f"""
+st.markdown("""
 <style>
-  .stApp {{ background: #fffdf7; color: #1a1a1a; }}
-  /* Force dark, readable text even if the user's Streamlit is in dark mode */
-  .stApp, .stApp p, .stApp span, .stApp li, .stApp label,
-  .stApp h1, .stApp h2, .stApp h3, .stApp h4,
-  [data-testid="stMarkdownContainer"], [data-testid="stWidgetLabel"] {{
-      color: #1a1a1a;
-  }}
-  .stApp h1, .stApp h2, .stApp h3 {{ color: {RED}; }}
-  [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * {{
-      color: #6b6b6b !important;
-  }}
-  div.stButton > button {{
-      background: {RED}; color: white !important; border: none;
-      border-radius: 6px; font-weight: 700; padding: 0.45rem 1rem;
-  }}
-  div.stButton > button:hover {{ background: #b5122a; color: {YELLOW} !important; }}
-  [data-testid="stMetricValue"] {{ color: {RED}; }}
-  .receipt {{ font-family: 'Courier New', monospace; background: #fff;
-              color: #1a1a1a; border: 2px dashed {RED};
-              border-radius: 8px; padding: 18px; }}
-  /* Coding font + comfortable size for the SQL editor */
-  .stTextArea textarea {{
-      font-family: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Menlo,
-                   Consolas, 'Liberation Mono', monospace;
-      font-size: 0.95rem; line-height: 1.5; color: #1a1a1a;
-      background: #fbf7ec; tab-size: 2;
-  }}
+  :root {
+    --ink:#14110F; --muted:#6B6B6B; --red:#E31837; --red-dark:#B5122A;
+    --yellow:#FFC72C; --bg:#FBF7EF; --surface:#FFFFFF; --border:#ECE4D6;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(20,17,15,.04), 0 4px 16px rgba(20,17,15,.06);
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+
+  /* Base — set font on the root only; DON'T touch <span> (that clobbers
+     Streamlit's Material icon font and makes chevrons render as text). */
+  .stApp { background: var(--bg); font-family: var(--font); }
+  .stApp, .stApp p, .stApp li, .stApp label,
+  [data-testid="stMarkdownContainer"], [data-testid="stWidgetLabel"] { color: var(--ink); }
+  .block-container { padding-top: 2.2rem; max-width: 1300px; }
+
+  /* Headings */
+  .stApp h1 { color: var(--ink); font-weight: 800; letter-spacing:-.02em;
+              font-size: 2rem; }
+  .stApp h2 { color: var(--ink); font-weight: 700; letter-spacing:-.01em; }
+  .stApp h3 { color: var(--ink); font-weight: 700; }
+  [data-testid="stHeadingWithActionElements"] { scroll-margin-top: 2rem; }
+  [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * {
+      color: var(--muted) !important; }
+
+  /* Buttons */
+  div.stButton > button, div.stFormSubmitButton > button,
+  [data-testid="stDownloadButton"] > button {
+      background: var(--red); color:#fff !important; border:none;
+      border-radius:10px; font-weight:700; padding:.5rem 1.1rem;
+      box-shadow: 0 1px 2px rgba(227,24,55,.25); transition: all .15s ease; }
+  div.stButton > button:hover, div.stFormSubmitButton > button:hover,
+  [data-testid="stDownloadButton"] > button:hover {
+      background: var(--red-dark); color:#fff !important;
+      transform: translateY(-1px); box-shadow:0 4px 12px rgba(227,24,55,.28); }
+  div.stButton > button:disabled { background:#e7ded0; color:#a99f8d !important;
+      box-shadow:none; }
+
+  /* Metric cards */
+  [data-testid="stMetric"] {
+      background: var(--surface); border:1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem 1.1rem; box-shadow: var(--shadow); }
+  [data-testid="stMetricLabel"] p { color: var(--muted) !important;
+      font-weight:600; font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; }
+  [data-testid="stMetricValue"] { color: var(--red); font-weight:800; }
+
+  /* Bordered containers → cards */
+  [data-testid="stVerticalBlockBorderWrapper"] {
+      background: var(--surface); border-radius: var(--radius);
+      border:1px solid var(--border); box-shadow: var(--shadow); }
+
+  /* Tabs */
+  [data-baseweb="tab-list"] { gap:.25rem; border-bottom:1px solid var(--border); }
+  [data-baseweb="tab"] { font-weight:600; color:var(--muted); }
+  [data-baseweb="tab"][aria-selected="true"] { color: var(--red); }
+  [data-baseweb="tab-highlight"] { background: var(--red); }
+
+  /* Inputs */
+  [data-baseweb="input"], [data-baseweb="select"] > div,
+  .stTextArea textarea, .stNumberInput input {
+      border-radius:10px !important; }
+
+  /* Dataframe */
+  [data-testid="stDataFrame"] { border:1px solid var(--border);
+      border-radius:12px; overflow:hidden; }
+
+  /* Expander — left as Streamlit default for maximum readability */
+
+  /* Sidebar */
+  [data-testid="stSidebar"] { background: var(--surface);
+      border-right:1px solid var(--border); }
+  [data-testid="stSidebar"] [data-testid="stMetric"] { box-shadow:none; }
+
+  /* Receipt (kept mono) */
+  .receipt { font-family:'JetBrains Mono','Courier New',monospace;
+      background:#fff; color:var(--ink); border:2px dashed var(--red);
+      border-radius:12px; padding:18px; }
+
+  /* SQL editor coding font */
+  .stTextArea textarea {
+      font-family:'JetBrains Mono','Fira Code','SFMono-Regular',Menlo,Consolas,monospace;
+      font-size:.95rem; line-height:1.5; color:var(--ink);
+      background:#FBF7EC; tab-size:2; }
+
+  /* Price tag + card name (POS) */
+  .price-tag { color:var(--red); font-weight:800; font-size:1.1rem; }
 </style>
 """, unsafe_allow_html=True)
+
+# Brand logo in the sidebar / top-left (Streamlit ≥1.35). Falls back silently
+# across versions (the `size` arg only exists on newer Streamlit).
+try:
+    st.logo(LOGO, icon_image=LOGO_ICON, size="large")
+except TypeError:
+    try:
+        st.logo(LOGO, icon_image=LOGO_ICON)
+    except Exception:
+        pass
+except Exception:
+    pass
+
+
+def hero_banner():
+    """Show the SVG hero banner; degrade gracefully if SVG isn't rendered."""
+    try:
+        st.image(HERO, use_container_width=True)
+    except Exception:
+        pass
+
+
+def page_header(title, subtitle=None):
+    """Consistent page title + subtitle across all pages (plain Streamlit)."""
+    st.title(title)
+    if subtitle:
+        st.caption(subtitle)
+    st.divider()
 
 
 # ---------------------------------------------------------------------------
@@ -404,7 +493,12 @@ def place_order(store_id, order_type, payment, cart, subtotal, tax, total):
                WHERE store_id = ? AND order_ts::DATE = ?::DATE""",
             [store_id, ts]).fetchone()[0] + 1
         txn = f"INO-{store_id:02d}-{ts:%Y%m%d}-{seq:05d}"
-        con.execute("""INSERT INTO orders VALUES (?,?,?,?,?,?,?,?,?,?)""",
+        # Explicit column list: orders also has is_voided/voided_at, which take
+        # their defaults (FALSE / NULL) for a brand-new, live order.
+        con.execute("""INSERT INTO orders
+             (order_id, transaction_id, store_id, order_ts, order_type,
+              payment_method, subtotal, tax_rate, tax_amount, total)
+           VALUES (?,?,?,?,?,?,?,?,?,?)""",
                     [oid, txn, store_id, ts, order_type, payment,
                      subtotal, TAX_RATE, tax, total])
         executed.append(
@@ -458,20 +552,54 @@ def db_ready() -> bool:
 # Gate: build the database if it doesn't exist yet
 # ---------------------------------------------------------------------------
 if not db_ready():
-    st.title("🍔 In-N-Out POS")
+    hero_banner()
+    page_header("In-N-Out POS", "DuckDB + Streamlit · OMIS-105")
     st.warning("Database not found. Build it once to load the menu and "
                "~1,500 demo orders.")
     if st.button("⚙️  Build innout.duckdb now"):
-        import build_db
+        import build_duckdb
         try:
             get_con().close()       # release any handle to the file first
         except Exception:
             pass
         get_con.clear()
-        build_db.main()
+        build_duckdb.main()
         st.rerun()
-    st.info("Or run `python build_db.py` in a terminal, then refresh.")
+    st.info("Or run `python build_duckdb.py` in a terminal, then refresh.")
     st.stop()
+
+
+# ---------------------------------------------------------------------------
+# Auto-migration: bring an existing innout.duckdb up to the current schema
+# without forcing a rebuild. `ADD COLUMN IF NOT EXISTS` is idempotent, so this
+# is safe to run on every startup (it's a no-op once the columns exist). This
+# is a tiny, real example of a database *migration* — how apps evolve a schema
+# in production without dropping data.
+# ---------------------------------------------------------------------------
+def migrate():
+    con = get_con()
+    con.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS "
+                "is_voided BOOLEAN DEFAULT FALSE")
+    con.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS "
+                "voided_at TIMESTAMP")
+
+
+migrate()
+
+
+def set_order_voided(transaction_id, voided: bool):
+    """Void (soft-delete) or un-void an order — a transactional UPDATE that
+    keeps the row and its children intact."""
+    con = get_con()
+    con.execute("BEGIN")
+    try:
+        stamp = datetime.now().replace(microsecond=0) if voided else None
+        con.execute("UPDATE orders SET is_voided = ?, voided_at = ? "
+                    "WHERE transaction_id = ?", [voided, stamp, transaction_id])
+        con.execute("COMMIT")
+    except Exception:
+        con.execute("ROLLBACK")
+        raise
 
 
 # ---------------------------------------------------------------------------
@@ -498,9 +626,9 @@ TAX_RATE = 0.0925
 # ---------------------------------------------------------------------------
 # Sidebar navigation
 # ---------------------------------------------------------------------------
-st.sidebar.title("🍔 In-N-Out")
 st.sidebar.caption("DuckDB + Streamlit · OMIS-105")
-page = st.sidebar.radio("Go to", ["🧾 Point of Sale", "📊 Dashboard",
+page = st.sidebar.radio("Go to", ["🧾 Point of Sale", "🔎 Order Lookup & Refund",
+                                  "📋 Browse Orders", "📊 Dashboard",
                                   "🧪 SQL Playground", "🗂️ Schema",
                                   "🏪 Stores", "🔄 Transactions"])
 
@@ -548,7 +676,6 @@ if page == "🧾 Point of Sale":
     st.markdown("""
     <style>
       .price-tag { color:#E31837; font-weight:800; font-size:1.1rem; }
-      .card-name { font-weight:700; font-size:1.02rem; line-height:1.2; }
       table.ticket-totals { width:100%; border-collapse:collapse;
                             font-size:1rem; margin-top:.3rem; }
       table.ticket-totals td { padding:4px 2px; }
@@ -557,9 +684,10 @@ if page == "🧾 Point of Sale":
             font-weight:800; font-size:1.25rem; color:#E31837; padding-top:8px; }
     </style>""", unsafe_allow_html=True)
 
-    st.title("🧾 Point of Sale")
-    st.caption(f"Register: {store_row.store_name} — every placed order "
-               "writes a real transaction into DuckDB.")
+    hero_banner()
+    page_header("Point of Sale",
+                f"Register: {store_row.store_name} — every placed order "
+                "writes a real transaction into DuckDB.")
 
     with st.expander("💡 Why a database? — what to watch for", expanded=True):
         st.markdown(
@@ -808,9 +936,9 @@ VALUES (?, ?, ?);
 # PAGE 2 · DASHBOARD
 # ===========================================================================
 if page == "📊 Dashboard":
-    st.title("📊 Live Analytics Dashboard")
-    st.caption("Every metric is a SQL query against the same database the "
-               "register writes to. Expand **Show SQL** to see how.")
+    page_header("Live Analytics Dashboard",
+                "Every metric is a SQL query against the same database the "
+                "register writes to. Expand Show SQL to see how.")
 
     kpi = q("""
         SELECT count(*)                         AS orders,
@@ -818,16 +946,20 @@ if page == "📊 Dashboard":
                avg(total)                        AS avg_order,
                (SELECT sum(quantity) FROM order_items) AS items_sold
         FROM orders
+        WHERE NOT is_voided
     """)
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Total orders", f"{int(kpi.orders[0]):,}")
     k2.metric("Revenue", f"${kpi.revenue[0]:,.0f}")
     k3.metric("Avg order value", f"${kpi.avg_order[0]:.2f}")
     k4.metric("Items sold", f"{int(kpi.items_sold[0]):,}")
+    st.caption("Revenue KPIs exclude voided orders (soft-deleted). "
+               "See the `WHERE NOT is_voided` in the SQL.")
     show_sql("""
 SELECT count(*) AS orders, sum(total) AS revenue, avg(total) AS avg_order,
        (SELECT sum(quantity) FROM order_items) AS items_sold
-FROM orders;""")
+FROM orders
+WHERE NOT is_voided;   -- voided/refunded sales don't count toward revenue""")
 
     kpi2 = q("""
         SELECT
@@ -1056,6 +1188,7 @@ SELECT o.transaction_id, o.order_ts, s.store_name, o.order_type,
 FROM orders o
 JOIN stores s        ON s.store_id = o.store_id
 JOIN order_items oi  ON oi.order_id = o.order_id
+WHERE NOT o.is_voided          -- hide voided orders from the live feed
 GROUP BY ALL
 ORDER BY o.order_ts DESC
 LIMIT 15;"""
@@ -1067,10 +1200,10 @@ LIMIT 15;"""
 # PAGE 3 · SQL PLAYGROUND
 # ===========================================================================
 if page == "🧪 SQL Playground":
-    st.title("🧪 SQL Playground")
-    st.caption("Ask a question in plain English and let Claude draft the SQL, "
-               "or write your own. Read-only (SELECT / WITH / EXPLAIN) for "
-               "safety — review every query before you run it.")
+    page_header("SQL Playground",
+                "Ask a question in plain English and let Claude draft the SQL, "
+                "or write your own. Read-only (SELECT / WITH / EXPLAIN) for "
+                "safety — review every query before you run it.")
 
     EXAMPLES = {
         "— pick an example —": "",
@@ -1166,8 +1299,8 @@ FROM order_items GROUP BY kind;""",
 # PAGE 4 · SCHEMA
 # ===========================================================================
 if page == "🗂️ Schema":
-    st.title("🗂️ Database Schema")
-    st.caption("A fully normalized relational model — the heart of the lesson.")
+    page_header("Database Schema",
+                "A fully normalized relational model — the heart of the lesson.")
 
     st.markdown("""
 **Relationships (one-to-many, parent → child):**
@@ -1320,9 +1453,14 @@ SELECT * FROM {t} LIMIT {n_rows};""")
         ("Duplicate UNIQUE key",
          "Add an order reusing an existing transaction_id. That column is "
          "UNIQUE — no two receipts can share a number.",
-         "INSERT INTO orders VALUES (999997, '<existing txn>', 1, now(),\n"
+         "INSERT INTO orders\n"
+         "  (order_id, transaction_id, store_id, order_ts, order_type,\n"
+         "   payment_method, subtotal, tax_rate, tax_amount, total)\n"
+         "VALUES (999997, '<existing txn>', 1, now(),\n"
          "  'Dine-In', 'Card', 1.00, 0.0925, 0.09, 1.09);",
-         "INSERT INTO orders VALUES (999997, ?, 1, now(), "
+         "INSERT INTO orders (order_id, transaction_id, store_id, order_ts, "
+         "order_type, payment_method, subtotal, tax_rate, tax_amount, total) "
+         "VALUES (999997, ?, 1, now(), "
          "'Dine-In', 'Card', 1.00, 0.0925, 0.09, 1.09)",
          [a_txn]),
     ]
@@ -1346,10 +1484,10 @@ SELECT * FROM {t} LIMIT {n_rows};""")
 # PAGE 5 · STORES
 # ===========================================================================
 if page == "🏪 Stores":
-    st.title("🏪 Stores")
-    st.caption("Review the restaurants in the database, or open a new one. "
-               "Adding a store is a single INSERT — and it instantly becomes "
-               "selectable as a register on the Point of Sale screen.")
+    page_header("Stores",
+                "Review the restaurants in the database, or open a new one. "
+                "Adding a store is a single INSERT — and it instantly becomes "
+                "selectable as a register on the Point of Sale screen.")
 
     st.subheader("Current stores")
     sql = """
@@ -1395,10 +1533,10 @@ VALUES ((SELECT coalesce(max(store_id), 0) + 1 FROM stores), ?, ?, ?);
 # PAGE 6 · TRANSACTIONS (atomicity demo — fully isolated in-memory sandbox)
 # ===========================================================================
 if page == "🔄 Transactions":
-    st.title("🔄 Transactions: COMMIT vs ROLLBACK")
-    st.caption("Move cash between two tills and watch what a transaction "
-               "guarantees. This runs in a **separate in-memory database** — "
-               "it never touches your orders or menu data.")
+    page_header("Transactions: COMMIT vs ROLLBACK",
+                "Move cash between two tills and watch what a transaction "
+                "guarantees. This runs in a separate in-memory database — "
+                "it never touches your orders or menu data.")
 
     with st.expander("💡 What is a transaction? (the **A** in ACID)",
                      expanded=True):
@@ -1512,3 +1650,435 @@ BEGIN TRANSACTION;
   UPDATE demo_tills SET balance = balance + 40 WHERE name = 'Drive-Thru Till';
 COMMIT;     -- ...or ROLLBACK; to undo BOTH updates atomically
 """, "🔍 Show the SQL this page runs")
+
+
+# ===========================================================================
+# PAGE 7 · ORDER LOOKUP  (find an order by transaction_id, reprint receipt)
+# ===========================================================================
+if page == "🔎 Order Lookup & Refund":
+    page_header("Order Lookup & Refund",
+                "Find any past order by its transaction_id and reprint the "
+                "receipt. A parameterized query joins four tables back into "
+                "one human-readable ticket.")
+
+    recent = q("""SELECT transaction_id
+                  FROM orders ORDER BY order_ts DESC LIMIT 300""")
+
+    c1, c2 = st.columns([2, 3])
+    choice = c1.selectbox("Pick a recent order",
+                          list(recent["transaction_id"]))
+    typed = c2.text_input("…or type a transaction_id",
+                          placeholder="e.g. INO-01-20260214-00007")
+    txn = typed.strip() or choice
+
+    if st.button("🔎 Look up order"):
+        st.session_state.ol_txn = txn
+    txn = st.session_state.get("ol_txn")
+    if txn:
+        header = q("""
+SELECT o.transaction_id, o.order_ts, s.store_name,
+       o.order_type, o.payment_method,
+       o.subtotal, o.tax_amount, o.total,
+       o.is_voided, o.voided_at
+FROM orders o
+JOIN stores s ON s.store_id = o.store_id
+WHERE o.transaction_id = ?""", [txn])
+
+        if header.empty:
+            st.warning(f"No order found with transaction_id **{txn}**.")
+        else:
+            lines = q("""
+SELECT oi.order_item_id,
+       coalesce(mi.item_name, c.combo_name) AS item,
+       sz.size_name, oi.quantity, oi.unit_price, oi.line_total
+FROM order_items oi
+LEFT JOIN menu_items mi ON mi.item_id  = oi.item_id
+LEFT JOIN combos     c  ON c.combo_id  = oi.combo_id
+LEFT JOIN sizes      sz ON sz.size_id  = oi.size_id
+JOIN orders o ON o.order_id = oi.order_id
+WHERE o.transaction_id = ?
+ORDER BY oi.order_item_id""", [txn])
+
+            mods = q("""
+SELECT oi.order_item_id, m.modifier_name
+FROM order_item_modifiers oim
+JOIN modifiers   m  ON m.modifier_id   = oim.modifier_id
+JOIN order_items oi ON oi.order_item_id = oim.order_item_id
+JOIN orders o ON o.order_id = oi.order_id
+WHERE o.transaction_id = ?
+ORDER BY oi.order_item_id""", [txn])
+
+            h = header.iloc[0]
+            mods_by_line = mods.groupby("order_item_id")["modifier_name"] \
+                               .apply(list).to_dict()
+
+            left, right = st.columns([3, 2], gap="large")
+            with left:
+                st.subheader("Line items")
+                st.dataframe(lines.drop(columns=["order_item_id"]),
+                             hide_index=True, use_container_width=True)
+                st.caption(f"Store: {h.store_name}  ·  {h.order_type}  ·  "
+                           f"{h.payment_method}  ·  {h.order_ts}")
+
+            with right:
+                receipt_lines = ""
+                for ln in lines.itertuples(index=False):
+                    size = ("" if ln.size_name == "Regular"
+                            else f" ({ln.size_name})")
+                    receipt_lines += (f"{ln.quantity}x {ln.item}{size:<14} "
+                                      f"{ln.line_total:>7.2f}\n")
+                    for mname in mods_by_line.get(ln.order_item_id, []):
+                        receipt_lines += f"     + {mname}\n"
+                voided = bool(h.is_voided)
+                void_stamp = ("<b style='color:#E31837'>*** VOIDED ***</b>"
+                              "<br>") if voided else ""
+                st.markdown(f"""<div class="receipt">
+IN-N-OUT BURGER<br>{h.store_name}<br>
+Txn: {h.transaction_id}<br>{h.order_type} · {h.payment_method}<br>
+{void_stamp}------------------------------<br>
+<pre style="margin:0">{receipt_lines}</pre>
+------------------------------<br>
+Subtotal {h.subtotal:>18.2f}<br>
+Tax      {h.tax_amount:>18.2f}<br>
+<b>TOTAL    {h.total:>18.2f}</b><br>
+</div>""", unsafe_allow_html=True)
+
+            # ---- Void / refund (soft delete) ----------------------------
+            voided = bool(h.is_voided)
+            st.divider()
+            if voided:
+                st.error(f"⛔ This order is **VOIDED** (at {h.voided_at}). "
+                         "It's excluded from revenue reports, but the row and "
+                         "its line items remain in the database.")
+                if st.button("↩️ Un-void (restore this order)"):
+                    set_order_voided(txn, False)
+                    st.rerun()
+            else:
+                st.markdown("**Void / refund this order**")
+                st.caption("Soft delete: the order and its line items stay in "
+                           "the database — we just flip a flag, so it's fully "
+                           "reversible and keeps the audit trail.")
+                confirm = st.checkbox("Confirm — void this order")
+                if st.button("🗑️ Void order", disabled=not confirm):
+                    set_order_voided(txn, True)
+                    st.rerun()
+
+            with st.expander("🧯 Show & explain: soft delete vs hard delete"):
+                st.markdown("**Voiding here is a soft delete — an `UPDATE`, "
+                            "not a `DELETE`:**")
+                st.code("""UPDATE orders
+SET is_voided = TRUE, voided_at = now()
+WHERE transaction_id = ?;""", language="sql")
+                st.markdown(
+                    "The sale and its `order_items` stay put; money reports "
+                    "simply skip flagged rows with `WHERE NOT is_voided`. It's "
+                    "**reversible** (un-void sets the flag back to FALSE) and "
+                    "keeps a full **audit trail** — exactly what finance and "
+                    "point-of-sale systems require.")
+                st.markdown(
+                    "**A hard delete** would physically remove the rows. "
+                    "Because of the foreign keys you must delete children "
+                    "before parents (or declare `ON DELETE CASCADE`):")
+                st.code("""-- irreversible; destroys the audit trail
+DELETE FROM order_item_modifiers
+ WHERE order_item_id IN (
+   SELECT oi.order_item_id FROM order_items oi
+   JOIN orders o ON o.order_id = oi.order_id
+   WHERE o.transaction_id = ?);
+DELETE FROM order_items
+ WHERE order_id = (SELECT order_id FROM orders WHERE transaction_id = ?);
+DELETE FROM orders WHERE transaction_id = ?;""", language="sql")
+                st.info(
+                    "**Trade-off.** Soft delete keeps history and is "
+                    "reversible, but every read must remember `WHERE NOT "
+                    "is_voided`. Hard delete needs no filter, but the data — "
+                    "and the ability to answer *“what was refunded last "
+                    "month?”* — is gone for good. A third, accounting-style "
+                    "option is to leave the original untouched and post a new "
+                    "**reversing** transaction.")
+
+            with st.expander("🔍 Show & explain the SQL"):
+                st.markdown(
+                    "A receipt looks like *one thing*, but in a normalized "
+                    "database it's scattered across several tables. Reprinting "
+                    "it takes **three queries**, each answering one question "
+                    "about the same `transaction_id`.")
+
+                st.markdown(
+                    "**1 · Who placed this order?** (the header) — We start at "
+                    "the `orders` table and `JOIN` to `stores` so we can show "
+                    "the store's name instead of its raw `store_id`. This one "
+                    "row carries the timestamp, order type, payment method and "
+                    "the money totals.")
+                st.code("""SELECT o.transaction_id, o.order_ts, s.store_name,
+       o.order_type, o.payment_method,
+       o.subtotal, o.tax_amount, o.total
+FROM orders o
+JOIN stores s ON s.store_id = o.store_id
+WHERE o.transaction_id = ?;""", language="sql")
+                st.caption("↳ returns exactly one row — the order header:")
+                st.dataframe(header, hide_index=True,
+                             use_container_width=True)
+
+                st.markdown(
+                    "**2 · What was ordered?** (the line items) — Each row in "
+                    "`order_items` is one line on the receipt. We use "
+                    "**`LEFT JOIN`** to `menu_items` *and* `combos` because a "
+                    "line is *either* a single item *or* a combo — a combo "
+                    "line has no `item_id`, so an inner join would silently "
+                    "drop it. `coalesce(item_name, combo_name)` then picks "
+                    "whichever name exists, and a join to `sizes` turns "
+                    "`size_id` into a readable size.")
+                st.code("""SELECT oi.order_item_id,
+       coalesce(mi.item_name, c.combo_name) AS item,
+       sz.size_name, oi.quantity, oi.unit_price, oi.line_total
+FROM order_items oi
+LEFT JOIN menu_items mi ON mi.item_id = oi.item_id
+LEFT JOIN combos     c  ON c.combo_id = oi.combo_id
+LEFT JOIN sizes      sz ON sz.size_id = oi.size_id
+JOIN orders o ON o.order_id = oi.order_id
+WHERE o.transaction_id = ?
+ORDER BY oi.order_item_id;""", language="sql")
+                st.caption("↳ one row per line — note the **order_item_id** "
+                           "key on the left:")
+                st.dataframe(lines, hide_index=True,
+                             use_container_width=True)
+
+                st.markdown(
+                    "**3 · How was each line customized?** (the modifiers) — "
+                    "Customizations live in the `order_item_modifiers` bridge "
+                    "table (the many-to-many link between lines and "
+                    "`modifiers`). We fetch them keyed by `order_item_id` and "
+                    "the app tucks each one under its line — e.g. "
+                    "*+ Animal Style*.")
+                st.code("""SELECT oi.order_item_id, m.modifier_name
+FROM order_item_modifiers oim
+JOIN modifiers   m  ON m.modifier_id    = oim.modifier_id
+JOIN order_items oi ON oi.order_item_id = oim.order_item_id
+JOIN orders o ON o.order_id = oi.order_id
+WHERE o.transaction_id = ?;""", language="sql")
+                if mods.empty:
+                    st.caption("↳ this order has no customizations, so this "
+                               "query returns 0 rows.")
+                else:
+                    st.caption("↳ each modifier carries the **order_item_id** "
+                               "of the line it belongs to — that's the key the "
+                               "app matches on:")
+                    st.dataframe(mods, hide_index=True,
+                                 use_container_width=True)
+
+                st.markdown(
+                    "**How do values flow between the three queries?** They "
+                    "don't chain the way you might expect — none of them uses "
+                    "another's *output* as its input. Instead:")
+                st.markdown(
+                    "- **One shared input.** All three are filtered by the "
+                    "same bound value, `WHERE o.transaction_id = ?`. The app "
+                    "passes the *identical* `transaction_id` into each call, "
+                    "so they're three independent 'siblings' describing one "
+                    "order, not a pipeline.\n"
+                    "- **The app joins the last two in Python, by key.** "
+                    "Query 2 returns each line's `order_item_id`; query 3 "
+                    "returns modifiers *tagged with the same* "
+                    "`order_item_id`. The code groups the modifiers by that "
+                    "key (`mods_by_line = mods.groupby('order_item_id')`) and "
+                    "tucks each list under its matching line. So "
+                    "`order_item_id` is the value that links line items to "
+                    "their customizations — the join happens in Python here, "
+                    "using the key the database handed back.\n"
+                    "- **Could it be one query?** Yes — you could `JOIN` all "
+                    "of this into a single result set. We split it into three "
+                    "because each answers a distinct question and keeps the "
+                    "receipt's header, lines, and modifiers easy to render "
+                    "separately. That trade-off (fewer round-trips vs. simpler "
+                    "result shapes) is a real design choice apps make daily.")
+
+                st.info(
+                    "**Why the `?` instead of pasting the ID into the text?** "
+                    "The value is sent to the database *separately* from the "
+                    "query as a bound **parameter**. The database treats it as "
+                    "pure data, never as SQL — so a mischievous transaction_id "
+                    "like `x'; DROP TABLE orders; --` can't run. This is the "
+                    "single most important habit for writing safe database "
+                    "code, and it's how every real application does lookups.")
+
+
+# ===========================================================================
+# PAGE 8 · BROWSE ORDERS  (search + filter + LIMIT/OFFSET pagination)
+# ===========================================================================
+if page == "📋 Browse Orders":
+    page_header("Browse Orders",
+                "Filter thousands of orders down to the ones you want and page "
+                "through them — the search-and-paginate pattern behind almost "
+                "every 'list' screen in real software.")
+
+    # -- Filter controls --------------------------------------------------
+    stores_df = q("SELECT store_id, store_name FROM stores ORDER BY store_id")
+    store_options = [(r.store_name, r.store_id)
+                     for r in stores_df.itertuples(index=False)]
+    bounds = q("SELECT min(order_ts)::DATE AS a, max(order_ts)::DATE AS b "
+               "FROM orders")
+    min_d = pd.to_datetime(bounds["a"][0]).date()
+    max_d = pd.to_datetime(bounds["b"][0]).date()
+
+    # Multi-selects: pick any combination. Empty = no filter (i.e. "all").
+    f1, f2, f3 = st.columns(3)
+    store_sel = f1.multiselect("Stores", store_options,
+                               format_func=lambda o: o[0],
+                               placeholder="All stores")
+    store_ids = [o[1] for o in store_sel]
+    otypes = f2.multiselect("Order types",
+                            ["Dine-In", "Drive-Thru", "Takeout"],
+                            placeholder="All order types")
+    pays = f3.multiselect("Payment methods", ["Card", "Cash", "Mobile"],
+                          placeholder="All payment methods")
+
+    g1, g2 = st.columns([3, 2])
+    with g1:
+        all_dates = st.checkbox("All dates", value=True)
+        if all_dates:
+            start_d = end_d = None
+        else:
+            dr = st.date_input("Order date range", value=(min_d, max_d),
+                               min_value=min_d, max_value=max_d)
+            if isinstance(dr, (list, tuple)) and len(dr) == 2:
+                start_d, end_d = dr
+            else:
+                d0 = dr[0] if isinstance(dr, (list, tuple)) else dr
+                start_d, end_d = d0, d0
+    txn_search = g2.text_input("Search transaction_id contains",
+                               placeholder="e.g. 20260214  or  INO-02")
+
+    h1, h2 = st.columns([2, 3])
+    page_size = h1.select_slider("Rows per page", [10, 25, 50, 100], value=25)
+    hide_voided = h2.checkbox("Hide voided orders", value=False)
+
+    # -- Build a dynamic, fully parameterized WHERE from active filters ---
+    # Each filter is added ONLY when set, so "All" everywhere = no WHERE at all.
+    # Multi-value filters use IN (?, ?, ...) with one placeholder per choice.
+    clauses, params = [], []
+
+    def in_clause(col, values):
+        placeholders = ", ".join(["?"] * len(values))
+        clauses.append(f"{col} IN ({placeholders})")
+        params.extend(values)
+
+    if store_ids:
+        in_clause("o.store_id", store_ids)
+    if otypes:
+        in_clause("o.order_type", otypes)
+    if pays:
+        in_clause("o.payment_method", pays)
+    if start_d is not None:
+        clauses.append("o.order_ts::DATE BETWEEN ? AND ?")
+        params.extend([start_d, end_d])
+    if txn_search.strip():
+        clauses.append("o.transaction_id LIKE ?")
+        params.append(f"%{txn_search.strip()}%")
+    if hide_voided:
+        clauses.append("NOT o.is_voided")   # no parameter — a plain condition
+    where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
+
+    # Reset to page 1 whenever the filters (or page size) change
+    sig = (tuple(sorted(store_ids)), tuple(sorted(otypes)), tuple(sorted(pays)),
+           str(start_d), str(end_d), txn_search.strip(), page_size, hide_voided)
+    if st.session_state.get("bo_sig") != sig:
+        st.session_state.bo_sig = sig
+        st.session_state.bo_page = 0
+    st.session_state.setdefault("bo_page", 0)
+
+    # -- Query 1: COUNT(*) with the same filters → total matches ----------
+    total = int(q(f"SELECT count(*) AS n FROM orders o {where}",
+                  params)["n"][0])
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    st.session_state.bo_page = min(st.session_state.bo_page, total_pages - 1)
+    cur = st.session_state.bo_page
+    offset = cur * page_size
+
+    # -- Query 2: the current page of rows --------------------------------
+    rows = q(f"""
+SELECT o.transaction_id, o.order_ts, s.store_name,
+       o.order_type, o.payment_method, o.total, o.is_voided
+FROM orders o
+JOIN stores s ON s.store_id = o.store_id
+{where}
+ORDER BY o.order_ts DESC
+LIMIT ? OFFSET ?""", params + [page_size, offset])
+
+    # -- Results + pagination UI ------------------------------------------
+    if total == 0:
+        st.warning("No orders match these filters.")
+    else:
+        first = offset + 1
+        last = min(offset + page_size, total)
+        st.caption(f"Showing **{first:,}–{last:,}** of **{total:,}** matching "
+                   f"orders  ·  page {cur + 1} of {total_pages}")
+        st.dataframe(rows, hide_index=True, use_container_width=True)
+
+        p1, p2, p3 = st.columns([1, 2, 1])
+        if p1.button("⬅️ Prev", disabled=cur <= 0, use_container_width=True):
+            st.session_state.bo_page -= 1
+            st.rerun()
+        p2.markdown(f"<div style='text-align:center;padding-top:.4rem'>"
+                    f"Page {cur + 1} / {total_pages}</div>",
+                    unsafe_allow_html=True)
+        if p3.button("Next ➡️", disabled=cur >= total_pages - 1,
+                     use_container_width=True):
+            st.session_state.bo_page += 1
+            st.rerun()
+
+    # -- Show & explain the SQL -------------------------------------------
+    with st.expander("🔍 Show & explain the SQL"):
+        st.markdown(
+            "This one screen is really **two queries that share the exact "
+            "same filters** — a pattern you'll reuse in every app you build.")
+
+        st.markdown(
+            "**1 · Build the filter once (a dynamic, parameterized `WHERE`).** "
+            "The app only adds a condition for filters you actually set, and "
+            "every value is a bound `?` parameter — never pasted into the "
+            "string. For your current filters it built:")
+        if clauses:
+            st.code("WHERE " + "\n  AND ".join(clauses) + ";", language="sql")
+            st.caption(f"bound values (in order): {params}")
+        else:
+            st.code("-- (no filters set — no WHERE clause at all)",
+                    language="sql")
+            st.caption("With everything set to 'All', the query returns every "
+                       "order — the WHERE simply isn't added.")
+
+        st.markdown(
+            "**2 · Count the matches** (so we can show *“of "
+            f"{total:,}”* and work out the number of pages). Same `WHERE`, "
+            "same parameters:")
+        st.code(f"SELECT count(*) AS n\nFROM orders o\n{where};",
+                language="sql")
+
+        st.markdown(
+            "**3 · Fetch just the current page** with **`LIMIT` / `OFFSET`.** "
+            "`LIMIT` is how many rows per page; `OFFSET` skips the pages "
+            "before it — here `OFFSET = (page − 1) × page_size`. `ORDER BY` "
+            "gives a stable order so paging is consistent.")
+        st.code(f"""SELECT o.transaction_id, o.order_ts, s.store_name,
+       o.order_type, o.payment_method, o.total
+FROM orders o
+JOIN stores s ON s.store_id = o.store_id
+{where}
+ORDER BY o.order_ts DESC
+LIMIT {page_size} OFFSET {offset};""", language="sql")
+
+        st.markdown(
+            "**How the values flow:** the filters produce one list of bound "
+            "parameters that is reused by *both* the count and the page "
+            "query; pagination just appends two more numbers — `LIMIT` and "
+            "`OFFSET` — computed from the page you're on. Nothing is "
+            "string-concatenated, so the search stays injection-safe.")
+
+        st.info(
+            "**Design note — `OFFSET` vs. keyset paging.** `LIMIT/OFFSET` is "
+            "simple and perfect here, but on very large tables a deep page "
+            "(say `OFFSET 500000`) is slow because the database still walks "
+            "past all the skipped rows. High-scale apps switch to *keyset* "
+            "pagination — `WHERE order_ts < ? ORDER BY order_ts DESC LIMIT n` "
+            "— which jumps straight to the next slice. Same idea, a faster "
+            "tool when the data grows.")

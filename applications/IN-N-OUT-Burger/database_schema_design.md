@@ -216,10 +216,24 @@ One row per transaction / receipt.
 | `tax_rate` | DECIMAL(5,4) | stored so historical orders stay correct |
 | `tax_amount` | DECIMAL(8,2) | |
 | `total` | DECIMAL(8,2) | `subtotal + tax_amount` |
+| `is_voided` | BOOLEAN | `NOT NULL DEFAULT FALSE` — soft-delete flag |
+| `voided_at` | TIMESTAMP | when it was voided (`NULL` while live) |
 
 Storing `tax_rate` on each order (rather than relying on a global constant) is
 a small but realistic touch: if the tax rate changes next year, old receipts
 still reflect the rate that actually applied.
+
+**Voiding is a soft delete.** To "cancel" or refund an order we do **not**
+`DELETE` it — that would erase the sale and its `order_items`, destroying the
+audit trail. Instead we set `is_voided = TRUE` (and record `voided_at`) with an
+`UPDATE`. The row and its children stay in the database; every money report
+adds `WHERE NOT is_voided` so voided sales don't count toward revenue. Because
+it's just a flag, a void is **reversible** (un-void = set it back to `FALSE`).
+This is how real point-of-sale and accounting systems behave — a financial
+record is marked as reversed, never physically removed. `is_voided` is declared
+`NOT NULL DEFAULT FALSE` so existing rows and plain `INSERT`s are unambiguously
+"live" without having to mention the column; `voided_at` is kept separate so
+the flag answers *"is it voided?"* and the timestamp answers *"when?"*.
 
 ---
 

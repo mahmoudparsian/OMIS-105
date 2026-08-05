@@ -1,14 +1,14 @@
 """
 Offline verification harness (not shipped with the app).
-Exercises build_db's generation code without DuckDB by faking the connection,
+Exercises build_duckdb's generation code without DuckDB by faking the connection,
 then checks relational integrity + aggregations with pandas.
 """
 import re
 import sys
 import types
-sys.modules["duckdb"] = types.ModuleType("duckdb")  # stub: build_db imports it
+sys.modules["duckdb"] = types.ModuleType("duckdb")  # stub: builder imports it
 import pandas as pd
-import build_db as b
+import build_duckdb as b
 
 
 class FakeCon:
@@ -30,13 +30,15 @@ class FakeCon:
         return (self._last,)
 
     def executemany(self, sql, rows):
-        t = re.search(r"INSERT INTO (\w+)", sql).group(1)
-        self.tables.setdefault(t, []).extend(rows)
+        m = re.search(r"INSERT INTO (\w+)", sql)
+        if not m:                       # e.g. the void UPDATE — ignore here
+            return
+        self.tables.setdefault(m.group(1), []).extend(rows)
 
 
 con = FakeCon()
 b.load_reference(con)
-n_o, n_i, n_m = b.generate_orders(con)
+n_o, n_i, n_m, n_v = b.generate_orders(con)
 
 cols = {
     "stores": ["store_id", "store_name", "city", "state"],
@@ -54,7 +56,8 @@ cols = {
 }
 df = {t: pd.DataFrame(con.tables.get(t, []), columns=c) for t, c in cols.items()}
 
-print(f"orders={n_o}  order_items={n_i}  order_item_modifiers={n_m}")
+print(f"orders={n_o}  order_items={n_i}  order_item_modifiers={n_m}  "
+      f"voided={n_v}")
 
 # 1. Referential integrity --------------------------------------------------
 assert df["order_items"]["order_id"].isin(df["orders"]["order_id"]).all(), "FK order_id"

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 210" fill="none" role="img" aria-label="In-N-Out Point of Sale banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E31837"/>
+      <stop offset="1" stop-color="#B5122A"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="210" rx="18" fill="url(#bg)"/>
+  <rect x="0" y="0" width="620" height="210" rx="18" fill="url(#fade)"/>
+  <!-- decorative dots -->
+  <g fill="#FFC72C" opacity="0.30">
+    <circle cx="150" cy="34" r="4"/><circle cx="210" cy="60" r="3"/>
+    <circle cx="90" cy="150" r="3"/><circle cx="260" cy="170" r="4"/>
+  </g>
+
+  <!-- Left: title + tagline -->
+  <text x="56" y="86" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="42" font-weight="800" fill="#ffffff">Point of Sale</text>
+  <text x="58" y="122" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFE9A8">Fresh · made to order</text>
+  <text x="58" y="156" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="500" fill="#ffffff" opacity="0.92">Every order you ring up becomes a real database transaction.</text>
+
+  <!-- Right: food illustration group -->
+  <g transform="translate(770,26)">
+    <!-- plate shadow -->
+    <ellipse cx="200" cy="164" rx="196" ry="18" fill="#7c0f20" opacity="0.45"/>
+
+    <!-- Burger -->
+    <g transform="translate(150,26)">
+      <path d="M8 34 C8 8 128 8 128 34 L128 40 L8 40 Z" fill="#F0B266"/>
+      <circle cx="34" cy="24" r="2.4" fill="#fff6e2"/><circle cx="58" cy="19" r="2.4" fill="#fff6e2"/>
+      <circle cx="82" cy="19" r="2.4" fill="#fff6e2"/><circle cx="104" cy="24" r="2.4" fill="#fff6e2"/>
+      <path d="M4 40 q15 12 30 0 q15 12 30 0 q15 12 30 0 q15 12 30 0 l0 8 l-120 0 Z" fill="#67B44C"/>
+      <path d="M14 44 l24 16 l24 -16 Z" fill="#FFC72C"/>
+      <rect x="6" y="48" width="124" height="16" rx="8" fill="#7A4A2B"/>
+      <path d="M8 66 L128 66 C128 92 8 92 8 66 Z" fill="#E8A857"/>
+    </g>
+
+    <!-- Fries -->
+    <g transform="translate(20,60)">
+      <path d="M6 40 L54 40 L48 104 L12 104 Z" fill="#E31837" stroke="#ffffff" stroke-width="2"/>
+      <rect x="10" y="12" width="6" height="34" rx="3" fill="#FFD65A"/>
+      <rect x="20" y="4" width="6" height="42" rx="3" fill="#FFC72C"/>
+      <rect x="30" y="8" width="6" height="40" rx="3" fill="#FFD65A"/>
+      <rect x="40" y="2" width="6" height="44" rx="3" fill="#FFC72C"/>
+      <rect x="6" y="52" width="48" height="12" fill="#ffffff" opacity="0.9"/>
+    </g>
+
+    <!-- Cup -->
+    <g transform="translate(300,52)">
+      <path d="M4 22 L60 22 L54 112 L10 112 Z" fill="#ffffff"/>
+      <path d="M4 22 L60 22 L57.5 42 L6.5 42 Z" fill="#E31837"/>
+      <rect x="30" y="-8" width="5" height="34" rx="2.5" fill="#FFC72C" transform="rotate(12 32 8)"/>
+      <ellipse cx="32" cy="-8" rx="9" ry="4" fill="#FFC72C"/>
+    </g>
+  </g>
+</svg>
