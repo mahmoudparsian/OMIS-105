@@ -103,6 +103,12 @@ CREATE TABLE IF NOT EXISTS combos (
 -- 8. ORDERS  (one row per transaction / receipt)
 --    transaction_id is the human-readable business key the cashier sees;
 --    order_id is the surrogate primary key used by foreign keys.
+--
+--    Voiding uses a SOFT DELETE: instead of physically removing a sale (which
+--    would destroy the audit trail and the child order_items), we flag it.
+--    Reads that report money then exclude flagged rows with `WHERE NOT
+--    is_voided`. This mirrors how real point-of-sale / accounting systems work
+--    — a financial record is never truly erased, only marked as reversed.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS orders (
     order_id       INTEGER      PRIMARY KEY,
@@ -114,7 +120,15 @@ CREATE TABLE IF NOT EXISTS orders (
     subtotal       DECIMAL(8,2) NOT NULL,
     tax_rate       DECIMAL(5,4) NOT NULL,
     tax_amount     DECIMAL(8,2) NOT NULL,
-    total          DECIMAL(8,2) NOT NULL
+    total          DECIMAL(8,2) NOT NULL,
+    -- Soft-delete flag. FALSE = a normal, live sale; TRUE = voided/refunded.
+    -- NOT NULL + DEFAULT FALSE means existing INSERTs need not mention it and
+    -- every historical row is unambiguously "not voided".
+    is_voided      BOOLEAN      NOT NULL DEFAULT FALSE,
+    -- When the void happened (NULL while the order is live). Kept separate from
+    -- is_voided so the flag answers "is it voided?" and the timestamp answers
+    -- "when?" — useful for audit reports and for un-voiding.
+    voided_at      TIMESTAMP
 );
 
 -- ---------------------------------------------------------------------

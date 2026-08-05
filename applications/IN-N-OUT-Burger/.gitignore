@@ -2,8 +2,10 @@
 .env
 .streamlit/secrets.toml
 
-# Generated database (rebuild with: python build_db.py)
+# Generated database (rebuild with: python build_duckdb.py)
 innout.duckdb
+innout.duckdb.wal
+*.duckdb.wal
 
 # Python
 __pycache__/

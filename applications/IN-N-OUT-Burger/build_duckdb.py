@@ -223,13 +223,33 @@ def generate_orders(con):
                            random.choice(ORDER_TYPES), random.choice(PAYMENTS),
                            subtotal, TAX_RATE, tax, total))
 
+    # Explicit column list: the orders table also has is_voided/voided_at,
+    # which we intentionally omit here so they take their schema DEFAULTs
+    # (FALSE / NULL). Naming columns keeps this INSERT working even as the
+    # table grows more columns later.
     con.executemany(
-        "INSERT INTO orders VALUES (?,?,?,?,?,?,?,?,?,?)", order_rows)
+        """INSERT INTO orders
+             (order_id, transaction_id, store_id, order_ts, order_type,
+              payment_method, subtotal, tax_rate, tax_amount, total)
+           VALUES (?,?,?,?,?,?,?,?,?,?)""", order_rows)
     con.executemany(
         "INSERT INTO order_items VALUES (?,?,?,?,?,?,?,?)", item_rows)
     con.executemany(
         "INSERT INTO order_item_modifiers VALUES (?,?,?)", mod_rows)
-    return len(order_rows), len(item_rows), len(mod_rows)
+
+    # Soft-delete a small, realistic fraction (~1.5%) of historical orders so
+    # the "exclude voided" behavior is actually visible on the dashboard.
+    # Voiding is an UPDATE (not a DELETE): the rows stay in the table, we just
+    # flip the flag and stamp WHEN it happened (a few minutes after the sale).
+    void_updates = [
+        (row[3] + timedelta(minutes=random.randint(3, 90)), row[0])  # (ts, oid)
+        for row in order_rows if random.random() < 0.015
+    ]
+    con.executemany(
+        "UPDATE orders SET is_voided = TRUE, voided_at = ? WHERE order_id = ?",
+        void_updates)
+
+    return len(order_rows), len(item_rows), len(mod_rows), len(void_updates)
 
 
 def main():
@@ -239,10 +259,10 @@ def main():
     with open(SCHEMA_PATH) as f:
         con.execute(f.read())
     load_reference(con)
-    n_o, n_i, n_m = generate_orders(con)
+    n_o, n_i, n_m, n_v = generate_orders(con)
     con.close()
     print(f"Built {DB_PATH}")
-    print(f"  orders               : {n_o}")
+    print(f"  orders               : {n_o}  ({n_v} voided)")
     print(f"  order_items          : {n_i}")
     print(f"  order_item_modifiers : {n_m}")
 

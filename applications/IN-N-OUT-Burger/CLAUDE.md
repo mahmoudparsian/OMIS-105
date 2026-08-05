@@ -21,7 +21,7 @@ pedagogy.
 |---|---|
 | `schema.sql` | The normalized schema (10 tables, sequences, PK/FK/CHECK). Source of truth for the data model. |
 | `build_duckdb.py` | Creates `innout.duckdb`: applies `schema.sql`, loads the menu, generates historical orders. |
-| `app.py` | The Streamlit app: POS, Dashboard, SQL Playground, Schema inspector, Stores. |
+| `app.py` | The Streamlit app: POS, Order Lookup & Refund, Browse Orders, Dashboard, SQL Playground, Schema inspector, Stores, Transactions. |
 | `menu.md` | The source menu the app is built from. |
 | `nl2sql_system_prompt.md` | System prompt for the Ask-Claude NL→SQL helper (edit to tune behavior). |
 | `er_diagram.dot` | Graphviz DOT for the Schema-page ER diagram (edit to change the diagram). |
@@ -29,6 +29,7 @@ pedagogy.
 | `_verify.py` | Offline integrity/aggregation check for the seeder. Not part of the running app. |
 | `requirements.txt` | Python deps (`streamlit>=1.40`, `duckdb>=1.1`, `pandas>=2.0`, `altair>=5.0`). |
 | `.streamlit/config.toml` | Pins the app to a light theme so text stays readable. |
+| `assets/logo.svg`, `assets/logo_icon.svg`, `assets/hero.svg` | Original SVG brand artwork (not the trademarked In-N-Out logo). Used by `st.logo` and the POS hero banner. |
 | `README.md` | End-user run instructions. |
 
 ## How to run
@@ -60,6 +61,15 @@ only in the database file and are wiped on the next rebuild.
 - **Per-store volume** is configured in `build_duckdb.py` via `STORE_ORDER_COUNTS`
   (`{1:1500, 2:2000, 3:2500}` → 6,000 orders total). `DAYS_OF_HISTORY = 365`
   spreads them across a year so monthly/cumulative charts have ~12–13 buckets.
+- **Auto-migration.** `migrate()` runs once after the DB-ready gate and issues
+  idempotent `ALTER TABLE orders ADD COLUMN IF NOT EXISTS is_voided/voided_at`,
+  so an existing `innout.duckdb` gains the soft-delete columns without a
+  rebuild. Add future additive columns the same way.
+- **Void = soft delete.** `set_order_voided()` is a transactional `UPDATE` of
+  the `is_voided` flag (never a `DELETE`). Every money read must filter
+  `WHERE NOT is_voided`; the seeder voids ~1.5% of historical orders so this is
+  visible. `build_duckdb.py` inserts orders with an **explicit column list** so
+  the new columns take their defaults.
 - **Constraint demos never mutate data.** The Schema page's "Try to break it"
   panel uses `try_violation()`, which wraps the attempted INSERT in
   `BEGIN … ROLLBACK` and returns the DB's error message. Any new "show the DB
@@ -77,6 +87,22 @@ only in the database file and are wiped on the next rebuild.
   for text; reserve raw HTML for small inline styling like the price tag.
 - **Charts/text color:** the app forces a light background, so always ensure
   text has an explicit dark color (handled in the global CSS + `config.toml`).
+- **Design system (modern dashboard).** One big CSS block near the top defines
+  CSS variables (`--ink/--red/--surface/--border/--radius/--shadow`) and styles
+  native Streamlit widgets by `data-testid` (metrics → cards, buttons,
+  bordered containers → cards, tabs, sidebar, dataframes, expanders). Font is a
+  **system stack** (no web-font `@import` — a Google Fonts import rendered as
+  garbled glyphs on restricted/offline networks, so it was removed).
+  **Never set `font-family` on a broad `<span>` selector** (e.g. `.stApp span`)
+  — it clobbers Streamlit's Material Symbols icon font and makes expander
+  chevrons render as literal text like `keyboard_arrow_right`. Scope font rules
+  to the app root. Prefer extending these
+  variables/selectors over per-element inline styles. Every page starts with
+  `page_header(title, subtitle)` (h1 + caption + gradient accent rule); the POS
+  and build-gate screens also call `hero_banner()`. Brand art is loaded via
+  `st.logo(...)` (with a version-safe fallback for the `size` arg) and
+  `st.image(HERO)` — both wrapped so missing/older-Streamlit SVG support
+  degrades gracefully rather than crashing.
 - **"Show SQL" everywhere.** When you add a chart, table, or write action, also
   surface the underlying SQL via the `show_sql()` helper (or an expander with
   `st.code(..., language="sql")`). This is a product requirement, not optional.
@@ -130,7 +156,9 @@ PASSED", then `python build_duckdb.py` and click through the app.
    card-grid menu; combos, à-la-carte, simplified Sides, fountain sizes and
    burger customizations via popovers; writes real orders, prints a receipt,
    and shows the actual committed INSERTs (real values) alongside the template.
-2. **📊 Dashboard** — KPIs and charts, each with a Show SQL expander.
+2. **📊 Dashboard** — KPIs and charts, each with a Show SQL expander. Revenue
+   KPIs and the recent-transactions feed exclude voided orders via a visible
+   `WHERE NOT is_voided`.
 3. **🧪 SQL Playground** — read-only query box (SELECT/WITH/EXPLAIN/…) with
    worked examples, plus an **Ask Claude** box that turns a plain-English
    question into DuckDB SQL (optional; needs `anthropic` + an API key).
@@ -144,8 +172,29 @@ PASSED", then `python build_duckdb.py` and click through the app.
    like store names; hover shows name + value + share.
 4. **🗂️ Schema** — ER diagram (Graphviz) + per-table inspector (metadata,
    constraints, sample rows) + the "Try to break it" constraint demo.
-5. **🏪 Stores** — list stores with counts/revenue; add a store (one INSERT).
-6. **🔄 Transactions** — step-by-step COMMIT-vs-ROLLBACK atomicity demo (a
+5. **🔎 Order Lookup & Refund** — find an order by `transaction_id` and reprint its
+   receipt. Three **parameterized** (`?`-bound) queries — header, line items
+   (`LEFT JOIN` so combo lines show), modifiers — all keyed by the *same*
+   `transaction_id`; the app joins lines↔modifiers in Python via
+   `order_item_id`. The "Show & explain the SQL" expander gives each query an
+   English explanation plus its actual result, and a note on why binding beats
+   string-concatenation (injection safety). Also hosts the **Void / refund**
+   action (soft delete): a confirm-then-`UPDATE orders SET is_voided=TRUE,
+   voided_at=now()`, an "Un-void" to reverse it, a VOIDED receipt stamp, and a
+   soft-vs-hard-delete explain panel. Looked-up txn persists in
+   `st.session_state.ol_txn` so the order stays on screen across void reruns.
+6. **📋 Browse Orders** — search/filter with `LIMIT/OFFSET` pagination. Store,
+   order-type and payment are **multi-selects** → `col IN (?, ?, …)` (one
+   placeholder per choice; empty = no filter). Date range is optional behind an
+   **"All dates"** checkbox; there's also a `transaction_id LIKE ?` search.
+   Builds a dynamic, fully parameterized `WHERE` (empty when nothing is set);
+   one param list is reused by a `COUNT(*)` query (for "of N" + page count) and
+   the page query. Filters reset to page 1 on change (`bo_sig`/`bo_page` in
+   session_state). "Show & explain the SQL" covers the dynamic WHERE, the
+   offset math, and the OFFSET-vs-keyset trade-off. Has a "Hide voided orders"
+   toggle (adds `NOT o.is_voided`) and shows an `is_voided` indicator column.
+7. **🏪 Stores** — list stores with counts/revenue; add a store (one INSERT).
+8. **🔄 Transactions** — step-by-step COMMIT-vs-ROLLBACK atomicity demo (a
    two-till cash transfer). Runs in a **separate in-memory DuckDB**
    (`get_demo_con`, table `demo_tills`) — fully isolated from `innout.duckdb`,
    so it cannot affect real data. `run_txn_demo()` resets to baseline each run,
@@ -175,6 +224,20 @@ classroom value. Keep the pedagogy principles above (readable SQL, visible
 - [x] **Transaction / ROLLBACK demo** — dedicated 🔄 Transactions page; a
   two-till cash transfer shown step by step (COMMIT vs ROLLBACK), in an
   isolated in-memory DuckDB.
+- [x] **Order lookup & receipt reprint** — 🔎 Order Lookup page; parameterized
+  lookup by `transaction_id` with an explained SQL walkthrough + per-query
+  output.
+- [x] **Search & filter + pagination** — 📋 Browse Orders page; dynamic
+  parameterized `WHERE`, `COUNT(*)` + `LIMIT/OFFSET` page query, explained SQL.
+  Multi-select filters (`IN (?, …)`) and an optional "All dates" range.
+- [x] **Void / refund (soft delete)** — `is_voided`/`voided_at` on `orders`
+  (schema.sql + idempotent in-app `ALTER … ADD COLUMN IF NOT EXISTS`
+  migration); void/un-void on Order Lookup; reports filter `WHERE NOT
+  is_voided`; seeder voids ~1.5%; soft-vs-hard-delete explain panel.
+- [x] **Modern GUI redesign** — shared CSS design system (metric/​container
+  cards, buttons, tabs), original SVG logo + hero, `page_header()` on every
+  page. (Gotcha: never set `font-family` on a broad `span` selector — it breaks
+  Material icons.)
 
 ### Teaching-focused (highest value)
 
@@ -191,9 +254,6 @@ classroom value. Keep the pedagogy principles above (readable SQL, visible
 
 ### App / data model
 
-- [ ] **Order lookup & receipt reprint** by `transaction_id`.
-- [ ] **Void / refund** an order — discuss `DELETE`, cascades, and soft-deletes
-  (`is_voided` flag vs hard delete).
 - [ ] **employees** table tied to `orders` (who rang it up); adds a join and a
   "sales by cashier" report.
 - [ ] **customers / loyalty** table — another clean many-to-many
