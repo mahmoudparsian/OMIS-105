@@ -7,23 +7,21 @@
 
 ## ☑️ 1. Weekly Lab Structure
 
-✅ Each class period includes **2 lab-in-class** sessions.
+✅ Each class period includes a **lab-in-class** session.
 
 ✅ You have to complete the lab in-class.
   
-✅ **2 Marimo notebook labs** per class session
+✅ **1 Marimo notebook labs** per class session
 
 For example, the labs for **Week 01** are:
 
 ###  🗓️ Labs for Tuesday Class
 
 - `week01_lab_01_student.py`
-- `week01_lab_02_student.py`
 
 ###  🗓️ Labs for Thursday Class
 
-- `week01_lab_03_student.py`
-- `week01_lab_04_student.py`
+- `week01_lab_02_student.py`
 
 #### ✅ Labs will be available after 45 minutes of lecture by your instructor
 
@@ -75,19 +73,20 @@ Students must rename their notebook files before
 submission using the following format:
 
 ```text
-week##_lab_##_FirstName_LastName.py
+week##_lab_##_firstname_lastname.py
 ```
 
-For example, if your name is Jane Smith, 
-your submitted files for Week 01 would be:
+For example, if your name is **Jane Smith**, 
+your submitted files for Week 01 would 
+be (**your file name must be in lowercase 
+characters**).
 
 * Tuesday Class
-	* `week01_lab_01_Jane_Smith.py`
-	* `week01_lab_02_Jane_Smith.py`
+	* `week01_lab_01_jane_smith.py`
 
 * Thursday Class
-	* `week01_lab_03_Jane_Smith.py`
-	* `week01_lab_04_Jane_Smith.py`
+	* `week01_lab_02_jane_smith.py`
+
 	
 ---
 
