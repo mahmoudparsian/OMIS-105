@@ -179,7 +179,7 @@ find and change data fast.
 
 ---
 
-![](./images/sql-nosql.jpq)
+![](./images/sql-nosql.webp)
 
 ---
 
@@ -217,15 +217,14 @@ find and change data fast.
 
 * This course is designed for undergraduate students 
 at the department of
-[Information Systems and Analytics] (https://www.scu.edu/business/isa/academics/courses/), 
+[Information Systems and Analytics](https://www.scu.edu/business/isa/academics/courses/), 
 Santa Clara University.
 
 ---
 
 # 13. 🏛️  Course Description 
 
-* [This course](source: 
-https://www.scu.edu/business/isa/academics/courses/) 
+* [This course](https://www.scu.edu/business/isa/academics/courses/) 
 presents issues related to databases 
 and database management systems (DBMS).
  
@@ -267,7 +266,7 @@ on the issues of managing a database environment.
 |[`data_stories`](./data_stories) | Data Stories: Marimo notebooks for deep learning|
 |[`duckdb_resources`](./duckdb_resources)| DuckDB Resources and Examples| 
 |[`tutorials`](./tutorials) | Database Tutorials and Notebooks|
-|[`applications`](./applications) | Sample Streamlit apps built by DuckDB |
+|[`applications`](./applications) | Sample Streamlit apps built with DuckDB (e.g. the In-N-Out POS + analytics teaching app) |
 |[`data`](./data) | Sample data files (CSV and Parquet) |
 |[`software_installation`](./software_installation) | Steps to make sure Python, DuckDB, and Marimo are installed properly|
 
