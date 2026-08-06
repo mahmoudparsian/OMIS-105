@@ -16,12 +16,16 @@
 
 1. Open a Jupyter Notebook or Python environment
 2. Install DuckDB: `pip install duckdb`
-3. Place `products.csv` in your working directory
+3. Place `./data/products.csv` in your working directory
 
 ```python
 import duckdb
 con = duckdb.connect()
-con.sql("CREATE TABLE products AS SELECT * FROM read_csv_auto('products.csv')")
+con.sql("""
+CREATE TABLE products 
+AS 
+SELECT * FROM read_csv_auto('./data/products.csv')
+""")
 ```
 
 ---

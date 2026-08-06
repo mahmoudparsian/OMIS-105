@@ -58,6 +58,7 @@ Imagine Amazon without a database:
 Data = raw facts
 
 Examples:
+
 - Name: "Alice"
 - Price: 1000
 - Date: 2026-01-01
@@ -69,6 +70,7 @@ Examples:
 Data → processed → Information
 
 Example:
+
 - Raw: transactions
 - Insight: “Top-selling product”
 
@@ -79,6 +81,7 @@ Example:
 A structured collection of data
 
 Key properties:
+
 - Organized
 - Persistent
 - Queryable
@@ -101,10 +104,10 @@ Key properties:
 
 # Problem: Data Duplication
 
-| customer | order |
-|----------|------|
+| customer | order  |
+|----------|--------|
 | Alice    | Laptop |
-| Alice    | Phone |
+| Alice    | Phone  |
 
 👉 What if name changes?
 
@@ -153,8 +156,10 @@ Responsibilities:
 
 Data stored in tables:
 
-| id | name | price |
-|----|------|-------|
+| id  | name   | price   |
+|-----|--------|---------|
+| 100 | Laptop | 1200.00 |
+| 200 | Monitor| 300.00  |
 
 ---
 
@@ -202,18 +207,27 @@ CREATE TABLE products (
 # Insert Data
 
 ```sql
-INSERT INTO products VALUES
+INSERT INTO products 
+VALUES
 (1, 'Laptop', 1000),
-(2, 'Phone', 800),
-(3, 'Tablet', 500);
+(2, 'Phone-12', 800),
+(3, 'Tablet-1', 500);
 ```
 
+```sql
+INSERT INTO products (id, name, price)
+VALUES
+(11, 'Laptop-X', 1200),
+(23, 'Phone-11', 700),
+(35, 'Table-2', 500);
+```
 ---
 
 # Query Data
 
 ```sql
-SELECT * FROM products;
+SELECT * 
+FROM products;
 ```
 
 ---
@@ -221,7 +235,8 @@ SELECT * FROM products;
 # Filter Data
 
 ```sql
-SELECT * FROM products
+SELECT * 
+FROM products
 WHERE price > 700;
 ```
 
@@ -301,6 +316,7 @@ Database = Organized memory
 # What’s Next?
 
 Week 2:
+
 - Relationships
 - Keys
 - Data modeling

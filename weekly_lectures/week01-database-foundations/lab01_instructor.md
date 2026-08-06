@@ -10,7 +10,11 @@
 ```python
 import duckdb
 con = duckdb.connect()
-con.sql("CREATE TABLE products AS SELECT * FROM read_csv_auto('products.csv')")
+con.sql("""
+CREATE TABLE products 
+AS 
+SELECT * FROM read_csv_auto('./data/products.csv')
+""")
 ```
 
 ---
