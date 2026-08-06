@@ -1,9 +1,9 @@
-# Can AI Write Your SQL? Yes. <br> Should You Trust It? Let's Find Out.
+# Can AI-LLM Write Your SQL? Yes. <br> Should You Trust It? Let's Find Out.
 
 * **Course:** OMIS 105 — Introduction to Database Management Systems
 * **Quarter:** Fall 2026
 * **Author:** Dr. Mahmoud Parsian
-* **Last updated:** July 31, 2026
+* **Last updated:** August 5, 2026
 
 ---
 
