@@ -138,7 +138,7 @@ A DBMS provides:
 - **Standard SQL**: Full SQL support
 - **CSV-friendly**: Load data from CSV files directly
 - **Fast**: Columnar storage, vectorized execution
-- **Python integration**: Works great in Jupyter notebooks
+- **Python integration**: Works great in Mrimo/Jupyter notebooks
 - **Free & open source**
 
 ---
@@ -254,7 +254,7 @@ CREATE TABLE products (
 pip install duckdb
 ```
 
-**In a Jupyter Notebook**:
+**In a Marimo/Jupyter Notebook**:
 ```python
 import duckdb
 
@@ -297,7 +297,7 @@ con = duckdb.connect()
 # Load products.csv directly
 con.sql("""
     CREATE TABLE products AS
-    SELECT * FROM read_csv_auto('products.csv')
+    SELECT * FROM read_csv_auto('./data/products.csv')
 """)
 
 # See what we loaded
@@ -548,11 +548,11 @@ FROM products;
 
 ```sql
 -- Read CSV without creating a table
-SELECT * FROM read_csv_auto('products.csv') LIMIT 5;
+SELECT * FROM read_csv_auto('./data/products.csv') LIMIT 5;
 
 -- Export query results to CSV
 COPY (SELECT * FROM products WHERE price > 100)
-TO 'expensive_products.csv' (HEADER, DELIMITER ',');
+TO './data/expensive_products.csv' (HEADER, DELIMITER ',');
 
 -- Get column statistics
 SUMMARIZE products;
@@ -567,7 +567,7 @@ DuckDB can query files directly:
 ```sql
 -- Query CSV file as if it were a table
 SELECT category, COUNT(*) AS cnt
-FROM read_csv_auto('products.csv')
+FROM read_csv_auto('./data/products.csv')
 GROUP BY category
 ORDER BY cnt DESC;
 ```
@@ -633,7 +633,7 @@ Aggregate functions: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
 # Practice Makes Perfect
 
 - Complete **Lab 1** (loading data, basic queries)
-- Explore the `products.csv` dataset
+- Explore the `./data/products.csv` dataset
 - Try writing your own queries
 - Install DuckDB and experiment!
 
