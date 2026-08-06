@@ -11,6 +11,10 @@
 	database systems  work, the principles behind  them,  
 	and how  they  shape  the  way organizations  store,   
 	retrieve,   and   analyze  information   every  day.
+	
+
+[Can AI-LLM Write Your SQL? Yes. <br>
+Should You Trust It? Let's Find Out.](./why_you_must_learn_SQL/why_you_must_learn_SQL.md)
 
 ---
 
