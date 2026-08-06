@@ -1,5 +1,9 @@
 # OMIS-105 : <br> Introduction to Database Management Systems
 
+[![DuckDB](https://img.shields.io/badge/DuckDB-FFF000?style=for-the-badge&logo=duckdb&logoColor=black)](https://duckdb.org)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
+[![Marimo](https://img.shields.io/badge/Marimo-2D2D2D?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0YyOEQxQSIgZD0iTTEyIDJDNi40NzcgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMnoiLz48L3N2Zz4=&logoColor=white)](https://marimo.io)
+
 @author: [Dr. Mahmoud Parsian](https://www.scu.edu/business/isa/faculty/parsian/)
 
 	In this course, you will learn  the  fundamentals of 
