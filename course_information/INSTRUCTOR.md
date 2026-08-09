@@ -18,8 +18,8 @@
 **Background:**
 
 - Ph.D. in Computer Science
-- Teaching:  30+ Years
-- Teaching:  12+ Years at SCU
+- Teaching: 30+ years
+- Teaching: 12+ years at SCU
 - Industry: 40+ years
 - Led Big Data Architect at Illumina (12 years)
 
