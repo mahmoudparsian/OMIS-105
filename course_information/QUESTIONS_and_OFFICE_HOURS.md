@@ -1,4 +1,4 @@
-# OMIS-105 <br> Questions and Office Hours
+# OMIS 105 <br> Questions and Office Hours
 
 **Course:** OMIS 105 — Introduction to Database Management Systems  
 **Quarter:** Fall 2026  

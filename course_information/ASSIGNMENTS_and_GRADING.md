@@ -16,7 +16,7 @@
 
 * **In-Class Lab**: 
 	* The student completes the lab during class, and 
-	* The Student submits it before the end of the class session.
+	* The student submits it before the end of the class session.
 
 ---
 ## 2. Class Attendance
@@ -38,8 +38,8 @@ instructor support are only available during class.
 
 2. All exams (Midterm and Final) are **closed book**, 
    **closed notes**, **closed software**, and 
-   **closed Internet**: it is required that you 
-   install a LockDown Browser ASAP.
+   **closed Internet**: you are required to install 
+   a LockDown Browser as soon as possible.
 
 3. Labs emphasize hands-on SQL, database design, 
   and analytical problem solving.

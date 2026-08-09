@@ -11,7 +11,7 @@
 
 ✅ You have to complete the lab in-class.
   
-✅ **1 Marimo notebook labs** per class session
+✅ **One Marimo notebook lab** per class session
 
 For example, the labs for **Week 01** are:
 
@@ -87,7 +87,6 @@ characters**).
 * Thursday Class
 	* `week01_lab_02_jane_smith.py`
 
-	
 ---
 
 ## ☑️ 6. Academic Integrity
