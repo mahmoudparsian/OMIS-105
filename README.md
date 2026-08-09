@@ -268,6 +268,8 @@ on the issues of managing a database environment.
 |[`course_information/REQUIRED_SOFTWARE.md`](./course_information/REQUIRED_SOFTWARE.md) | Required Software |
 |[`course_information/SOFTWARE_INSTALLATION.md`](./course_information/SOFTWARE_INSTALLATION.md)| Guide to Software Installation |
 |[`course_information/ACADEMIC_CONDUCT.md`](./course_information/ACADEMIC_CONDUCT.md)| Academic Conduct |
+|[`course_information/REQUIRED_BOOK.md`](./course_information/REQUIRED_BOOK.md)| Required Book (none — all materials in this repo) |
+|[`course_information/CLASS_ATTENDANCE.md`](./course_information/CLASS_ATTENDANCE.md) | Class Attendanace is Mandatory|
 |[`outline-10-weeks`](./outline-10-weeks) | Outline/TOC for 10 Weeks|
 |[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks |
 |[`weekly_reviews`](./weekly_reviews) | Cumulative review notebooks & lecture notes: Weeks 1–3, 4–6, 7–8, 9–10 |
