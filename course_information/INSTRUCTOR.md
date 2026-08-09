@@ -5,9 +5,7 @@
 
 ---
 
-## Dr. Mahmoud Parsian <br> Assistant Teaching Professor
-
-[Faculty Page — Santa Clara University, Leavey School of Business](https://www.scu.edu/business/isa/faculty/parsian/)
+## [Dr. M. Parsian, Assistant Teaching Professor](https://www.scu.edu/business/isa/faculty/parsian/)
 
 **Expertise:**
 
