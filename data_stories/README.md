@@ -97,7 +97,7 @@ folder, not from titles.
 | `emps_depts_projects` | 2 | Three-entity model | 2 |
 | `emps_single_table` | 3 | Full CRUD, `WHERE` ×11, one table | 3 |
 | `CRUD_9_emps_intro` / `_101` / `_102` | 2 / 2 / 1 | `INSERT`/`DELETE`/`WHERE` ×7–12 | 3 |
-| `CRUD_100_10_rows` (+ `_dql`, `_images`) | 2–3 | CRUD on 10 rows; readable by eye | 3 |
+| `CRUD_100_10_rows` (+ `_drill`, `_images`, `_flagship`) | 1–3 | CRUD on 10 rows; readable by eye | 3 |
 | `movies_database` nb1 | 3 total | Titled "SQL Basics"; `WHERE` ×29 | 3 |
 | `book_ratings` | 3 | `GROUP BY` ×4, **`HAVING` ×4** | 4 |
 | `video_game_sales` | 4 | `GROUP BY`, `HAVING` | 4 |
@@ -175,7 +175,7 @@ needs re-exporting from the Markdown.
 
 **4. Near-duplicate stories.** Several folders teach the same thing:
 
-- `CRUD_100_10_rows` has three variants: `_with_dql`, `_with_images`, `_flagship`
+- `CRUD_100_10_rows` has three variants: `_drill`, `_with_images`, `_flagship`
 - `CRUD_9_emps_intro`, `CRUD_10_emps_staging` and `CRUD_10_emps_persistent` are three
   more takes on the same CRUD material
 - `JOIN_101_EMPS_DEPTS` exists in 5- and 9-department versions
@@ -199,8 +199,10 @@ describes what completing it would take.
 | `CRUD_102_emps` | `CRUD_10_emps_persistent` | Holds 10; `102` was not a row count |
 | `JOIN_101_EMPS_DEPTS_10_departments` | `JOIN_101_EMPS_DEPTS_9_departments` | `data/` holds 9 departments |
 
-The renames used `git mv`, so file history is preserved. Each affected README notes
-its former name.
+The renames used `git mv`, so file history is preserved. **This table is the record**
+— most of the affected READMEs also note their former name, but
+`CRUD_100_10_rows_drill/` does not, so check here if you are following an old link or
+an older syllabus.
 
 `CRUD_100_10_rows_drill/` was also **cleaned**: markdown describing the `%%dql` magic,
 an unused `magic_duckdb` dependency, and an empty "load the magic" cell were all
