@@ -6,7 +6,7 @@
   dataset or one concept.
 * Each data story can be dropped into a lecture, assigned as practice, or used as a
   worked example.
-* **There are 35 of them here.**
+* **There are 35 of them here**, plus `test_marimo/` — a setup check rather than a story.
 * Data stories complement `weekly_lectures/` rather than replace it: a **week folder
   teaches the technique**, a **data story shows that technique doing real work**.
 
@@ -56,6 +56,7 @@ it exercises.
 | `insurance_dataset/` | **9** |
 | — | **10** *(no story — see gaps)* |
 | `music_dataset_1950_to_2019/` | — *(raw CSV only — no notebooks)* |
+| `test_marimo/` | — *(setup check — run it before anything else)* |
 
 ---
 
@@ -208,10 +209,12 @@ an older syllabus.
 an unused `magic_duckdb` dependency, and an empty "load the magic" cell were all
 removed. Its behaviour is unchanged.
 
-**6. Stray files at the top level.** `flights.csv` and `test_marimo.py` sit directly in
-`data_stories/` rather than in a story folder.
+**6. Stray files at the top level — resolved.** `test_marimo.py` now lives in
+`test_marimo/` with a README, and switched from a hardcoded database path outside the
+repo to an in-memory one. `flights.csv` was unused by anything and moved to
+`github/data/`. Only `README.md` sits at the top level now.
 
-**7. READMEs — done.** All **35** folders now carry a student-facing README with what
+**7. READMEs — done.** All **36** folders now carry a student-facing README with what
 the story is, how to run it, which week it serves, the schema or data, and teaching
 notes. Where a folder previously held the original build prompt, that prompt is
 recoverable from git (commit `8306937`).
