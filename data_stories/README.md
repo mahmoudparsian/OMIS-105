@@ -34,7 +34,7 @@ it exercises.
 | `CRUD_10_emps_staging/` | **3** |
 | `CRUD_10_emps_persistent/` | **3** |
 | `CRUD_100_10_rows/` | **3** |
-| `CRUD_100_10_rows_with_dql/` | **3** |
+| `CRUD_100_10_rows_drill/` | **3** |
 | `CRUD_100_10_rows_with_images/` | **3** |
 | `CRUD_100_10_rows_flagship/` | **3** |
 | `movies_database/` — notebook 1 (SQL Basics) | **3** |
@@ -188,11 +188,12 @@ needs re-exporting from the Markdown.
 notebooks — it is a candidate for a data story, not a finished one. Its README
 describes what completing it would take.
 
-**5b. Five folders were renamed** because their names did not describe their contents:
+**5b. Six folders were renamed** because their names did not describe their contents:
 
 | Old name | New name | Why |
 |---|---|---|
 | `CRUD_100_10_rows_with_images_openai` | `CRUD_100_10_rows_flagship` | Contained **no AI code at all** |
+| `CRUD_100_10_rows_with_dql` | `CRUD_100_10_rows_drill` | The `%%dql` magic it named was removed in the Marimo conversion |
 | `CRUD_100_emps` | `CRUD_9_emps_intro` | Holds 9 employees, not 100 |
 | `CRUD_101_emps` | `CRUD_10_emps_staging` | Holds 10; `101` was not a row count |
 | `CRUD_102_emps` | `CRUD_10_emps_persistent` | Holds 10; `102` was not a row count |
@@ -200,6 +201,10 @@ describes what completing it would take.
 
 The renames used `git mv`, so file history is preserved. Each affected README notes
 its former name.
+
+`CRUD_100_10_rows_drill/` was also **cleaned**: markdown describing the `%%dql` magic,
+an unused `magic_duckdb` dependency, and an empty "load the magic" cell were all
+removed. Its behaviour is unchanged.
 
 **6. Stray files at the top level.** `flights.csv` and `test_marimo.py` sit directly in
 `data_stories/` rather than in a story folder.
