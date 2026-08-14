@@ -1,9 +1,7 @@
-# CRUD  of Employees Data using Jupyter/DuckDB
-
-* This is going to be flagship Jupyter/DuckDB Notebook.
+# CRUD  of Employees Data using Notebook and DuckDB
 
 * We are going to teach CRUD of employee data
-  by using DuckDB and Jupyter Notebook.
+  by using DuckDB and Marimo Notebook.
 
 * This Notebook should assume that a student 
   does not know much about DuckDB and CRUD
@@ -44,7 +42,7 @@ All operations to be done by using the employees table.
 4 D's
 ```
 
-for each CRUD:
+For each CRUD:
 
 * show data before,
 * sql transformation (pretty print SQL, nice formatted)
@@ -55,9 +53,9 @@ many times from beginning to the end.
 
 5. More basic queries:
 
-   10 basic queries, using select, where, from, limit
+* 10 basic queries, using select, where, from, limit
 
-   10 queries using GROUP BY, HAVING, LIMIT
+* 10 queries using GROUP BY, HAVING, LIMIT
 
 
 
@@ -66,10 +64,13 @@ many times from beginning to the end.
    then read these CSV's to create DuckDB Tables.
 
 7. add more solid queries with plots
+
+```
    -- pcercentage male/female employees
    -- percentage per department
    -- higest and lowest salaries
    -- higest and lowest salaries per department
+```
 
 8. convert them to DuckDB environment: convert 
   it into a single Notebook/DuckDB
@@ -87,6 +88,7 @@ many times from beginning to the end.
       
 10.  Important: define all display/plot functions 
    outside of the notebook:
+   
    I do not want my students to be tangled 
    with plotting code or with code used to 
    display/tabulation of result set.
