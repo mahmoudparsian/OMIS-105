@@ -13,8 +13,8 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # CRUD Operations with DuckDB & Jupyter Notebook
-    ## Using `magic-duckdb` (%%dql) for SQL Queries
+    # CRUD Operations with DuckDB & Marimo
+    ## Four worked examples of each operation
 
     ---
 
@@ -34,11 +34,10 @@ def _(mo):
     **DuckDB** is an in-process SQL database — think of it as *SQLite for analytics*.  
     It runs entirely inside your Python process (no server needed!) and is optimised for analytical queries.
 
-    ### What is magic-duckdb?
+    ### How SQL is written here
 
-    **`magic-duckdb`** is a Jupyter extension that lets you write SQL directly in notebook cells  
-    using the `%%dql` magic command. This means you can run DuckDB queries without  
-    wrapping them in Python code.
+    Every query in this notebook lives in its own **Marimo SQL cell**, so what you read  
+    is plain SQL — no Python wrapping around it.
 
     ### What You Will Learn
 
@@ -60,7 +59,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ## 0 · Environment Setup
-    Install the required packages (runs only if not already installed) and load the `%%dql` magic.
+    Install the required packages (runs only if not already installed).
     """)
     return
 
@@ -70,7 +69,7 @@ def _():
     # ── Install packages (idempotent) ──────────────────────────
     import subprocess, importlib, sys as _sys
 
-    required = ["duckdb", "magic_duckdb", "pandas", "matplotlib"]
+    required = ["duckdb", "pandas", "matplotlib"]
 
     for pkg in required:
         try:
@@ -83,12 +82,6 @@ def _():
     print("All packages ready.")
     import duckdb
     return (duckdb,)
-
-
-@app.cell
-def _():
-    # ── Load magic-duckdb so we can use %%dql ──────────────────
-    return
 
 
 @app.cell
@@ -106,7 +99,7 @@ def _():
         show_with_images,
     )
 
-    print("DuckDB ready — using the default connection (shared with %%dql).")
+    print("DuckDB ready.")
     return (plot_bar, plot_gender_salary, plot_grouped_bar, plot_horizontal_salary, plot_pie, plot_salary_range, pretty_sql, show, show_before_after, show_with_images)
 
 
@@ -1266,7 +1259,7 @@ def _(mo):
     ### Key Takeaways
 
     - **DuckDB** runs in-process — no server setup needed  
-    - **`%%dql`** lets you write raw SQL in Jupyter cells  
+    - **Marimo SQL cells** let you write raw SQL with no Python wrapper  
     - Always use `DROP TABLE IF EXISTS` to make notebooks re-runnable  
     - `WHERE` filters rows; `HAVING` filters groups  
     - Keep plotting code in a separate utility file for clean notebooks
