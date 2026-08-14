@@ -64,11 +64,16 @@ is deleted at the top of every run, so the notebook stays idempotent.
 
 ## The demonstrations, and what each proves
 
-**Atomicity (§5)** — inside one transaction, take \$100 from Alice (succeeds), then
-take \$99,999 from Bob (violates the `CHECK`). After `ROLLBACK`, Alice's \$100 is
-back. The successful statement was thrown away because its partner failed.
+**Atomicity (§5)** — one transaction, two statements:
 
-Two behaviours students should see here:
+- Take \$100 from Alice → **succeeds**
+- Take \$99,999 from Bob → **fails**, because it breaks the `CHECK` constraint
+- After `ROLLBACK`, Alice's \$100 is **back**
+
+The first statement genuinely worked, and the database threw it away anyway — because
+its partner failed. That is atomicity.
+
+Two more behaviours students should watch for:
 
 - Once a statement fails, DuckDB puts the transaction in an **aborted** state —
   even a `SELECT` is refused until you `ROLLBACK`.
@@ -85,8 +90,11 @@ constraints:
 | Insert a duplicate `account_id` | REJECTED — `ConstraintException` |
 | Insert an account with no owner | REJECTED — `ConstraintException` |
 
-No application code did any checking. The rules live in the schema, so they apply
-to every program that ever touches this database.
+Two things to point out here:
+
+- **No application code did any checking.** There is no `if balance < 0` anywhere.
+- **The rules live in the table definition,** so they apply to every program that ever
+  touches this database — including ones written years from now by someone else.
 
 **Isolation (§7)** — two connections via `con.cursor()`:
 
@@ -122,9 +130,13 @@ uncommitted change is gone.
 
 ## A caveat worth mentioning in class
 
-DuckDB is an **embedded, single-writer** database. It gives you real transactions
-and real isolation, and everything in this notebook is genuine — but it is not a
-multi-user server like PostgreSQL. Phenomena that need several concurrent writers —
-deadlocks, lock waits, isolation levels beyond snapshot — cannot be demonstrated
-here. If your course discusses those, flag them as concepts students will meet on a
-client-server database rather than something this notebook can show.
+DuckDB is an **embedded, single-writer** database. What that means for this notebook:
+
+- **Everything shown here is real.** The transactions, the rollbacks, and the
+  isolation between connections all genuinely work.
+- **But DuckDB is not a multi-user server** like PostgreSQL or MySQL. Only one
+  connection can write at a time.
+- **So some topics cannot be demonstrated:** deadlocks, lock waits, and isolation
+  levels other than snapshot. They all need several writers at once.
+- **If your course covers those,** present them as ideas students will meet on a
+  client-server database — not as something this notebook can show.

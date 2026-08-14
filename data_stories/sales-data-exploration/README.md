@@ -1,85 +1,94 @@
-Consider the following: 
+# 📈 Sales Data Exploration — a Five-Table CRM
 
-# Sales Data Exploration
+**OMIS-105 · Week 5 — SQL Joins**
 
-## Introduction
-Sales analysis over a PostgreSQL database, 
-aiming to discover diverse insights. 
+A B2B sales database: **five related tables, 6,912 orders, 9,073 web events**. Where
+`FK_JOINS/` teaches joins on eight rows, this one makes you use them on data big
+enough that the join is doing real work.
 
-We are NOT going to use PostgreSQL,
-but use DuckDB for all of our tasks.
+Ships with an **ERD diagram** — the only story here that does.
 
-Identify best seller products, biggest customers, 
-and sales growth rate.
+---
 
-In this database, we have records of orders for 
-different types of paper placed by companies such 
-as Walmart, Microsoft, among others. We can see 
-how much of each type of paper was ordered, how 
-much was spent, who was responsible for the order, 
-in which region the company is located, and the dates 
-of the different web events each company has conducted 
+## Run it
 
-A SQL analysis of sales on differents types of paper.
-sales-analysis.md
+```bash
+marimo edit sales_data_exploration_marimo.py
+```
 
-* [Sales Analysis](https://github.com/jenny-4/sales-data-exploration/blob/main/sales-analysis.md)
+| File | Role |
+|---|---|
+| `sales_data_exploration_marimo.py` | The notebook |
+| `display_utils.py` | Display helpers |
+| `ERD.png` | **Entity-relationship diagram — open this first** |
+| `sql_schema.sql` | Full schema plus data as `INSERT` statements |
+| `sales-data-exploration.sql` | The query set |
+| `sales-analysis.md` | Written analysis |
+| `data/*.csv` | Five CSV files |
 
-## Datasets used
-- <strong>accounts</strong>: This table contains all the different companies, their id (account_id), website, contact of point and the sale representative id
-- <strong>orders</strong>: Timestamp of every order, the quantity ordered of every type of paper (standard_qty, gloss_qty, poster_qty), the total, how much money was spend in each type of paper (standard_amt_usd, gloss_amt_usd, poster_amt_usd) and the total in dollars.
-- <strong>region</strong>: Four regions: Northeast, Midwest, Southeast, West
-- <strong>sales_reps</strong>: This table shows all the sales representative names with their corresponding id and region_id.
-- <strong>web_events</strong>: All the web events conducted by each company, the account_id, the date each web event was conducted and the channel (facebook, twitter, etc)
+---
 
-## Entity Relationship Diagram
-![alt text](https://github.com/jenny-4/sales-data-exploration/blob/main/ERD.png)
+## The schema
 
+```
+   region                sales_reps              accounts             orders
+┌────────────┐        ┌──────────────┐       ┌──────────────┐    ┌───────────────┐
+│ id      PK │◄──FK───│ region_id FK │◄──FK──│ sales_rep_id │◄FK─│ account_id FK │
+│ name       │        │ id        PK │       │ id        PK │    │ id         PK │
+└────────────┘        │ name         │       │ name, website│    │ occurred_at   │
+                      └──────────────┘       └──────┬───────┘    │ standard_qty  │
+                                                    │            │ gloss_qty …   │
+                                                    │ FK         └───────────────┘
+                                             ┌──────▼────────┐
+                                             │ web_events    │
+                                             │ account_id FK │
+                                             │ occurred_at   │
+                                             │ channel       │
+                                             └───────────────┘
+```
 
-1. Review  files under folder:
+| Table | Rows | Meaning |
+|---|---|---|
+| `region` | 4 | Sales regions |
+| `sales_reps` | 50 | Reps, each in one region |
+| `accounts` | 351 | Customer accounts, each owned by one rep |
+| `orders` | 6,912 | Orders placed by accounts |
+| `web_events` | 9,073 | Site visits by accounts, with channel |
 
-/Users/max/mp/OMIS_105/data_stories/sales-data-exploration/
+---
 
-and merge this and proper queries into a very nice 
-Jupyter/Notebook/DuckDB.
+## Why it is a good joins story
 
-Using sql_schema.sql, create CSV files
-for each table under:
+**1 · The chain is four tables deep.**
 
-/Users/max/mp/OMIS_105/data_stories/sales-data-exploration/data/
+- *"What is total revenue by region?"* needs `orders → accounts → sales_reps → region`.
+- There is **no shortcut** — two intermediate tables sit between the number and the
+  grouping.
+- That is exactly how a real CRM is shaped.
 
-In Jupyter/notebook/DuckDB:
+**2 · Two fact tables share one dimension.**
 
-Create tables from created CSV files.
+- Both `orders` and `web_events` hang off `accounts`.
+- So you can ask: **does web activity predict orders?**
+- Answering it means joining an account's events to that account's orders — a genuinely
+  interesting question, not an invented exercise.
 
+**3 · The row counts are lopsided.**
 
-3. Create a data/ folder and 
-   put all of the data as CSV files,
-   then read these CSV's to create DuckDB Tables.
+- 4 regions at one end, 9,073 web events at the other.
+- Joining from the small side and from the large side produce very
+  different-looking results from the same data.
 
-4. add more solid queries with plots
+---
 
-5. convert them to DuckDB environment: convert 
-  it into a single Jupyter/Notebook/DuckDB. 
-  
-6. Each cell will indicate
-   a. what we are doing
-   b. SQL solution in nice/pretty format
-   c. display result set in a very nice tabulated 
-      table with row numbers
-   d. when possible, have a nice beautiful plot 
-      using the result set (the plot must be meaningful)
-      
-7.  Important: define all display/plot functions 
-   outside of the notebook:
-   I do not want my students to be tangled 
-   with plotting code or with code used to 
-   display/tabulation of result set.
+## Teaching notes
 
-   I want the Notebook to look clean and not tangled
-   with plotting code or display of tabulation code.
-
-8. You can write all of your output to this folder:
-
-/Users/max/mp/OMIS_105/data_stories/sales-data-exploration/
-
+- **Project `ERD.png` before writing any SQL.** Five tables is where students stop
+  being able to hold the schema in their heads, and a diagram fixes that instantly.
+  It is also a good moment to say that professionals draw these before they build.
+- Good progression: one join (orders → accounts), then two (→ sales_reps), then three
+  (→ region). Ask for the revenue-by-region number after each step and let them see
+  it only becomes answerable at the end.
+- `sql_schema.sql` starts with `BEGIN TRANSACTION;` — a natural forward reference to
+  Week 8, and a chance to mention that bulk loads are wrapped in transactions so a
+  failure halfway through leaves nothing behind.

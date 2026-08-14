@@ -1,7 +1,7 @@
 """
 emp_utils.py
 ============
-Helper utilities for the CRUD_101_emps Jupyter Notebook.
+Helper utilities for the CRUD_10_emps_staging Jupyter Notebook.
 All display, tabulation, and plotting functions live here so that
 the notebook stays clean and students can focus on SQL.
 

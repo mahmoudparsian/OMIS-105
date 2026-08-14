@@ -1,133 +1,106 @@
-# CRUD  of Employees Data using Notebook and DuckDB
+# ✏️ CRUD on 10 Employees
 
-* We are going to teach CRUD of employee data
-  by using DuckDB and Marimo Notebook.
+**OMIS-105 · Week 3 — SQL Basics**
 
-* This Notebook should assume that a student 
-  does not know much about DuckDB and CRUD
-  operations. When possible define and explain 
-  each operation in detail (you may use MarkDown 
-  format for explanations)
+The plainest CRUD story in the folder. One table, ten rows, and the four operations
+every database supports: **C**reate, **R**ead, **U**pdate, **D**elete.
 
-
-1. Create an employees table with the following records:
-
-```
-(emp_id, emp_name, department, salary, gender)
-(100, 'Alex', 'SALES', 120000, 'MALE')
-(200, 'Jeff', 'SALES', 140000, 'MALE')
-(300, 'Rafa', 'BUSINESS', 150000, 'MALE')
-(400, 'Susan', 'SALES', 150000, 'FMALE')
-(500, 'Jen', 'BUSINESS', 160000, 'FEMALE')
-(600, 'Barb', 'BUSINESS', 180000, 'FEMALE')
-(700, 'Dara', 'AI', 190000, 'MALE')
-(800, 'Venus', 'AI', 200000, 'FEMALE')
-(900, 'Margie', 'SALES', 140000, 'FEMALE')
-(910, 'Betty', 'SALES', 170000, 'FEMALE')
-```
-
-2. Create one table (employees) from INSERTS, 
-and  another one (call it employees_backup) table 
-by reading a CSV file (the exact records).
-
-All operations to be done by using the employees table.
-
-
-3. Teach CRUD for this set of employees
-
-```
-4 C's
-4 R's (may be more R's)
-4 U's
-4 D's
-```
-
-For each CRUD:
-
-* show data before,
-* sql transformation (pretty print SQL, nice formatted)
-* show after transformation
-
-4. Make Notebook bullet-proof, so that I can run it
-many times from beginning to the end.
-
-5. More basic queries:
-
-* 10 basic queries, using select, where, from, limit
-
-* 10 queries using GROUP BY, HAVING, LIMIT
-
-
-
-6. Create a data/ folder and 
-   put all of the data as CSV files,
-   then read these CSV's to create DuckDB Tables.
-
-7. add more solid queries with plots
-
-```
-   -- pcercentage male/female employees
-   -- percentage per department
-   -- higest and lowest salaries
-   -- higest and lowest salaries per department
-```
-
-8. convert them to DuckDB environment: convert 
-  it into a single Notebook/DuckDB
-  
-9. Each cell will indicate
-
-```
-   a. what we are doing
-   b. SQL solution in nice/pretty format
-   c. display result set in a very nice tabulated 
-      table with row numbers
-   d. when possible, have a nice beautiful plot 
-      using the result set (the plot must be meaningful)
-```
-      
-10.  Important: define all display/plot functions 
-   outside of the notebook:
-   
-   I do not want my students to be tangled 
-   with plotting code or with code used to 
-   display/tabulation of result set.
-
-   I want the Notebook to look clean and not tangled
-   with plotting code or display of tabulation code.
-
-15. All files are under this folder:
-
-```
-data_stories/CRUD_100_10_rows/
-```
-
-
-```
-CRUD_100_10_rows/
-├── CRUD_Employees_DuckDB.ipynb   ← the flagship notebook
-├── crud_helpers.py               ← all display/plot code (students ignore this)
-└── data/
-    └── employees.csv             ← source CSV for employees_backup table
-```
+**If you are choosing between the six CRUD stories, start with this one.**
 
 ---
 
-### What's inside the notebook
+## Run it
 
-**Setup** — one import line loads all helpers; a fresh `duckdb.connect()` ensures the notebook is safe to re-run from top to bottom every time.
+```bash
+marimo edit CRUD_Employees_DuckDB_marimo.py    # interactive
+marimo run  CRUD_Employees_DuckDB_marimo.py    # read-only
+```
 
-**Two tables** — `employees` built from INSERT statements; `employees_backup` loaded with `read_csv_auto()` from the CSV.
+| File | Role |
+|---|---|
+| `CRUD_Employees_DuckDB_marimo.py` | The notebook |
+| `crud_helpers.py` | Display helpers, kept out of the notebook |
+| `data/employees.csv` | 10 employees |
 
-**4 C's (INSERT)** — single row, multi-row, INSERT-SELECT from backup, NULL placeholder; before/after shown for each.
+---
 
-**4 R's (SELECT)** — all rows, specific columns, WHERE filter, WHERE+LIMIT; then 10 basic SELECT queries (vowel names, BETWEEN, IN, AND/OR, etc.) and 10 GROUP BY/HAVING queries (counts, AVG, SUM, MIN/MAX, top dept by payroll, gender distribution per dept, etc.).
+## What CRUD means
 
-**4 U's (UPDATE)** — fix the `FMALE` typo, bulk 10% raise for SALES, dept transfer, salary cap; before/after for each.
+| Letter | Operation | SQL | What it does |
+|---|---|---|---|
+| **C** | Create | `INSERT INTO` | Add new rows |
+| **R** | Read | `SELECT` | Look at rows without changing them |
+| **U** | Update | `UPDATE … SET … WHERE` | Change existing rows |
+| **D** | Delete | `DELETE FROM … WHERE` | Remove rows |
 
-**4 D's (DELETE)** — by ID, by department, by salary condition, full wipe; before/after for each.
+Those four cover essentially everything an application does to a database:
 
-**5 Analytics plots** — gender donut, department headcount bar + pie, all-salary ranked horizontal bar (color-coded by dept), min/max grouped bar, average salary bar.
+- Posting a photo is a **Create**.
+- Loading your feed is a **Read**.
+- Editing your profile is an **Update**.
+- Removing a comment is a **Delete**.
 
-**`crud_helpers.py`** contains `print_sql`, `show_table`, `run`, `section`, `plot_hbar`, `plot_vbar`, `plot_pie`, `plot_salary_range` — completely invisible to students in the notebook cells.
+Every app you have ever used is doing these behind a nicer interface.
 
+---
+
+## Ten rows, on purpose
+
+The table is small enough to print in full **before and after every statement**.
+That matters more than it sounds:
+
+- With all ten rows on screen, you can check that an `UPDATE` changed **the row you
+  meant** — and nothing else.
+- That habit (look at the table, confirm the change) is impossible at ten thousand
+  rows.
+- Which is exactly why it is worth building now, while it is still easy.
+
+---
+
+## ⚠️ The one thing to be careful about
+
+`UPDATE` and `DELETE` take a `WHERE` clause. **If you leave it off, the statement
+applies to every row in the table, and no error is raised.**
+
+```sql
+DELETE FROM employees WHERE emp_id = 3;   -- deletes one row
+DELETE FROM employees;                    -- deletes ALL of them. No warning.
+```
+
+This is the most expensive beginner mistake in SQL. Making it here, on ten rows you
+can regenerate in a second, is a much better place to learn it.
+
+---
+
+## Choosing among the six CRUD stories
+
+They all teach the same four operations. The differences:
+
+| Story | Rows | What makes it different |
+|---|---|---|
+| **`CRUD_100_10_rows/`** ← this one | 10 | The plainest version. **Start here.** |
+| `CRUD_100_10_rows_with_dql/` | 10 | Same content using `%%dql` cell magic |
+| `CRUD_100_10_rows_with_images/` | 10 | Adds employee photos to result tables |
+| `CRUD_9_emps_intro/` | 9 | Longest conceptual intro — "what is DuckDB", "what is CRUD" |
+| `CRUD_10_emps_staging/` | 10 | Helper-module variant |
+| `CRUD_10_emps_persistent/` | 10 | Uses a **persistent** database and a backup table |
+| `emps_single_table/` | **1,100** | Real-size table; adds a "did the changes stick?" check |
+
+> **Note:** these folders were renamed in 2026 to say what they actually contain.
+> They were previously `CRUD_100_emps`, `CRUD_101_emps`, `CRUD_102_emps` and
+> `CRUD_100_10_rows_with_images_openai` — names whose numbers were not row counts and
+> which promised an AI integration that does not exist.
+
+**Assign one.** They are variations on a theme, and doing several is repetition
+without new material.
+
+---
+
+## Teaching notes
+
+- Print the table before and after each statement — the notebook already does, and it
+  is the thing that makes CRUD click.
+- Ask what `UPDATE employees SET salary = 100000` does before running it. Then run it
+  on a copy.
+- Natural next step: `PRIMARY_KEY/` (Week 2) if they have not seen it, or
+  `emps_single_table/` for the same operations on a table too big to eyeball.

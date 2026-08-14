@@ -1,126 +1,81 @@
-# CRUD  of Employees Data using Jupyter/DuckDB
+# 🖼️ CRUD with Employee Photos
 
-* This is going to be flagship Jupyter/DuckDB Notebook.
+**OMIS-105 · Week 3 — SQL Basics**
 
-* We are going to teach CRUD of employee data
-  by using DuckDB and Jupyter Notebook.
-
-* This Notebook should assume that a student 
-  does not know much about DuckDB and CRUD
-  operations. When possible define and explain 
-  each operation in detail (you may use MarkDown 
-  format for explanations)
-
-
-1. Create an employees table with the following records:
-
-(emp_id, emp_name, department, salary, gender, image_url)
-(100, 'Alex', 'SALES', 120000, 'MALE', 'https://ui-avatars.com/api/?name=Alex&size=40&background=4C72B0&color=fff&bold=true')
-(200, 'Jeff', 'SALES', 140000, 'MALE', 'https://ui-avatars.com/api/?name=Jeff&size=40&background=55A868&color=fff&bold=true')
-(300, 'Rafa', 'BUSINESS', 150000, 'MALE', 'https://ui-avatars.com/api/?name=Rafa&size=40&background=C44E52&color=fff&bold=true')
-(400, 'Susan', 'SALES', 150000, 'FMALE', 'https://ui-avatars.com/api/?name=Susan&size=40&background=8172B2&color=fff&bold=true')
-(500, 'Jen', 'BUSINESS', 160000, 'FEMALE', 'https://ui-avatars.com/api/?name=Jen&size=40&background=E58606&color=fff&bold=true')
-(600, 'Barb', 'BUSINESS', 180000, 'FEMALE', 'https://ui-avatars.com/api/?name=Barb&size=40&background=937860&color=fff&bold=true')
-(700, 'Dara', 'AI', 190000, 'MALE', 'https://ui-avatars.com/api/?name=Dara&size=40&background=DA8BC3&color=fff&bold=true')
-(800, 'Venus', 'AI', 200000, 'FEMALE', 'https://ui-avatars.com/api/?name=Venus&size=40&background=CCB974&color=fff&bold=true')
-(900, 'Margie', 'SALES', 140000, 'FEMALE', 'https://ui-avatars.com/api/?name=Margie&size=40&background=64B5CD&color=fff&bold=true')
-(910, 'Betty', 'SALES', 170000, 'FEMALE', 'https://ui-avatars.com/api/?name=Betty&size=40&background=4878CF&color=fff&bold=true')
-
-2. Create one table (employees) from INSERTS, 
-and  another one (call it employees_backup) table 
-by reading a CSV file (the exact records).
-
-All operations to be done by using the employees table.
-
-
-3. Teach CRUD for this set of employees
-4 C's
-4 R's (may be more R's)
-4 U's
-4 D's
-
-for each CRUD:
--- show data before,
--- sql transformation (pretty print SQL, nice formatted)
--- show after transformation
-
-4. Make Notebook bullet-proof, so that I can run it
-many times from beginning to the end.
-
-5. More basic queries:
-
-   10 basic queries, using select, where, from, limit
-
-   10 queries using GROUP BY, HAVING, LIMIT
-
-
-Put files under:
-
-/Users/max/mp/OMIS_105/data_stories/CRUD_100_10_rows_with_images/
-/Users/max/mp/OMIS_105/data_stories/CRUD_100_10_rows_with_images/data
-
-
-6. Create a data/ folder and 
-   put all of the data as CSV files,
-   then read these CSV's to create DuckDB Tables.
-
-7. add more solid queries with plots
-   -- pcercentage male/female employees
-   -- percentage per department
-   -- higest and lowest salaries
-   -- higest and lowest salaries per department
-
-8. convert them to DuckDB environment: convert 
-  it into a single Jupyter/Notebook/DuckDB. 
-  
-9. Each cell will indicate
-   a. what we are doing
-   b. SQL solution in nice/pretty format
-   c. display result set in a very nice tabulated 
-      table with row numbers
-   d. when possible, have a nice beautiful plot 
-      using the result set (the plot must be meaningful)
-      
-10.  Important: define all display/plot functions 
-   outside of the notebook:
-   I do not want my students to be tangled 
-   with plotting code or with code used to 
-   display/tabulation of result set.
-
-   I want the Notebook to look clean and not tangled
-   with plotting code or display of tabulation code.
-
-15. You can write all of your output to this folder:
-
-/Users/max/mp/OMIS_105/data_stories/CRUD_100_10_rows_with_images/
-
-Now let me build the full project — helper module, CSV data files, and the Jupyter notebook.Now the main Jupyter notebook:Let me copy the outputs so you can download them:Here's everything that was built and placed in your folder:
-
-```
-CRUD_100_10_rows_with_images/
-├── CRUD_Employees_DuckDB.ipynb   ← the flagship notebook
-├── crud_helpers.py               ← all display/plot code (students ignore this)
-└── data/
-    └── employees.csv             ← source CSV for employees_backup table
-```
+The same ten-employee CRUD story as `CRUD_100_10_rows/`, with a photo for every
+employee rendered inline in the result tables.
 
 ---
 
-### What's inside the notebook
+## Run it
 
-**Setup** — one import line loads all helpers; a fresh `duckdb.connect()` ensures the notebook is safe to re-run from top to bottom every time.
+```bash
+marimo edit CRUD_Employees_DuckDB_marimo.py
+```
 
-**Two tables** — `employees` built from INSERT statements; `employees_backup` loaded with `read_csv_auto()` from the CSV.
+Needs an **internet connection** — images are fetched at display time.
 
-**4 C's (INSERT)** — single row, multi-row, INSERT-SELECT from backup, NULL placeholder; before/after shown for each.
+| File | Role |
+|---|---|
+| `CRUD_Employees_DuckDB_marimo.py` | The notebook |
+| `crud_helpers.py` | Display helpers, including image rendering |
+| `transform.py` | Data preparation |
+| `web_images.txt` | The image URLs |
+| `data/employees.csv` | 10 employees |
 
-**4 R's (SELECT)** — all rows, specific columns, WHERE filter, WHERE+LIMIT; then 10 basic SELECT queries (vowel names, BETWEEN, IN, AND/OR, etc.) and 10 GROUP BY/HAVING queries (counts, AVG, SUM, MIN/MAX, top dept by payroll, gender distribution per dept, etc.).
+---
 
-**4 U's (UPDATE)** — fix the `FMALE` typo, bulk 10% raise for SALES, dept transfer, salary cap; before/after for each.
+## What it covers
 
-**4 D's (DELETE)** — by ID, by department, by salary condition, full wipe; before/after for each.
+The notebook explains each operation from first principles before using it:
 
-**5 Analytics plots** — gender donut, department headcount bar + pie, all-salary ranked horizontal bar (color-coded by dept), min/max grouped bar, average salary bar.
+| Section | Question it answers |
+|---|---|
+| What is DuckDB? | Why a database at all |
+| What is CRUD? | The four operations |
+| Two helper functions | How the notebook prints tables and images |
+| What is INSERT? | **C** — adding rows |
+| What is SELECT? | **R** — reading rows |
+| What is UPDATE? | **U** — changing rows |
+| What is DELETE? | **D** — removing rows |
 
-**`crud_helpers.py`** contains `print_sql`, `show_table`, `run`, `section`, `plot_hbar`, `plot_vbar`, `plot_pie`, `plot_salary_range` — completely invisible to students in the notebook cells.
+---
 
+## Why images
+
+The database stores a **URL as text**. It has no idea it is a picture — the rendering
+happens entirely in `crud_helpers.py` when the result is displayed.
+
+That is worth saying out loud, because it is a genuine modelling point:
+
+- Databases store **references** to files far more often than the files themselves.
+- A production system keeps the image in object storage and the **URL in a column** —
+  exactly the shape used here.
+- Storing the picture itself would make the database large, slow, and hard to back up.
+
+The practical benefit is attention: an `UPDATE` is more memorable when a face moves
+with it.
+
+---
+
+## Choosing among the six CRUD stories
+
+They all teach the same four operations. The differences:
+
+| Story | Rows | What makes it different |
+|---|---|---|
+| `CRUD_100_10_rows/` | 10 | The plainest version. **Start here.** |
+| `CRUD_100_10_rows_with_dql/` | 10 | Same content using `%%dql` cell magic |
+| `CRUD_100_10_rows_with_images/` | 10 | Adds employee photos to result tables |
+| `CRUD_9_emps_intro/` | 9 | Longest conceptual intro — "what is DuckDB", "what is CRUD" |
+| `CRUD_10_emps_staging/` | 10 | Helper-module variant |
+| `CRUD_10_emps_persistent/` | 10 | Uses a **persistent** database and a backup table |
+| `emps_single_table/` | **1,100** | Real-size table; adds a "did the changes stick?" check |
+
+> **Note:** these folders were renamed in 2026 to say what they actually contain.
+> They were previously `CRUD_100_emps`, `CRUD_101_emps`, `CRUD_102_emps` and
+> `CRUD_100_10_rows_with_images_openai` — names whose numbers were not row counts and
+> which promised an AI integration that does not exist.
+
+**Assign one.** They are variations on a theme, and doing several is repetition
+without new material.
