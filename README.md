@@ -7,7 +7,7 @@
 
 @author: [Dr. Mahmoud Parsian](https://www.scu.edu/business/isa/faculty/parsian/)
 
-	In this course, you will learn  the  fundamentals of 
+	In  this course, you will learn  the fundamentals of 
 	modern  relational  data management.  Topics include  
 	SQL (data language), schema  design, data  modeling,   
 	query  data  by  SQL,   database   applications, and 
@@ -18,8 +18,7 @@
 	retrieve,   and   analyze  information   every  day.
 	
 
-[Can AI-LLM Write Your SQL? Yes. <br>
-Should You Trust It? Let's Find Out.](./why_you_must_learn_SQL/why_you_must_learn_SQL.md)
+[Can AI-LLM Write Your SQL? Yes. Should You Trust It? Let's Find Out.](./why_you_must_learn_SQL/why_you_must_learn_SQL.md)
 
 ---
 
@@ -287,9 +286,16 @@ on the issues of managing a database environment.
 
 # 16. References
 
-[1. What is a Relational Database - Google](https://cloud.google.com/learn/what-is-a-relational-database)
+[1. SQL Introduction - DuckDB Documentation](https://duckdb.org/docs/current/sql/introduction)
 
-[2. What is a Relational Database - IBM](https://www.ibm.com/think/topics/relational-databases)
+[2. What is a Relational Database - Google](https://cloud.google.com/learn/what-is-a-relational-database)
 
-[3. What is a Relational Database - Microsoft](https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-a-relational-database)
+[3. What is a Relational Database - IBM](https://www.ibm.com/think/topics/relational-databases)
 
+[4. What is a Relational Database - Microsoft](https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-a-relational-database)
+
+[5. Introduction to SQL - Github](https://github.com/bobbyiliev/introduction-to-sql)
+
+[6. SQL Tutorial - w3schools](https://www.w3schools.com/sql/)
+
+[7. SQL Tutorial - geeksforgeeks](https://www.geeksforgeeks.org/sql/sql-tutorial/)
