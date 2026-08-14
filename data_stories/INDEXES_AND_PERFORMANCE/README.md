@@ -32,9 +32,12 @@ marimo run  indexes_and_performance_marimo.py    # read-only, for students
 python      indexes_and_performance_marimo.py    # smoke test
 ```
 
-No data files and no setup. The notebook generates every table with `range()` into
-an **in-memory** database, so it is fully idempotent — run it as many times as you
-like. It takes about 20 seconds, most of which is building the 2,000,000-row table.
+A few practical notes:
+
+- **No data files and no setup.** Every table is generated with `range()`.
+- **The database is in-memory,** so nothing is written to disk and you can re-run the
+  notebook as often as you like.
+- **It takes about 20 seconds**, most of that building the 2,000,000-row table.
 
 | File | Role |
 |---|---|
@@ -99,13 +102,16 @@ And the cases that beat it:
 
 ## A note on `EXPLAIN`
 
-The notebook shows that DuckDB often reports `SEQ_SCAN` **even when a usable index
-exists**. That is not a bug and not a mistake in the notebook: DuckDB's optimiser
-uses an index scan only when it estimates the result is a tiny fraction of the
-table, and it frequently decides its own scan is the better bet.
+The notebook shows DuckDB reporting `SEQ_SCAN` **even when a usable index exists**.
+That is not a bug, and not a mistake in the notebook:
 
-Students should take away that **the optimiser is allowed to ignore your index** —
-which is another good reason to measure rather than assume.
+- DuckDB uses an index scan **only** when it estimates the result is a tiny slice of
+  the table.
+- The rest of the time it decides its own scan is faster — and it is usually right.
+- So **the optimiser is allowed to ignore the index you created.**
+
+The takeaway for students: you cannot tell whether an index is being used by looking
+at your SQL. You have to check the plan, and then measure.
 
 ---
 

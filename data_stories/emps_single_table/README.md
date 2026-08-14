@@ -1,87 +1,94 @@
-# Employees Data Exploration
+# 👥 Employees — CRUD on a Real-Size Table
 
-1. Create a CSV file with the following columns:
+**OMIS-105 · Week 3 — SQL Basics**
 
-emp_id: unique id of an employee
-emp_name: name of  employee: John Smith
-department: SALES, IT, AI, BUSINESS, MARKETING
-salary: integer range: 81,000 to 230,000
-gender: MALE/FEMALE (42% MALE, 58% FEMALE)
-degree: BA, BS, MIS, MS, PHD
-hire_date: 2015-01-01 to 2015-12-31
-country: USA, CANADA, ITALY, GERMANY, CHINA, INDIA
-image_url: avatar for employee 
-age: age of employees: 22 to 72
+The same four CRUD operations as the `CRUD_*` stories, but on **1,100 employees**
+instead of ten — a table too big to check by eye. That changes how you have to work,
+which is the point.
 
-2. Number of records: 1100
+---
 
-   Make data to look real feel
+## Run it
 
-3. 
-400 : from USA
-100 : from CANADA 
-150 : from ITALY
-150 : from GERMANY 
-300 : from CHINA
-200 : from INDIA
+```bash
+marimo edit employees_duckdb_marimo.py    # data exploration
+marimo edit emps_CRUD_marimo.py           # the CRUD walkthrough
+```
 
-4. Only 
-100 have PHD (mostly from USA, then CHINA)
-200 have MIS
-250 have MS
-250 have MIS
-100 have BA
-200 have BS
+| File | Role |
+|---|---|
+| `emps_CRUD_marimo.py` | The CRUD notebook — 7 sections |
+| `employees_duckdb_marimo.py` | Exploration of the same table |
+| `generate_data.py` | Regenerates the dataset |
+| `utils/` | Display helpers |
+| `data/employees.csv` | **1,100 employees** |
 
+---
 
-5. but use DuckDB for all of our tasks.
+## The data
 
-6. Identify realistic queries for this set of employees
+One table, ten columns:
 
-10 basic queries, using select, where, from, limit
+```
+employees(emp_id, emp_name, department, salary, gender,
+          degree, hire_date, country, image_url, age)
+```
 
-10 queries using GROUP BY, HAVING, LIMIT
+Richer than the ten-row CRUD tables — enough columns to make `WHERE` clauses
+interesting and enough rows that `GROUP BY` gives a real answer.
 
-10 intermediate queries, ranking, sub queries, ...
+---
 
+## What it covers
 
-Put files under:
+| § | Section |
+|---|---|
+| 1 | Environment setup |
+| 2 | Load the employees table |
+| 3 | **INSERT** — adding new rows |
+| 4 | **UPDATE** — modifying existing rows |
+| 5 | **DELETE** — removing rows |
+| 6 | **Post-CRUD checkpoint: did our changes stick?** |
+| 7 | Key takeaways |
 
-/Users/max/mp/OMIS_105/data_stories/emps_single_table/
-/Users/max/mp/OMIS_105/data_stories/emps_single_table/data
+---
 
-In Jupyter/notebook/DuckDB:
+## Why §6 is the important one
 
-Create tables from created CSV files.
+On ten rows you verify an `UPDATE` by looking at the table. On 1,100 you cannot — so
+you have to **ask a question whose answer you already know**:
 
+```sql
+-- I updated one salary. Did exactly one row change?
+SELECT COUNT(*) FROM employees WHERE salary = 95000;
+```
 
-7. Create a data/ folder and 
-   put all of the data as CSV files,
-   then read these CSV's to create DuckDB Tables.
+That shift is the real Week 3 skill:
 
-8. add more solid queries with plots
+- On ten rows you **look** at the result.
+- On 1,100 rows you **verify it with another query**.
+- Every table students meet after this course will be too big to eyeball, so the
+  second habit is the one that lasts.
 
-9. convert them to DuckDB environment: convert 
-  it into a single Jupyter/Notebook/DuckDB. 
-  
-6. Each cell will indicate
-   a. what we are doing
-   b. SQL solution in nice/pretty format
-   c. display result set in a very nice tabulated 
-      table with row numbers
-   d. when possible, have a nice beautiful plot 
-      using the result set (the plot must be meaningful)
-      
-10.  Important: define all display/plot functions 
-   outside of the notebook:
-   I do not want my students to be tangled 
-   with plotting code or with code used to 
-   display/tabulation of result set.
+---
 
-   I want the Notebook to look clean and not tangled
-   with plotting code or display of tabulation code.
+## How it compares
 
-11. You can write all of your output to this folder:
+| Story | Rows | Use it for |
+|---|---|---|
+| `CRUD_100_10_rows/` | 10 | First contact with CRUD — check results by eye |
+| **`emps_single_table/`** | **1,100** | The same operations when eyeballing is impossible |
 
-/Users/max/mp/OMIS_105/data_stories/emps_single_table/
+A good sequence is both, in that order: learn the statements on ten rows, then learn
+to *trust* them on 1,100.
 
+---
+
+## Teaching notes
+
+- Have students predict the row count **before** running each `UPDATE` or `DELETE`,
+  then check. A mismatch is the entire lesson.
+- `generate_data.py` means you can hand different students different data, which makes
+  copied answers obvious.
+- The `country` and `department` columns make this usable again in Week 4 for
+  `GROUP BY` practice, on data students already know.

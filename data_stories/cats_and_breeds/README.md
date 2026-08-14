@@ -1,75 +1,116 @@
-1. Review two files under folder:
+# 🐈 Cats, Breeds & Tricks
 
-/Users/max/mp/OMIS_105/data_stories/cats_and_breeds/
+**OMIS-105 · Week 2 — Relational Modeling** *(schema)*
+**→ revisit in Weeks 3 and 5** *(the notebook's later sections)*
 
-and merge these into a very nice Jupyter/Notebook/DuckDB.
+A cat show database in four tables. Small enough to hold in your head, but it
+contains a **genuine many-to-many relationship** — which is the one modelling idea
+that cannot be taught with two tables.
 
-2. add more rows to all of the tables 
-
-3. Create a data/ folder and 
-   put all of the data as CSV files,
-   then read these CSV's to create DuckDB Tables.
-
-4. add more solid queries with plots
-
-5. convert them to DuckDB environment: convert 
-  it into a single Jupyter/Notebook/DuckDB. 
-  
-6. Each cell will indicate
-   a. what we are doing
-   b. SQL solution in nice/pretty format
-   c. display result set in a very nice tabulated 
-      table with row numbers
-   d. when possible, have a nice beautiful plot 
-      using the result set (the plot must be meaningful)
-      
-7.  Important: define all display/plot functions 
-   outside of the notebook:
-   I do not want my students to be tangled 
-   with plotting code or with code used to 
-   display/tabulation of result set.
-
-   I want the Notebook to look clean and not tangled
-   with plotting code or display of tabulation code.
-
-8. You can write all of your output to this folder:
-
-/Users/max/mp/OMIS_105/data_stories/cats_and_breeds/
-
-
-Now I have a clear picture of both files. Let me build the complete package: CSV data files (with expanded rows), helper utility modules, and a clean Jupyter notebook using DuckDB.Now let me create the CSV files with expanded data (adding more rows to each table):Now let me create the helper utility module with display and plot functions:Now let me create the Jupyter notebook:Now let me verify the notebook was created and test that it runs:The sandbox doesn't have network access for pip installs, but that's fine — the notebook is designed to run on your local machine where you'll have the packages. Let me verify all files are in place:Let me do a quick sanity check on the notebook structure and CSV data:Everything looks great. Let me clean up the build script since it's no longer needed:That's fine — it's just a build helper. Let me verify the final notebook reads cleanly end-to-end by checking a few more cells:Everything is complete. Here's what I created in your folder `/Users/max/mp/OMIS_105/data_stories/cats_and_breeds/`:
+**Use it more than once.** The schema is Week 2 material, but the notebook keeps
+going: Section 1 is Week 3 (`SELECT`), Section 2 is Week 5 (JOINs), and Sections 3–5
+go past the syllabus into CTEs and window functions. Stop where your week stops.
 
 ---
 
-**Structure:**
+## Run it
 
-```
-cats_and_breeds/
-├── cats_and_breeds_duckdb.ipynb   ← The main notebook (79 cells, 34 queries)
-├── display_utils.py               ← Table display functions (styled HTML tables)
-├── plot_utils.py                  ← All plotting functions (bar, pie, scatter, etc.)
-├── data/
-│   ├── breeds.csv                 ← 15 breeds (expanded from 10)
-│   ├── cats.csv                   ← 80 cats (expanded from 60)
-│   ├── tricks.csv                 ← 15 tricks (expanded from 10)
-│   └── cat_tricks.csv             ← 374 cat-trick relationships
-└── (original .md files preserved)
+```bash
+marimo edit cats_and_breeds_duckdb_marimo.py    # interactive
+marimo run  cats_and_breeds_duckdb_marimo.py    # read-only
 ```
 
-**What the notebook covers (5 sections, 34 queries):**
+| File | Role |
+|---|---|
+| `cats_and_breeds_duckdb_marimo.py` | The notebook |
+| `display_utils.py` | Table display helpers |
+| `plot_utils.py` | Chart functions |
+| `cats_package.md` | The dataset write-up |
+| `cats_cte_ranking_queries.md` | Extra queries using CTEs and ranking — **beyond the Week 2 syllabus** |
+| `build_notebook.py` | Generator script — not the notebook itself |
+| `data/*.csv` | Four CSV files |
 
-1. **Basic SELECT** (Q1–Q8) — filtering, aggregation, counts with bar charts, pie charts, histograms
-2. **JOINs** (Q9–Q14) — INNER, LEFT, multi-table joins, trick popularity analysis
-3. **CTEs** (Q15–Q19) — max per group, above-average detection, multi-step CTE+window combos
-4. **Window/Ranking Functions** (Q20–Q26) — ROW_NUMBER, RANK, NTILE, PARTITION BY with grouped bar charts
-5. **Advanced Analytics** (Q27–Q34) — scatter correlations, trend lines, cross-comparisons, running totals, percentages
+---
 
-**Key design decisions per your requirements:**
+## The schema
 
-- Every code cell follows the pattern: markdown explanation → clean SQL → `run_and_show()` for styled table → `plot_*()` for visualization
-- All display/plotting code lives in the two external `.py` files — the notebook stays clean and SQL-focused
-- Tables load from CSV via DuckDB's `read_csv_auto()`
-- New breeds added: Birman, NorwegianForest, DevonRex, Burmese, Tonkinese
-- New tricks added: shake hands, play dead, come when called, walk on leash, open door
+```
+   breeds                    cats                     cat_tricks              tricks
+┌──────────────┐      ┌──────────────────┐      ┌──────────────────┐    ┌─────────────┐
+│ breed_id  PK │◄─FK──│ cat_id        PK │◄─FK──│ cat_id        FK │    │ trick_id PK │
+│ breed_name   │      │ breed_id      FK │      │ trick_id      FK │───►│ trick_name  │
+│ …            │      │ name, age, …     │      │  composite PK    │    │ difficulty  │
+└──────────────┘      └──────────────────┘      └──────────────────┘    └─────────────┘
+      1 ─── many              many ─────────── many
+```
 
-**To run it**, just open the notebook in Jupyter and make sure you have `duckdb`, `pandas`, and `matplotlib` installed (`pip install duckdb pandas matplotlib`).
+| Table | Rows | Meaning |
+|---|---|---|
+| `breeds` | 15 | One row per breed |
+| `cats` | 80 | One row per cat |
+| `tricks` | 15 | One row per trick |
+| `cat_tricks` | 374 | **Which cat can do which trick** |
+
+---
+
+## The one idea to take away
+
+There are two different kinds of relationship here, and they are modelled
+differently.
+
+**A cat has one breed.** That is *one-to-many* — many cats, one breed each — so it
+fits in a single column: `cats.breed_id`.
+
+**A cat knows many tricks, and a trick is known by many cats.** That is
+*many-to-many*, and it does **not** fit in a column. You cannot put a list in
+`cats.tricks` — the moment you try, you cannot query it, count it, or join on it.
+
+The answer is a fourth table whose entire job is to hold the pairs:
+
+```
+cat_tricks
+  cat_id   trick_id
+     7        3        ← cat 7 can do trick 3
+     7        9        ← cat 7 can also do trick 9
+    12        3        ← cat 12 can also do trick 3
+```
+
+That table is called a **junction table** (or bridge, or link table). Its primary key
+is the pair `(cat_id, trick_id)` — which also encodes a rule: *a cat can know a given
+trick only once.*
+
+**374 rows across 80 cats and 15 tricks.** Neither table could have held that.
+
+---
+
+## Which section belongs to which week
+
+The notebook is a full ladder, not a single lesson. Assign the part you need:
+
+| Notebook section | Teaches | Week |
+|---|---|---|
+| Database Schema, Create Tables | PK, FK, junction table | **2** |
+| Section 1 — Basic SELECT | `SELECT`, `WHERE`, `ORDER BY` | **3** |
+| Section 2 — JOIN Queries | `INNER`/`LEFT JOIN` across all four tables | **5** |
+| Section 3 — CTEs | `WITH … AS` | *beyond the core* |
+| Section 4 — Window & Ranking | `ROW_NUMBER`, `RANK` | *beyond the core* |
+| Section 5 — Advanced Analytics | mixed | *beyond the core* |
+
+Sections 3–5, and the whole of `cats_cte_ranking_queries.md`, use techniques the
+10-week core does not teach (see the outline's optional Advanced SQL appendix). They
+are fine as enrichment or demonstration — just not as assessed work.
+
+---
+
+## Teaching notes
+
+- **Ask the modelling question before showing the answer.** "Cat number 7 can do five
+  tricks. Where do we put that?" Let students propose a `tricks` column. Then ask them
+  to write the query for *"which cats can do trick 3?"* against their design.
+- Once `cat_tricks` exists, `COUNT(*)` per cat and per trick both become one-line
+  queries. That is the payoff, and it is worth showing immediately.
+- `cats_and_breeds_and_images/` is the same schema with cat avatar images added — use
+  one or the other, not both.
+- The junction table here is the same shape as `dept_employee` in
+  `DuckDB_Employee_SQL_Mastery/` and `employee_projects` in `emps_depts_projects/`.
+  Pointing that out helps students recognise the pattern rather than memorise a case.

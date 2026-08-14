@@ -1,9 +1,9 @@
-# 🔗 JOIN 101 — Employees & Departments (5 departments)
+# 🔗 JOIN 101 — Employees & Departments (9 departments)
 
 **OMIS-105 · Week 5 — SQL Joins**
 
-Employees and departments joined every way SQL allows. This is **the smaller of the two** —
-5 departments and 12 employees.
+Employees and departments joined every way SQL allows. This is **the larger of the two** —
+9 departments and 25 employees.
 
 ---
 
@@ -17,8 +17,10 @@ marimo edit JOIN_101_EMPS_DEPTS_marimo.py
 |---|---|
 | `JOIN_101_EMPS_DEPTS_marimo.py` | The joins notebook |
 | `notebook_utils.py` | Display helpers |
-| `data/employees.csv` | 12 employees |
-| `data/departments.csv` | 5 departments |
+| `CRUD_Employees_DuckDB_marimo.py` | A **second, unrelated notebook** — CRUD, not joins (see `CRUD_100_10_rows/`) |
+| `crud_helpers.py` | Helpers for that CRUD notebook |
+| `data/employees.csv` | 25 employees |
+| `data/departments.csv` | 9 departments |
 
 ---
 
@@ -57,6 +59,10 @@ same data:
 - `data/` — what the notebook reads
 - `data2/`, a `.backup/` directory, and a `files.zip` — older copies
 - the 5-department folder also has loose CSVs at the top level
+- this folder additionally contains an **unrelated CRUD notebook**
 
 **The copies do not agree on row counts.** Before you quote a number to a class,
 check which path the notebook actually loads.
+
+> This folder used to be called `JOIN_101_EMPS_DEPTS_10_departments`. It was renamed
+> because `data/` holds **9** departments, not 10.

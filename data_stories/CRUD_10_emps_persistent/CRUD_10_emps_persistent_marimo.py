@@ -77,8 +77,12 @@ def _():
     import duckdb
     import pandas as pd
 
-    PREFERRED_PROJECT_DIR = Path("/Users/max/mp/OMIS_105/data_stories/CRUD_102_emps")
-    PROJECT_DIR = PREFERRED_PROJECT_DIR if PREFERRED_PROJECT_DIR.exists() else Path.cwd()
+    # Resolve paths relative to this notebook so it runs from any working directory
+    # and survives the folder being renamed or moved.
+    try:
+        PROJECT_DIR = Path(__file__).parent
+    except NameError:          # __file__ is undefined in some marimo contexts
+        PROJECT_DIR = Path.cwd()
     DATA_DIR = PROJECT_DIR / "data"
     HELPERS_DIR = PROJECT_DIR / "helpers"
     DB_PATH = PROJECT_DIR / "employees_crud.duckdb"
