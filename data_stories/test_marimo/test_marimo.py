@@ -15,9 +15,10 @@ def _():
 def _():
     import duckdb
 
-    DATABASE_URL = "/Users/max/mp/db11.duckdb"
-    engine = duckdb.connect(DATABASE_URL, read_only=False)
-    print("engine=", engine)
+    # In-memory database: nothing is written to disk, and the notebook starts
+    # from a clean slate every time it runs.
+    engine = duckdb.connect(":memory:")
+    print("engine =", engine)
     return (engine,)
 
 
