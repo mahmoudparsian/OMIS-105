@@ -2,12 +2,18 @@
 
 **OMIS-105 · Database Management Systems · Santa Clara University**
 
-A **data story** is a self-contained DuckDB + Marimo notebook set built around one
-dataset or one concept. Each can be dropped into a lecture, assigned as practice, or
-used as a worked example. There are **35** of them here.
+* A **data story** is a self-contained 
+  DuckDB + Marimo notebook set built around one
+dataset or one concept. 
+* Each data story can be dropped into a lecture, 
+  assigned as practice, or used as a worked example. 
 
-They complement `weekly_lectures/` rather than replace it: a week folder teaches the
-technique, a data story shows that technique doing real work.
+* There are **35** of them here.
+
+* The data stories complement `weekly_lectures/` 
+  rather than replace it: a **week folder teaches 
+  the technique**, a **data story shows that technique 
+  doing real work**.
 
 ---
 
