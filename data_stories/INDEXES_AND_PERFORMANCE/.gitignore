@@ -1,0 +1,2 @@
+# Nothing persistent — the notebook uses an in-memory database
+__pycache__/
