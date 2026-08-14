@@ -279,16 +279,16 @@ The relational model stores each fact **exactly once** and links tables through 
 
 ---
 
-# Week 3 — SQL Mastery, Part 1: Functions & GROUP BY
+# Week 3 — SQL Mastery, Part 1: Querying a Single Table
 
 ### What You Will Learn
-- String functions: UPPER, LOWER, CONCAT, SUBSTRING, LIKE/ILIKE
-- Mathematical functions: ROUND, CEIL, FLOOR, ABS, POWER
-- Date functions: EXTRACT, DATEDIFF, CURRENT_DATE, INTERVAL
-- Conditional logic with CASE expressions
-- GROUP BY for summarizing data by category
-- HAVING for filtering aggregated groups
-- Introduction to subqueries
+- SELECT — choosing which columns come back
+- WHERE — filtering rows by a condition
+- Comparison and logical operators: `=`, `>`, `<`, `AND`, `OR`, `NOT`
+- ORDER BY — sorting results, ascending and descending
+- LIMIT — returning only the first N rows
+- DISTINCT — removing duplicate values
+- Reading a result set critically: is this actually what I asked for?
 
 ---
 
@@ -296,13 +296,13 @@ The relational model stores each fact **exactly once** and links tables through 
 
 ### Why This Matters in the Real World
 
-A marketing manager asks: *"Which product categories have an average price above `$50`, and what percentage of our catalog do they represent?"*
+An inventory manager asks: *"Show me every product over `$700`, most expensive first."*
 
-This question requires **grouping** products by category, **aggregating** prices, **filtering** groups by a threshold, and **computing** percentages — all in a single query.
+That is one `SELECT`, one `WHERE`, one `ORDER BY` — and it is the shape of the overwhelming majority of questions asked of a database every day. Before anyone builds a dashboard, somebody has to be able to pull the right rows.
 
-SQL functions and GROUP BY turn raw transactional data into the **executive dashboards** that drive strategic decisions at companies like Netflix, Spotify, and Target.
+Getting this layer right also builds the habit that matters most: **checking that the rows you got back are the rows you meant to ask for.**
 
-> The ability to ask precise questions of your data is a career-defining skill.
+> Most real SQL is not clever. It is precise.
 
 ---
 
@@ -317,16 +317,16 @@ SQL functions and GROUP BY turn raw transactional data into the **executive dash
 
 ---
 
-# Week 4 — SQL Mastery, Part 2: JOINs
+# Week 4 — SQL Mastery, Part 2: Functions & Aggregation
 
 ### What You Will Learn
-- INNER JOIN — combining matching rows from two tables
-- LEFT JOIN — keeping all rows from one side (finding gaps)
-- RIGHT JOIN and FULL OUTER JOIN
-- Self-joins for comparing rows within the same table
-- Joining 3, 4, or 5 tables in a single query
-- Combining JOINs with GROUP BY and HAVING
-- Building multi-table business reports
+- Aggregate functions: COUNT, SUM, AVG, MIN, MAX
+- GROUP BY for summarizing data by category
+- HAVING for filtering aggregated groups — and how it differs from WHERE
+- String functions: UPPER, LOWER, CONCAT, SUBSTRING, LIKE/ILIKE
+- Mathematical functions: ROUND, CEIL, FLOOR, ABS, POWER
+- Date functions: EXTRACT, DATEDIFF, CURRENT_DATE, INTERVAL
+- Conditional logic with CASE expressions
 
 ---
 
@@ -334,16 +334,13 @@ SQL functions and GROUP BY turn raw transactional data into the **executive dash
 
 ### Why This Matters in the Real World
 
-Real business questions span **multiple tables**:
+A marketing manager asks: *"Which product categories have an average price above `$50`, and what percentage of our catalog do they represent?"*
 
-- *"Who are our top 10 customers by total spending?"* → customers + orders
-- *"Which products have never been ordered?"* → products LEFT JOIN order_items
-- *"What is revenue by category by month?"* → order_items + products + categories + orders
+This question requires **grouping** products by category, **aggregating** prices, **filtering** groups by a threshold, and **computing** percentages — all in a single query.
 
-- **JOINs** are the single most important SQL skill. 
-- A 2024 Stack Overflow survey found that SQL JOIN proficiency is the **top technical differentiator** between junior and senior data analysts.
+Aggregation is the step where rows become *numbers a manager can act on*. It is what turns raw transactional data into the **executive dashboards** used at companies like Netflix, Spotify, and Target.
 
-> If you master JOINs, you can answer almost any business question.
+> The ability to ask precise questions of your data is a career-defining skill.
 
 ---
 
@@ -359,16 +356,16 @@ Real business questions span **multiple tables**:
 
 ---
 
-# Week 5 — SQL Mastery, Part 3: Advanced Techniques
+# Week 5 — SQL Mastery, Part 3: JOINs
 
 ### What You Will Learn
-- Window functions: ROW_NUMBER, RANK, LAG, LEAD, NTILE
-- Running totals and moving averages
-- Percent-of-total calculations
-- Common Table Expressions (CTEs) for readable, modular queries
-- Set operations: UNION, INTERSECT, EXCEPT
-- Creating and using Views — saved queries as virtual tables
-- RFM analysis (Recency, Frequency, Monetary) for customer segmentation
+- INNER JOIN — combining matching rows from two tables
+- LEFT JOIN — keeping all rows from one side (finding gaps)
+- RIGHT JOIN and FULL OUTER JOIN
+- Self-joins for comparing rows within the same table
+- Joining 3, 4, or 5 tables in a single query
+- Combining JOINs with GROUP BY and HAVING
+- Building multi-table business reports
 
 ---
 
@@ -376,13 +373,16 @@ Real business questions span **multiple tables**:
 
 ### Why This Matters in the Real World
 
-A VP of Sales asks: *"Show me our monthly revenue trend with month-over-month growth, and flag any month where we declined."*
+Real business questions span **multiple tables**:
 
-This requires **LAG** (to compare with the previous month), a **CTE** (to organize the logic), and **CASE** (to flag declines). These are the queries behind the dashboards in **Tableau**, **Power BI**, and **Looker**.
+- *"Who are our top 10 customers by total spending?"* → customers + orders
+- *"Which products have never been ordered?"* → products LEFT JOIN order_items
+- *"What is revenue by category by month?"* → order_items + products + categories + orders
 
-Window functions transform SQL from a data retrieval tool into a **full analytical engine** — eliminating the need to export to Excel for most analyses.
+- **JOINs** are the single most important SQL skill.
+- A 2024 Stack Overflow survey found that SQL JOIN proficiency is the **top technical differentiator** between junior and senior data analysts.
 
-> Advanced SQL is the difference between "I can get the data" and "I can deliver the insight."
+> If you master JOINs, you can answer almost any business question.
 
 ---
 # Week 6  
@@ -740,3 +740,32 @@ Leavey School of Business <br>
 Santa Clara University 
 
 Thank you!
+
+---
+
+# Appendix — Advanced SQL (Optional Enrichment)
+
+### Not assessed — beyond the 10-week core
+
+The 10-week core takes SQL as far as **JOINs** in Week 5. The techniques below go
+further. They appear in several of the `data_stories/` notebooks, so they are listed
+here for students who want to read ahead — but they are **not taught in the labs and
+not required for the exam**.
+
+- Window functions: ROW_NUMBER, RANK, LAG, LEAD, NTILE
+- Running totals and moving averages
+- Percent-of-total calculations
+- Common Table Expressions (CTEs) for readable, modular queries
+- Set operations: UNION, INTERSECT, EXCEPT
+- Creating and using Views — saved queries as virtual tables
+- RFM analysis (Recency, Frequency, Monetary) for customer segmentation
+
+### Why This Matters in the Real World
+
+A VP of Sales asks: *"Show me our monthly revenue trend with month-over-month growth, and flag any month where we declined."*
+
+This requires **LAG** (to compare with the previous month), a **CTE** (to organize the logic), and **CASE** (to flag declines). These are the queries behind the dashboards in **Tableau**, **Power BI**, and **Looker**.
+
+Window functions transform SQL from a data retrieval tool into a **full analytical engine** — eliminating the need to export to Excel for most analyses.
+
+> Advanced SQL is the difference between "I can get the data" and "I can deliver the insight."
