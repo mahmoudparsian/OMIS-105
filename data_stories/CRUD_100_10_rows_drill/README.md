@@ -1,25 +1,12 @@
-# 🔁 CRUD with Four Examples per Operation
+# 🔁 CRUD Drill — Four Examples per Operation
 
 **OMIS-105 · Week 3 — SQL Basics**
 
 The same ten-employee CRUD story as `CRUD_100_10_rows/`, but with **four worked
-examples of each operation** instead of one or two. Choose it when students need
-repetition rather than novelty.
+examples of each operation** instead of one or two.
 
----
-
-## A note on this folder's history
-
-This story used to be called `CRUD_100_10_rows_with_dql`, after the **`%%dql` cell
-magic** from the `magic-duckdb` extension. That is no longer how it works:
-
-- The notebook was converted from Jupyter to **Marimo**.
-- `%%dql` is an **IPython cell magic** — Marimo cannot run it.
-- Every query now uses Marimo's native SQL cells instead.
-
-The folder, the notebook and the text were cleaned up in 2026: the `%%dql`
-explanations, an unused `magic_duckdb` dependency, and an empty "load the magic" cell
-were all removed. Nothing about how the notebook behaves changed.
+**Sixteen worked examples in total** — more practice per concept than any other CRUD
+story here. Choose it when students need repetition rather than new material.
 
 ---
 
@@ -48,22 +35,49 @@ marimo run  CRUD_100_10_rows_drill_marimo.py    # read-only
 | 2C | **UPDATE** | 4 `UPDATE` examples |
 | 2D | **DELETE** | 4 `DELETE` examples |
 
-**Sixteen worked examples in total** — more drill per concept than any other CRUD
-story here. That is now its real distinguishing feature.
+Every query lives in its own SQL cell, so what students read is plain SQL with no
+Python wrapped around it.
 
 ---
 
-## Why it exists as a separate story
+## Why four examples each
 
-Before the Marimo conversion, this variant showed an **alternative way of writing
-SQL** — the `%%dql` magic, instead of wrapping each query in Python. That was its
-reason to be separate.
+One example shows a student **that** a statement works. Four show them **how it
+varies**:
 
-That reason is gone: **the SQL here now looks the same as in every other story.**
+- Different `WHERE` conditions on the same `UPDATE`
+- Filtering on text, then on numbers, then on both
+- Deleting one row, then a set of rows
+- Reading with and without sorting and limits
 
-What remains is the repetition. Sixteen worked examples across the four operations is
-more practice per concept than any sibling, so use it when students need the drill —
-not to show them a different notebook style.
+That variation is what turns "I saw it done" into "I could write it myself". On a
+ten-row table it costs nothing to run all sixteen.
+
+---
+
+## Ten rows, on purpose
+
+The table is small enough to print in full **before and after every statement**:
+
+- With all ten rows on screen, you can check that a statement changed **the rows you
+  meant** — and nothing else.
+- That habit is impossible on a table of ten thousand rows.
+- Which is exactly why it is worth building now, while it is still easy.
+
+---
+
+## ⚠️ The one thing to be careful about
+
+`UPDATE` and `DELETE` take a `WHERE` clause. **If you leave it off, the statement
+applies to every row in the table, and no error is raised.**
+
+```sql
+DELETE FROM employees WHERE emp_id = 300;   -- deletes one row
+DELETE FROM employees;                      -- deletes ALL of them. No warning.
+```
+
+This is the most expensive beginner mistake in SQL. Making it here, on ten rows you
+can regenerate in a second, is a much better place to learn it.
 
 ---
 
@@ -82,11 +96,17 @@ They all teach the same four operations. The differences:
 | `CRUD_10_emps_persistent/` | 10 | Persistent database and backup table |
 | `emps_single_table/` | 1,100 | Real-size table; adds a "did the changes stick?" check |
 
-> **Note:** five of these folders were renamed in 2026 to say what they actually
-> contain. They were previously `CRUD_100_emps`, `CRUD_101_emps`, `CRUD_102_emps`,
-> `CRUD_100_10_rows_with_images_openai` and `CRUD_100_10_rows_with_dql` — names whose
-> numbers were not row counts, that promised an AI integration which does not exist,
-> or that named a feature the notebook no longer uses.
-
 **Assign one.** They are variations on a theme, and doing several is repetition
 without new material.
+
+---
+
+## Teaching notes
+
+- **Use it for practice, not for first exposure.** Sixteen examples is a lot to sit
+  through cold. Teach the four operations from `CRUD_100_10_rows/`, then come here
+  when students need the reps.
+- Good in-class pattern: run example 1 of each block, then have students **predict**
+  what examples 2–4 will return before running them.
+- Ask what `UPDATE employees SET salary = 100000` does before running it. Then run it
+  on a copy.

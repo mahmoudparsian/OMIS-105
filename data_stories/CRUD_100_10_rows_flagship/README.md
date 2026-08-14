@@ -79,7 +79,7 @@ column and the rendered face beside it makes the point that the database stores
 | Story | Rows | What makes it different |
 |---|---|---|
 | `CRUD_100_10_rows/` | 10 | The plainest version. **Start here.** |
-| `CRUD_100_10_rows_drill/` | 10 | Same content using `%%dql` cell magic |
+| `CRUD_100_10_rows_drill/` | 10 | **4 examples per operation** — most repetition |
 | `CRUD_100_10_rows_with_images/` | 10 | Adds employee photos |
 | **`CRUD_100_10_rows_flagship/`** ← this one | 10 | Photos **plus** backup table, persistence, re-runnability |
 | `CRUD_9_emps_intro/` | 9 | Longest conceptual intro |
@@ -87,11 +87,10 @@ column and the rendered face beside it makes the point that the database stores
 | `CRUD_10_emps_persistent/` | 10 | Persistent database and backup table |
 | `emps_single_table/` | 1,100 | Real-size table |
 
-> **Note:** five of these folders were renamed in 2026 to say what they actually
-> contain. They were previously `CRUD_100_emps`, `CRUD_101_emps`, `CRUD_102_emps`,
-> `CRUD_100_10_rows_with_images_openai` and `CRUD_100_10_rows_with_dql` — names whose
-> numbers were not row counts, that promised an AI integration which does not exist,
-> or that named a feature the notebook no longer uses.
+> **Note:** several of these folders were renamed in 2026 to say what they actually
+> contain. They were previously `CRUD_100_emps`, `CRUD_101_emps`, `CRUD_102_emps` and
+> `CRUD_100_10_rows_with_images_openai` — names whose numbers were not row counts, or
+> that promised an AI integration which does not exist.
 
 **Assign one.** This is the most complete if you want a single thorough pass; use
 `CRUD_100_10_rows/` if you want the simplest.
