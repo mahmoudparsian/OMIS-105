@@ -1,0 +1,60 @@
+# Checks for data_stories/sailors_and_boats/.
+#
+# Scoped to that folder on purpose: it is the only story with a test suite, and
+# a workflow that ran on every push to this repository would fail on the other
+# thirty-five for no reason.
+#
+# Nothing here needs a secret. The suite stubs the Anthropic client, so the
+# "Ask in English" page is exercised without an API key, and both databases are
+# built from SQL during the run rather than being committed.
+name: sailors_and_boats
+
+on:
+  push:
+    paths:
+      - 'data_stories/sailors_and_boats/**'
+      - '.github/workflows/sailors_and_boats.yml'
+  pull_request:
+    paths:
+      - 'data_stories/sailors_and_boats/**'
+  workflow_dispatch:        # so it can be run by hand from the Actions tab
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: data_stories/sailors_and_boats
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      # Builds the tutorial database, then attempts eleven forbidden inserts.
+      # Each one must be rejected by the schema; the script exits non-zero if
+      # any is accepted, so this step IS the requirement-coverage report.
+      - name: Build the tutorial database and prove the constraints bite
+        run: ./create_database.sh --verify
+
+      # The same eleven rules against the 2024-2026 dataset, whose 5,000 rows
+      # are generated from database/sql_2/02_data.sql.
+      - name: Build the second database and verify it too
+        run: ./create_database_2.sh --verify
+
+      # The generated SQL must match a fresh generation byte for byte -- this is
+      # what makes the committed file trustworthy.
+      - name: Check the generated dataset is reproducible
+        run: uv run python src/generate_data_2.py --check
+
+      # 155 checks: constraints, write helpers, the SQL guard, every chart's
+      # JSON, all five notebooks executed, all ten app pages rendered, the
+      # second dataset's specification, and the concept index's citations.
+      - name: Run the test suite
+        run: ./run_tests.sh

@@ -1,7 +1,7 @@
 """OMIS 105 -- Sailors & Boats: a guided SQL notebook (Marimo).
 
 Run it with:
-    uv run marimo edit notebooks/sailors_and_boats_notebook.py
+    uv run marimo edit notebooks/notebook_guided.py
 
 Parts 1-4 are the 16 queries the assignment grades: 3 simple, 5 intermediate,
 5 intermediate with a plot, 3 advanced. Part 5 adds an extra query with a pie
