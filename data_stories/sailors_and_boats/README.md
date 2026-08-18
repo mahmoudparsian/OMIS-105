@@ -875,115 +875,48 @@ more expensive found the defect:
 > DuckDB, Marimo and pandas directly, and that is all you need for the other data
 > stories. **This one needs none of it.** Everything here runs through `uv`, which
 > fetches its own Python and its own copy of every library into a private folder —
-> so it cannot disturb, or be disturbed by, what you installed there. If you have
-> `uv`, you are ready; if not, [§12.5](#125-installing-uv) is one command.
+> so it cannot disturb, or be disturbed by, what you installed there.
 
-`uv` is a Python package and environment manager. It replaces the
-`pip` + `venv` + `requirements.txt` combination you may have used before, and it
-is *much* faster (it is written in Rust). Everything in this project runs
-through it.
+`uv` is a Python package and environment manager: `pip` + `venv` +
+`requirements.txt` in one tool, written in Rust, and fast enough that you stop
+thinking about it. It does one thing those tools did badly — it records the
+**exact** versions that were known to work, so this project behaves the same on
+your machine as it does on mine.
 
-If you have used `pip install` and `python -m venv` before, `uv` does both jobs
-— plus one more that `pip` never did well: recording the **exact** versions that
-were known to work.
-
-### 12.1 The problem it solves
-
-A Python project depends on other people's libraries — here, DuckDB, Marimo,
-Streamlit, Altair, pandas. Two classic problems follow:
-
-1. **Version drift.** You install `streamlit` today, a student installs it in
-   six months and gets a newer one that behaves differently. Your code breaks on
-   their machine and nobody can reproduce it.
-2. **Cross-project pollution.** Installing packages system-wide means one
-   project's upgrade silently breaks a different project.
-
-`uv` fixes both: each project gets its own private set of packages, and the
-exact versions are written down.
-
-### 12.2 The three files that matter
-
-| File | What it is | Edit it? |
-|---|---|---|
-| `pyproject.toml` | The dependency **wish list** — "this project needs duckdb, marimo, streamlit…" plus minimum versions. | Yes, by hand or via `uv add`. |
-| `uv.lock` | The **exact** resolved answer: all 69 packages, pinned to a specific version and checksum. This is what makes the project reproducible. | No — generated. |
-| `.venv/` | The private folder holding the installed packages (Python 3.13 here). Deleting it is harmless; `uv sync` rebuilds it. | No — generated. |
-
-Think of it as a recipe: `pyproject.toml` is "flour, sugar, butter"; `uv.lock` is
-"King Arthur flour, 2 cups, lot #4471"; `.venv/` is the ingredients actually
-sitting on your counter.
-
-### 12.3 The commands you will actually see
-
-```bash
-uv sync                     # read uv.lock, make .venv match it exactly. Run once.
-uv run python script.py     # run something INSIDE .venv
-uv add anthropic            # add a dependency (updates pyproject.toml AND uv.lock)
-uv --version                # check it is installed
-```
-
-**`uv run` is the important one.** With older tools you had to "activate" an
-environment first:
-
-```bash
-# the old way
-source .venv/bin/activate      # easy to forget; easy to be in the wrong one
-python src/build_database.py
-deactivate
-```
-
-With `uv` there is no activation step — `uv run` puts the command inside the
-right environment for you, every time:
-
-```bash
-# the uv way
-uv run python src/build_database.py
-```
-
-That is why every command in this project is written as `uv run …`. It also
-means `uv run` will quietly install anything missing before running, so a fresh
-clone works immediately.
-
-### 12.4 What this means for you here
-
-The shell scripts already wrap all of this, so day to day you only need:
-
-```bash
-uv sync                  # once, after cloning
-./create_database.sh     # build the database
-./run_app.sh             # start the app
-./run_notebook.sh        # open the guided notebook
-./run_notebook_level_01.sh   # …or one of the four level notebooks
-./run_tests.sh           # run the tests
-```
-
-Each script calls `uv run` internally. You never have to activate anything, and
-you never install packages globally.
-
-### 12.5 Installing uv
+### 12.1 Installing it
 
 ```bash
 brew install uv                                   # macOS
 curl -LsSf https://astral.sh/uv/install.sh | sh   # macOS / Linux
+uv --version                                      # check it worked
 ```
 
-Check it worked with `uv --version`.
+**You do not need Python first.** `uv` downloads and manages an appropriate one
+(3.13 here) if you have none.
 
-### 12.6 Common questions
+### 12.2 The three files it uses
 
-**Do I need to install Python first?** No. `uv` downloads and manages an
-appropriate Python for the project (3.13 here) if you do not have one.
+| file | what it is | edit it? |
+|---|---|---|
+| `pyproject.toml` | the dependency **wish list** — duckdb, marimo, streamlit… with minimum versions | yes, by hand or via `uv add` |
+| `uv.lock` | the **exact** resolved answer: every package pinned to a version and a checksum. This is what makes the project reproducible | no — generated |
+| `.venv/` | the private folder holding the installed packages. Deleting it is harmless | no — generated |
 
-**Can I still use `pip`?** Inside this project, prefer `uv add` — it keeps
-`uv.lock` in step. A bare `pip install` would put a package somewhere `uv.lock`
-does not know about, and the next `uv sync` may remove it.
+### 12.3 The two commands that matter
 
-**Something is broken — how do I reset?** Delete `.venv/` and run `uv sync`. It
-rebuilds from `uv.lock`, so you get back exactly the tested versions.
+```bash
+uv sync                     # make .venv match uv.lock exactly. Run once, after cloning.
+uv run python script.py     # run something INSIDE .venv
+```
 
-**Why is it so fast?** It is written in Rust, caches aggressively, and hard-links
-packages instead of re-copying them. `uv sync` on a warm cache is usually under a
-second.
+**`uv run` is the important one.** There is no environment to "activate" and
+none to forget to activate — `uv run` puts the command in the right one every
+time. The shell scripts here call it internally, so day to day you only type
+`./create_database.sh`, `./run_app.sh`, `./run_tests.sh` and friends.
+
+**If something breaks**, delete `.venv/` and run `uv sync`: it rebuilds from
+`uv.lock`, which is to say from exactly the tested versions. Inside this project
+prefer `uv add` over `pip install`, so the lock file stays in step.
 
 ## 13. Notes for whoever maintains this
 
