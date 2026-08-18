@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Generate the second dataset -- a marina three years wide -- as SQL.
 
-    uv run python src/generate_data_2.py          # rewrite database/sql_2/02_data.sql
-    uv run python src/generate_data_2.py --check  # regenerate and diff, write nothing
+    uv run python src/generate_data_large.py          # rewrite database/sql_large/02_data.sql
+    uv run python src/generate_data_large.py --check  # regenerate and diff, write nothing
 
-This writes `database/sql_2/02_data.sql`, which `create_database_2.sh` loads on top of the
+This writes `database/sql_large/02_data.sql`, which `create_database_large.sh` loads on top of the
 *unchanged* `database/sql/01_schema.sql`. The tutorial data in `database/sql/02_data.sql` is never
 touched: the two datasets share a schema and nothing else.
 
@@ -35,7 +35,7 @@ from collections import defaultdict
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-OUT_PATH = PROJECT_ROOT / "database" / "sql_2" / "02_data.sql"
+OUT_PATH = PROJECT_ROOT / "database" / "sql_large" / "02_data.sql"
 
 SEED = 20260817
 
@@ -367,23 +367,23 @@ def render(sailors, boats, reserves, never_book, never_booked) -> str:
     lines = [
         "-- " + "=" * 74,
         "--  OMIS 105 -- Sailors & Boats",
-        "--  File   : database/sql_2/02_data.sql",
+        "--  File   : database/sql_large/02_data.sql",
         "--  Purpose: Populate the SECOND database -- a marina three years wide.",
         "--",
         "--  GENERATED FILE. Do not hand-edit: change the specification at the",
-        "--  top of src/generate_data_2.py and re-run it.",
+        "--  top of src/generate_data_large.py and re-run it.",
         "--",
-        "--      uv run python src/generate_data_2.py",
-        "--      ./create_database_2.sh --force",
+        "--      uv run python src/generate_data_large.py",
+        "--      ./create_database_large.sh --force",
         "--",
         "--  This file is deliberately NOT in database/sql/. Everything in that directory",
         "--  is loaded into the tutorial database by ./create_database.sh, which",
         "--  globs database/sql/*.sql -- dropping this file there would silently add 2,000",
         "--  rows to the database the notebooks and tests describe.",
         "--",
-        "--  The SCHEMA is shared and unmodified: create_database_2.sh runs",
+        "--  The SCHEMA is shared and unmodified: create_database_large.sh runs",
         "--  database/sql/01_schema.sql and then this file. Every rule R1-R10, D1-D2 is",
-        "--  therefore enforced here too -- ./create_database_2.sh --verify",
+        "--  therefore enforced here too -- ./create_database_large.sh --verify",
         "--  proves it against these rows.",
         "--",
         "--  WHAT IS IN HERE",

@@ -1,6 +1,6 @@
-# Building the second database, A to Z
+# Building the large database, A to Z
 
-How `sailors_and_boats_2.duckdb` — 235 sailors, 44 boats, 5,000 reservations
+How `sailors_and_boats_large.duckdb` — 235 sailors, 44 boats, 5,000 reservations
 across 2024–2026 — is produced, from the specification to the verified database.
 
 This is the long-form companion to [§7.1 of `README.md`](README.md#71-the-second-dataset--a-marina-three-years-wide),
@@ -44,10 +44,10 @@ including here.
 
 ```bash
 # build it (first time)
-./create_database_2.sh --verify
+./create_database_large.sh --verify
 
-# change the data: edit the constants at the top of src/generate_data_2.py, then
-./create_database_2.sh --regenerate --force --verify
+# change the data: edit the constants at the top of src/generate_data_large.py, then
+./create_database_large.sh --regenerate --force --verify
 
 # check it
 ./run_tests.sh                    # group [11] is this dataset
@@ -57,9 +57,9 @@ Three files are involved, and each has exactly one job:
 
 | file | job |
 |---|---|
-| `src/generate_data_2.py` | holds the specification; writes the SQL |
-| `database/sql_2/02_data.sql` | the generated rows — 5,333 lines of `INSERT` |
-| `create_database_2.sh` | runs `database/sql/01_schema.sql` + that file into a new database |
+| `src/generate_data_large.py` | holds the specification; writes the SQL |
+| `database/sql_large/02_data.sql` | the generated rows — 5,333 lines of `INSERT` |
+| `create_database_large.sh` | runs `database/sql/01_schema.sql` + that file into a new database |
 
 ---
 
@@ -86,10 +86,10 @@ where you have to trust the SQL.
 
 |  | tutorial | second dataset |
 |---|---|---|
-| built by | `./create_database.sh` | `./create_database_2.sh` |
-| file | `sailors_and_boats.duckdb` | `sailors_and_boats_2.duckdb` |
+| built by | `./create_database.sh` | `./create_database_large.sh` |
+| file | `sailors_and_boats.duckdb` | `sailors_and_boats_large.duckdb` |
 | schema | `database/sql/01_schema.sql` | **the same file** |
-| rows from | `database/sql/02_data.sql` | `database/sql_2/02_data.sql` |
+| rows from | `database/sql/02_data.sql` | `database/sql_large/02_data.sql` |
 | sailors | 14 | 235 |
 | boats | 9 | 44 |
 | reservations | 10 | 5,000 |
@@ -118,11 +118,11 @@ A file called `database/sql/03_big_data.sql` would therefore be loaded into the
 every count is quoted in notebook prose, and breaking every seed-dependent
 lesson at once.
 
-So the second dataset lives in **`database/sql_2/`**, outside the glob, and
-`create_database_2.sh` names its two scripts explicitly:
+So the second dataset lives in **`database/sql_large/`**, outside the glob, and
+`create_database_large.sh` names its two scripts explicitly:
 
 ```bash
-uv run python src/build_database.py --sql database/sql/01_schema.sql database/sql_2/02_data.sql
+uv run python src/build_database.py --sql database/sql/01_schema.sql database/sql_large/02_data.sql
 ```
 
 `--sql` exists for exactly this. With no `--sql`, `build_database.py` still
@@ -131,17 +131,17 @@ globs `database/sql/*.sql` and builds the tutorial database as it always did.
 ## D. The pipeline
 
 ```
-   src/generate_data_2.py          ← the specification lives here (constants)
+   src/generate_data_large.py          ← the specification lives here (constants)
         │  seeded RNG, 0.2s
         ▼
-   database/sql_2/02_data.sql               ← 5,333 lines: 235 + 44 + 5,000 INSERTs
+   database/sql_large/02_data.sql               ← 5,333 lines: 235 + 44 + 5,000 INSERTs
         │
-        │   create_database_2.sh
+        │   create_database_large.sh
         │        runs, in order:
         │            database/sql/01_schema.sql   (shared, unmodified)
-        │            database/sql_2/02_data.sql
+        │            database/sql_large/02_data.sql
         ▼
-   sailors_and_boats_2.duckdb      ← 2.6 MB build artifact, git-ignored
+   sailors_and_boats_large.duckdb      ← 2.6 MB build artifact, git-ignored
         │
         ├── --verify   → 11 forbidden inserts, each rejected by the schema
         └── run_tests.sh → group [11]: 20 checks against the specification
@@ -152,7 +152,7 @@ same SQL file produces the same database.
 
 ## E. The specification
 
-All of it is constants at the top of `src/generate_data_2.py`. Nothing is
+All of it is constants at the top of `src/generate_data_large.py`. Nothing is
 hidden further down; the functions read these and nothing else.
 
 | constant | value | meaning |
@@ -360,15 +360,15 @@ hand-edited.
 ## M. Step 8 — building the database
 
 ```bash
-./create_database_2.sh [database-path] [--verify] [--force] [--regenerate]
+./create_database_large.sh [database-path] [--verify] [--force] [--regenerate]
 ```
 
 | flag | what it does |
 |---|---|
-| *(none)* | build `sailors_and_boats_2.duckdb` from the schema + the generated data |
+| *(none)* | build `sailors_and_boats_large.duckdb` from the schema + the generated data |
 | `--verify` | after building, attempt 11 forbidden inserts and print each rejection |
 | `--force` | replace an existing database (refused without it — see below) |
-| `--regenerate` | re-run `src/generate_data_2.py` first, then build |
+| `--regenerate` | re-run `src/generate_data_large.py` first, then build |
 | *first argument* | a database path, as with every other script in the project |
 
 What it does, in order: loads `.env`, checks `uv` is installed, warns if the app
@@ -377,7 +377,7 @@ file without `--force`** (printing what that file currently holds), then:
 
 ```bash
 export SAILORS_DB="$DB"
-uv run python src/build_database.py --sql database/sql/01_schema.sql database/sql_2/02_data.sql
+uv run python src/build_database.py --sql database/sql/01_schema.sql database/sql_large/02_data.sql
 ```
 
 The refusal matters because the app writes real rows: a database is a build
@@ -418,8 +418,8 @@ would pick a different, equally valid reservation and silently break that tie.
 `./run_tests.sh` group **[11]** covers this dataset — 20 checks:
 
 ```
-[11] Second dataset (database/sql_2/02_data.sql)
-  ok    database/sql_2/02_data.sql matches a fresh generation
+[11] Second dataset (database/sql_large/02_data.sql)
+  ok    database/sql_large/02_data.sql matches a fresh generation
   ok    235 sailors (got 235)
   ok    5 sailors never reserve a boat (got 5)
   ok    10 sailors rated 10 (got 10)
@@ -447,7 +447,7 @@ Two of these deserve a note:
   it byte for byte. That is what makes the committed SQL trustworthy: a hand
   edit, or a specification change without a regeneration, fails here. It needs
   no database, so it runs even if you never build the second one.
-- The rest **skip** with a message if `sailors_and_boats_2.duckdb` does not
+- The rest **skip** with a message if `sailors_and_boats_large.duckdb` does not
   exist. The second database is optional; nothing else in the project depends on
   it.
 
@@ -457,9 +457,9 @@ Every script takes a database path as its first argument, so the app and all
 five notebooks run against this dataset unmodified:
 
 ```bash
-./run_app.sh              sailors_and_boats_2.duckdb
-./run_notebook_level_04.sh sailors_and_boats_2.duckdb
-./run_tests.sh            sailors_and_boats_2.duckdb   # see the note below
+./run_app.sh              sailors_and_boats_large.duckdb
+./run_notebook_level_04.sh sailors_and_boats_large.duckdb
+./run_tests.sh            sailors_and_boats_large.duckdb   # see the note below
 ```
 
 Under the hood every one of them just exports `SAILORS_DB`, which
@@ -493,8 +493,8 @@ Two things to expect:
 Every one of these is a constant, a regeneration, and a rebuild:
 
 ```bash
-# edit src/generate_data_2.py, then:
-./create_database_2.sh --regenerate --force --verify
+# edit src/generate_data_large.py, then:
+./create_database_large.sh --regenerate --force --verify
 ```
 
 | you want | change | watch out for |
@@ -519,13 +519,13 @@ to catch accidental drift, so they should move deliberately.
 
 - the same file comes out of every run — regenerating is a no-op unless the
   specification changed;
-- `database/sql_2/02_data.sql` can be committed and diffed like source, and a change in
+- `database/sql_large/02_data.sql` can be committed and diffed like source, and a change in
   it is a real change, not RNG noise;
 - the test suite can compare the committed file against a fresh generation;
 - the numbers quoted in this document stay true.
 
 ```bash
-uv run python src/generate_data_2.py --check   # regenerate and compare, write nothing
+uv run python src/generate_data_large.py --check   # regenerate and compare, write nothing
 ```
 
 Change the seed and you get a different marina with the same statistics: still
@@ -550,7 +550,7 @@ And from the build script:
 | message | cause |
 |---|---|
 | `a database already exists at …` | build without `--force`; it prints what the file holds first |
-| `database/sql_2/02_data.sql is missing` | never generated — run with `--regenerate` |
+| `database/sql_large/02_data.sql is missing` | never generated — run with `--regenerate` |
 | `error: no such SQL file: …` | a `--sql` path that does not exist |
 
 ## T. What the current dataset actually contains
@@ -571,7 +571,7 @@ Measured from the built database, not from intent:
 | summer | 3,489 of 5,000 bookings (**70%**) fall in June–August |
 | per sailor | min 2, median 18, max 118 |
 | per boat | min 80, max 169 |
-| file sizes | `database/sql_2/02_data.sql` 5,333 lines / 186 KB; database 2.6 MB |
+| file sizes | `database/sql_large/02_data.sql` 5,333 lines / 186 KB; database 2.6 MB |
 | generation time | ~0.2 s |
 
 ## U. Two bugs that shaped the generator
@@ -602,10 +602,10 @@ month coverage and peak dominance rather than just `count(*)`.
 - **One writer.** DuckDB allows many readers *or* one writer. The app holds a
   writer, so a notebook cannot open the same file at the same time, and
   `./run_tests.sh` fails while the app is running. Point one of them at a copy.
-- **Don't hand-edit `database/sql_2/02_data.sql`.** The suite regenerates and compares it;
+- **Don't hand-edit `database/sql_large/02_data.sql`.** The suite regenerates and compares it;
   your edit will be reported as a failure and lost at the next `--regenerate`.
 - **Don't move it into `database/sql/`.** See [C](#c-the-rule-that-shapes-everything-databasesql-is-a-glob).
-- **`sailors_and_boats_2.duckdb` is git-ignored** by `*.duckdb*`, along with its
+- **`sailors_and_boats_large.duckdb` is git-ignored** by `*.duckdb*`, along with its
   WAL. The generated *SQL* is the artifact worth committing.
 - **The app can write to this database too.** Registrations draw from
   `seq_sid`/`seq_bid` starting at 1000, which is why the generated ids stop at
@@ -620,9 +620,9 @@ month coverage and peak dominance rather than just `count(*)`.
 | database requirements R1–R10, P1–P3, D1–D2 | `database/sql/01_schema.sql`, `REQUIREMENTS` block | the only definition; everything else cites labels |
 | the schema itself | `database/sql/01_schema.sql` | shared by both databases, unmodified |
 | tutorial rows | `database/sql/02_data.sql` | never edited |
-| this dataset's specification | `src/generate_data_2.py`, top of file | executable, so it cannot drift from the data |
-| this dataset's rows | `database/sql_2/02_data.sql` | generated |
-| how it is built | `create_database_2.sh` | and `build_database.py --sql` |
+| this dataset's specification | `src/generate_data_large.py`, top of file | executable, so it cannot drift from the data |
+| this dataset's rows | `database/sql_large/02_data.sql` | generated |
+| how it is built | `create_database_large.sh` | and `build_database.py --sql` |
 | what it must satisfy | `tests/test_smoke.py`, group [11] | 20 checks |
 | the short version of this document | `README.md` §7.1 | entry point |
 | why `reserves` is keyed `(bid, day)` | `DESIGN.md` §3 | the design argument, in full |

@@ -191,7 +191,7 @@ second, staler copy of the course.
 | a day is a one-to-one matching | G Q12, L2 intro | one sailor per cell, no name twice in a column |
 | a `CHECK` prevents a class of query bug | L1 Q3 | the wrong case cannot be stored, so it cannot be missed by a filter |
 | a constraint can make a query pointless | G Q6 | `UNIQUE (sid, day)` makes "one sailor's two boats on a day" structurally empty |
-| constraints shape the *data generator* too | [`DATASET_2.md` §I](DATASET_2.md#i-step-4--the-reservations) | rows are built a day at a time so both keys hold by construction |
+| constraints shape the *data generator* too | [`DATASET_LARGE.md` §I](DATASET_LARGE.md#i-step-4--the-reservations) | rows are built a day at a time so both keys hold by construction |
 | watching the rules reject rows | `./create_database.sh --verify` | eleven forbidden inserts, each printing the database's own refusal |
 
 ## 13. Lessons that come from the data's shape
@@ -210,7 +210,7 @@ matching the output. The full list of which rows are load-bearing is in
 | Bob — the only B…B name | L2 Q4, G Q22 | and it only matches once you fold the case |
 | every reservation in 1998 | L2 Q9, L4 Q3, L4 Q11, L4 Q12 | a degenerate answer is still an answer, and must be read as one |
 | one reservation moved off 1998-10-10 | [README §7](README.md#7-the-database), [`DESIGN.md`](DESIGN.md) §5 | a new rule can invalidate existing data, and somebody must decide what happens to it |
-| 235 sailors, 44 boats, 5,000 bookings, 3 years | [`DATASET_2.md`](DATASET_2.md) | the same queries at a scale where you cannot check by eye |
+| 235 sailors, 44 boats, 5,000 bookings, 3 years | [`DATASET_LARGE.md`](DATASET_LARGE.md) | the same queries at a scale where you cannot check by eye |
 
 ## 14. Reading a result honestly
 
@@ -245,4 +245,4 @@ Ready-made selections, if you want a subset rather than a level.
 | **Ties and duplicates** | L1 Q5 → L1 Q6, L2 Q5, L2 Q7, L3 Q4, L4 Q5 |
 | **Judgement, not syntax** | [§14](#14-reading-a-result-honestly) — every row |
 | **The schema decision** | [`DESIGN.md`](DESIGN.md) §3, G front matter, G Q12, then `./create_database.sh --verify` |
-| **Scale** | any level notebook against `sailors_and_boats_2.duckdb` ([`DATASET_2.md`](DATASET_2.md)) |
+| **Scale** | any level notebook against `sailors_and_boats_large.duckdb` ([`DATASET_LARGE.md`](DATASET_LARGE.md)) |

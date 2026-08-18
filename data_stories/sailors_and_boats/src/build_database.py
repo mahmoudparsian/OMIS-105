@@ -5,8 +5,8 @@
     uv run python src/build_database.py --verify   # build, then prove the
                                                    # constraints actually bite
 
-    # a different dataset on the same schema (see create_database_2.sh)
-    uv run python src/build_database.py --sql database/sql/01_schema.sql database/sql_2/02_data.sql
+    # a different dataset on the same schema (see create_database_large.sh)
+    uv run python src/build_database.py --sql database/sql/01_schema.sql database/sql_large/02_data.sql
 
 The database file is recreated from scratch every run, so this script is the
 single source of truth: edit database/sql/01_schema.sql or database/sql/02_data.sql and re-run.
@@ -53,8 +53,8 @@ def build(db_path: Path = DB_PATH, scripts: list[Path] | None = None) -> Path:
     """Drop any existing database file and rebuild it from SQL.
 
     `scripts` defaults to every database/sql/*.sql -- the tutorial database. Pass a list
-    to build a different dataset on the same schema, as create_database_2.sh
-    does with [database/sql/01_schema.sql, database/sql_2/02_data.sql].
+    to build a different dataset on the same schema, as create_database_large.sh
+    does with [database/sql/01_schema.sql, database/sql_large/02_data.sql].
     """
     if db_path.exists():
         db_path.unlink()
