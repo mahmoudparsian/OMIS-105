@@ -281,7 +281,7 @@ database as well; `create_database_2.sh` names its two scripts explicitly. See
 | `src/plots_level_01.py` … `_04.py` | The 23 charts of the four level notebooks, one module per level. Same rule: no plotting code in a notebook. |
 | `src/text_to_sql.py` | The *Ask in English* page: schema introspection, the cached prompt, `validate_select()` (the security boundary), `dry_run()`, `repair_sql()`. |
 | `app/streamlit_app.py` | The ten-page application. |
-| `notebooks/sailors_and_boats_notebook.py` | The 16 graded queries plus three extra parts. No plotting code — it calls `src/plots.py`. |
+| `notebooks/notebook_guided.py` | The 16 graded queries plus three extra parts. No plotting code — it calls `src/plots.py`. |
 | `notebooks/notebook_level_01.py` … `_04.py` | The four level notebooks: 10 queries each and 12 at Level 4, 42 in total, no query repeated between them. Each calls its own `src/plots_level_0N.py`. |
 | `tests/test_smoke.py` | The whole suite in one plain script. No pytest, so students can run it as-is. |
 
@@ -867,6 +867,14 @@ more expensive found the defect:
 # Part VI — Reference
 
 ## 12. What is `uv`? (and why every command starts with it)
+
+> **Already did the course setup?** The course's
+> [`software_installation/`](../../software_installation) folder installs Python,
+> DuckDB, Marimo and pandas directly, and that is all you need for the other data
+> stories. **This one needs none of it.** Everything here runs through `uv`, which
+> fetches its own Python and its own copy of every library into a private folder —
+> so it cannot disturb, or be disturbed by, what you installed there. If you have
+> `uv`, you are ready; if not, [§12.5](#125-installing-uv) is one command.
 
 `uv` is a Python package and environment manager. It replaces the
 `pip` + `venv` + `requirements.txt` combination you may have used before, and it

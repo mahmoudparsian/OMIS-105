@@ -4,13 +4,13 @@ Three tables, one relationship, **71 queries**. This is the map from an idea to
 the cell that teaches it, and to the trap that makes it worth teaching.
 
 **How to read a reference.** `G Q14` is the guided notebook,
-[`notebooks/sailors_and_boats_notebook.py`](notebooks/sailors_and_boats_notebook.py),
+[`notebooks/notebook_guided.py`](notebooks/notebook_guided.py),
 query 14. `L3 Q9` is [`notebooks/notebook_level_03.py`](notebooks/notebook_level_03.py),
 query 9.
 
 | code | notebook | queries |
 |---|---|---|
-| **G** | `sailors_and_boats_notebook.py` — the guided tour | Q1–Q17, Q18 (alias lesson), Q19–Q28 |
+| **G** | `notebook_guided.py` — the guided tour | Q1–Q17, Q18 (alias lesson), Q19–Q28 |
 | **L1** | `notebook_level_01.py` — one table at a time | Q1–Q10 |
 | **L2** | `notebook_level_02.py` — the three tables together | Q1–Q10 |
 | **L3** | `notebook_level_03.py` — combinations and absences | Q1–Q10 |

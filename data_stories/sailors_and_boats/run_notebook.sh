@@ -32,4 +32,4 @@ resolve_db "${1:-}"
 
 cd "$PROJECT_DIR"
 
-open_notebook notebooks/sailors_and_boats_notebook.py "$@"
+open_notebook notebooks/notebook_guided.py "$@"

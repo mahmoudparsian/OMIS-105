@@ -789,7 +789,7 @@ def test_concept_index() -> None:
         return
 
     notebooks = {
-        "G": "sailors_and_boats_notebook",
+        "G": "notebook_guided",
         "L1": "notebook_level_01",
         "L2": "notebook_level_02",
         "L3": "notebook_level_03",

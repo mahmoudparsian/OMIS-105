@@ -712,7 +712,7 @@ def _(mo):
     | Q11 | idle days per year | a spine from `range()`, and why the join needs `DISTINCT` |
     | Q12 | years ranked | three windows, three frames; ordering by a grouping alias |
 
-    That is the four levels. `notebooks/sailors_and_boats_notebook.py` is the
+    That is the four levels. `notebooks/notebook_guided.py` is the
     original guided notebook, which works the same schema from a different
     angle -- the assignment's sixteen graded queries, the twelve classic
     exercises, and the argument for why `reserves` is keyed the way it is.
