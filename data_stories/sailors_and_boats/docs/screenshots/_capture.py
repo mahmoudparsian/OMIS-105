@@ -36,6 +36,7 @@ WIDTH = 1600
 MIN_HEIGHT = 900
 MAX_HEIGHT = 6000      # a safety stop; nothing here is legitimately taller
 SETTLE_MS = 3000       # let charts draw before measuring
+HERO_HEIGHT = 715      # the banner crop: KPI row + the first chart
 
 out_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
 base_url = sys.argv[2] if len(sys.argv) > 2 else "http://localhost:8501"
@@ -88,6 +89,17 @@ with sync_playwright() as p:
         out = out_dir / f"{name.lower().replace(' ', '_')}.png"
         pg.screenshot(path=out, full_page=True)
         print(f"  {name:24s} {WIDTH}x{height:<5d} -> {out.name}")
+
+        # README.md opens with a banner, and a full-page shot is the wrong shape
+        # for one: the dashboard is ~3,900px tall, which on GitHub pushes the
+        # table of contents off the screen. `clip` takes the top band only --
+        # the KPI row and the first chart, which is what a reader needs to see
+        # in one glance. Regenerated here so it cannot drift from the app.
+        if name == "Dashboard":
+            hero = out_dir / "_hero.png"
+            pg.screenshot(path=hero, clip={"x": 0, "y": 0,
+                                           "width": WIDTH, "height": HERO_HEIGHT})
+            print(f"  {'Dashboard (banner crop)':24s} {WIDTH}x{HERO_HEIGHT:<5d} -> {hero.name}")
     b.close()
 
 print(f"\n  console errors during the sweep: {len(errors)}")

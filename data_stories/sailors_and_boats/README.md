@@ -1,8 +1,34 @@
 # Sailors, Boats, and Reservations
 
-OMIS 105 (Santa Clara University) — a DuckDB database, five Marimo SQL notebooks
-and a Streamlit web application built on the textbook Sailors / Boats / Reserves
-schema.
+**OMIS 105 · Santa Clara University** — the textbook Sailors / Boats / Reserves
+schema, taken end to end: a DuckDB database whose constraints do the arguing,
+five Marimo notebooks, and a Streamlit app that shows the SQL behind everything
+it draws.
+
+<img src="docs/screenshots/_hero.png" alt="The marina desk app: five KPIs, and reservations per boat with the never-booked hulls sitting visibly at zero" width="900">
+
+```bash
+uv sync                            # install (needs uv; see §12)
+./create_database.sh --verify      # build the database, watch 11 forbidden inserts get rejected
+./run_app.sh                       # the app above    ./run_notebook.sh — the notebooks
+```
+
+**Three tables. 71 queries. One decision worth the whole project.**
+
+| | |
+|---|---|
+| **The database** | Three tables, ten rules, every one defined beside the constraint that enforces it. `reserves` is keyed on **`(bid, day)`** — *not* the textbook's `(sid, bid, day)`, which enforces neither reservation rule. [§6](#6-the-one-decision-that-matters) argues it; `./create_database.sh --verify` proves it. |
+| **The notebooks** | Five of them: a guided tour, then four graded levels from `WHERE` to relational division, window functions, `PIVOT` and recursive calendars. No plotting code inside — all 29 charts live in `src/`. [§8](#8-the-marimo-notebook) |
+| **The app** | Ten pages, including a constraint playground that *tries* to break each rule, and an "Ask in English" page that turns a question into checked SQL. [§9](#9-the-streamlit-application) |
+| **The scale** | A second dataset — 235 sailors, 44 boats, 5,000 reservations across three years — generated reproducibly on the same schema. [`DATASET_2.md`](DATASET_2.md) |
+| **What it teaches** | Every concept mapped to the query that teaches it, and the trap it turns on. [`CONCEPTS.md`](CONCEPTS.md) |
+| **Proof it works** | `./run_tests.sh` — 155 checks, no pytest, no API key. [§10](#10-verification) |
+
+New to the project? Read [§6](#6-the-one-decision-that-matters) first — it is the
+one idea everything else rests on. Teaching from it? Start with
+[`CONCEPTS.md`](CONCEPTS.md).
+
+---
 
 This single file is both **the assignment** (what was asked for, Part I) and
 **the solution** (what was built, why, and how it is verified, Parts II–VII).
@@ -269,6 +295,7 @@ database as well; `create_database_2.sh` names its two scripts explicitly. See
 | `CONCEPTS.md` | The concept index: every idea the course teaches, mapped to the query that teaches it and the trap it turns on. Points at cells; never explains them. |
 | `CLAUDE.md` | Instructions for Claude Code: invariants, gotchas, and what not to "fix". **Local only** — the repository ignores `CLAUDE.md*`, so it is not on GitHub. |
 | `docs/screenshots/*.png` | One per app page. `_capture.py` regenerates them with Playwright against a running app. |
+| `docs/screenshots/_hero.png` | The banner at the top of this file — a clipped crop of the dashboard, emitted by the same `_capture.py` run so it cannot drift from the app. |
 
 ### 5.5 Tooling and generated files
 
