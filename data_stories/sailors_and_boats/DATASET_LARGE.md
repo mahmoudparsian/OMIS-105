@@ -34,6 +34,7 @@ including here.
 - [R. Determinism, and why the seed matters](#r-determinism-and-why-the-seed-matters)
 - [S. How it fails, and what it says](#s-how-it-fails-and-what-it-says)
 - [T. What the current dataset actually contains](#t-what-the-current-dataset-actually-contains)
+  - [Why both databases are exactly the same size on disk](#why-both-databases-are-exactly-the-same-size-on-disk)
 - [U. Two bugs that shaped the generator](#u-two-bugs-that-shaped-the-generator)
 - [V. Gotchas](#v-gotchas)
 - [W. Where everything is defined](#w-where-everything-is-defined)
@@ -571,8 +572,72 @@ Measured from the built database, not from intent:
 | summer | 3,489 of 5,000 bookings (**70%**) fall in June–August |
 | per sailor | min 2, median 18, max 118 |
 | per boat | min 80, max 169 |
-| file sizes | `database/sql_large/02_data.sql` 5,333 lines / 186 KB; database 2.6 MB |
+| file sizes | `database/sql_large/02_data.sql` 5,333 lines / 186 KB; database 2.6 MB — [the same size as the tutorial one](#why-both-databases-are-exactly-the-same-size-on-disk), which is not a bug |
 | generation time | ~0.2 s |
+
+### Why both databases are exactly the same size on disk
+
+`sailors_and_boats.duckdb` holds 33 rows. `sailors_and_boats_large.duckdb` holds
+5,279. Both files are **2,633,728 bytes**, to the byte — which looks like one
+script having overwritten the other's data, and is the first thing to check:
+
+```bash
+cmp sailors_and_boats.duckdb sailors_and_boats_large.duckdb   # they differ
+duckdb sailors_and_boats_large.duckdb -c "SELECT count(*) FROM reserves"
+```
+
+The contents are fine. DuckDB does not size a file by row count — it allocates
+whole **256 KB blocks**, and the arithmetic is exact:
+
+```
+3 × 4,096-byte headers  +  10 × 262,144-byte blocks  =  2,633,728 bytes
+```
+
+Both databases allocate ten blocks because they have **identical structure**:
+once a table holds any rows at all, its data takes at least a block, and so does
+each structure maintained for a key — whether it is indexing ten rows or ten
+thousand. Measured, with `CHECKPOINT` to flush before reading the size:
+
+| database | blocks | bytes |
+|---|---|---|
+| three tables, no keys, no rows | 1 | 274,432 |
+| **our schema** (all the keys), no rows | 1 | 274,432 |
+| three tables, no keys, 3 rows | 3 | 798,720 |
+| **our schema + the 33 tutorial rows** | **10** | **2,633,728** |
+| **our schema + the 5,279 rows of this dataset** | **10** | **2,633,728** |
+
+Two things fall out of that table. Declaring keys costs **nothing** while the
+tables are empty — the first two rows are identical. And the jump from 3 blocks
+to 10 is the price of the keys once there *is* data to index: the same three
+tables without `PRIMARY KEY (bid, day)`, `UNIQUE (sid, day)` and the two foreign
+keys need a third of the space.
+
+What does not move the number is the data itself. 5,000 reservations of three
+narrow columns compress to far less than one 256 KB block, so they cost nothing
+on top of the structure. **At this scale the file size is a
+function of the schema, not of the data** — which is only true because both
+databases run the *same* `database/sql/01_schema.sql`. That is the point of the
+whole arrangement, showing up somewhere unexpected.
+
+It does grow once the data outgrows the allocation:
+
+| contents | bytes |
+|---|---|
+| three tables, 5,279 rows | 2,633,728 |
+| …plus a filler table of 100,000 rows | 3,158,016 |
+| …plus a filler table of 2,000,000 rows | 11,546,624 |
+
+To see the allocation directly:
+
+```sql
+PRAGMA database_size;   -- block_size, total_blocks, used_blocks, free_blocks
+```
+
+Two practical notes. `total_blocks` reads 0 until a `CHECKPOINT` — a fresh
+connection has not flushed yet, so measuring immediately after a build reports
+nothing. And a `.duckdb.wal` file beside the database is normal: it is the
+write-ahead log, folded in at the next checkpoint, and `.gitignore` excludes it
+along with the database itself.
 
 ## U. Two bugs that shaped the generator
 
