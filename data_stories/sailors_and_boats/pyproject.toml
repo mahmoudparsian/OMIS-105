@@ -1,0 +1,28 @@
+[project]
+name = "sailors-and-boats"
+version = "1.0.0"
+description = "OMIS 105 - Sailors & Boats: DuckDB schema, Marimo notebook, and Streamlit application"
+requires-python = ">=3.11"
+dependencies = [
+    "duckdb>=1.1.0",
+    "pandas>=2.2.0",
+    "marimo>=0.9.0",
+    "streamlit>=1.39.0",
+    # Altair 6 only: src/plots.py leans on the chart API directly, and 6 is the
+    # major this was tested against. The other floors stay permissive because
+    # the code touches only long-stable surface -- uv.lock is what pins the
+    # exact, verified set.
+    "altair>=6.0",
+    "anthropic>=0.122.0",
+]
+
+[tool.uv]
+package = false
+
+# Marimo reads this section from the project's pyproject.toml and it overrides
+# the user's global marimo config. Course material must run on open: with
+# auto_instantiate off (marimo's default in some setups) a student opening the
+# notebook sees raw source and unrendered markdown until they hit "run all",
+# which reads as a broken notebook.
+[tool.marimo.runtime]
+auto_instantiate = true
