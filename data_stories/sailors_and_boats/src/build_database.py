@@ -68,17 +68,36 @@ def build(db_path: Path = DB_PATH, scripts: list[Path] | None = None) -> Path:
         for script in (scripts if scripts is not None else sql_scripts()):
             con.execute(Path(script).read_text())
             print(f"  ran {Path(script).name}")
-        counts = con.execute(
-            """
-            SELECT (SELECT count(*) FROM sailors)  AS sailors,
-                   (SELECT count(*) FROM boats)    AS boats,
-                   (SELECT count(*) FROM reserves) AS reserves
-            """
-        ).fetchone()
-        print(f"  loaded {counts[0]} sailors, {counts[1]} boats, {counts[2]} reservations")
+        report_row_counts(con)
     finally:
         con.close()
     return db_path
+
+
+def report_row_counts(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
+    """Print one line per table: how many rows it ended up holding.
+
+    The tables are read out of the database rather than listed here, in creation
+    order (`table_oid`), which is the order they appear in 01_schema.sql. Adding
+    a fourth table to the schema therefore adds a line here on its own -- the
+    same reasoning as `sql_scripts()` globbing instead of naming filenames.
+
+    Returned as well as printed, so a caller can assert on the numbers.
+    """
+    tables = [r[0] for r in con.execute(
+        "SELECT table_name FROM duckdb_tables() ORDER BY table_oid").fetchall()]
+    counts = {t: con.execute('SELECT count(*) FROM "' + t + '"').fetchone()[0]
+              for t in tables}
+    if not counts:
+        print("  no tables -- did the schema script run?")
+        return counts
+
+    width = max(len(t) for t in counts)
+    print("  rows per table:")
+    for table, n in counts.items():
+        print(f"    {table:<{width}}  {n:>9,}")
+    print(f"    {'total':<{width}}  {sum(counts.values()):>9,}")
+    return counts
 
 
 # The only errors that count as "a rule did its job". Anything else -- a missing

@@ -381,6 +381,21 @@ export SAILORS_DB="$DB"
 uv run python src/build_database.py --sql database/sql/01_schema.sql database/sql_large/02_data.sql
 ```
 
+which reports what each script did and what landed in each table:
+
+```
+  ran 01_schema.sql
+  ran 02_data.sql
+  rows per table:
+    sailors         235
+    boats            44
+    reserves      5,000
+    total         5,279
+```
+
+The table names are read out of the database in creation order, not listed in
+the code, so a fourth table in the schema would report itself.
+
 The refusal matters because the app writes real rows: a database is a build
 artifact right up until somebody registers a sailor in it.
 
