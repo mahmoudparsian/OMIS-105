@@ -22,7 +22,7 @@ uv sync                            # install (needs uv; see §12)
 | **The database** | Three tables, ten rules, every one defined beside the constraint that enforces it. `reserves` is keyed on **`(bid, day)`** — *not* the textbook's `(sid, bid, day)`, which enforces neither reservation rule. [§6](#6-the-one-decision-that-matters) argues it; `./create_database.sh --verify` proves it. |
 | **The notebooks** | Five of them: a guided tour, then four graded levels from `WHERE` to relational division, window functions, `PIVOT` and recursive calendars. No plotting code inside — all 29 charts live in `src/`. [§8](#8-the-marimo-notebook) |
 | **The app** | Ten pages, including a constraint playground that *tries* to break each rule, and an "Ask in English" page that turns a question into checked SQL. [§9](#9-the-streamlit-application) |
-| **The scale** | A second dataset — 235 sailors, 44 boats, 5,000 reservations across three years — generated reproducibly on the same schema. [`DATASET_2.md`](DATASET_2.md) |
+| **The scale** | A second dataset — 235 sailors, 44 boats, 5,000 reservations across three years — generated reproducibly on the same schema. [`DATASET_LARGE.md`](DATASET_LARGE.md) |
 | **What it teaches** | Every concept mapped to the query that teaches it, and the trap it turns on. [`CONCEPTS.md`](CONCEPTS.md) |
 | **Proof it works** | `./run_tests.sh` — 155 checks, no pytest, no API key. [§10](#10-verification) |
 
@@ -183,7 +183,7 @@ cd OMIS-105/data_stories/sailors_and_boats
 
 uv sync                            # install dependencies (once, after cloning)
 ./create_database.sh --verify      # build the DB from database/sql/, prove the rules bite
-./create_database_2.sh --verify    # optional: the second, larger dataset (§7.1)
+./create_database_large.sh --verify    # optional: the second, larger dataset (§7.1)
 ./run_tests.sh                     # full suite — 155 checks
 
 ./run_notebook.sh                  # the guided SQL notebook (Marimo)
@@ -229,7 +229,7 @@ file, add a row here.
 sailors_and_boats/
 ├── database/             ← the source of truth. Everything else derives from it.
 │   ├── sql/              ←   the schema, and the tutorial's rows
-│   └── sql_2/            ←   the second dataset: 2024–2026, generated
+│   └── sql_large/            ←   the second dataset: 2024–2026, generated
 ├── src/                  ← Python library: data access, charts, text-to-SQL
 ├── app/                  ← the Streamlit application
 ├── notebooks/            ← five Marimo notebooks: the guided one, plus levels 1–4
@@ -245,7 +245,7 @@ sailors_and_boats/
 |---|---|
 | `create_database.sh` | Builds `sailors_and_boats.duckdb` from **every** `database/sql/*.sql` in filename order. `--verify` then attempts a forbidden insert per rule. Refuses to overwrite an existing database without `--force`, because a rebuild discards anything the app wrote. |
 | `run_app.sh` | Starts the Streamlit app. |
-| `create_database_2.sh` | Builds `sailors_and_boats_2.duckdb` from `database/sql/01_schema.sql` + `database/sql_2/02_data.sql` — the same schema with the larger dataset. `--regenerate` rewrites the data file first; `--verify` and `--force` behave as above. |
+| `create_database_large.sh` | Builds `sailors_and_boats_large.duckdb` from `database/sql/01_schema.sql` + `database/sql_large/02_data.sql` — the same schema with the larger dataset. `--regenerate` rewrites the data file first; `--verify` and `--force` behave as above. |
 | `run_notebook.sh` | Opens the guided Marimo notebook (read-only against the database). |
 | `run_notebook_level_01.sh` … `_04.sh` | Open the four level notebooks — 10 queries each (12 at Level 4), basic → advanced. Same arguments as `run_notebook.sh`. |
 | `run_tests.sh` | Runs the whole suite (121 checks). |
@@ -257,19 +257,19 @@ Everything the databases are built *from* lives in `database/`. The two
 `.duckdb` files are build artifacts and sit at the project root, where the
 scripts and `sailors_db.DB_PATH` expect them.
 
-**`database/sql/` is inside a glob and `database/sql_2/` is not** — that is the
+**`database/sql/` is inside a glob and `database/sql_large/` is not** — that is the
 whole reason for the second folder. `create_database.sh` runs *every*
 `database/sql/*.sql`, so a data file placed there would load into the tutorial
-database as well; `create_database_2.sh` names its two scripts explicitly. See
-[`DATASET_2.md` §C](DATASET_2.md#c-the-rule-that-shapes-everything-databasesql-is-a-glob).
+database as well; `create_database_large.sh` names its two scripts explicitly. See
+[`DATASET_LARGE.md` §C](DATASET_LARGE.md#c-the-rule-that-shapes-everything-databasesql-is-a-glob).
 
 | file | what it is | edit it? |
 |---|---|---|
 | `database/sql/01_schema.sql` | The three `CREATE TABLE`s **and the `REQUIREMENTS` block** — the single definition of every database rule. | **Yes** |
 | `database/sql/02_data.sql` | The seed rows: tutorial data (P1), never-reserved boats (P2), never-booking sailors (P3). | **Yes** |
-| `database/sql_2/02_data.sql` | The second dataset: 235 sailors, 44 boats, 5,000 reservations over 2024–2026. **Generated** — see `src/generate_data_2.py`. | No — regenerate |
+| `database/sql_large/02_data.sql` | The second dataset: 235 sailors, 44 boats, 5,000 reservations over 2024–2026. **Generated** — see `src/generate_data_large.py`. | No — regenerate |
 | `sailors_and_boats.duckdb` | Build artifact. Regenerate it; never hand-edit it, never treat it as truth. Git-ignored. | No |
-| `sailors_and_boats_2.duckdb` | Build artifact of the second dataset. Optional; nothing depends on it existing. Git-ignored. | No |
+| `sailors_and_boats_large.duckdb` | Build artifact of the second dataset. Optional; nothing depends on it existing. Git-ignored. | No |
 | `sailors_and_boats_SQL_Tutorial.pdf` | The textbook source for the story and the seed data. | No |
 
 ### 5.3 Python
@@ -278,7 +278,7 @@ database as well; `create_database_2.sh` names its two scripts explicitly. See
 |---|---|
 | `src/sailors_db.py` | The data-access layer, shared by app and notebook. Connections, `q()`, the `SqlLog` behind every *Show SQL* panel, and every write helper. `DB_PATH` here is the **only** place the database location is decided. |
 | `src/build_database.py` | Builds the database from `database/sql/*.sql` (or from an explicit `--sql` list) and implements `--verify`, whose forbidden statements are built from fixtures picked out of whichever database it was handed. |
-| `src/generate_data_2.py` | Writes `database/sql_2/02_data.sql`. Holds the specification for the second dataset — sailor counts, colour mix, month weights — and a fixed seed, so the file is reproducible. |
+| `src/generate_data_large.py` | Writes `database/sql_large/02_data.sql`. Holds the specification for the second dataset — sailor counts, colour mix, month weights — and a fixed seed, so the file is reproducible. |
 | `src/plots.py` | The six charts of the guided notebook and the app, plus the shared `style()`, palette and `count_axis()` every other chart module uses. Kept out of the notebooks because the assignment requires it. |
 | `src/plots_level_01.py` … `_04.py` | The 23 charts of the four level notebooks, one module per level. Same rule: no plotting code in a notebook. |
 | `src/text_to_sql.py` | The *Ask in English* page: schema introspection, the cached prompt, `validate_select()` (the security boundary), `dry_run()`, `repair_sql()`. |
@@ -293,7 +293,7 @@ database as well; `create_database_2.sh` names its two scripts explicitly. See
 |---|---|
 | `README.md` | This file — assignment, solution, tour and reference. |
 | `DESIGN.md` | Why the schema is shaped the way it is. Explains; does not define. |
-| `DATASET_2.md` | How the second database is generated and built, end to end — the specification, the generator, the build script, the checks, and how to change any of it. |
+| `DATASET_LARGE.md` | How the second database is generated and built, end to end — the specification, the generator, the build script, the checks, and how to change any of it. |
 | `CONCEPTS.md` | The concept index: every idea the course teaches, mapped to the query that teaches it and the trap it turns on. Points at cells; never explains them. |
 | `CLAUDE.md` | Instructions for Claude Code: invariants, gotchas, and what not to "fix". **Local only** — the repository ignores `CLAUDE.md*`, so it is not on GitHub. |
 | `docs/screenshots/*.png` | One per app page. `_capture.py` regenerates them with Playwright against a running app. |
@@ -477,7 +477,7 @@ suite cannot pass by rejecting everything.
 
 ### 7.1 The second dataset — a marina three years wide
 
-> Full write-up: **[`DATASET_2.md`](DATASET_2.md)** — the specification, how the
+> Full write-up: **[`DATASET_LARGE.md`](DATASET_LARGE.md)** — the specification, how the
 > rows are generated, how the database is built and verified, and a recipe table
 > for changing any of it. This section is the summary.
 
@@ -488,7 +488,7 @@ what a `GROUP BY` looks like when a group has ninety rows in it.
 So there is a second database, on the **same schema and the same constraints**:
 
 ```bash
-./create_database_2.sh --verify        # → sailors_and_boats_2.duckdb
+./create_database_large.sh --verify        # → sailors_and_boats_large.duckdb
 ```
 
 | | tutorial | second dataset |
@@ -507,17 +507,17 @@ they stay exactly as the textbook has them.
 
 Three things about how it is built are worth knowing:
 
-**It lives in `database/sql_2/`, not `database/sql/`, and that is not cosmetic.**
+**It lives in `database/sql_large/`, not `database/sql/`, and that is not cosmetic.**
 `./create_database.sh` loads *every* `database/sql/*.sql` in filename order — that glob
 is a feature, and it means a data file dropped into `database/sql/` would silently add
-5,000 rows to the tutorial database. `create_database_2.sh` instead names its
-two scripts explicitly: the shared `database/sql/01_schema.sql`, then `database/sql_2/02_data.sql`.
+5,000 rows to the tutorial database. `create_database_large.sh` instead names its
+two scripts explicitly: the shared `database/sql/01_schema.sql`, then `database/sql_large/02_data.sql`.
 
-**The data file is generated, not written.** `src/generate_data_2.py` holds the
+**The data file is generated, not written.** `src/generate_data_large.py` holds the
 specification — the counts above, the colour mix, a weight per calendar month —
 and a fixed seed, so it produces the same file every run. To change the shape of
 the marina, edit the constants at the top of that script and re-run
-`./create_database_2.sh --regenerate --force`. Editing the 5,333-line SQL file
+`./create_database_large.sh --regenerate --force`. Editing the 5,333-line SQL file
 by hand is caught by the test suite, which regenerates it and compares.
 
 Reservations are generated **a day at a time** — k distinct boats paired with k
@@ -708,7 +708,7 @@ well, where they return three real years — roughly 100 idle days each, and 202
 ahead of 2024 with 2026 still in progress:
 
 ```bash
-./run_notebook_level_04.sh sailors_and_boats_2.duckdb
+./run_notebook_level_04.sh sailors_and_boats_large.duckdb
 ```
 
 **NULL is not false.** Level 3 ends its anti-join query with two extra columns
@@ -816,7 +816,7 @@ every other page is unaffected.
 | Show SQL panels | 16 — displayed SQL matches what ran; values, NULLs, quotes, dedent |
 | App pages | 10 — all render headlessly via `streamlit.testing` |
 | Concept index | 12 — every `CONCEPTS.md` citation resolves, and every notebook query is cited at least once |
-| Second dataset | 20 — `database/sql_2/02_data.sql` matches a fresh generation, and the built database meets every count in the specification: the exact sailor and boat proportions, both uniqueness constraints, idle days in every year, and a busiest day that beats the median. Skips to 1 check if the second database has not been built |
+| Second dataset | 20 — `database/sql_large/02_data.sql` matches a fresh generation, and the built database meets every count in the specification: the exact sailor and boat proportions, both uniqueness constraints, idle days in every year, and a busiest day that beats the median. Skips to 1 check if the second database has not been built |
 
 The two availability identities are worth naming, because the second one only
 holds thanks to R10: `free + taken == fleet` (from the primary key) and

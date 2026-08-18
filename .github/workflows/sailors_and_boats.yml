@@ -44,14 +44,14 @@ jobs:
         run: ./create_database.sh --verify
 
       # The same eleven rules against the 2024-2026 dataset, whose 5,000 rows
-      # are generated from database/sql_2/02_data.sql.
+      # are generated from database/sql_large/02_data.sql.
       - name: Build the second database and verify it too
-        run: ./create_database_2.sh --verify
+        run: ./create_database_large.sh --verify
 
       # The generated SQL must match a fresh generation byte for byte -- this is
       # what makes the committed file trustworthy.
       - name: Check the generated dataset is reproducible
-        run: uv run python src/generate_data_2.py --check
+        run: uv run python src/generate_data_large.py --check
 
       # 155 checks: constraints, write helpers, the SQL guard, every chart's
       # JSON, all five notebooks executed, all ten app pages rendered, the

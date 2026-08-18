@@ -586,7 +586,7 @@ def _(mo):
     question, and it belongs in the output so a reader can see which one you
     chose.
 
-    Against `sailors_and_boats_2.duckdb` this returns three real years —
+    Against `sailors_and_boats_large.duckdb` this returns three real years —
     roughly 100 idle days each, mostly winter.
     """)
     return

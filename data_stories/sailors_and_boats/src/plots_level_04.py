@@ -514,7 +514,7 @@ def plot_year_ranking(df: pd.DataFrame) -> alt.Chart:
     Against the tutorial database this is a single bar -- one season, rank 1,
     100% -- and Level 2's Q9 says outright that a one-row grouping is a number
     rather than a chart. It is drawn here anyway because this notebook is meant
-    to be run against `sailors_and_boats_2.duckdb` as well, where the same cell
+    to be run against `sailors_and_boats_large.duckdb` as well, where the same cell
     ranks three years and the ranking is the point.
     """
     d = df.copy()

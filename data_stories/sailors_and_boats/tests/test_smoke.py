@@ -666,22 +666,22 @@ def test_second_dataset() -> None:
     """The 2024-2026 dataset: generated deterministically, and to specification.
 
     The generator check comes first and needs no database: `generate()` must
-    reproduce database/sql_2/02_data.sql byte for byte, which is what makes the committed
+    reproduce database/sql_large/02_data.sql byte for byte, which is what makes the committed
     file trustworthy — if someone edits the SQL by hand, or changes the
     specification without regenerating, this fails.
 
     The rest only runs when the second database has been built, because it is
-    optional: `./create_database_2.sh`.
+    optional: `./create_database_large.sh`.
     """
-    print("\n[11] Second dataset (database/sql_2/02_data.sql)")
-    import generate_data_2 as gen
+    print("\n[11] Second dataset (database/sql_large/02_data.sql)")
+    import generate_data_large as gen
 
     on_disk = gen.OUT_PATH.read_text() if gen.OUT_PATH.exists() else ""
-    check("database/sql_2/02_data.sql matches a fresh generation", on_disk == gen.generate())
+    check("database/sql_large/02_data.sql matches a fresh generation", on_disk == gen.generate())
 
-    db2 = PROJECT_ROOT / "sailors_and_boats_2.duckdb"
+    db2 = PROJECT_ROOT / "sailors_and_boats_large.duckdb"
     if not db2.exists():
-        print("  --    database checks skipped: build it with ./create_database_2.sh")
+        print("  --    database checks skipped: build it with ./create_database_large.sh")
         return
 
     con = sdb.connect(db2, read_only=True)
