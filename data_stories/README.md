@@ -6,7 +6,7 @@
   dataset or one concept.
 * Each data story can be dropped into a lecture, assigned as practice, or used as a
   worked example.
-* **There are 35 of them here**, plus `test_marimo/` — a setup check rather than a story.
+* **There are 36 of them here**, plus `test_marimo/` — a setup check rather than a story.
 * Data stories complement `weekly_lectures/` rather than replace it: a **week folder
   teaches the technique**, a **data story shows that technique doing real work**.
 
@@ -54,7 +54,7 @@ it exercises.
 | `TRANSACTIONS_AND_ACID/` | **8** |
 | `auto_insurance/` | **9** |
 | `insurance_dataset/` | **9** |
-| — | **10** *(no story — see gaps)* |
+| `sailors_and_boats/` | **10** (→ 2, 4, 5) |
 | `music_dataset_1950_to_2019/` | — *(raw CSV only — no notebooks)* |
 | `test_marimo/` | — *(setup check — run it before anything else)* |
 
@@ -140,9 +140,13 @@ folder, not from titles.
   reopening the database.
 - **Week 9** — the two insurance stories are full pipelines (3 and 5 notebooks: load,
   clean, model, analyse), which is what project week needs.
-- **Week 10** — **no story.** `CRUD_100_10_rows_flagship/` was previously
-  listed here on the strength of its folder name; on inspection it contains no AI code
-  at all and is an ordinary CRUD notebook, now mapped to Week 3.
+- **Week 10** — `sailors_and_boats/`: the textbook Sailors/Boats/Reserves schema
+  taken end to end — a schema decision argued in full, five notebooks (71 queries),
+  a ten-page Streamlit app, and a second 5,000-row dataset for scale. It exercises
+  Weeks 2, 4 and 5 rather than introducing anything new, which is what a closing
+  week wants. (`CRUD_100_10_rows_flagship/` was previously listed here on the
+  strength of its folder name; on inspection it contains no AI code at all and is
+  an ordinary CRUD notebook, now mapped to Week 3.)
 
 ---
 
@@ -222,10 +226,10 @@ recoverable from git (commit `8306937`).
 Where several stories overlap, each README carries a chooser table so you can pick one
 rather than reading all of them.
 
-**8. Week 10 has no data story.** The only candidate turned out to be misnamed (see
-gap 5). If Week 10 wants one, `music_dataset_1950_to_2019/` is the readiest raw
-material, or a story built on DuckDB's Parquet / cloud-source features would fit the
-"modern data" theme better.
+**8. Week 10 — closed.** `sailors_and_boats/` now fills it. The earlier candidate
+turned out to be misnamed (see gap 5). If a *second* Week 10 story is ever wanted,
+`music_dataset_1950_to_2019/` is the readiest raw material, or a story built on
+DuckDB's Parquet / cloud-source features would fit the "modern data" theme better.
 
 **9. DuckDB limits what Week 7 and 8 can show.** Being columnar, DuckDB gets far less
 from an index than a row-store would — the Week 7 story measures ~1.6x on 2M rows
