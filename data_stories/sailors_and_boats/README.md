@@ -5,6 +5,8 @@ schema, taken end to end: a DuckDB database whose constraints do the arguing,
 five Marimo notebooks, and a Streamlit app that shows the SQL behind everything
 it draws.
 
+[![tests](https://github.com/mahmoudparsian/OMIS-105/actions/workflows/sailors_and_boats.yml/badge.svg)](https://github.com/mahmoudparsian/OMIS-105/actions/workflows/sailors_and_boats.yml)
+
 <img src="docs/screenshots/_hero.png" alt="The marina desk app: five KPIs, and reservations per boat with the never-booked hulls sitting visibly at zero" width="900">
 
 ```bash
