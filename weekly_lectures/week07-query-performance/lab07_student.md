@@ -126,7 +126,7 @@ Suggest what indexes would help and any query rewrites.
 **Q11.** Write a Python function that times a query and returns the execution time in milliseconds. Use it to compare the performance of two equivalent queries:
 
 Query A (subquery): Find customers whose total spending exceeds the average customer spending.
-Query B (CTE + window function): Same result, different approach.
+Query B (CTE): Same result, different approach.
 
 ```python
 # Your timing function and two queries

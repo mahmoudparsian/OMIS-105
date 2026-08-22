@@ -54,7 +54,7 @@ Example in `products`:
 | Type | Notation | Example |
 |------|----------|---------|
 | Full FD | X → Y | `product_id → product_name` |
-| Partial FD | Part of key → Y | In (order_id, product_id) → quantity: `order_id → order_date` depends on only part of key |
+| Partial FD | Part of key → Y | In `order_items(order_id, product_id, quantity, order_date)`, `order_id → order_date` depends on only part of the key `(order_id, product_id)` |
 | Transitive FD | X → Y → Z | `product_id → category_id → category_name` |
 
 ---

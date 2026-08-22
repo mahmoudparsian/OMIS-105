@@ -2,16 +2,12 @@
 
 ## Build Your Own Database
 
-### Requirements:
-- Minimum 3 tables
+### Requirements (see the full capstone spec for details):
+- Minimum 5 tables
 - Define primary and foreign keys
-- Insert at least 10 rows per table
-- Write 5 queries:
-  1. Basic SELECT
-  2. WHERE filter
-  3. JOIN
-  4. GROUP BY
-  5. Analytical query
+- Insert at least 20 rows per table
+- Write 10 queries covering: basic SELECT, JOINs, GROUP BY,
+  window functions/CTEs, and a transaction
 
 ### Deliver:
 - SQL file

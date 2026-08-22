@@ -18,7 +18,7 @@
 
 * A database stores information in **tables** 
 * A table has rows and columns.
-* Each **row** is one row/record 
+* Each **row** is one record 
 	* one student, one product, one transaction.
 * Each **column** is one piece of information 
 	* (`student_id` , `first_name`, `major`, `GPA`).
@@ -31,9 +31,9 @@
 |-----------|------------|-------------|-------|
 |`100`      | `Alex`     | `Business`  | `3.2` |              
 |`300`      | `Jane`     | `AI`        | `3.4` |              
-|`400`      | `Megan`    | `Business ` | `3.0` |              
+|`400`      | `Megan`    | `Business`  | `3.0` |              
 |`700`      | `Janet`    | `AI`        | `3.8` |              
-|`900`      | `Rafa`     | `Business ` | `3.1` |         
+|`900`      | `Rafa`     | `Business`  | `3.1` |         
 --- 
 
 ## What to do

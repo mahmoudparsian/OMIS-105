@@ -219,7 +219,7 @@ INSERT INTO products (id, name, price)
 VALUES
 (11, 'Laptop-X', 1200),
 (23, 'Phone-11', 700),
-(35, 'Table-2', 500);
+(35, 'Tablet-2', 500);
 ```
 ---
 

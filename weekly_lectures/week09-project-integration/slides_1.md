@@ -63,23 +63,23 @@ A **mini database system**:
 
 # Project Requirements
 
-Minimum:
+Minimum (see the full capstone spec for details):
 
-- 3 tables
+- 5 tables
 - Primary keys
 - Foreign keys
-- 10+ rows per table
-- 5 meaningful queries
+- 20+ rows per table
+- 10 meaningful queries
 
 ---
 
 # Required Queries
 
-1. Basic SELECT  
-2. WHERE filter  
-3. JOIN query  
-4. GROUP BY  
-5. Analytical (insight)
+1. Basic SELECT (WHERE, ORDER BY)
+2. JOINs (including a 3+ table JOIN)
+3. GROUP BY (with HAVING or CASE)
+4. Window functions or CTEs
+5. A transaction (with error handling)
 
 ---
 

@@ -225,7 +225,7 @@ def process_return(con, order_id):
         if not row: raise Exception(f"Order {order_id} not found")
         if row[0] != 'completed': raise Exception(f"Order status is '{row[0]}', expected 'completed'")
 
-        con.execute(f"UPDATE orders SET status='returned' WHERE order_id={order_id}")
+        con.execute(f"UPDATE orders SET status='cancelled' WHERE order_id={order_id}")
 
         items = con.sql(f"SELECT product_id, quantity FROM order_items WHERE order_id={order_id}").fetchall()
         for pid, qty in items:

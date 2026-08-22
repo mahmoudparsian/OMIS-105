@@ -23,7 +23,7 @@ footer: "Week 10: Synthesis & Review"
 
 ---
 
-# The Database Landscape in 2025
+# The Database Landscape in 2026
 
 The relational model is still dominant, but the landscape has expanded:
 
@@ -372,13 +372,13 @@ Given ShopSmart tables, write a query that shows:
 
 ```sql
 WITH cat_revenue AS (
-    SELECT cat.category_name,
+    SELECT cat.category_id, cat.category_name,
            COUNT(DISTINCT p.product_id) AS num_products,
            SUM(oi.quantity * oi.unit_price) AS revenue
     FROM categories cat
     JOIN products p ON cat.category_id = p.category_id
     LEFT JOIN order_items oi ON p.product_id = oi.product_id
-    GROUP BY cat.category_name
+    GROUP BY cat.category_id, cat.category_name
 ),
 best_sellers AS (
     SELECT p.category_id, p.product_name,
@@ -397,7 +397,7 @@ SELECT cr.category_name, cr.num_products,
             THEN 'Above' ELSE 'Below' END AS vs_average
 FROM cat_revenue cr
 LEFT JOIN best_sellers bs
-    ON cr.category_name = (SELECT category_name FROM categories WHERE category_id = bs.category_id)
+    ON cr.category_id = bs.category_id
     AND bs.rn = 1
 ORDER BY cr.revenue DESC;
 ```

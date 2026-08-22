@@ -335,7 +335,8 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 - Can only see **committed** data
 - Prevents dirty reads
 - Most databases default to this level
-- **DuckDB uses this level**
+- DuckDB actually defaults to a *stronger* level — snapshot
+  isolation, similar to REPEATABLE READ (see later slide)
 
 ```sql
 SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
@@ -455,7 +456,7 @@ DuckDB provides:
 
 ```python
 # Persistent database → full durability
-con = duckdb.connect('shopmart.duckdb')
+con = duckdb.connect('shopsmart.duckdb')
 
 # In-memory → no durability (data lost on exit)
 con = duckdb.connect()

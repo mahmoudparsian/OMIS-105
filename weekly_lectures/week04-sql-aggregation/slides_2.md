@@ -383,19 +383,30 @@ LIMIT 10;
 # Customer Segmentation
 
 ```sql
-SELECT
-    CASE
-        WHEN SUM(o.total_amount) >= 1000 THEN 'VIP'
-        WHEN SUM(o.total_amount) >= 500 THEN 'Regular'
-        WHEN SUM(o.total_amount) >= 100 THEN 'Occasional'
-        ELSE 'New'
-    END AS segment,
-    COUNT(*) AS num_customers,
-    ROUND(AVG(SUM(o.total_amount)) OVER(), 2) AS overall_avg
-FROM customers c
-INNER JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.customer_id;
+SELECT segment,
+       COUNT(*) AS num_customers,
+       ROUND(AVG(total_spent), 2) AS avg_spent
+FROM (
+    SELECT c.customer_id,
+           SUM(o.total_amount) AS total_spent,
+           CASE
+               WHEN SUM(o.total_amount) >= 1000 THEN 'VIP'
+               WHEN SUM(o.total_amount) >= 500  THEN 'Regular'
+               WHEN SUM(o.total_amount) >= 100  THEN 'Occasional'
+               ELSE 'New'
+           END AS segment
+    FROM customers c
+    INNER JOIN orders o ON c.customer_id = o.customer_id
+    GROUP BY c.customer_id
+) segmented
+GROUP BY segment
+ORDER BY avg_spent DESC;
 ```
+
+The inner query computes each customer's segment; the outer
+query groups by segment to count customers per tier. Grouping
+by `customer_id` alone (skipping the subquery) would put every
+customer in their own group, so `COUNT(*)` would always be 1.
 
 ---
 
