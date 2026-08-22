@@ -70,6 +70,7 @@ Santa Clara University.
 |[`course_information/ACADEMIC_CONDUCT.md`](./course_information/ACADEMIC_CONDUCT.md)| Academic Conduct |
 |[`course_information/REQUIRED_BOOK.md`](./course_information/REQUIRED_BOOK.md)| Required Book (none — all materials in this repo) |
 |[`course_information/CLASS_ATTENDANCE.md`](./course_information/CLASS_ATTENDANCE.md) | Class Attendanace is Mandatory|
+|[`course_information/LAPTOP.md`](./course_information/LAPTOP.md) | Bring a Fully Charged Laptop to Every Class |
 |[`outline-10-weeks`](./outline-10-weeks) | Outline/TOC for 10 Weeks|
 |[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks |
 |[`weekly_reviews`](./weekly_reviews) | Cumulative review notebooks & lecture notes: Weeks 1–3, 4–6, 7–8, 9–10 |
