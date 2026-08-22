@@ -1,5 +1,10 @@
 # Academic Conduct
 
+**Course:** OMIS 105 — Introduction to Database Management Systems  
+**Quarter:** Fall 2026  
+
+---
+
 An iSchool professor, [Amy Ko](https://faculty.washington.edu/ajko/), wrote the following guidelines. I repeat them here as they really hit the spot!
 
 ### Respect each other's humanity. 
@@ -28,3 +33,7 @@ Don't just critique ideas; use your knowledge of their limitations to make them 
 
 ### Don't deceive. 
 Tell the truth, even if it's hard to share. You didn't do your homework? Admit it, and let's find a way for you to get future assignments done on time. You don't understand something? Admit it, and let's help you understand it. You don't want to learn something? Admit it, and let's find a way to make it more interesting to you.
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

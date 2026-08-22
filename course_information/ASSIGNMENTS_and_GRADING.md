@@ -10,8 +10,8 @@
 | Component                                | Total Points |
 |------------------------------------------|-------------:|
 | ✅ `20` In-Class Labs <br> ✅ Each Lab = `30` points <br> ✅ `One Lab per class` <br> ✅ `20 * 30 = 600`   | `600`        |
-| ✏️ Midterm Exam (in-class, closed books)                  | `200`        |
-| ✏️ Final Exam (in-class, closed books)                    | `200`        |
+| ✏️ Midterm Exam (in-class, closed book)                   | `200`        |
+| ✏️ Final Exam (in-class, closed book)                     | `200`        |
 | **Total**                                | **`1000`**   |
 
 * **In-Class Lab**: 
@@ -21,14 +21,11 @@
 ---
 ## 2. Class Attendance
 
-**Attendance is mandatory.** 
-
-Each in-class lab must be completed and submitted 
-during the class session in which it is assigned. 
-If you are absent, you receive a zero ( `0` ) on 
-that lab (`30 points`). There is no way to make up 
-a missed lab, because the lab environment and 
-instructor support are only available during class.
+**Attendance is mandatory.** Each in-class lab must be
+completed and submitted during the class session in which
+it is assigned — see
+[`CLASS_ATTENDANCE.md`](./CLASS_ATTENDANCE.md) for the full
+policy, including what happens if you are absent.
 
 ---
 
@@ -70,3 +67,7 @@ simple, transparent, and easy to understand.
 850 points = 85%
 950 points = 95%
 ```
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

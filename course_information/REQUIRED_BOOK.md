@@ -1,5 +1,10 @@
 # Required Book
 
+**Course:** OMIS 105 — Introduction to Database Management Systems  
+**Quarter:** Fall 2026  
+
+---
+
 * There is no required textbook for OMIS 105. 
 * All course materials — lectures, labs, installation guides, and reference documents — are available in [the course repository](https://github.com/mahmoudparsian/OMIS-105)
 
@@ -7,4 +12,4 @@
 
 ---
 
-*OMIS 105 — Introduction to Database Management Systems*
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

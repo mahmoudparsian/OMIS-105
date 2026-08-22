@@ -19,9 +19,13 @@
 - Teaching: 30+ years
 - Teaching: 12+ years at SCU
 - Industry: 40+ years
-- Led Big Data Architect at Illumina (12 years)
+- Led Big Data Architecture at Illumina (12 years)
 
 **Contact:**
 
 - Email: [mparsian@scu.edu](mailto:mparsian@scu.edu)
 - LinkedIn: [linkedin.com/in/mahmoudparsian](https://www.linkedin.com/in/mahmoudparsian/)
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

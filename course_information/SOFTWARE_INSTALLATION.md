@@ -15,7 +15,11 @@ Before the first class ends, every student must have the following installed and
 4. **Pandas** (data manipulation library)
 5. **qStudio** (SQL editor)
 
-Detailed step-by-step guides are in the `software_installation/` folder. This document gives you the quick-start version.
+See [`REQUIRED_SOFTWARE.md`](./REQUIRED_SOFTWARE.md) for what each
+tool is and why it's required. Detailed step-by-step guides and
+setup scripts are in the top-level `software_installation/` folder
+in the repository (not this file). This document gives you the
+quick-start version.
 
 ---
 
@@ -76,7 +80,7 @@ Download from [timestored.com/qstudio/download](https://www.timestored.com/qstud
 
 ## Automated Setup (Recommended)
 
-For a guided experience with error checking, use the setup scripts in the `software_installation/` folder:
+For a guided experience with error checking, use the setup scripts in the top-level `software_installation/` folder:
 
 ```
 Step 1:  Install Python                          (see step_1_install_python_macbook.md
@@ -146,4 +150,10 @@ If you run into problems:
 1. Check the troubleshooting sections in the `software_installation/` guides
 2. Take a **screenshot** of the error message
 3. Note your **operating system** and **Python version**
-4. Bring these to **office hours** or post on the course discussion board
+4. Bring these to **office hours** (see
+   [`QUESTIONS_and_OFFICE_HOURS.md`](./QUESTIONS_and_OFFICE_HOURS.md))
+   or post on the course discussion board
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
