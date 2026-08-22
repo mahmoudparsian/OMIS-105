@@ -183,10 +183,10 @@ A column in one table that **references** the primary key of another table.
 
 ```sql
 CREATE TABLE orders (
-    order_id    INTEGER PRIMARY KEY,
-    customer_id INTEGER REFERENCES customers(customer_id),
-    order_date  DATE,
-    total       DECIMAL(10,2)
+    order_id     INTEGER PRIMARY KEY,
+    customer_id  INTEGER REFERENCES customers(customer_id),
+    order_date   DATE,
+    total_amount DECIMAL(10,2)
 );
 ```
 

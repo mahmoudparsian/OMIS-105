@@ -10,7 +10,7 @@ A) Styling
 B) Querying data ✅
 C) Networking
 
-3. Table consists of:
+3. A table consists of:
 Rows and Columns ✅
 
 4. DBMS stands for:

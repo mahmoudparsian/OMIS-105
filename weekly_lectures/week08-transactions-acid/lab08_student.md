@@ -125,7 +125,7 @@ c) How would you fix this? Show the corrected SQL.
 ## Part 5: Real-World Design (15 points)
 
 **Q10.** Design a complete transaction for a "product return" workflow at ShopSmart. The transaction should:
-- Update the order status to 'returned'
+- Update the order status to 'cancelled' (the `orders.status` CHECK constraint only allows 'processing', 'shipped', 'completed', or 'cancelled')
 - Restore the product stock
 - Create a refund record (design the refund table yourself)
 - Handle errors gracefully

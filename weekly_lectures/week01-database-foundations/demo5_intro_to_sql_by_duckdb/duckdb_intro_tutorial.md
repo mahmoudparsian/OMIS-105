@@ -242,7 +242,7 @@ style: |
 
 ---
 
-# SQL: language of data
+# SQL: Language of Data
 
 **Hands-on Lab 🧪**
 - Run it yourself in Jupyter!
@@ -497,7 +497,7 @@ ORDER BY gpa DESC;
 
 ---
 
-## 🔢 ORDER BY —  examples
+## 🔢 ORDER BY — More Examples
 
 
 ```sql
@@ -531,7 +531,7 @@ LIMIT    max number of rows to return   ← Optional
 
 ---
 
-## 🧩 Putting It Together: Full example:
+## 🧩 Putting It Together — Full Example
 
 ```sql
 SELECT name, major, gpa
@@ -598,7 +598,7 @@ GROUP BY group_column;
 
 ---
 
-## 📊 GROUP BY Example:
+## 📊 GROUP BY — Example
 
 ```sql
 -- Average GPA broken down by major
@@ -614,7 +614,7 @@ ORDER BY avg_gpa DESC;
 
 ---
 
-## 📊 GROUP BY Example: sample output
+## 📊 GROUP BY — Sample Output
 
 
 | major | num_students | avg_gpa | top_gpa |
@@ -638,7 +638,7 @@ HAVING COUNT(*) >= 2;   -- Only show majors with 2+ students
 
 ---
 
-## The order of clauses:
+## The Order of Clauses
 
 ```sql
 SELECT   ...
@@ -929,7 +929,7 @@ LIMIT    10;                                     -- Cap row count
 
 ---
 
-## Aggregate functions:
+## Aggregate Functions
 
 *  `COUNT(*)`
 *  `SUM(col)`
@@ -940,7 +940,7 @@ LIMIT    10;                                     -- Cap row count
 
 ---
 
-## WHERE operators: 
+## WHERE Operators
 * `=` 
 * `!=` 
 *  `>`
@@ -955,7 +955,7 @@ LIMIT    10;                                     -- Cap row count
 
 ---
 
-## Boolean Logic:
+## Boolean Logic
 
 * `AND`
 * `OR`

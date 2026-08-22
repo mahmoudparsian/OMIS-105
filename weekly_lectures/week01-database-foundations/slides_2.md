@@ -138,7 +138,7 @@ A DBMS provides:
 - **Standard SQL**: Full SQL support
 - **CSV-friendly**: Load data from CSV files directly
 - **Fast**: Columnar storage, vectorized execution
-- **Python integration**: Works great in Mrimo/Jupyter notebooks
+- **Python integration**: Works great in Marimo/Jupyter notebooks
 - **Free & open source**
 
 ---
@@ -583,7 +583,7 @@ No `CREATE TABLE` needed!
 con = duckdb.connect()
 
 # Persistent — saved to file
-con = duckdb.connect('shopmart.duckdb')
+con = duckdb.connect('shopsmart.duckdb')
 
 # Now all tables persist between sessions
 ```

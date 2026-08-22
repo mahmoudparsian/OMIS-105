@@ -81,18 +81,17 @@ FROM sales GROUP BY customer;
 - HAVING
 
 ### Week 4–5
-- JOIN
-- LEFT JOIN
-- Multi-table JOIN
+- JOIN, LEFT JOIN, Multi-table JOIN
+- Window functions: ROW_NUMBER, RANK, PARTITION BY
+- CTEs, Views
 
 ### Week 6
 - Normalization
 - 1NF, 2NF, 3NF
 
 ### Week 7
-- ROW_NUMBER
-- RANK
-- PARTITION BY
+- Indexes, EXPLAIN
+- Query optimization
 
 ### Week 8
 - Transactions

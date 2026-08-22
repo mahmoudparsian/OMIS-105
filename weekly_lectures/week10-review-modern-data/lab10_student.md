@@ -120,7 +120,7 @@ d) Decompose into 3NF. Write CREATE TABLE statements.
 
 **Q14.** Write a Python function `process_return(con, order_id)` that handles a product return:
 1. Verify the order exists and status is 'completed'
-2. Change order status to 'returned'
+2. Change order status to 'cancelled' (the `orders.status` CHECK constraint only allows 'processing', 'shipped', 'completed', or 'cancelled')
 3. Restore stock for each item in the order
 4. Calculate the refund amount
 5. Handle errors with ROLLBACK
