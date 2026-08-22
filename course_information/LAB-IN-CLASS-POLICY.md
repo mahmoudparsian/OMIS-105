@@ -104,7 +104,8 @@ duplicated work is not permitted.
 
 Students should:
 
-* Bring a fully charged laptop to class
+* Bring a fully charged laptop to class (see
+  [`LAPTOP.md`](./LAPTOP.md))
 * Install all required software before class
 * Regularly save their notebooks during lab sessions
 * Keep backup copies of submitted work

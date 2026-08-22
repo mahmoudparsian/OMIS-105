@@ -98,3 +98,6 @@ pip install duckdb "marimo[sql]" pandas
 **Step 3** — Download and install qStudio from [timestored.com](https://www.timestored.com/qstudio/download)
 
 For detailed step-by-step guides, see the `software_installation/` folder.
+
+Remember: you must also bring a fully charged laptop to every class
+session (see [`LAPTOP.md`](./LAPTOP.md)).
