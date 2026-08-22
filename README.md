@@ -7,6 +7,8 @@
 
 @author: [Dr. Mahmoud Parsian](https://www.scu.edu/business/isa/faculty/parsian/)
 
+# 1. 🏛️ Course Description
+
 	In  this course, you will learn  the fundamentals of 
 	modern  relational  data management.  Topics include  
 	SQL (data language), schema  design, data  modeling,   
@@ -16,13 +18,73 @@
 	database systems  work, the principles behind  them,  
 	and how  they  shape  the  way organizations  store,   
 	retrieve,   and   analyze  information   every  day.
-	
 
-[Can AI-LLM Write Your SQL? Yes. Should You Trust It? Let's Find Out.](./why_you_must_learn_SQL/why_you_must_learn_SQL.md)
+
+* [This course](https://www.scu.edu/business/isa/academics/courses/) 
+presents issues related to databases 
+and database management systems (DBMS).
+ 
+* Students will acquire technical and managerial 
+skills in planning, analysis, design, implementation, 
+and maintenance of databases. 
+
+* Hands-on training in relational database design, 
+normalization, SQL, and database implementation 
+will be provided. 
+
+* Use of DBMS software is required. Emphasis is placed 
+on the issues of managing a database environment. 
 
 ---
 
-# 1. What is a Database?
+# 2. 🧑‍🎓 Target Students
+
+* This course is designed for undergraduate students 
+at the department of
+[Information Systems and Analytics](https://www.scu.edu/business/isa/academics/courses/), 
+Santa Clara University.
+
+---
+
+# 3. Course Prerequisite
+
+* OMIS-30: Introduction to Programming
+
+---
+
+# 4. [Can AI-LLM Write Your SQL?](./why_you_must_learn_SQL/why_you_must_learn_SQL.md)
+
+---
+
+# 5. 🗄️ Folders
+
+| File Name                    | Description     |
+|------------------------------|-----------------|
+|[`README.md`](./README.md)    | The file you are reading/viewing |
+|[`course_information`](./course_information) | Course Information (labs, grading , ...)|
+|[`course_information/ASSIGNMENTS_and_GRADING.md`](./course_information/ASSIGNMENTS_and_GRADING.md) | Assignments, Labs, and Exams |
+|[`course_information/INSTRUCTOR.md`](./course_information/INSTRUCTOR.md) | Mahmoud Parsian, Instructor |
+|[`course_information/LAB-IN-CLASS-POLICY.md`](./course_information/LAB-IN-CLASS-POLICY.md) | Lab-in-Class Policies |
+|[`course_information/REQUIRED_SOFTWARE.md`](./course_information/REQUIRED_SOFTWARE.md) | Required Software |
+|[`course_information/SOFTWARE_INSTALLATION.md`](./course_information/SOFTWARE_INSTALLATION.md)| Guide to Software Installation |
+|[`course_information/ACADEMIC_CONDUCT.md`](./course_information/ACADEMIC_CONDUCT.md)| Academic Conduct |
+|[`course_information/REQUIRED_BOOK.md`](./course_information/REQUIRED_BOOK.md)| Required Book (none — all materials in this repo) |
+|[`course_information/CLASS_ATTENDANCE.md`](./course_information/CLASS_ATTENDANCE.md) | Class Attendanace is Mandatory|
+|[`outline-10-weeks`](./outline-10-weeks) | Outline/TOC for 10 Weeks|
+|[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks |
+|[`weekly_reviews`](./weekly_reviews) | Cumulative review notebooks & lecture notes: Weeks 1–3, 4–6, 7–8, 9–10 |
+|[`books`](./books) | DuckDB and Database Books |
+|[`data_stories`](./data_stories) | Data Stories: 35 self-contained Marimo notebooks for deep learning — see [`data_stories/README.md`](./data_stories/README.md) for **which story maps to which week** |
+|[`duckdb_resources`](./duckdb_resources)| DuckDB Resources and Examples| 
+|[`tutorials`](./tutorials) | Database Tutorials and Notebooks|
+|[`applications`](./applications) | Sample Streamlit apps built with DuckDB (e.g. the In-N-Out POS + analytics teaching app) |
+|[`data`](./data) | Sample data files (CSV and Parquet) |
+|[`software_installation`](./software_installation) | Steps to make sure Python, DuckDB, and Marimo are installed properly|
+
+
+---
+
+# 6. What is a Database?
 
 A database is an organized collection 
 of digital data or information stored 
@@ -64,7 +126,7 @@ manage information quickly.
 
 ---
 
-# 2. Example of a Database
+# 7. Example of a Database
 
 Common database examples include relational 
 systems like DuckDB, MySQL, PostgreSQL, and 
@@ -105,7 +167,7 @@ find and change data fast.
 
 ---
 
-# 3. What is a Database Management System?
+# 8. What is a Database Management System?
 
 * A Database Management System (DBMS) is the 
   core software used to **create**, **store**, 
@@ -120,7 +182,7 @@ find and change data fast.
 
 ---
 
-# 4. What is a Relational Database Management System?
+# 9. What is a Relational Database Management System?
 
 * An RDBMS (Relational Database Management System) 
   is software used to store, manage, and retrieve 
@@ -144,17 +206,15 @@ find and change data fast.
   be logically linked, or related, to one another using 
   shared data values.
   
- 
- 
 ---
 
-# 5. Classic Architecture of DBMS
+# 10. Classic Architecture of DBMS
 
 ![](./images/dbms.webp)
 
 ---
 
-# 6. Key Concepts of "Relational" Data
+# 11. Key Concepts of "Relational" Data
 
 * **Tables** (Relations): Data is stored in two-dimensional grids. 
 
@@ -175,13 +235,13 @@ find and change data fast.
 
 ---
 
-# 7. A Table in RDBMS
+# 12. A Table in RDBMS
 
 ![](./images/table.webp)
 
 ---
 
-# 8. Set of Tables in RDBMS
+# 13. Set of Tables in RDBMS
 
 ![](./images/rdbms.webp)
 
@@ -191,7 +251,7 @@ find and change data fast.
 
 ---
 
-# 9. 🦆 DuckDB as RDBMS
+# 14. 🦆 DuckDB as RDBMS
 
 * DuckDB is an analytical in-process SQL 
   database management system.
@@ -213,78 +273,22 @@ find and change data fast.
   files (like Parquet and CSV) directly from 
   your local disk or cloud storage.
 
-# 10. 📊 Integration of Data Sources
+---
+
+# 15. 📊 Integration of Data Sources
 
 ![](./images/duckdb_echo_system.webp)
 
-# 11. 🔧 DuckDB Ecosystem
+---
+
+# 16. 🔧 DuckDB Ecosystem
 
 ![](./images/duckdb_ecosystem_svg.svg)
 
-# 12. 🧑‍🎓  Target Students
-
-* This course is designed for undergraduate students 
-at the department of
-[Information Systems and Analytics](https://www.scu.edu/business/isa/academics/courses/), 
-Santa Clara University.
 
 ---
 
-# 13. 🏛️  Course Description 
-
-* [This course](https://www.scu.edu/business/isa/academics/courses/) 
-presents issues related to databases 
-and database management systems (DBMS).
- 
-* Students will acquire technical and managerial 
-skills in planning, analysis, design, implementation, 
-and maintenance of databases. 
-
-* Hands-on training in relational database design, 
-normalization, SQL, and database implementation 
-will be provided. 
-
-* Use of DBMS software is required. Emphasis is placed 
-on the issues of managing a database environment. 
-
----
-
-# 14. Course Prerequisite: 
-
-* OMIS-30: Introduction to Programming
-
----
-
-# 15. 🗄️ Files/Folders
-
-| File Name                    | Description     |
-|------------------------------|-----------------|
-|[`README.md`](./README.md)    | The file you are reading/viewing |
-|[`course_information`](./course_information) | Course Information (labs, grading , ...)|
-|[`course_information/ASSIGNMENTS_and_GRADING.md`](./course_information/ASSIGNMENTS_and_GRADING.md) | Assignments, Labs, and Exams |
-|[`course_information/INSTRUCTOR.md`](./course_information/INSTRUCTOR.md) | Mahmoud Parsian, Instructor |
-|[`course_information/LAB-IN-CLASS-POLICY.md`](./course_information/LAB-IN-CLASS-POLICY.md) | Lab-in-Class Policies |
-|[`course_information/REQUIRED_SOFTWARE.md`](./course_information/REQUIRED_SOFTWARE.md) | Required Software |
-|[`course_information/SOFTWARE_INSTALLATION.md`](./course_information/SOFTWARE_INSTALLATION.md)| Guide to Software Installation |
-|[`course_information/ACADEMIC_CONDUCT.md`](./course_information/ACADEMIC_CONDUCT.md)| Academic Conduct |
-|[`course_information/REQUIRED_BOOK.md`](./course_information/REQUIRED_BOOK.md)| Required Book (none — all materials in this repo) |
-|[`course_information/CLASS_ATTENDANCE.md`](./course_information/CLASS_ATTENDANCE.md) | Class Attendanace is Mandatory|
-|[`outline-10-weeks`](./outline-10-weeks) | Outline/TOC for 10 Weeks|
-|[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks |
-|[`weekly_reviews`](./weekly_reviews) | Cumulative review notebooks & lecture notes: Weeks 1–3, 4–6, 7–8, 9–10 |
-|[`books`](./books) | DuckDB and Database Books |
-|[`data_stories`](./data_stories) | Data Stories: 35 self-contained Marimo notebooks for deep learning — see [`data_stories/README.md`](./data_stories/README.md) for **which story maps to which week** |
-|[`duckdb_resources`](./duckdb_resources)| DuckDB Resources and Examples| 
-|[`tutorials`](./tutorials) | Database Tutorials and Notebooks|
-|[`applications`](./applications) | Sample Streamlit apps built with DuckDB (e.g. the In-N-Out POS + analytics teaching app) |
-|[`data`](./data) | Sample data files (CSV and Parquet) |
-|[`software_installation`](./software_installation) | Steps to make sure Python, DuckDB, and Marimo are installed properly|
-
-
-
----
-
-# 16. References
+# 17. 📗 References
 
 [1. SQL Introduction - DuckDB Documentation](https://duckdb.org/docs/current/sql/introduction)
 
