@@ -118,3 +118,7 @@ Recommended tools include:
 * Pandas
 * qStudio (SQL editor)
 * VS Code or a similar text editor
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

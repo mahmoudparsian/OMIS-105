@@ -1,5 +1,10 @@
 # Class Attendance
 
+**Course:** OMIS 105 — Introduction to Database Management Systems  
+**Quarter:** Fall 2026  
+
+---
+
 ## Attendance is Mandatory
 
 ## There will be 20 in-class labs.
@@ -14,4 +19,8 @@
 a missed lab, because the lab environment 
 and instructor support are only available 
 during class.
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
 
