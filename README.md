@@ -143,6 +143,14 @@ rows from multiple tables into a single result.
 
 ![](./images/relational_database_tables_01.png)
 
+### Tables and Relationships:
+
+| Table name | Primary Key | Foreign Key(s)                |
+|------------|-------------|-------------------------------|
+| `users`    | `users.id`  | `users.role_id -> roles.id` <br> `users.city_id -> cities.id` |
+| `roles`    | `roles.id`  | |
+| `cities`   | `cities.id` | |
+
 ---
 
 # 11. Classic Architecture of DBMS
