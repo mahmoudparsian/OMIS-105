@@ -148,8 +148,8 @@ rows from multiple tables into a single result.
 | Table name | Primary Key | Foreign Key(s)                | Table Definition |
 |------------|-------------|-------------------------------|------------------|
 | `users`    | `users.id`  | `users.role_id -> roles.id` <br> `users.city_id -> cities.id` | ` CREATE TABLE users (` <br> `   id INTEGER PRIMARY KEY,` <br> `   name VARCHAR NOT NULL,` <br> `   role_id INTEGER,` <br> `   city_id INTEGER,` <br><br>    `   -- Defining the Foreign Key constraints` <br> `   FOREIGN KEY (role_id) REFERENCES roles(id),` <br>  `   FOREIGN KEY (city_id) REFERENCES cities(id)` <br> ` );` |
-| `roles`    | `roles.id`  | | ` CREATE TABLE roles (` <br> ` id INTEGER PRIMARY KEY,` <br> ` role VARCHAR NOT NULL` <br> ` );` |
-| `cities`   | `cities.id` | | ` CREATE TABLE cities (` <br> ` id INTEGER PRIMARY KEY,` <br> ` city VARCHAR NOT NULL` <br> ` );`|
+| `roles`    | `roles.id`  | | ` CREATE TABLE roles (` <br>  `   id INTEGER PRIMARY KEY,` <br> `   role VARCHAR NOT NULL` <br> ` );` |
+| `cities`   | `cities.id` | | ` CREATE TABLE cities (` <br> `   id INTEGER PRIMARY KEY,` <br> `   city VARCHAR NOT NULL` <br> ` );`|
 
 ---
 
