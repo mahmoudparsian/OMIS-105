@@ -1,5 +1,11 @@
 # Employee Sample Database for MySQL
 
+> **OMIS 105 note:** this `mysql/` folder is a **reference only** — it
+> documents the original dataset this course's database was built
+> from. For labs, use the self-contained DuckDB version instead: see
+> [`../duckdb/README.md`](../duckdb/README.md). It needs no MySQL
+> server, and does not read anything from this folder at runtime.
+
 This repo is based on the work from `https://github.com/datacharmer/test_db` with the following improvements:
 
 * datasets:
@@ -105,4 +111,12 @@ mysql < object.sql
 **If you are connecting to a cloud instance such as AWS RDS. You MUST turn off binary logging first. Otherwise, you will encounter error**
 
     You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
-       
+
+`object.sql`'s stored FUNCTIONs/PROCEDUREs (`emp_dept_id`,
+`emp_dept_name`, `emp_name`, `current_manager`, `show_department`,
+`v_full_employee`, `v_full_department`, ...) have been ported to
+DuckDB MACROs for OMIS 105 — see
+[`../duckdb/sql/06_object.sql`](../duckdb/sql/06_object.sql) and the
+["Use of DuckDB Macros"](../duckdb/README.md#use-of-duckdb-macros)
+section of the DuckDB README.
+
