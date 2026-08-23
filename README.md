@@ -145,16 +145,6 @@ rows from multiple tables into a single result.
 
 ### [Tables and Relationships: `users`, `roles`, and `cities`](./resources/sample_databases/users_roles_cities.md)
 
-given the following table
-
-| Table name | Primary Key | Foreign Key(s)                | Table Definition |
-|------------|-------------|-------------------------------|------------------|
-| `roles`    | `roles.id`  | | ` CREATE TABLE roles (` <br>  `   id INTEGER PRIMARY KEY,` <br> `   role VARCHAR NOT NULL` <br> ` );` |
-| `cities`   | `cities.id` | | ` CREATE TABLE cities (` <br> `   id INTEGER PRIMARY KEY,` <br> `   city VARCHAR NOT NULL` <br> ` );`|
-| `users`    | `users.id`  | `users.role_id -> roles.id` <br> `users.city_id -> cities.id` | ` CREATE TABLE users (` <br> `   id INTEGER PRIMARY KEY,` <br> `   name VARCHAR NOT NULL,` <br> `   role_id INTEGER,` <br> `   city_id INTEGER,` <br><br>    `   -- Defining the Foreign Key constraints` <br> `   FOREIGN KEY (role_id) REFERENCES roles(id),` <br>  `   FOREIGN KEY (city_id) REFERENCES cities(id)` <br> ` );` |
-
-make the columns as:
-
 | Table name | Table Definition | Primary Key | Foreign Key(s) |
 | ---------- | ---------------- | ----------- | -------------- |
 | `roles` | `CREATE TABLE roles (` <br> `  id INTEGER PRIMARY KEY,` <br> `  role VARCHAR NOT NULL` <br> `);` | `roles.id` | |
