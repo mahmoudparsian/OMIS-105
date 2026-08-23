@@ -131,6 +131,8 @@ files so computer programs can find and change data fast.
 
 * In an RDBMS, "**relational**" means that data is organized into **tables of rows and columns**, and these tables can be logically linked, or related, to one another using shared data values.
 
+![](./images/relational_database_tables_01.png)
+
 ---
 
 # 10. Classic Architecture of DBMS
