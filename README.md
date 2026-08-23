@@ -20,10 +20,15 @@ work, the principles behind them, and how they shape
 the way organizations store, retrieve, and analyze 
 information every day.
 
-* [This course](https://www.scu.edu/business/isa/academics/courses/) covers the core issues in databases and database management systems (DBMS).
-* Students will acquire technical and managerial skills in planning, analysis, design, implementation, and maintenance of databases.
-* Hands-on training in relational database design, normalization, SQL, and database implementation is provided.
-* Use of DBMS software is required. The course emphasizes the practical issues of managing a database environment.
+* [This course](https://www.scu.edu/business/isa/academics/courses/)
+  covers the core issues in databases and database management systems (DBMS).
+* Students will acquire technical and managerial skills in planning, analysis,
+  design, implementation, and maintenance of databases.
+* Hands-on training in relational database design, normalization, SQL,
+  and database implementation is provided.
+* Use of DBMS ([DuckDB](https://duckdb.org) and [MySQL](https://www.mysql.com))
+  software is required. The course emphasizes the practical issues of managing
+  a database environment.
 
 ---
 
@@ -162,10 +167,14 @@ rows from multiple tables into a single result.
 # 12. Key Concepts of "Relational" Data
 
 * **Tables** (Relations): Data is stored in two-dimensional grids.
-* **Row**: Each row represents a single record (for example, a specific customer). Each column represents a specific attribute (for example, an email address).
-* **Primary Keys**: A unique identifier for every row in a table (like a Customer ID or Product ID), so that no two records are exactly identical.
-* **Foreign Keys**: A column in one table that points to the Primary Key of another table. This creates the "relationship" by linking related records across tables.
-* **Normalization**: The process of organizing data into multiple related tables to reduce duplication and prevent data errors.
+* **Row**: Each row represents a single record (for example, a specific customer).
+  Each column represents a specific attribute (for example, an email address).
+* **Primary Keys**: A unique identifier for every row in a table (like a Customer ID
+  or Product ID), so that no two records are exactly identical.
+* **Foreign Keys**: A column in one table that points to the Primary Key of another table.
+  This creates the "relationship" by linking related records across tables.
+* **Normalization**: The process of organizing data into multiple related tables to
+  reduce duplication and prevent data errors.
 
 ---
 
@@ -189,8 +198,11 @@ rows from multiple tables into a single result.
 
 * DuckDB is an analytical, in-process SQL database management system.
 * DuckDB is lightweight and high-performance, designed for local and embedded data processing.
-* **Embedded, serverless architecture**: DuckDB runs directly inside your application process (like Python) — no separate server to install or configure. This makes it portable and easy to set up.
-* **Fast analytical processing**: Built with a columnar query execution engine, DuckDB is optimized for complex SQL queries, aggregations, and instantly querying large files (like Parquet and CSV) directly from your local disk or cloud storage.
+* **Embedded, serverless architecture**: DuckDB runs directly inside your application process
+  (like Python) — no separate server to install or configure. This makes it portable and easy to set up.
+* **Fast analytical processing**: Built with a columnar query execution engine, DuckDB is optimized for
+  complex SQL queries, aggregations, and instantly querying large files (like Parquet and CSV) directly
+  from your local disk or cloud storage.
 
 ---
 
