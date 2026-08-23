@@ -131,17 +131,27 @@ files so computer programs can find and change data fast.
 
 * In an RDBMS, "**relational**" means that data is organized into **tables of rows and columns**, and these tables can be logically linked, or related, to one another using shared data values.
 
+---
+
+# 10. Relational Database Tables
+
+Relational database tables are joined using 
+shared values between common columns, typically 
+a **primary key (PK)** from one table and a 
+**foreign key (FK)** in another, to combine 
+rows from multiple tables into a single result.
+
 ![](./images/relational_database_tables_01.png)
 
 ---
 
-# 10. Classic Architecture of DBMS
+# 11. Classic Architecture of DBMS
 
 ![](./images/dbms.webp)
 
 ---
 
-# 11. Key Concepts of "Relational" Data
+# 12. Key Concepts of "Relational" Data
 
 * **Tables** (Relations): Data is stored in two-dimensional grids.
 * **Row**: Each row represents a single record (for example, a specific customer). Each column represents a specific attribute (for example, an email address).
@@ -151,13 +161,13 @@ files so computer programs can find and change data fast.
 
 ---
 
-# 12. A Table in RDBMS
+# 13. A Table in RDBMS
 
 ![](./images/table.webp)
 
 ---
 
-# 13. Set of Tables in RDBMS
+# 14. Set of Tables in RDBMS
 
 ![](./images/rdbms.webp)
 
@@ -167,7 +177,7 @@ files so computer programs can find and change data fast.
 
 ---
 
-# 14. 🦆 DuckDB as RDBMS
+# 15. 🦆 DuckDB as RDBMS
 
 * DuckDB is an analytical, in-process SQL database management system.
 * DuckDB is lightweight and high-performance, designed for local and embedded data processing.
@@ -176,19 +186,19 @@ files so computer programs can find and change data fast.
 
 ---
 
-# 15. 📊 Integration of Data Sources
+# 16. 📊 Integration of Data Sources
 
 ![](./images/duckdb_echo_system.webp)
 
 ---
 
-# 16. 🔧 DuckDB Ecosystem
+# 17. 🔧 DuckDB Ecosystem
 
 ![](./images/duckdb_ecosystem_svg.svg)
 
 ---
 
-# 17. 📗 References
+# 18. 📗 References
 
 [1. SQL Introduction - DuckDB Documentation](https://duckdb.org/docs/current/sql/introduction)
 
