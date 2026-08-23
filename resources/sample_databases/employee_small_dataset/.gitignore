@@ -1,0 +1,5 @@
+# Scoped Claude Code notes for this folder — not checked into Git.
+# Also already covered by the repo-root .gitignore's "CLAUDE.md*"
+# (that pattern has no leading slash, so it matches at every depth),
+# but listed explicitly here too for a self-contained folder.
+CLAUDE.md
