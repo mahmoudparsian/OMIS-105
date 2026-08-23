@@ -36,6 +36,17 @@ employees with no department, 3 departments with no employees) so
 `LEFT JOIN ... IS NULL` queries have something to find — see
 `duckdb/README.md` for details.
 
+## Macros (`object.sql` port)
+
+`mysql/dataset_small/object.sql` defines stored FUNCTIONs and
+PROCEDUREs (`emp_dept_id`, `emp_dept_name`, `emp_name`,
+`current_manager`, `show_department`, plus the `v_full_employee` /
+`v_full_department` views). DuckDB has no stored procedures, so these
+are ported as DuckDB MACROs in `duckdb/sql/06_object.sql` — see the
+["Use of DuckDB Macros"](duckdb/README.md#use-of-duckdb-macros)
+section of `duckdb/README.md` for what each one does and how to call
+it.
+
 ## Build Requirements (`duckdb/`)
 
 This is the original spec `duckdb/` was built to satisfy:
@@ -50,6 +61,8 @@ This is the original spec `duckdb/` was built to satisfy:
      possible (pie chart, ...) — plotting code lives outside the
      notebook.
    - `mysql/` is a reference only; `duckdb/` does not depend on it.
+   - `object.sql`'s stored functions/procedures are ported to DuckDB
+     macros (`duckdb/sql/06_object.sql`) — see "Macros" above.
 
 All of the above is implemented and verified — see `duckdb/README.md`.
 
