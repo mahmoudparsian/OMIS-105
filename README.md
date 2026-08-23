@@ -59,7 +59,7 @@ information every day.
 |[`weekly_reviews`](./weekly_reviews) | Cumulative review notebooks & lecture notes: Weeks 1–3, 4–6, 7–8, 9–10 |
 |[`books`](./books) | DuckDB and Database Books |
 |[`data_stories`](./data_stories) | Data Stories: 35 self-contained Marimo notebooks for deep learning — see [`data_stories/README.md`](./data_stories/README.md) for **which story maps to which week** |
-|[`duckdb_resources`](./duckdb_resources)| DuckDB Resources and Examples |
+|[`resources`](./resources)| DuckDB Resources, Examples, Sample Databases |
 |[`tutorials`](./tutorials) | Database Tutorials and Notebooks |
 |[`applications`](./applications) | Sample Streamlit apps built with DuckDB (e.g. the In-N-Out POS + analytics teaching app) |
 |[`data`](./data) | Sample data files (CSV and Parquet) |
