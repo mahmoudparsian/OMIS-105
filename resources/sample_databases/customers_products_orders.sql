@@ -47,4 +47,32 @@ INSERT INTO orders VALUES
 (1004, 3, 104, '2026-08-22 09:00:00', 3),
 (1005, 2, 101, '2026-08-22 11:45:00', 1);
 
+-- ---------------------
+--    Sample Queries  --
+-- ---------------------
 
+-- ------------------------------------------
+-- Query 1:
+-- Calculate Total Sales Revenue by Product
+-- -------------------------------------------
+
+SELECT 
+    p.product_name,
+    SUM(o.quantity * p.price) AS total_revenue
+FROM orders o
+JOIN products p ON o.product_id = p.product_id
+GROUP BY p.product_name
+ORDER BY total_revenue DESC;
+
+
+-- -------------------------------------------
+-- Query 2:
+-- Generate a Customer Purchase History Summary
+-- --------------------------------------------
+SELECT 
+    c.name,
+    COUNT(o.order_id) AS total_orders,
+    SUM(o.quantity) AS total_items_bought
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.name;
