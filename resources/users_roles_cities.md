@@ -1,6 +1,8 @@
-# Table Definitions
+# Table Definitions, Populations, and Viewing
 
-Database: DuckDB
+* Tables: { `users`, `roles`, `cities` } 
+
+* Database: DuckDB
 
 ---
 
