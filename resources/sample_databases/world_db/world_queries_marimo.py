@@ -96,7 +96,7 @@ def _(mo):
 def _(city, con, country, countrylanguage, mo):
     _df = mo.sql(
         f"""
-        SELECT 'country'          AS table_name, COUNT(*) AS row_count FROM country
+        SELECT 'country'  AS table_name, COUNT(*) AS row_count FROM country
         UNION ALL SELECT 'city',            COUNT(*) FROM city
         UNION ALL SELECT 'countrylanguage', COUNT(*) FROM countrylanguage;
         """,
