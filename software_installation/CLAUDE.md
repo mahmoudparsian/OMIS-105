@@ -29,12 +29,21 @@ folder).
 
 | File | Format | Role |
 |------|--------|------|
-| `README.md` | Markdown | Landing page — overview of the 4-step process |
+| `README.md` | Markdown | Landing page — what each tool is and why it's required, plus the 4-step install/verification walkthrough |
 | `step_1_install_python_macbook.md` | Markdown | Mac Python installation guide |
 | `step_1_install_python_windows.md` | Markdown | Windows Python installation guide |
 | `step_2_setup_software.py` | Python script | Automated installer — checks Python version, pip-installs duckdb/pandas/marimo, verifies each, runs a test query |
 | `step_3_verification.py` | Marimo notebook | Interactive verification — if students can open and see it, everything works |
 | `step_4_install_qstudio.md` | Markdown | qStudio download, install, and connect-to-DuckDB guide |
+
+`REQUIRED_SOFTWARE.md` (formerly in `course_information/`) and
+`SOFTWARE_INSTALLATION.md` (formerly in `course_information/`) were
+both retired — all of their content now lives in `README.md`, so
+this folder has a single landing page instead of three overlapping
+documents. Any new "what/why" content for a tool belongs in the
+`README.md` **Required Software** section; any new "how-to" content
+belongs in the **Four Steps to Get Ready** section or a new
+`step_N_*` file.
 
 ## Conventions
 

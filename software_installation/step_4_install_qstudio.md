@@ -63,7 +63,7 @@ qStudio can connect to many database types. For this course, we use DuckDB in-me
 4. Leave the connection settings as defaults (in-memory)
 5. Click **Add** or **OK**
 
-You should see the connection appear in the left panel. You can now type SQL in the editor and press **Ctrl+Enter** (Windows) or **Cmd+Enter** (Mac) to run queries.
+You should see the connection appear in the left panel. You can now type SQL in the editor and press **Ctrl+E** (Windows) or **Cmd+E** (Mac) to run it — this runs the highlighted text, or the whole editor if nothing is selected.
 
 ### Quick Test
 
@@ -114,7 +114,7 @@ You may have an older version of qStudio. Go to **https://www.timestored.com/qst
 |------|-----|
 | Open qStudio | Applications (Mac) or Start menu (Windows) |
 | Add a DuckDB connection | Server → Add Server → DuckDB |
-| Run a query | Type SQL, then Ctrl+Enter (Win) or Cmd+Enter (Mac) |
+| Run a query | Type SQL, then Ctrl+E (Win) or Cmd+E (Mac) |
 | Browse tables | Expand the connection in the left panel |
 
 ---
