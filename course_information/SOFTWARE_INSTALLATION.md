@@ -44,8 +44,8 @@ You should see `Python 3.10.x` or higher.
 
 | OS | Command |
 |----|---------|
-| Mac | `pip3 install duckdb "marimo[sql]" pandas` |
-| Windows | `pip install duckdb "marimo[sql]" pandas` |
+| Mac | `pip3 install duckdb marimo pandas` |
+| Windows | `pip install duckdb marimo pandas` |
 
 ### Step 3 — Verify DuckDB
 
