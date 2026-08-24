@@ -50,6 +50,7 @@ Install the latest version.
 
 ```
 pip install marimo
+pip install "marimo[sql]"
 ```
 
 **To launch a notebook:**
