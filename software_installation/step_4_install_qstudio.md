@@ -24,8 +24,10 @@ You will use qStudio to practice writing SQL queries on your own and to explore 
 ## Step 1 — Download qStudio
 
 1. Open your web browser and go to: **https://www.timestored.com/qstudio/download/**
-2. Click the download button for your operating system (Mac or Windows)
-3. The installer file will download to your Downloads folder
+2. Click the download button for your operating system:
+   - **Mac:** "Download .App Mac with Java" (downloads a `.zip` file)
+   - **Windows:** "Download Installer for Windows" (downloads an `.exe` file)
+3. The file will download to your Downloads folder
 
 ---
 
@@ -33,8 +35,8 @@ You will use qStudio to practice writing SQL queries on your own and to explore 
 
 ### Mac
 
-1. Open the downloaded `.dmg` file
-2. Drag the **qStudio** icon into the **Applications** folder
+1. Find the downloaded `.zip` file in your Downloads folder and double-click it — macOS unzips it automatically into a **qStudio** app
+2. Drag the **qStudio** app into the **Applications** folder
 3. Open **Applications** and double-click **qStudio**
 4. If macOS says the app is from an "unidentified developer":
    - Go to **System Settings → Privacy & Security**

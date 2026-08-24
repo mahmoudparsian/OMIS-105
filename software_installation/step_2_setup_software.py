@@ -127,11 +127,11 @@ def test_duckdb_query():
     con = duckdb.connect(database=':memory:')
 
     con.execute("""
-        CREATE TABLE test_students (
-            id    INTEGER PRIMARY KEY,
-            name  VARCHAR,
-            major VARCHAR,
-            gpa   DECIMAL(3,2)
+        CREATE OR REPLACE TABLE test_students (
+            student_id INTEGER,
+            name       VARCHAR,
+            major      VARCHAR,
+            gpa        DECIMAL(3,2)
         )
     """)
 
@@ -143,7 +143,7 @@ def test_duckdb_query():
     """)
 
     df = con.execute("""
-        SELECT * FROM test_students ORDER BY id
+        SELECT * FROM test_students ORDER BY student_id
     """).fetchdf()
 
     print(df.to_string(index=False))

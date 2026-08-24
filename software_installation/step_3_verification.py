@@ -57,7 +57,7 @@ def _():
     version = sys.version.split()[0]
     major, minor = sys.version_info.major, sys.version_info.minor
 
-    if major >= 3 and minor >= 10:
+    if (major, minor) >= (3, 10):
         print(f"  [+] PASS  Python {version}")
     else:
         print(f"  [X] FAIL  Need Python 3.10+, you have {version}")

@@ -15,7 +15,7 @@ This folder contains everything you need to set up your computer for OMIS 105. B
 | Software | What It Is | Minimum Version |
 |----------|-----------|-----------------|
 | Python   | Programming language | 3.10+ |
-| DuckDB   | In-process SQL database engine | 0.9+ |
+| DuckDB   | In-process SQL database engine | any recent |
 | Marimo   | Interactive notebook environment | any recent |
 | Pandas   | Data manipulation library | any recent |
 | qStudio  | Free SQL editor for writing and testing queries | any recent |
