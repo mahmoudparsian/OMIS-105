@@ -193,7 +193,7 @@ marimo edit employee_notebook.py
 on your `PATH`. 
 
 * `employee_notebook.py ` requires `marimo`, `duckdb`, `pandas`,
-and `matplotlib` (see `course_information/REQUIRED_SOFTWARE.md`).
+and `matplotlib` (see `software_installation/README.md`).
 
 ---
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

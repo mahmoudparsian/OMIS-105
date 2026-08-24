@@ -67,8 +67,7 @@ You should see something like `pip 24.0 from ...`. If so, you're all set.
 
 ## Verify Your Installation
 
-Open a fresh Terminal and run these three commands 
-one at a time:
+Open a fresh Terminal and run these three commands one at a time:
 
 ```
 python3 --version

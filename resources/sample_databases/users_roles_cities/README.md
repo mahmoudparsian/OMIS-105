@@ -83,7 +83,7 @@ marimo edit notebook.py
 - `create_duckdb.sh` requires the
   [DuckDB CLI](https://duckdb.org/docs/installation/) on your `PATH`.
 - `notebook.py` requires `marimo`, `duckdb`, `pandas`, and
-  `matplotlib` (see `course_information/REQUIRED_SOFTWARE.md`).
+  `matplotlib` (see `software_installation/README.md`).
 
 ## The 20 Practice Queries
 

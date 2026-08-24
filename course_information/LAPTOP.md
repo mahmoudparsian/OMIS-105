@@ -12,8 +12,7 @@ laptop with you every session.
 * Bring your laptop to **every** class session — fully charged.
 * Bring your charger too, in case an outlet is available.
 * Install all required software **before** class (see
-  [`REQUIRED_SOFTWARE.md`](./REQUIRED_SOFTWARE.md) and
-  [`SOFTWARE_INSTALLATION.md`](./SOFTWARE_INSTALLATION.md)).
+  [`software_installation/README.md`](../software_installation/README.md)).
 * Confirm Python, DuckDB, and Marimo run correctly on your laptop
   before the first lab.
 

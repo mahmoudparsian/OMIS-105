@@ -41,7 +41,7 @@ If you see an error, or the Microsoft Store opens, or you see a version below 3.
 
 1. Open the downloaded `.exe` file
 2. **CRITICAL — On the very first screen, check BOTH boxes at the bottom:**
-   - ✅ **"Use admin privileges when installing pip"**
+   - ✅ **"Use admin privileges when installing py.exe"**
    - ✅ **"Add python.exe to PATH"**
 3. Click **"Install Now"** (the top option)
 4. Wait for the installation to complete
