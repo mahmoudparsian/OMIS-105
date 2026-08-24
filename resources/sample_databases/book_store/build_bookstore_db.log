@@ -1,0 +1,29 @@
+% python3 build_bookstore_db.py data/
+============================================================
+  Building bookstore.duckdb
+============================================================
+
+  Table: books
+    Rows loaded from CSV :     528
+    Duplicates removed   :      25
+    Final row count      :     503
+
+  Table: customers
+    Rows loaded from CSV :     546
+    Duplicates removed   :      42
+    Final row count      :     504
+
+  Table: orders
+    Rows loaded from CSV :   7,600
+    Duplicates removed   :     100
+    Final row count      :   7,500
+
+============================================================
+  Final Database Summary
+============================================================
+    books        :     503 records
+    customers    :     504 records
+    orders       :   7,500 records
+============================================================
+
+  Database saved to: /Users/max/mp/sample_databases/duckdb_book_store/bookstore.duckdb
