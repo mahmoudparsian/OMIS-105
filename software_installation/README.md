@@ -34,7 +34,7 @@ Install version **3.10 or higher** (we recommend 3.12+).
 
 DuckDB is an open-source, in-process SQL database engine designed for fast analytical query workloads. It runs entirely inside your Python process — no server to install or configure.
 
-Install the latest version (1.0+).
+**Install the latest version (1.0+).**
 
 ```
 pip install duckdb
