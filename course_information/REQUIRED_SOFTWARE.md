@@ -42,7 +42,7 @@ Install the latest version.
 **Install via pip:**
 
 ```
-pip install "marimo[sql]"
+pip install marimo
 ```
 
 **To launch a notebook:**
@@ -92,7 +92,7 @@ Install the latest version. Download from the link above (qStudio is a desktop a
 **Step 2** — Install Python packages:
 
 ```
-pip install duckdb "marimo[sql]" pandas
+pip install duckdb marimo pandas
 ```
 
 **Step 3** — Download and install qStudio from [timestored.com](https://www.timestored.com/qstudio/download)
