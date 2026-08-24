@@ -1,19 +1,41 @@
 # Employee Sample Database for MySQL
 
+**The HR database that taught a generation of DBAs to JOIN.**
+
+## The Story
+
+Most "sample databases" are obviously fake — three customers, five
+orders, done. This one isn't. Back in the late 1990s, researchers
+Fusheng Wang and Carlo Zaniolo built a genuinely realistic, temporal
+HR dataset for database research: employees hired over a 15-year
+span, salaries that rise (and sometimes dip) year over year, people
+who get promoted, transferred between departments, and occasionally
+manage the department they used to just work in. In 2007, MySQL AB's
+Giuseppe Maxia turned it into the schema you see here, and it shipped
+as MySQL's official `employees` sample database — the one installed
+on countless tutorials, textbooks, and job interviews ever since.
+
+This copy comes from the community-maintained fork,
+[`datacharmer/test_db`](https://github.com/datacharmer/test_db), with
+two changes for this course:
+
+- **`dataset_small`** — a ~600 KB, 1,000-employee slice (about 0.3%
+  of the full 300,024-employee dataset) — small enough to load
+  instantly, still large enough that `GROUP BY`, multi-year salary
+  trends, and manager turnover all produce real, varied answers.
+- **Singular table names** (`employees` → `employee`,
+  `departments` → `department`, ...) to match this course's naming
+  convention.
+
+Six tables, one shared employee ID scheme, real history — that's
+what makes department reassignments, raises, and title changes in
+this dataset feel like *events*, not just rows.
+
 > **OMIS 105 note:** this `mysql/` folder is a **reference only** — it
 > documents the original dataset this course's database was built
 > from. For labs, use the self-contained DuckDB version instead: see
 > [`../duckdb/README.md`](../duckdb/README.md). It needs no MySQL
 > server, and does not read anything from this folder at runtime.
-
-This repo is based on the work from `https://github.com/datacharmer/test_db` with the following improvements:
-
-* datasets:
-
-* dataset_small (~600 KB). ~0.3% of the dataset_full (1000 employees vs 300024 employees).
-
-* Use singular form instead of plural form to name the table (e.g. `employees` -> `employee`).
-
 
 ## Schema
 
@@ -120,3 +142,5 @@ DuckDB MACROs for OMIS 105 — see
 ["Use of DuckDB Macros"](../duckdb/README.md#use-of-duckdb-macros)
 section of the DuckDB README.
 
+---
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
