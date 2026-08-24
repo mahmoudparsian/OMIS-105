@@ -25,5 +25,3 @@
     customers    :     504 records
     orders       :   7,500 records
 ============================================================
-
-  Database saved to: /Users/max/mp/sample_databases/duckdb_book_store/bookstore.duckdb
