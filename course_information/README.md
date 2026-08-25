@@ -1,4 +1,4 @@
-# OMIS 105 <br> Course Information
+# OMIS-105 Course Information
 # 🗂️ Labs, Grading, Policies, and ...
 
 ## Course Information
