@@ -7,19 +7,25 @@
 
 ## [Dr. M. Parsian, Assistant Teaching Professor](https://www.scu.edu/business/isa/faculty/parsian/)
 
+**Education:**
+
+- Ph.D. in Computer Science
+
+
 **Expertise:**
 
 - Database Management Systems
 - Big Data Modeling and Data Analytics
 - AI/LLM and Machine Learning
 
+
 **Background:**
 
-- Ph.D. in Computer Science
 - Teaching: 30+ years
 - Teaching: 12+ years at SCU
 - Industry: 40+ years
 - Led Big Data Architecture at Illumina (12 years)
+
 
 **Contact:**
 
