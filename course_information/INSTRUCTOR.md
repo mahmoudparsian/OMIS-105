@@ -7,9 +7,7 @@
 
 ## [Dr. M. Parsian, Assistant Teaching Professor](https://www.scu.edu/business/isa/faculty/parsian/)
 
-**Education:**
-
-- Ph.D. in Computer Science
+**Education:** Ph.D. in Computer Science
 
 
 **Expertise:**
