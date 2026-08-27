@@ -8,10 +8,10 @@
 
 | Notebook | Start Here If... | What It Covers |
 |----------|-------------------|-----------------|
-| `marimo_101_duckdb_sql.py` | You've never used Marimo before | Cells, reactivity, UI elements, then DuckDB/SQL (`CREATE TABLE`, `INSERT`, `SELECT`, `WHERE`, `ORDER BY`, `GROUP BY`, and an interactive dropdown filter) on a small campus-bookstore dataset |
-| `marimo_102_joins.py` | You've finished 101 | Multi-table data (`customers`, `products`, `orders` — 5–8 rows each) and `JOIN`: `INNER JOIN` vs. `LEFT JOIN`, table aliases, join + `GROUP BY`, and an interactive customer picker |
-| `marimo_103_subqueries_ctes.py` | You've finished 102 | Subqueries in `WHERE`, `FROM`, and with `IN`/`NOT IN`; CTEs (`WITH ... AS`) and chaining multiple CTEs; an interactive threshold slider |
-| `marimo_introduction.py` | You want Marimo's own official tour | Editor mechanics: reactivity, UI elements, running notebooks as apps, keyboard shortcuts — no SQL |
+| DuckDB/SQL Notebook <br> `marimo_101_duckdb_sql.py` | You've never used Marimo before | Cells, reactivity, UI elements, then DuckDB/SQL (`CREATE TABLE`, `INSERT`, `SELECT`, `WHERE`, `ORDER BY`, `GROUP BY`, and an interactive dropdown filter) on a small campus-bookstore dataset |
+| DuckDB/SQL Notebook <br> `marimo_102_joins.py` | You've finished 101 | Multi-table data (`customers`, `products`, `orders` — 5–8 rows each) and `JOIN`: `INNER JOIN` vs. `LEFT JOIN`, table aliases, join + `GROUP BY`, and an interactive customer picker |
+| DuckDB/SQL Notebook <br> `marimo_103_subqueries_ctes.py` | You've finished 102 | Subqueries in `WHERE`, `FROM`, and with `IN`/`NOT IN`; CTEs (`WITH ... AS`) and chaining multiple CTEs; an interactive threshold slider |
+| Marimo Notebook <br> `marimo_introduction.py` | You want Marimo's own official tour | Editor mechanics: reactivity, UI elements, running notebooks as apps, keyboard shortcuts — no SQL |
 
 ## 3. How to run any notebook above
 
