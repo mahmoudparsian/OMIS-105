@@ -1,6 +1,10 @@
-# Marimo Docs and Tutorials
+# Marimo Notebooks and Tutorials
 
-## Notebooks in This Folder
+## 1. Getting Started with Marimo
+
+* [Getting Started with the Marimo Notebook (pdf format)](./getting_started_with_the_marimo_notebook.pdf)
+
+## 2. Notebooks in This Folder: SQL/DuckDB
 
 | Notebook | Start Here If... | What It Covers |
 |----------|-------------------|-----------------|
@@ -9,11 +13,19 @@
 | `marimo_103_subqueries_ctes.py` | You've finished 102 | Subqueries in `WHERE`, `FROM`, and with `IN`/`NOT IN`; CTEs (`WITH ... AS`) and chaining multiple CTEs; an interactive threshold slider |
 | `marimo_introduction.py` | You want Marimo's own official tour | Editor mechanics: reactivity, UI elements, running notebooks as apps, keyboard shortcuts — no SQL |
 
-**How to run any notebook above:** open a terminal in this folder and run
-`marimo edit <notebook_file.py>` (for example, `marimo edit marimo_101_duckdb_sql.py`).
-This opens the notebook in your browser, ready to edit and run.
+## 3. How to run any notebook above
 
-## Docs and Tutorials
+Open a terminal in this folder and run
+
+`marimo edit <notebook_file.py>` 
+
+For example, the following command
+
+`marimo edit marimo_101_duckdb_sql.py`
+
+opens the notebook in your browser, ready to edit and run.
+
+## 4. External Docs and Tutorials
 
 [1. marimo: A Reactive, Reproducible Notebook](https://realpython.com/marimo-notebook/)
 
