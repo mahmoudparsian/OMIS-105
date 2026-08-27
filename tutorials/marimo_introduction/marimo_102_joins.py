@@ -445,6 +445,8 @@ def _(mo):
     - Try changing the `LEFT JOIN`s back to `JOIN`s in the last query and
       see what happens when you pick Diana
     - Add a 6th customer and a couple of orders, then re-run the notebook
+    - Continue to `marimo_103_subqueries_ctes.py`, in this same folder,
+      to learn subqueries and CTEs
     - Continue to `outline-10-weeks/sql_notebooks/` and the
       `weekly_reviews/` notebooks for multi-table practice with bigger
       datasets
