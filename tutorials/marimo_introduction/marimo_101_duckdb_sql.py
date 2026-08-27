@@ -387,6 +387,7 @@ def _(mo):
     ## Where to Go Next
 
     - Edit any SQL cell above and re-run it (Cmd/Ctrl+Enter) — you can't break anything
+    - Continue to `marimo_102_joins.py`, in this same folder, to learn `JOIN`
     - Explore Marimo's own guided tour: `marimo_introduction.py`, in this same folder
     - Run `marimo tutorial sql` in your terminal for Marimo's official SQL tutorial
     - Practice more in `outline-10-weeks/sql_notebooks/`, the notebooks used in class
