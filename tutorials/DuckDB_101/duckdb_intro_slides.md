@@ -73,21 +73,50 @@ style: |
 
 ---
 
+# Table of Contents
+
+1. What Is DuckDB?
+2. "SQLite for Analytics"
+3. The Problem DuckDB Solves
+4. Core Architecture: Why It's Fast
+5. When Should You Use DuckDB?
+6. DuckDB vs. the Alternatives
+7. Superpower: Query Anything with SQL
+8. Hands-On Examples
+   - Your First Table
+   - Filter and Sort
+   - Aggregates and Grouping
+   - Query a CSV — No Loading Step
+   - Try It Yourself
+9. Real-World Example: Log Analysis
+10. Getting Started in 60 Seconds
+
+---
+
 # What Is DuckDB?
 
-DuckDB is a **fast, in-process analytical database** written in C++.
+DuckDB is a database that answers questions about data — **fast**.
 
-It runs **inside your application** — no server, no setup, no configuration.
+It is different from databases like MySQL or PostgreSQL. Those need a separate server running somewhere.
 
-> Think of it as "SQLite for analytics."
+DuckDB does **not**. It runs *inside* the program you are already using — a Python script, an R session, a BI tool, or a web browser.
 
-**Key idea:** You embed DuckDB in your Python script, R session, or application the same way you'd import any library.
+> Nothing to install on a server. Nothing to configure.
 
 ```python
 import duckdb
 con = duckdb.connect()          # That's it. You have a database.
 con.sql("SELECT 42 AS answer").show()
 ```
+
+---
+
+# "SQLite for Analytics"
+
+People sometimes call DuckDB **"SQLite for Analytics."**
+
+- **SQLite** is small and simple. Great for basic tasks, like saving an app's settings — this is called a **transactional** workload.
+- **DuckDB** is also small and simple, but built for a different job: asking big questions over lots of data — this is called an **analytical** workload.
 
 Created by Mark Raasveldt and Hannes Mühleisen at CWI Amsterdam.
 First released in 2019; production-stable since 2024.
@@ -140,7 +169,7 @@ The result: queries that take minutes in Pandas often finish in seconds in DuckD
 - Process datasets that are too large for Pandas but don't need a cluster
 - Build data pipelines that run on a single machine
 - Prototype analytical queries before deploying to a warehouse
-- Embed a database inside a desktop or mobile application
+- Embed a database inside a desktop or mobile application, or even a web browser (via WebAssembly)
 
 **DuckDB is probably not the right choice for:**
 
@@ -189,6 +218,102 @@ SELECT * FROM read_parquet('https://example.com/data.parquet');
 ```
 
 You can also **join across formats** in a single query — a CSV with a Parquet file with a DataFrame. No other tool makes this so effortless.
+
+---
+
+# Example: Your First Table
+
+No server, no setup — just create a table and insert some rows.
+
+```sql
+CREATE TABLE students (
+    id    INTEGER,
+    name  VARCHAR,
+    age   INTEGER,
+    grade DOUBLE
+);
+
+INSERT INTO students VALUES
+    (1, 'Alice',   20, 3.8),
+    (2, 'Bob',     22, 3.5),
+    (3, 'Charlie', 21, 3.9),
+    (4, 'Diana',   23, 3.2);
+```
+
+That's it — `students` now lives in memory, ready to query.
+
+---
+
+# Example: Filter and Sort
+
+```sql
+SELECT name, grade
+FROM students
+WHERE grade > 3.6
+ORDER BY grade DESC;
+```
+
+```text
+┌─────────┬───────┐
+│  name   │ grade │
+├─────────┼───────┤
+│ Charlie │  3.9  │
+│ Alice   │  3.8  │
+└─────────┴───────┘
+```
+
+`WHERE` filters rows; `ORDER BY` sorts them. Standard SQL — nothing DuckDB-specific.
+
+---
+
+# Example: Aggregates and Grouping
+
+```sql
+SELECT
+    age,
+    COUNT(*)             AS num_students,
+    ROUND(AVG(grade), 2) AS avg_gpa
+FROM students
+GROUP BY age
+ORDER BY age;
+```
+
+DuckDB supports every standard aggregate — `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` — and combines them with `GROUP BY` to summarize data by category, just like a pivot table.
+
+---
+
+# Example: Query a CSV — No Loading Step
+
+Given a file `cities.csv` with columns `city, country, population`:
+
+```sql
+SELECT
+    country,
+    COUNT(*)              AS num_cities,
+    SUM(population)        AS total_pop
+FROM read_csv('cities.csv')
+GROUP BY country
+ORDER BY total_pop DESC;
+```
+
+No `CREATE TABLE`, no `COPY`, no import wizard. The file **is** the table.
+
+---
+
+# Try It Yourself
+
+These examples (and more) are ready to run in:
+
+**`duckdb_intro_notebook.py`** — a Marimo notebook in this same folder.
+
+It walks through, step by step:
+- Creating tables and inserting data
+- `SELECT`, `WHERE`, `ORDER BY`, `GROUP BY`
+- Using Python variables inside SQL
+- Querying a Pandas DataFrame and a CSV file with SQL
+- Getting results back as a DataFrame with `.df()`
+
+Open it with `marimo edit duckdb_intro_notebook.py` and run each cell.
 
 ---
 
@@ -248,6 +373,9 @@ duckdb.sql("SELECT * FROM read_csv('data.csv') LIMIT 5").show()
 <!-- _class: closing -->
 
 # Start Using DuckDB Today
+
+A fast, simple database that lives inside your own program —
+no server, no setup, just answers.
 
 Replace your next `pd.read_csv()` + filtering + groupby
 with a single `duckdb.sql(...)` call — and feel the difference.
