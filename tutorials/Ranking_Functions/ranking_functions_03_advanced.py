@@ -79,7 +79,7 @@ def _(mo):
     ## 🟢 Part 1 — Basics (Cells 2–10)
     ### Cell 2 · Load the Dataset
 
-    We load `employees.csv` into an **in-memory DuckDB table** using SQL.
+    We load `data/employees.csv` into an **in-memory DuckDB table** using SQL.
     DuckDB's `read_csv_auto` infers types automatically — no pandas needed.
 
     | Column | Description |
@@ -104,7 +104,7 @@ def _(duckdb, show):
     con.execute("""
         CREATE TABLE employees AS
         SELECT *
-        FROM read_csv_auto('employees.csv');
+        FROM read_csv_auto('data/employees.csv');
     """)
 
     _df = con.execute("""
