@@ -54,7 +54,7 @@ it exercises.
 | `TRANSACTIONS_AND_ACID/` | **8** |
 | `auto_insurance/` | **9** |
 | `insurance_dataset/` | **9** |
-| `sailors_and_boats/` | **10** (→ 2, 4, 5) |
+| `sailors_and_boats/` | **10** (→ 2, 4, 5) — ⚠️ extra setup, see gap 10 |
 | `music_dataset_1950_to_2019/` | — *(raw CSV only — no notebooks)* |
 | `test_marimo/` | — *(setup check — run it before anything else)* |
 
@@ -146,7 +146,8 @@ folder, not from titles.
   Weeks 2, 4 and 5 rather than introducing anything new, which is what a closing
   week wants. (`CRUD_100_10_rows_flagship/` was previously listed here on the
   strength of its folder name; on inspection it contains no AI code at all and is
-  an ordinary CRUD notebook, now mapped to Week 3.)
+  an ordinary CRUD notebook, now mapped to Week 3.) Its setup is heavier than
+  every other story's — see gap 10 before assigning it.
 
 ---
 
@@ -236,6 +237,28 @@ from an index than a row-store would — the Week 7 story measures ~1.6x on 2M r
 where PostgreSQL might show 100x, and treats *why* as the lesson. Being embedded and
 single-writer, it also cannot demonstrate deadlocks, lock waits, or isolation levels
 beyond snapshot. Both stories say so explicitly rather than overclaiming.
+
+**10. `sailors_and_boats/` needs setup beyond the course standard.** Every other
+story in this folder runs on the plain `pip install duckdb pandas marimo` from
+`software_installation/step_2_setup_software.py` — no server, no virtual
+environment, no API key. `sailors_and_boats/` doesn't fit that path:
+
+- Its `pyproject.toml` / `uv.lock` are meant to be installed with
+  [`uv`](https://docs.astral.sh/uv/) (`uv sync`), a tool the course doesn't
+  otherwise require.
+- The Streamlit app (`./run_app.sh`) needs `streamlit` and `altair`, on top of
+  the standard three packages.
+- The app's "Ask in English" text-to-SQL page calls the Anthropic API and
+  needs an `ANTHROPIC_API_KEY` in `.env` (see `.env.example`) — a real cost
+  and account a student may not have.
+
+The **five Marimo notebooks** (`notebooks/notebook_level_01.py` … `_04.py` and
+`notebook_guided.py`) only need `duckdb`, `pandas`, and `marimo` and run fine
+without `uv` or an API key — open them the same way as any other story. It is
+only `./run_app.sh` and its LLM page that require the extra install. Treat
+this story as **advanced / optional**: fine to demo or offer as a stretch
+project, but don't assign the app cold in Week 10 without walking students
+through `uv` and the `.env` key first — or point them at the notebooks alone.
 
 ---
 
