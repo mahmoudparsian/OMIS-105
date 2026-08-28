@@ -1,47 +1,76 @@
-# Jupyter/Notebook/DuckDB.
+# Mastering SQL Sub-Queries with WITH (CTEs)
 
-Create a Jupyter/Notebook/DuckDB (12 cells) 
-to teach the fundamental concepts of sub-queries 
-with using the "WITH" only. 
+A beginner-friendly, 12-cell Marimo notebook that teaches Common Table
+Expressions (CTEs) — the `WITH` clause — from first principles up to
+ranking functions, using a single 20-row `employees` table. Every
+query result renders as a styled HTML table via a small built-in
+`show()` helper.
 
-Render output of sql queries in a very nice high 
-quality rendered tables (keep the rendering code outside)
+## Files
 
-for this create a 20 rows table (your choice) 
+| File | What it is |
+|---|---|
+| `subqueries_with_duckdb.py` | The Marimo notebook (all 12 cells). Creates its own `employees` table and `show()` rendering helper — no data files needed. |
 
-this is for students who have not used sub-queries at all. 
+**Dataset (`employees`, 20 rows):**
 
-May be you can use ranking functions at the very end 
-of this tutorial
+| Column | Description |
+|---|---|
+| `emp_id` | Unique employee ID |
+| `name` | Employee name |
+| `department` | Department they belong to |
+| `job_title` | Their role |
+| `salary` | Annual salary (USD) |
+| `years_exp` | Years of experience |
+| `hire_year` | Year they were hired |
+| `rating` | Annual performance rating (1–5) |
 
+## Requirements
 
-built the notebook: Here's your 12-cell tutorial notebook! 
+```bash
+pip install duckdb marimo pandas ipython
+```
 
-Here's what's inside:
+## How to Run
 
-**The Dataset** — A 20-row `employees` table with 
-name, department, job title, salary, years of experience, 
-hire year, and performance rating across 5 departments 
-(Engineering, Marketing, HR, Finance, Sales).
+Open a terminal in this folder and run:
 
-**The 12 Cells:**
+```bash
+marimo edit subqueries_with_duckdb.py
+```
 
-| # | Cell | What It Teaches |
-|---|------|-----------------|
-| 1 | Setup | Installs DuckDB; defines the `show()` rendering helper (kept separate, reused everywhere) |
+This opens the notebook in your browser. Run the cells top to bottom —
+each one builds on the last.
+
+## What's Inside
+
+| Cell | Pattern | Key Idea |
+|------|---------|----------|
+| 1 | Setup | Loads DuckDB and defines the `show()` rendering helper (reused everywhere) |
 | 2 | Dataset | Creates the 20-row `employees` table |
-| 3 | Lesson 1 | *Why* `WITH` exists — readable vs. nested queries |
-| 4 | Lesson 2 | Basic syntax: filter rows inside a CTE |
-| 5 | Lesson 3 | Aggregate (`GROUP BY`) inside a CTE |
-| 6 | Lesson 4 | Chain **two** CTEs with a comma |
-| 7 | Lesson 5 | JOIN a CTE back to the base table |
-| 8 | Lesson 6 | Three-CTE pipeline — step-by-step logic |
-| 9 | Lesson 7 | Derive a column in CTE, then aggregate by it (salary bands) |
-| 10 | Lesson 8 | `ROW_NUMBER()`, `RANK()`, `DENSE_RANK()` — compared side by side |
-| 11 | Lesson 9 | The golden pattern: filter by rank using a CTE (impossible directly in `WHERE`) |
-| 12 | Grand Finale | All concepts combined in one elegant 3-CTE query |
+| 3 | Lesson 1 — Why `WITH`? | Compares a messy nested sub-query to the same logic named with `WITH` |
+| 4 | Lesson 2 — Basic `WITH` | Filter rows inside a CTE, then filter again in the main query |
+| 5 | Lesson 3 — Aggregate in CTE | Push `GROUP BY` into the CTE; the outer query just selects from it |
+| 6 | Lesson 4 — Two CTEs | Chain two CTEs with a comma; the second can reference the first |
+| 7 | Lesson 5 — JOIN CTE to base | Compute a summary in a CTE, then `JOIN` it back to the detail rows |
+| 8 | Lesson 6 — Three CTEs | Build a step-by-step pipeline: max salary → top earners → elite filter |
+| 9 | Lesson 7 — Derive + aggregate | Create a column (salary band) in a CTE, then `GROUP BY` it |
+| 10 | Lesson 8 — Ranking functions | `ROW_NUMBER()`, `RANK()`, and `DENSE_RANK()` compared side by side |
+| 11 | Lesson 9 — Filter by rank | The golden pattern: rank inside a CTE, then `WHERE rank = 1` outside — impossible in a single query |
+| 12 | Grand Finale | Three CTEs, salary bands, department ranking, and a company-average filter, all combined |
 
-All SQL output renders via the styled `show()` helper — 
-dark navy headers, alternating rows, hover highlights, 
-and row counts.
+## Key Takeaways
 
+- **CTE** = Common Table Expression. `WITH name AS (...)` gives a
+  temporary result set a nickname you can reference later in the
+  same query.
+- A CTE can reference any CTE defined before it — chain them with commas
+  to build a query pipeline.
+- Push `GROUP BY` or derived columns (`CASE`) into a CTE, then keep the
+  outer query simple.
+- Window functions (`RANK()`, `DENSE_RANK()`, `ROW_NUMBER()`) can't be
+  used directly in `WHERE` — compute them in a CTE, then filter on the
+  result in the outer query.
+
+**Next steps:** try `WITH RECURSIVE` for hierarchical data, or explore
+`NTILE()`, `PERCENT_RANK()`, and `LAG()` / `LEAD()`.
