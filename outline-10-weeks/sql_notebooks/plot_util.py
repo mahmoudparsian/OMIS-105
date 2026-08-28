@@ -1,12 +1,13 @@
 """
-mysql101_helpers.py
+plot_util.py
 ====================
-Helper functions for the MySQL 101 DuckDB Jupyter Notebook.
-Provides clean display (tabulated tables with row numbers) and basic
-plotting utilities so the notebook cells stay focused on SQL.
+Helper functions for the DuckDB Marimo Notebooks.
+Provides clean display (tabulated tables with row numbers) 
+and basic plotting utilities so the notebook cells stay 
+focused on SQL.
 
 Usage in notebook:
-    from mysql101_helpers import display_result, plot_bar, plot_hbar, plot_pie, plot_line
+    from plot_util import display_result, plot_bar, plot_hbar, plot_pie, plot_line
 
 Dependencies: pandas, tabulate, matplotlib, seaborn
 """
