@@ -29,6 +29,7 @@ style: |
   }
   code {
     background: #f0f4f8;
+    color: #0f3460;
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
@@ -36,7 +37,16 @@ style: |
   pre {
     background: #1a1a2e;
     border-radius: 8px;
-    padding: 16px;
+    padding: 10px 16px;
+    margin: 6px 0;
+    color-scheme: dark;
+  }
+  pre code {
+    background: transparent;
+    color: #f0f4f8;
+    padding: 0;
+    font-size: 0.72em;
+    line-height: 1.3;
   }
   table {
     font-size: 0.85em;
@@ -62,6 +72,17 @@ style: |
   section.closing h1 {
     color: #ffd700;
     border: none;
+  }
+  section.lead strong,
+  section.closing strong {
+    color: #ffd700;
+  }
+  section.dense p {
+    margin: 0.3em 0;
+  }
+  section.dense pre {
+    margin: 4px 0;
+    padding: 8px 14px;
   }
 ---
 
@@ -203,21 +224,17 @@ DuckDB reads multiple formats **directly in SQL** — no import step.
 ```sql
 -- CSV files
 SELECT * FROM read_csv('customers.csv');
-
 -- Parquet files (columnar, compressed)
 SELECT * FROM read_parquet('events/*.parquet');
-
 -- JSON files
 SELECT * FROM read_json('api_response.json');
-
 -- Pandas DataFrames (just use the variable name!)
 SELECT * FROM my_dataframe WHERE status = 'active';
-
 -- Even remote files over HTTP
 SELECT * FROM read_parquet('https://example.com/data.parquet');
 ```
 
-You can also **join across formats** in a single query — a CSV with a Parquet file with a DataFrame. No other tool makes this so effortless.
+You can also **join across formats** in one query — CSV, Parquet, DataFrame together.
 
 ---
 
@@ -323,7 +340,6 @@ Imagine you have 2 GB of web server logs in CSV format.
 
 ```python
 import duckdb
-
 # One line to answer: "Which pages got the most 500 errors yesterday?"
 duckdb.sql("""
     SELECT
@@ -339,9 +355,11 @@ duckdb.sql("""
 """).show()
 ```
 
-This runs in seconds on a laptop. In Pandas, you'd first need to load the entire dataset into memory, parse dates, filter, group — and probably run out of RAM.
+This runs in seconds on a laptop — no loading, no memory limits.
 
 ---
+
+<!-- _class: dense -->
 
 # Getting Started in 60 Seconds
 
@@ -366,7 +384,7 @@ con = duckdb.connect('my_data.db')  # data survives across sessions
 duckdb.sql("SELECT * FROM read_csv('data.csv') LIMIT 5").show()
 ```
 
-**Works everywhere:** Python, R, Java, Node.js, Rust, Go, C/C++, WASM (in-browser), and a standalone CLI.
+**Works everywhere:** Python, R, Java, Node.js, Rust, Go, C/C++, and the browser (WASM).
 
 ---
 
