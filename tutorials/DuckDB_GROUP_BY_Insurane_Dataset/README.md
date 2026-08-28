@@ -1,39 +1,78 @@
-Consider the following data:
+# Mastering SQL GROUP BY with DuckDB — Insurance Dataset
 
-% wc -l insurance.csv
-    1801 insurance.csv
+A 20-cell Marimo notebook that teaches SQL `GROUP BY` end to end —
+from a single-column count all the way to `ROLLUP` and window
+functions — using a real 1,800-row health insurance dataset. Every
+query renders as a styled table and a matching dark-themed chart.
 
-% head insurance.csv
-age,gender,bmi,num_children,smoker,region,charges
-19,female,27.9,0,yes,southwest,16884.924
-18,male,33.77,1,no,southeast,1725.5523
-28,male,33,3,no,southeast,4449.462
-33,male,22.705,0,no,northwest,21984.47061
-32,male,28.88,0,no,northwest,3866.8552
-31,female,25.74,0,no,southeast,3756.6216
-46,female,33.44,1,no,southeast,8240.5896
-37,female,27.74,3,no,northwest,7281.5056
-37,male,29.83,2,no,northeast,6406.4107
+## Files
 
-1. you are the expert in Jupyter/Notebook/DuckDB.  
+| File | What it is |
+|---|---|
+| `insurance_group_by.py` | The Marimo notebook (all 20 lessons) |
+| `insurance.csv` | The dataset — 1,800 rows |
+| `plots_util.py` | Shared plotting + table-styling helpers (don't edit — just import) |
 
-2. Create a Jupyter/Notebook/DuckDB by reading 
-this file and showing basic statistics
+**Dataset columns:**
 
-3. The goal is to teach SQL's "group by" by creating 
-   20 notebooks cells. Show "group by" by 
-   grouping 1/2 columns
+| Column | Type | Description |
+|---|---|---|
+| `age` | integer | Age of the insured |
+| `gender` | string | `male` / `female` |
+| `bmi` | float | Body Mass Index |
+| `num_children` | integer | Number of dependents |
+| `smoker` | string | `yes` / `no` |
+| `region` | string | US region (`northeast`, `northwest`, `southeast`, `southwest`) |
+| `charges` | float | Insurance charges billed ($) |
 
-4. For each cell:
+## Requirements
 
-a. Create a NL query: what are we doing: 
-   Explain this in a simple English
+```bash
+pip install duckdb marimo pandas matplotlib
+```
 
-b. how we implement in DuckDB's SQL Group By.
-   show a beautifully formatted SQL
-   
-c. show the result set ina very nice beautiful table 
-   (not a regular table)
+## How to Run
 
-d. show a beautiful and meaningful plot for the result set
+Open a terminal in this folder (all three files must stay together)
+and run:
 
+```bash
+marimo edit insurance_group_by.py
+```
+
+This opens the notebook in your browser. Run the cells top to bottom —
+each one builds on the last.
+
+## What's Inside
+
+| # | Cell | What It Teaches |
+|---|------|-----------------|
+| — | Setup | Loads `insurance.csv` into a DuckDB table and applies the dark chart theme |
+| 1 | Basic Statistics | Summary stats for the whole table — no `GROUP BY` yet, for comparison |
+| 2 | GROUP BY One Column | Policy count and avg charge by `gender` |
+| 3 | GROUP BY One Column | Avg/min/max charges by `smoker` status |
+| 4 | GROUP BY One Column | Policies and total charges by `region` |
+| 5 | GROUP BY One Column | Avg vs. median charges by `num_children` |
+| 6 | GROUP BY with CASE | Bucket `age` into life-stage groups, then group by the bucket |
+| 7 | GROUP BY Two Columns | `region` × `gender` |
+| 8 | GROUP BY Two Columns | `smoker` × `gender` — is the smoking penalty the same for both? |
+| 9 | GROUP BY Two Columns | `region` × `smoker` |
+| 10 | GROUP BY Two Columns | `age_group` × `smoker` — does the smoking penalty grow with age? |
+| 11 | GROUP BY + HAVING | Keep only groups whose average charge exceeds $14,000 |
+| 12 | GROUP BY Two Columns | WHO BMI category × `smoker` |
+| 13 | GROUP BY Two Columns | `num_children` × `smoker` |
+| 14 | GROUP BY + ORDER BY + LIMIT | Top 5 most expensive region/smoker/gender combinations |
+| 15 | GROUP BY + COUNT DISTINCT | Unique ages per region |
+| 16 | GROUP BY Two Columns | `region` × `num_children` |
+| 17 | Multiple Aggregates | Full per-region financial snapshot: count, sum, mean, median, stddev, min, max |
+| 18 | GROUP BY ROLLUP | Automatic subtotal and grand-total rows |
+| 19 | GROUP BY + Window Function | `RANK() OVER (PARTITION BY ...)` on top of a grouped CTE |
+| 20 | Grand Finale | Three grouping columns, six aggregates, `HAVING`, and `RANK()` combined in one query |
+
+## Key Takeaways
+
+- `GROUP BY` collapses many rows into one row per unique group value.
+- Every column in `SELECT` must be in `GROUP BY` or inside an aggregate function.
+- `HAVING` filters groups *after* aggregation — `WHERE` filters rows *before*.
+- `ROLLUP` adds automatic subtotal / grand-total rows.
+- Window functions (`RANK`, `ROW_NUMBER`) operate on top of grouped results.
