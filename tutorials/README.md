@@ -10,7 +10,7 @@ and any data it needs.
 |---|---|
 | [`DuckDB_101/`](DuckDB_101/) | Intro slides + notebook: what DuckDB is and why it's used in this course |
 | [`DuckDB_Extensions/`](DuckDB_Extensions/) | `INSTALL`/`LOAD`/autoloading, plus hands-on `httpfs`, `json`, and `excel` extensions ([slides PDF](DuckDB_Extensions/duckdb_extensions.pdf)) |
-| [`DuckDB_from_command_line/`](DuckDB_from_command_line/) | Installing and using the DuckDB CLI shell — dot-commands, `.mode`, reading CSVs, script files ([slides PDF](DuckDB_from_command_line/duckdb_from_command_line.pdf)) |
+| [`DuckDB_from_Command_Line/`](DuckDB_from_Command_Line/) | Installing and using the DuckDB CLI shell — dot-commands, `.mode`, reading CSVs, script files ([slides PDF](DuckDB_from_command_line/duckdb_from_command_line.pdf)) |
 | [`DuckDB_GROUP_BY_Insurance_Dataset/`](DuckDB_GROUP_BY_Insurance_Dataset/) | `GROUP BY` aggregation on a real insurance dataset, with charts |
 | [`DuckDB_Querying_CSV_Files/`](DuckDB_Querying_CSV_Files/) | Reading and querying CSV files directly with DuckDB |
 | [`DuckDB_SQL_Introduction/`](DuckDB_SQL_Introduction/) | First SQL queries against a weather CSV dataset |
