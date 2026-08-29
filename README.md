@@ -148,7 +148,7 @@ rows from multiple tables into a single result.
 
 ![](./images/relational_database_tables_01.png)
 
-### [Tables and Relationships: `users`, `roles`, and `cities`](./resources/sample_databases/users_roles_cities.md)
+### [Tables and Relationships: `users`, `roles`, and `cities`](./resources/sample_databases/users_roles_cities_tiny/users_roles_cities.md)
 
 | Table name | Table Definition | Primary Key | Foreign Key(s) |
 | ---------- | ---------------- | ----------- | -------------- |
