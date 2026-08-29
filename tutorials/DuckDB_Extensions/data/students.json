@@ -1,0 +1,10 @@
+[
+  {"id": 1, "name": "Alice",   "major": "Marketing",           "gpa": 3.8},
+  {"id": 2, "name": "Bob",     "major": "Finance",             "gpa": 3.5},
+  {"id": 3, "name": "Charlie", "major": "Accounting",          "gpa": 3.9},
+  {"id": 4, "name": "Diana",   "major": "Finance",             "gpa": 3.2},
+  {"id": 5, "name": "Ethan",   "major": "Marketing",           "gpa": 2.9},
+  {"id": 6, "name": "Fiona",   "major": "Information Systems", "gpa": 3.7},
+  {"id": 7, "name": "George",  "major": "Accounting",          "gpa": 3.1},
+  {"id": 8, "name": "Hana",    "major": "Information Systems", "gpa": 3.95}
+]
