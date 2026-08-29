@@ -1,8 +1,17 @@
-# Table Definitions, Populations, and Viewing
+# Tiny Database of Users, Roles, and Cities 
 
-* Tables: { `users`, `roles`, `cities` } 
+	For this tiny database, we create 3 
+	tables using DuckDB, populate them, 
+	and view the content of tbales.
 
-* Database: DuckDB
+# 1. Table Definitions
+
+This is a tiny DuckDB database with 3 tables: 
+
+* `users`
+* `roles`
+* `cities` 
+
 
 ---
 
@@ -40,7 +49,7 @@ CREATE TABLE users (
 
 ---
 
-# Table Populations
+# 2. Table Populations
 
 ```sql
 -- ---------------------
@@ -69,7 +78,7 @@ INSERT INTO users(id, name, role_id, city_id) VALUES
 
 ---
 
-# View Tables
+# 3. View Tables
 
 ```sql
 duckdb ▸ select * from roles;
