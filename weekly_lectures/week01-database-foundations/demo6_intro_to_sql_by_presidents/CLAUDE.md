@@ -14,9 +14,9 @@ aggregations, window functions, and CTEs, with a chart for almost every query.
 
 | File | Role |
 |---|---|
-| `presidents.csv` | Source data — one row per presidency (`sequence, last_name, first_name, term_start, term_end, party_id`). 47 rows. |
-| `parties.csv` | Lookup table — `party_id, party_name`. 7 rows. |
-| `duckdb_presidents.ipynb` | **The main deliverable.** The full guided notebook. |
+| `data/presidents.csv` | Source data — one row per presidency (`sequence, last_name, first_name, term_start, term_end, party_id`). 47 rows. |
+| `data/parties.csv` | Lookup table — `party_id, party_name`. 7 rows. |
+| `duckdb_presidents.py` | **The main deliverable.** A Marimo notebook (not Jupyter — this was converted from an earlier `.ipynb`, which no longer exists). |
 | `util_plot.py` | All plotting code, fully decoupled from the notebook. |
 | `presidents_db.duckdb` | The DuckDB database file. **Generated** by running the notebook (not committed). |
 | `CLAUDE.md` | This file. |
@@ -24,16 +24,21 @@ aggregations, window functions, and CTEs, with a chart for almost every query.
 ## How to run
 
 ```bash
-pip install duckdb pandas matplotlib seaborn jupyter
-jupyter notebook duckdb_presidents.ipynb
+pip install duckdb pandas matplotlib seaborn marimo
+marimo edit duckdb_presidents.py
 ```
 
-Then run all cells top to bottom (`Kernel → Restart & Run All`). The notebook is
-**idempotent**: it deletes and rebuilds `presidents_db.duckdb` each run, so the
-output is always reproducible.
+To verify without opening the browser UI: `python3 duckdb_presidents.py` should
+run every cell top to bottom and exit 0. The notebook is **idempotent**: it
+deletes and rebuilds `presidents_db.duckdb` each run, so the output is always
+reproducible.
 
-The very first code cell runs `!pip install duckdb pandas matplotlib seaborn`,
-so a fresh machine with internet access will self-provision.
+**2026-09-06:** the notebook's SQL cells were converted from `mo.sql()` to the
+`con.execute()` pattern (repo-wide standard — see the root `CLAUDE.md`). An
+explicit `con = duckdb.connect(database=":memory:")` cell now exists; a couple
+of downstream cells that used the module-level `duckdb.sql(...)` (relying on
+`mo.sql()`'s implicit default connection) were repointed to `con.sql(...)`
+since they'd otherwise query an empty, disconnected database.
 
 ## Database schema (after the notebook builds it)
 
