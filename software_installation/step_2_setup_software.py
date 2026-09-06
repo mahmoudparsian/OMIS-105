@@ -28,7 +28,7 @@ import sys
 import subprocess
 
 # ════════════════════════════════════════════════════════════════
-#  STEP 0: Check Python version
+#  STEP 1: Check Python version
 # ════════════════════════════════════════════════════════════════
 
 def check_python():
@@ -50,7 +50,7 @@ def check_python():
 
 
 # ════════════════════════════════════════════════════════════════
-#  STEP 1: Install packages
+#  STEP 2: Install packages
 # ════════════════════════════════════════════════════════════════
 
 def install_packages():
@@ -76,7 +76,7 @@ def install_packages():
 
 
 # ════════════════════════════════════════════════════════════════
-#  STEP 2: Verify each package
+#  STEP 3: Verify each package
 # ════════════════════════════════════════════════════════════════
 
 def verify_packages():
@@ -112,7 +112,9 @@ def verify_packages():
 
 
 # ════════════════════════════════════════════════════════════════
-#  STEP 3: Run a test DuckDB query
+#  BONUS CHECK: run a live DuckDB query (shown as part of Step 3's
+#  success output, not its own numbered step — "Step 4" is qStudio,
+#  covered separately in step_4_install_qstudio.md)
 # ════════════════════════════════════════════════════════════════
 
 def test_duckdb_query():
@@ -168,20 +170,20 @@ def main():
     print("=" * width)
     print()
 
-    # Step 0: Python
+    # Step 1: Python
     print("-" * width)
     print("  Step 1: Checking Python version")
     print("-" * width)
     check_python()
 
-    # Step 1: Install
+    # Step 2: Install
     print()
     print("-" * width)
     print("  Step 2: Installing required packages")
     print("-" * width)
     install_packages()
 
-    # Step 2: Verify
+    # Step 3: Verify
     print("-" * width)
     print("  Step 3: Verifying installations")
     print("-" * width)
@@ -195,7 +197,7 @@ def main():
             print(f"  [X] FAIL  {name} — {version}")
             all_ok = False
 
-    # Step 3: Test query
+    # Bonus: live test query, shown as part of Step 3's success output
     if all_ok:
         test_duckdb_query()
 
