@@ -10,6 +10,13 @@ def _():
     return (mo,)
 
 
+@app.cell
+def _():
+    import duckdb
+    con = duckdb.connect(database=":memory:")
+    return (con,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -19,8 +26,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE TABLE sales (
             id      INT,
@@ -33,8 +40,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO sales
         VALUES
@@ -47,20 +54,20 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
         FROM sales
         WHERE price = 800;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE INDEX idx_price ON sales(price);
         """
@@ -69,14 +76,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
         FROM sales
         WHERE price = 800;
         """
-    )
+    ).fetchdf()
     return
 
 

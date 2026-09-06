@@ -23,12 +23,12 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE categories AS
             SELECT * FROM read_csv_auto('./data/categories.csv')
@@ -38,8 +38,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE products AS
             SELECT * FROM read_csv_auto('./data/products.csv')
@@ -49,8 +49,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE customers AS
             SELECT * FROM read_csv_auto('./data/customers.csv')
@@ -60,8 +60,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE orders AS
             SELECT * FROM read_csv_auto('./data/orders.csv')
@@ -71,8 +71,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE order_items AS
             SELECT * FROM read_csv_auto('./data/order_items.csv')
@@ -82,8 +82,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE reviews AS
             SELECT * FROM read_csv_auto('./data/reviews.csv')
@@ -93,8 +93,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE suppliers AS
             SELECT * FROM read_csv_auto('./data/suppliers.csv')
@@ -104,8 +104,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE product_suppliers AS
             SELECT * FROM read_csv_auto('./data/product_suppliers.csv')
@@ -125,8 +125,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     product_name,
@@ -137,7 +137,7 @@ def _(mo, products):
                 FROM products
                 ORDER BY category_id, price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -150,8 +150,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     product_name,
@@ -163,13 +163,13 @@ def _(mo, products):
                 FROM products
                 LIMIT 15
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
                 FROM (
@@ -183,7 +183,7 @@ def _(mo, products):
                 WHERE rn <= 3
                 ORDER BY category_id, rn
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -196,8 +196,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     order_id,
@@ -211,7 +211,7 @@ def _(mo, orders):
                 ORDER BY order_date
                 LIMIT 15
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -224,8 +224,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     product_name,
@@ -235,7 +235,7 @@ def _(mo, products):
                 FROM products
                 ORDER BY price
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -248,8 +248,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     order_date,
@@ -263,7 +263,7 @@ def _(mo, orders):
                 ORDER BY order_date
                 LIMIT 20
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -276,8 +276,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     product_name,
@@ -288,7 +288,7 @@ def _(mo, products):
                 FROM products
                 ORDER BY category_id, price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -301,8 +301,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, customer_totals, customers, orders):
-    _df = mo.sql(
+def _(customer_totals, con):
+    con.execute(
         f"""
         WITH customer_totals AS (
                 SELECT
@@ -323,13 +323,13 @@ def _(mo, customer_totals, customers, orders):
                 ORDER BY ct.total_spent DESC
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, order_stats, orders, segmented):
-    _df = mo.sql(
+def _(order_stats, segmented, con):
+    con.execute(
         f"""
         WITH order_stats AS (
                 SELECT
@@ -351,7 +351,7 @@ def _(mo, order_stats, orders, segmented):
                 GROUP BY s.segment
                 ORDER BY avg_spent DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -364,8 +364,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, customers):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     first_name,
@@ -382,13 +382,13 @@ def _(mo, customers):
                 WHERE state = 'NY'
                 ORDER BY source, last_name
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, orders, reviews):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT DISTINCT customer_id
                 FROM orders
@@ -397,13 +397,13 @@ def _(mo, orders, reviews):
                 FROM reviews
                 ORDER BY customer_id
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, orders, reviews):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT DISTINCT customer_id
                 FROM orders
@@ -412,7 +412,7 @@ def _(mo, orders, reviews):
                 FROM reviews
                 ORDER BY customer_id
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -425,8 +425,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, categories, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE VIEW product_summary AS
                 SELECT
@@ -444,20 +444,20 @@ def _(mo, categories, products):
 
 
 @app.cell
-def _(mo, product_summary):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
                 FROM product_summary
                 WHERE availability = 'Low Stock'
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, customers, order_stats, orders):
-    _df = mo.sql(
+def _(order_stats, con):
+    con.execute(
         f"""
         CREATE VIEW customer_dashboard AS
                 WITH order_stats AS (
@@ -487,15 +487,15 @@ def _(mo, customers, order_stats, orders):
 
 
 @app.cell
-def _(mo, customer_dashboard):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
                 FROM customer_dashboard
                 ORDER BY total_spent DESC
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -508,8 +508,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, monthly, orders):
-    _df = mo.sql(
+def _(monthly, con):
+    con.execute(
         f"""
         WITH monthly AS (
                 SELECT
@@ -530,7 +530,7 @@ def _(mo, monthly, orders):
                 FROM monthly
                 ORDER BY month
         """
-    )
+    ).fetchdf()
     return
 
 

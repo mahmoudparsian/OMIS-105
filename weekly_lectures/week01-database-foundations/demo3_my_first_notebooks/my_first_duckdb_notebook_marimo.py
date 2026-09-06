@@ -77,7 +77,7 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell(hide_code=True)
@@ -92,8 +92,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE students AS
         SELECT * FROM (VALUES
@@ -123,12 +123,12 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         DESCRIBE students
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -150,15 +150,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 *
             FROM students
             ORDER BY student_id
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -172,15 +172,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 *
             FROM students
             ORDER BY student_id
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -194,14 +194,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    rows = mo.sql(
+def _(con):
+    rows = con.execute(
         f"""
         SELECT *
         FROM students
         ORDER BY student_id DESC
         """
-    )
+    ).fetchdf()
     return (rows,)
 
 
@@ -238,15 +238,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 student_name
             FROM students
             ORDER BY student_name
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -259,8 +259,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 *
@@ -268,7 +268,7 @@ def _(mo, students):
             WHERE major = 'Business'
             ORDER BY student_name
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -282,16 +282,16 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
+def _(con):
     major_name = "Business"
-    _df = mo.sql(
+    con.execute(
         f"""
         SELECT *
         FROM students
         WHERE major = '{major_name}'
         ORDER BY student_name
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -304,8 +304,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 *
@@ -313,7 +313,7 @@ def _(mo, students):
             WHERE age > 21
             ORDER BY age
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -326,8 +326,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 student_name,
@@ -336,7 +336,7 @@ def _(mo, students):
             ORDER BY gpa DESC
             LIMIT 3
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -349,8 +349,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 major,
@@ -359,13 +359,13 @@ def _(mo, students):
             GROUP BY major
             ORDER BY student_count DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, students):
-    df = mo.sql(
+def _(con):
+    df = con.execute(
         f"""
         SELECT
             major,
@@ -374,7 +374,7 @@ def _(mo, students):
         GROUP BY major
         ORDER BY student_count DESC
         """
-    )
+    ).fetchdf()
     return (df,)
 
 
@@ -436,9 +436,9 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
+def _(con):
     # Add one more row
-    _df = mo.sql(
+    con.execute(
         f"""
         INSERT INTO students VALUES (970, 'Carlos', 'Business', 37, 3.8)
         """
@@ -447,12 +447,12 @@ def _(mo, students):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM students WHERE student_id = 970
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -466,9 +466,9 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
+def _(con):
     # Add one more row
-    _df = mo.sql(
+    con.execute(
         f"""
         INSERT INTO students VALUES (980, 'Sasha', 'Business', 22, 3.3)
         """
@@ -477,12 +477,12 @@ def _(mo, students):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM students WHERE student_id = 980
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -514,19 +514,19 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * 
             FROM students
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         DELETE 
             FROM students
@@ -537,13 +537,13 @@ def _(mo, students):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * 
             FROM students
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -557,8 +557,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         COPY students TO 'students.csv'
         """

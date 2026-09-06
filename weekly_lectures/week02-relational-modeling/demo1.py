@@ -23,12 +23,12 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE customers (
             id   INTEGER,
@@ -40,8 +40,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE orders (
             id          INTEGER,
@@ -54,8 +54,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, customers):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO customers VALUES (1, 'Alice'), (2, 'Bob')
         """
@@ -64,8 +64,8 @@ def _(mo, customers):
 
 
 @app.cell
-def _(mo, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO orders VALUES (1, 1, 100), (2, 1, 200), (3, 2, 150)
         """
@@ -74,34 +74,34 @@ def _(mo, orders):
 
 
 @app.cell
-def _(mo, customers):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM customers
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM orders
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, customers, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT c.name, o.amount
         FROM customers c
         JOIN orders o ON c.id = o.customer_id
         """
-    )
+    ).fetchdf()
     return
 
 

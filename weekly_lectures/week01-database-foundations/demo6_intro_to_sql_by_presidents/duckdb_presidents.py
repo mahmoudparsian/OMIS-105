@@ -43,7 +43,7 @@ def _(mo):
     Each query below is presented in four consistent steps:
 
     1. **What are we doing?** — a plain-English explanation of the question.
-    2. **The SQL** — a cleanly formatted query run with `mo.sql()`.
+    2. **The SQL** — a cleanly formatted query run with `con.execute()`.
     3. **The result** — displayed as a tidy pandas DataFrame.
     4. **A plot** — whenever a chart tells the story better than a table.
 
@@ -138,6 +138,12 @@ def _():
     return (DATA_DIR, duckdb)
 
 
+@app.cell
+def _(duckdb):
+    con = duckdb.connect(database=":memory:")
+    return (con,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -148,8 +154,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, DATA_DIR):
-    _df = mo.sql(
+def _(DATA_DIR, con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE parties AS
                 SELECT *
@@ -160,12 +166,12 @@ def _(mo, DATA_DIR):
 
 
 @app.cell
-def _(mo, parties):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM parties ORDER BY party_id
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -198,8 +204,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, DATA_DIR):
-    _df = mo.sql(
+def _(DATA_DIR, con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE presidents AS
                 SELECT *
@@ -210,12 +216,12 @@ def _(mo, DATA_DIR):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM presidents ORDER BY sequence LIMIT 5
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -228,9 +234,9 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
+def _(con):
     # Step 2a — add the derived columns
-    _df = mo.sql(
+    con.execute(
         f"""
         ALTER TABLE presidents ADD COLUMN full_name        VARCHAR;
         ALTER TABLE presidents ADD COLUMN term_days        INTEGER;
@@ -243,9 +249,9 @@ def _(mo, presidents):
     return
 
 @app.cell
-def _(mo, presidents):
+def _(con):
     # Step 2b — populate the derived columns
-    _df = mo.sql(
+    con.execute(
         f"""
         UPDATE presidents SET
             full_name       = first_name || ' ' || last_name,
@@ -264,13 +270,13 @@ def _(mo, presidents):
     return
 
 @app.cell
-def _(mo, presidents):
+def _(con):
     # Verify: count loaded rows
-    _df = mo.sql(
+    con.execute(
         f"""
         SELECT COUNT(*) AS rows_loaded FROM presidents
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -288,14 +294,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
                 FROM presidents
                 ORDER BY sequence
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -322,8 +328,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT sequence,
                        first_name,
@@ -331,7 +337,7 @@ def _(mo, presidents):
                 FROM presidents
                 ORDER BY sequence
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -353,13 +359,13 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT COUNT(*) AS total_presidencies
                 FROM presidents
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -379,8 +385,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT sequence,
                        full_name,
@@ -389,7 +395,7 @@ def _(mo, presidents):
                 WHERE term_start_year < 1800
                 ORDER BY sequence
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -410,8 +416,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT full_name,
                        term_days,
@@ -420,7 +426,7 @@ def _(mo, presidents):
                 ORDER BY term_days DESC
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -435,15 +441,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT party_id,
                        party_name
                 FROM parties
                 ORDER BY party_id
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -469,8 +475,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT sequence,
                        full_name,
@@ -479,7 +485,7 @@ def _(mo, presidents):
                 WHERE term_start_year BETWEEN 1800 AND 1899
                 ORDER BY sequence
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -494,8 +500,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT full_name,
                        last_name
@@ -503,7 +509,7 @@ def _(mo, presidents):
                 WHERE last_name LIKE 'J%'
                 ORDER BY last_name
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -524,8 +530,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT full_name,
                        party_id
@@ -533,7 +539,7 @@ def _(mo, presidents):
                 WHERE party_id IN (40, 60)
                 ORDER BY sequence
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -549,8 +555,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT full_name,
                        term_years,
@@ -563,7 +569,7 @@ def _(mo, presidents):
                 FROM presidents
                 ORDER BY term_days
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -587,8 +593,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT full_name,
                        term_days,
@@ -597,7 +603,7 @@ def _(mo, presidents):
                 ORDER BY pct_of_full_term DESC
                 LIMIT 12
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -623,8 +629,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT p.sequence,
                        p.full_name,
@@ -634,7 +640,7 @@ def _(mo, parties, presidents):
                   ON p.party_id = pt.party_id
                 ORDER BY p.sequence
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -650,8 +656,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties, presidents):
-    party_counts = mo.sql(
+def _(con):
+    party_counts = con.execute(
         f"""
         SELECT pt.party_name,
                COUNT(*) AS president_count
@@ -661,7 +667,7 @@ def _(mo, parties, presidents):
         GROUP BY pt.party_name
         ORDER BY president_count DESC
         """
-    )
+    ).fetchdf()
     return (party_counts,)
 
 
@@ -692,8 +698,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties, presidents):
-    avg_term = mo.sql(
+def _(con):
+    avg_term = con.execute(
         f"""
         SELECT pt.party_name,
                AVG(p.term_days)  AS avg_days,
@@ -704,7 +710,7 @@ def _(mo, parties, presidents):
         GROUP BY pt.party_name
         ORDER BY avg_days DESC
         """
-    )
+    ).fetchdf()
     return (avg_term,)
 
 
@@ -739,8 +745,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT pt.party_name,
                        COUNT(*) AS president_count
@@ -751,7 +757,7 @@ def _(mo, parties, presidents):
                 HAVING president_count > 3
                 ORDER BY president_count DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -768,8 +774,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    by_century = mo.sql(
+def _(con):
+    by_century = con.execute(
         f"""
         SELECT century,
                COUNT(*)                         AS presidents,
@@ -780,7 +786,7 @@ def _(mo, presidents):
         GROUP BY century
         ORDER BY century
         """
-    )
+    ).fetchdf()
     return (by_century,)
 
 
@@ -822,8 +828,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties, presidents):
-    top_longest = mo.sql(
+def _(con):
+    top_longest = con.execute(
         f"""
         SELECT p.full_name      AS president,
                p.term_days      AS days_in_office,
@@ -834,7 +840,7 @@ def _(mo, parties, presidents):
         ORDER BY days_in_office DESC
         LIMIT 8
         """
-    )
+    ).fetchdf()
     return (top_longest,)
 
 
@@ -870,8 +876,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties, presidents, ranked, terms):
-    _df = mo.sql(
+def _(ranked, terms, con):
+    con.execute(
         f"""
         WITH terms AS (
                     SELECT p.full_name      AS president,
@@ -896,7 +902,7 @@ def _(mo, parties, presidents, ranked, terms):
                 WHERE rnk = 1
                 ORDER BY days_in_office DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -913,8 +919,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    cumulative = mo.sql(
+def _(con):
+    cumulative = con.execute(
         f"""
         SELECT sequence,
                last_name,
@@ -923,7 +929,7 @@ def _(mo, presidents):
         FROM presidents
         ORDER BY sequence
         """
-    )
+    ).fetchdf()
     return (cumulative,)
 
 
@@ -956,8 +962,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, joined, parties, presidents):
-    _df = mo.sql(
+def _(joined, con):
+    con.execute(
         f"""
         WITH joined AS (
                     SELECT p.full_name,
@@ -979,7 +985,7 @@ def _(mo, joined, parties, presidents):
                 ORDER BY days_vs_party_avg DESC
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -996,8 +1002,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, presidents):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT sequence,
                        full_name,
@@ -1008,7 +1014,7 @@ def _(mo, presidents):
                 ORDER BY sequence
                 LIMIT 12
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -1036,9 +1042,9 @@ def _(mo):
 
 
 @app.cell
-def _(mo, parties, presidents):
+def _(con):
     # Build a joined DataFrame for plotting and the DataFrame-query demo
-    df_full = mo.sql(
+    df_full = con.execute(
         f"""
         SELECT p.sequence,
                p.last_name,
@@ -1053,7 +1059,7 @@ def _(mo, parties, presidents):
         JOIN parties pt
           ON p.party_id = pt.party_id
         """
-    )
+    ).fetchdf()
     return (df_full,)
 
 @app.cell
@@ -1083,14 +1089,13 @@ def _(mo):
 
 
 @app.cell
-def _(duckdb, presidents):
+def _(con):
     # The relational (method-chaining) API — an alternative to SQL strings
-    # We use duckdb.sql() to access the table from Marimo's internal connection.
     (
-        duckdb.sql("SELECT * FROM presidents")
-              .order("term_days DESC")
-              .limit(5)
-              .select("full_name, term_days, term_years")
+        con.sql("SELECT * FROM presidents")
+           .order("term_days DESC")
+           .limit(5)
+           .select("full_name, term_days, term_years")
     ).df()
     return
 

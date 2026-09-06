@@ -10,6 +10,13 @@ def _():
     return (mo,)
 
 
+@app.cell
+def _():
+    import duckdb
+    con = duckdb.connect(database=":memory:")
+    return (con,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -19,8 +26,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE TABLE customers (
             id   INTEGER,
@@ -32,8 +39,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE TABLE orders (
             id          INTEGER,
@@ -47,8 +54,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO customers
         VALUES
@@ -61,8 +68,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO orders
         VALUES
@@ -75,30 +82,30 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
         FROM customers;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
         FROM orders;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
             c.name,
@@ -107,13 +114,13 @@ def _(mo):
         FROM customers c
         JOIN orders o ON c.id = o.customer_id;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
             c.name,
@@ -122,13 +129,13 @@ def _(mo):
         LEFT
         JOIN orders o ON c.id = o.customer_id;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
             c.name,
@@ -138,7 +145,7 @@ def _(mo):
         GROUP BY c.name
         ORDER BY total DESC;
         """
-    )
+    ).fetchdf()
     return
 
 

@@ -33,7 +33,7 @@ fact/dimension pattern shows up in almost every real business database.
 The original idea and the 22 starter SQL questions in
 [`bookstore_queries.sql`](bookstore_queries.sql) come from a public MySQL
 portfolio project,
-[SQL-Data-Analytics-BookStore](https://github.com/Shahimti/SQL-Data-Analytics-BookStore).
+SQL-Data-Analytics-BookStore (no longer available online).
 We rebuilt it for this course on top of **DuckDB** instead of MySQL, and
 grew the dataset so it behaves like a real, multi-year sales history:
 

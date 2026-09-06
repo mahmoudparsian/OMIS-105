@@ -23,12 +23,12 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE sales (
             id       INTEGER,
@@ -42,8 +42,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO sales VALUES
             (1, 'Laptop',  1000, 1),
@@ -56,52 +56,52 @@ def _(mo, sales):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM sales
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product, price FROM sales
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM sales WHERE price > 700
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM sales WHERE price > 700 AND quantity >= 1
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM sales ORDER BY price DESC
         """
-    )
+    ).fetchdf()
     return
 
 

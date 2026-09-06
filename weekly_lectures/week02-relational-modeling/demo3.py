@@ -31,12 +31,12 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE categories AS
             SELECT * FROM read_csv_auto('./data/categories.csv')
@@ -46,8 +46,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE products AS
             SELECT * FROM read_csv_auto('./data/products.csv')
@@ -57,8 +57,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE customers AS
             SELECT * FROM read_csv_auto('./data/customers.csv')
@@ -77,32 +77,32 @@ def _(mo):
 
 
 @app.cell
-def _(mo, categories):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM categories
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM products
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, customers):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM customers
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -116,28 +116,28 @@ def _(mo):
 
 
 @app.cell
-def _(mo, customers):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT customer_id, COUNT(*) AS cnt
                 FROM customers
                 GROUP BY customer_id
                 HAVING COUNT(*) > 1
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_id, COUNT(*) AS cnt
                 FROM products
                 GROUP BY product_id
                 HAVING COUNT(*) > 1
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -151,16 +151,16 @@ def _(mo):
 
 
 @app.cell
-def _(mo, customers):
+def _(con):
     # Check if email is unique across customers
-    _df = mo.sql(
+    con.execute(
         f"""
         SELECT email, COUNT(*) AS cnt
         FROM customers
         GROUP BY email
         HAVING COUNT(*) > 1
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -174,8 +174,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT p.product_id, p.product_name, p.category_id,
                        c.category_name
@@ -183,20 +183,20 @@ def _(mo, products):
                 WHERE p.category_id = c.category_id
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, categories, products):
+def _(con):
     # Check: Are there any products with invalid category_id?
-    _df = mo.sql(
+    con.execute(
         f"""
         SELECT p.product_id, p.product_name, p.category_id
         FROM products p
         WHERE p.category_id NOT IN (SELECT category_id FROM categories)
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -212,8 +212,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, categories):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT c.category_name, COUNT(*) AS product_count
                 FROM categories c, products p
@@ -221,7 +221,7 @@ def _(mo, categories):
                 GROUP BY c.category_name
                 ORDER BY product_count DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -238,8 +238,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, categories):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT c.category_name, p.product_name, p.price
                 FROM categories c, products p
@@ -247,7 +247,7 @@ def _(mo, categories):
                   AND c.category_name = 'Electronics'
                 ORDER BY p.price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -352,7 +352,7 @@ def _(duckdb):
         ORDER BY p.product_name, ps.cost_price
     """).show()
     print("Laptop has 2 suppliers, Phone has 1 supplier")
-    return
+    return (con3,)
 
 
 @app.cell(hide_code=True)

@@ -11,6 +11,13 @@ def _():
     return (mo,)
 
 
+@app.cell
+def _():
+    import duckdb
+    con = duckdb.connect(database=":memory:")
+    return (con,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -20,8 +27,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE TABLE sales (
             id       INTEGER,
@@ -35,8 +42,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO sales
         VALUES
@@ -51,41 +58,41 @@ def _(mo, sales):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
         FROM sales;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT COUNT(*)
         FROM sales;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT SUM(price * quantity) AS total_revenue
         FROM sales;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
             product,
@@ -93,13 +100,13 @@ def _(mo, sales):
         FROM sales
         GROUP BY product;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
             product,
@@ -108,7 +115,7 @@ def _(mo, sales):
         GROUP BY product
         HAVING revenue > 1500;
         """
-    )
+    ).fetchdf()
     return
 
 
