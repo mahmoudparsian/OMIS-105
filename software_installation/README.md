@@ -26,18 +26,28 @@ This table is just a reference — **the actual install commands are in the step
 
 ## Step 1 — Install and Verify Python
 
-Python is the only piece of software you download and install manually from a website. Steps 2 and 3 are handled by scripts; Step 4 (qStudio) is the only other manual install.
+Python is the only piece of software you download 
+and install manually from a website. Steps 2 and 3 
+are handled by scripts; Step 4 (qStudio) is the only 
+other manual install.
 
-- **Mac users:** Follow [`step_1_install_python_macbook.md`](step_1_install_python_macbook.md)
-- **Windows users:** Follow [`step_1_install_python_windows.md`](step_1_install_python_windows.md)
+| Operating system | What to do |
+|------------------|------------|
+|**Mac users:**    |Follow [`step_1_install_python_macbook.md`](step_1_install_python_macbook.md) |
+|**Windows users:**| Follow [`step_1_install_python_windows.md`](step_1_install_python_windows.md) |
 
-Each guide ends with a "Verify Your Installation" section — run those commands before moving on. Do not continue to Step 2 until Python is confirmed working.
+Each guide ends with a "Verify Your Installation" 
+section — run those commands before moving on. 
+Do not continue to Step 2 until Python is confirmed working.
 
 ## Step 2 — Install and Verify DuckDB, Marimo, and Pandas
 
-One script does all of it: installs the three packages, then verifies each one, then runs a real DuckDB query to prove it all works together.
+One script does all of it: installs the three packages, 
+then verifies each one, then runs a real DuckDB query 
+to prove it all works together.
 
-Open your terminal (Mac) or Command Prompt (Windows), navigate to this folder, and run:
+Open your terminal (Mac) or Command Prompt (Windows), 
+navigate to this folder, and run:
 
 | OS | Command |
 |----|---------|
