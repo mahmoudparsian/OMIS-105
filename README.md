@@ -26,8 +26,7 @@ information every day.
   design, implementation, and maintenance of databases.
 * Hands-on training in relational database design, normalization, SQL,
   and database implementation is provided.
-* Use of DBMS ([DuckDB](https://duckdb.org) and [MySQL](https://www.mysql.com))
-  software is required. The course emphasizes the practical issues of managing
+* Use of a DBMS ([DuckDB](https://duckdb.org)) is required. The course emphasizes the practical issues of managing
   a database environment.
 
 ---

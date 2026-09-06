@@ -29,14 +29,14 @@ def _(mo):
 
 @app.cell
 def _():
-    DATA_DIR = '..'  # CSVs are in the parent folder
+    DATA_DIR = '../data'  # CSVs are in week01-database-foundations/data/
     return (DATA_DIR,)
 
 @app.cell
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell(hide_code=True)
@@ -49,12 +49,12 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT 'Hello, DuckDB!' AS greeting, 42 AS answer
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -68,18 +68,18 @@ def _(mo):
 
 
 @app.cell
-def _(mo, DATA_DIR):
-    _df = mo.sql(
+def _(DATA_DIR, con):
+    con.execute(
         f"""
         SELECT * FROM read_csv_auto('{DATA_DIR}/products.csv') LIMIT 5
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, DATA_DIR):
-    _df = mo.sql(
+def _(DATA_DIR, con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE products AS
             SELECT * FROM read_csv_auto('{DATA_DIR}/products.csv')
@@ -97,38 +97,38 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SHOW TABLES
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         DESCRIBE products
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT COUNT(*) AS total_products FROM products
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SUMMARIZE products
         """
@@ -145,30 +145,30 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM products LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, price, stock_quantity
                 FROM products
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name,
                        price,
@@ -177,7 +177,7 @@ def _(mo, products):
                 FROM products
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -190,34 +190,34 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, price
                 FROM products
                 WHERE category = 'Electronics'
                 ORDER BY price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category, price
                 FROM products
                 WHERE price < 20
                 ORDER BY price
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category, price
                 FROM products
@@ -225,45 +225,45 @@ def _(mo, products):
                   AND price < 30
                 ORDER BY category, price
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category, price
                 FROM products
                 WHERE category IN ('Electronics', 'Sports', 'Beauty')
                 ORDER BY category, price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category, price
                 FROM products
                 WHERE price BETWEEN 25 AND 75
                 ORDER BY price
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category
                 FROM products
                 WHERE product_name LIKE '%Pro%'
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -276,40 +276,40 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, price
                 FROM products
                 ORDER BY price
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category, price
                 FROM products
                 ORDER BY price DESC
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category, price
                 FROM products
                 ORDER BY category ASC, price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -322,24 +322,24 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT DISTINCT category
                 FROM products
                 ORDER BY category
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT COUNT(DISTINCT category) AS num_categories FROM products
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -352,8 +352,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     COUNT(*)                  AS total_products,
@@ -363,13 +363,13 @@ def _(mo, products):
                     SUM(stock_quantity)       AS total_inventory
                 FROM products
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     COUNT(*)             AS count,
@@ -378,7 +378,7 @@ def _(mo, products):
                 FROM products
                 WHERE category = 'Electronics'
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -391,8 +391,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         COPY (
             SELECT product_name, category, price

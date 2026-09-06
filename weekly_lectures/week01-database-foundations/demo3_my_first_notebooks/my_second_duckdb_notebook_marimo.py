@@ -47,7 +47,7 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell(hide_code=True)
@@ -60,8 +60,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE books (
             book_id     INTEGER,
@@ -80,8 +80,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO books VALUES
             (1,  'The Great Gatsby',       'F. Scott Fitzgerald', 'Fiction',     12.99, 180,  4.2, 1925, true),
@@ -102,14 +102,14 @@ def _(mo, books):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * 
             FROM books 
             ORDER BY book_id
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -125,25 +125,25 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT DISTINCT genre
             FROM books
             ORDER BY genre
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT COUNT(DISTINCT genre) AS num_genres
             FROM books
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -159,15 +159,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, author, price
             FROM books
             WHERE price < 15.00
             ORDER BY price
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -180,8 +180,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, author, price, in_stock
             FROM books
@@ -189,13 +189,13 @@ def _(mo, books):
               AND in_stock = true
             ORDER BY title
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, genre, price
             FROM books
@@ -203,7 +203,7 @@ def _(mo, books):
                OR genre = 'Sci-Fi'
             ORDER BY genre, title
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -218,15 +218,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, genre, price
             FROM books
             WHERE genre IN ('Fiction', 'Sci-Fi')
             ORDER BY genre, title
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -239,15 +239,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, price
             FROM books
             WHERE price BETWEEN 12.00 AND 17.00
             ORDER BY price
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -263,14 +263,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, author
             FROM books
             WHERE title LIKE 'The%'
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -286,45 +286,45 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, author, year
             FROM books
             WHERE year IS NULL
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, author, year
             FROM books
             WHERE year IS NULL
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, year
             FROM books
             WHERE year IS NOT NULL
             ORDER BY year
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title,
                    year,
@@ -332,7 +332,7 @@ def _(mo, books):
             FROM books
             ORDER BY book_id
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -348,14 +348,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT title, genre, price
             FROM books
             ORDER BY genre ASC, price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -371,8 +371,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 COUNT(*)              AS total_books,
@@ -383,7 +383,7 @@ def _(mo, books):
                 ROUND(AVG(rating), 2) AS avg_rating
             FROM books
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -407,15 +407,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 COUNT(*)    AS total_rows,
                 COUNT(year) AS rows_with_year
             FROM books
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -433,9 +433,9 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
+def _(con):
     # How many books per genre?
-    df_genre = mo.sql(
+    df_genre = con.execute(
         f"""
         SELECT
             genre,
@@ -444,7 +444,7 @@ def _(mo, books):
         GROUP BY genre
         ORDER BY num_books DESC
         """
-    )
+    ).fetchdf()
     return (df_genre,)
 
 
@@ -459,9 +459,9 @@ def _(df_genre):
 
 
 @app.cell
-def _(mo, books):
+def _(con):
     # Average price and rating per genre
-    df_stats = mo.sql(
+    df_stats = con.execute(
         f"""
         SELECT
             genre,
@@ -473,7 +473,7 @@ def _(mo, books):
         GROUP BY genre
         ORDER BY avg_price DESC
         """
-    )
+    ).fetchdf()
     return (df_stats,)
 
 
@@ -488,9 +488,9 @@ def _(df_stats):
 
 
 @app.cell
-def _(mo, books):
+def _(con):
     # Books in stock vs out of stock
-    df_stock = mo.sql(
+    df_stock = con.execute(
         f"""
         SELECT
             in_stock,
@@ -500,7 +500,7 @@ def _(mo, books):
         GROUP BY in_stock
         ORDER BY in_stock DESC
         """
-    )
+    ).fetchdf()
     return (df_stock,)
 
 
@@ -529,8 +529,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 genre,
@@ -541,13 +541,13 @@ def _(mo, books):
             HAVING COUNT(*) > 1
             ORDER BY num_books DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 genre,
@@ -557,7 +557,7 @@ def _(mo, books):
             HAVING AVG(price) > 15.00
             ORDER BY avg_price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -573,8 +573,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 title                          AS book_title,
@@ -585,7 +585,7 @@ def _(mo, books):
             FROM books
             ORDER BY cents_per_page DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -601,8 +601,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, books):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                 genre                 AS category,
@@ -615,7 +615,7 @@ def _(mo, books):
             HAVING COUNT(*) >= 2
             ORDER BY avg_rating DESC
         """
-    )
+    ).fetchdf()
     return
 
 

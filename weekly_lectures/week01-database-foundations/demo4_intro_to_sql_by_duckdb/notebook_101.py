@@ -62,14 +62,14 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(con):
     # ── Setup: Import libraries and helper functions ──────────────────────────────
     import pandas as pd
 
     # Import our clean display/plot helpers (keeps this notebook uncluttered)
     from helpers import display_result, plot_bar, plot_hbar, plot_pie, plot_line
 
-    print("Setup complete — using mo.sql() for all queries!")
+    print("Setup complete — using con.execute() for all queries!")
     return display_result, plot_bar, plot_hbar, plot_pie
 
 
@@ -77,7 +77,7 @@ def _():
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell(hide_code=True)
@@ -108,8 +108,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE students (
             id      INT PRIMARY KEY,
@@ -134,8 +134,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO students VALUES
             (1,  'Alice',   20, 'A', 'USA'),
@@ -163,12 +163,12 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         DESCRIBE students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Table Schema: students')
     return
 
@@ -199,13 +199,13 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'All Students')
     return
 
@@ -220,14 +220,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT name,
                age
         FROM   students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Student Names and Ages')
     return
 
@@ -242,14 +242,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT DISTINCT country
         FROM   students
         ORDER BY country
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Distinct Countries')
     return
 
@@ -264,13 +264,13 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT COUNT(*) AS total_students
         FROM   students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Total Number of Students')
     return
 
@@ -285,8 +285,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT name,
                age,
@@ -294,7 +294,7 @@ def _(mo, display_result, students):
         FROM   students
         ORDER BY name
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students with Calculated Birth Year')
     return
 
@@ -326,14 +326,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         WHERE  country = 'USA'
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students from USA')
     return
 
@@ -348,14 +348,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         WHERE  age > 22
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students Older Than 22')
     return
 
@@ -370,14 +370,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         WHERE  grade = 'A'
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students with Grade A')
     return
 
@@ -392,14 +392,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, plot_bar, students):
-    _df = mo.sql(
+def _(display_result, plot_bar, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         WHERE  age IN (20, 21)
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students Age 20 or 21')
     plot_bar(_df, 'name', 'age', title='Students Aged 20–21', xlabel='Student', ylabel='Age')
     return
@@ -415,15 +415,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         WHERE  country = 'USA'
           AND  age > 20
         """
-    )
+    ).fetchdf()
     display_result(_df, 'USA Students Older Than 20')
     return
 
@@ -454,14 +454,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         ORDER BY age ASC
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students Sorted by Age (Youngest First)')
     return
 
@@ -476,14 +476,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         ORDER BY name DESC
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students Sorted by Name (Z → A)')
     return
 
@@ -498,14 +498,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         LIMIT 5
         """
-    )
+    ).fetchdf()
     display_result(_df, 'First 5 Students (LIMIT)')
     return
 
@@ -520,28 +520,28 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    df_young = mo.sql(
+def _(display_result, con):
+    df_young = con.execute(
         f"""
         SELECT *
         FROM   students
         ORDER BY age ASC
         LIMIT 1
         """
-    )
+    ).fetchdf()
     display_result(df_young, "Youngest Student")
     return
 
 @app.cell
-def _(mo, display_result, students):
-    df_old = mo.sql(
+def _(display_result, con):
+    df_old = con.execute(
         f"""
         SELECT *
         FROM   students
         ORDER BY age DESC
         LIMIT 1
         """
-    )
+    ).fetchdf()
     display_result(df_old, "Oldest Student")
     return
 
@@ -576,13 +576,13 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT ROUND(AVG(age), 2) AS average_age
         FROM   students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Average Student Age')
     return
 
@@ -597,15 +597,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT MIN(age) AS youngest_age,
                MAX(age) AS oldest_age,
                MAX(age) - MIN(age) AS age_range
         FROM   students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Age Range Statistics')
     return
 
@@ -620,8 +620,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT COUNT(*) AS total_students,
                MIN(age) AS min_age,
@@ -630,7 +630,7 @@ def _(mo, display_result, students):
                SUM(age) AS sum_of_ages
         FROM   students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Complete Age Statistics')
     return
 
@@ -645,8 +645,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, plot_bar, students):
-    _df = mo.sql(
+def _(display_result, plot_bar, con):
+    _df = con.execute(
         f"""
         SELECT   grade,
                  COUNT(*) AS student_count
@@ -654,7 +654,7 @@ def _(mo, display_result, plot_bar, students):
         GROUP BY grade
         ORDER BY grade
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students per Grade')
     plot_bar(_df, 'grade', 'student_count', title='Number of Students per Grade', xlabel='Grade', ylabel='Count')
     return
@@ -670,8 +670,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, plot_pie, students):
-    _df = mo.sql(
+def _(display_result, plot_pie, con):
+    _df = con.execute(
         f"""
         SELECT   country,
                  COUNT(*) AS student_count
@@ -679,7 +679,7 @@ def _(mo, display_result, plot_pie, students):
         GROUP BY country
         ORDER BY student_count DESC
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students per Country')
     plot_pie(_df, 'country', 'student_count', title='Student Distribution by Country')
     return
@@ -711,8 +711,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, plot_bar, students):
-    _df = mo.sql(
+def _(display_result, plot_bar, con):
+    _df = con.execute(
         f"""
         SELECT   country,
                  COUNT(*)           AS num_students,
@@ -721,7 +721,7 @@ def _(mo, display_result, plot_bar, students):
         GROUP BY country
         ORDER BY avg_age DESC
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Average Age by Country')
     plot_bar(_df, 'country', 'avg_age', title='Average Student Age by Country', xlabel='Country', ylabel='Average Age')
     return
@@ -737,8 +737,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT   country,
                  grade,
@@ -747,7 +747,7 @@ def _(mo, display_result, students):
         GROUP BY country, grade
         ORDER BY country, grade
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Grade Distribution by Country')
     return
 
@@ -762,8 +762,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, plot_hbar, students):
-    _df = mo.sql(
+def _(display_result, plot_hbar, con):
+    _df = con.execute(
         f"""
         SELECT   country,
                  COUNT(*) AS student_count
@@ -772,7 +772,7 @@ def _(mo, display_result, plot_hbar, students):
         HAVING   COUNT(*) > 1
         ORDER BY student_count DESC
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Countries with More Than 1 Student (HAVING)')
     plot_hbar(_df, 'country', 'student_count', title='Countries with Multiple Students', xlabel='Student Count', ylabel='Country')
     return
@@ -788,8 +788,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT   grade,
                  COUNT(*)           AS num_students,
@@ -800,7 +800,7 @@ def _(mo, display_result, students):
         GROUP BY grade
         ORDER BY grade
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Age Statistics per Grade')
     return
 
@@ -832,8 +832,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO students
         VALUES (11, 'Kate', 21, 'B', 'USA')
@@ -842,12 +842,12 @@ def _(mo, students):
     return
 
 @app.cell
-def _(mo, display_result, students):
-    _df = mo.sql(
+def _(display_result, con):
+    _df = con.execute(
         f"""
         SELECT * FROM students WHERE id = 11
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Newly Inserted Student')
     return
 
@@ -862,20 +862,20 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
+def _(display_result, con):
     # Show Bob's record BEFORE update
-    _df = mo.sql(
+    _df = con.execute(
         f"""
         SELECT * FROM students WHERE name = 'Bob'
         """
-    )
+    ).fetchdf()
     display_result(_df, 'BEFORE Update')
     return
 
 @app.cell
-def _(mo, students):
+def _(con):
     # Perform the UPDATE
-    _df = mo.sql(
+    con.execute(
         f"""
         UPDATE students
         SET    grade = 'A'
@@ -885,13 +885,13 @@ def _(mo, students):
     return
 
 @app.cell
-def _(mo, display_result, students):
+def _(display_result, con):
     # Show Bob's record AFTER update
-    _df = mo.sql(
+    _df = con.execute(
         f"""
         SELECT * FROM students WHERE name = 'Bob'
         """
-    )
+    ).fetchdf()
     display_result(_df, 'AFTER Update (grade changed to A)')
     return
 
@@ -906,20 +906,20 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, students):
+def _(display_result, con):
     # Show who we're about to delete
-    _df = mo.sql(
+    _df = con.execute(
         f"""
         SELECT * FROM students WHERE id = 10
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Record to be DELETED')
     return
 
 @app.cell
-def _(mo, students):
+def _(con):
     # Perform the DELETE
-    _df = mo.sql(
+    con.execute(
         f"""
         DELETE FROM students
         WHERE  id = 10
@@ -928,14 +928,14 @@ def _(mo, students):
     return
 
 @app.cell
-def _(mo, display_result, students):
+def _(display_result, con):
     # Verify deletion
-    _df = mo.sql(
+    _df = con.execute(
         f"""
         SELECT COUNT(*) AS students_remaining
         FROM   students
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Students Remaining After DELETE')
     return
 
@@ -950,14 +950,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, display_result, plot_bar, students):
-    _df = mo.sql(
+def _(display_result, plot_bar, con):
+    _df = con.execute(
         f"""
         SELECT *
         FROM   students
         ORDER BY id
         """
-    )
+    ).fetchdf()
     display_result(_df, 'Final State of Students Table (after modifications)')
     plot_bar(_df, 'name', 'age', title='All Students — Final Dataset', xlabel='Student', ylabel='Age', rotate_x=30)
     return

@@ -37,12 +37,12 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE sales (
             order_id INTEGER,
@@ -57,18 +57,18 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         DESC sales
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO sales VALUES
         (1,'USA','Laptop',1,1000),
@@ -96,12 +96,12 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM sales
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -115,12 +115,12 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product, price FROM sales
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -134,14 +134,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * 
         FROM sales 
         WHERE country = 'USA'
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -155,14 +155,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * 
         FROM sales 
         ORDER BY price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -176,15 +176,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * 
         FROM sales 
         ORDER BY price DESC 
         LIMIT 3
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -198,14 +198,14 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *, 
                quantity*price AS revenue 
         FROM sales
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -219,15 +219,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT country, 
                SUM(quantity*price) AS total_revenue
         FROM sales
         GROUP BY country
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -241,8 +241,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT country, 
                SUM(quantity*price) AS total_revenue
@@ -250,7 +250,7 @@ def _(mo, sales):
         GROUP BY country
         HAVING SUM(quantity*price) > 2000
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -264,8 +264,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, sales):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT country, 
                product, 
@@ -273,7 +273,7 @@ def _(mo, sales):
         RANK() OVER (ORDER BY quantity*price DESC) AS rnk
         FROM sales
         """
-    )
+    ).fetchdf()
     return
 
 

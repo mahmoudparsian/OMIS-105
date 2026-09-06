@@ -24,12 +24,12 @@ def _(mo):
 def _():
     import duckdb
     con = duckdb.connect(database=":memory:")
-    return
+    return (con,)
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE products AS
             SELECT * FROM read_csv_auto('./data/products.csv')
@@ -39,8 +39,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE customers AS
             SELECT * FROM read_csv_auto('./data/customers.csv')
@@ -50,8 +50,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE categories AS
             SELECT * FROM read_csv_auto('./data/categories.csv')
@@ -61,8 +61,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE OR REPLACE TABLE orders AS
             SELECT * FROM read_csv_auto('./data/orders.csv')
@@ -80,8 +80,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     UPPER('hello world') AS upper_case,
@@ -91,13 +91,13 @@ def _(mo):
                     CONCAT('Hello', ' ', 'World') AS combined,
                     REPLACE('DuckDB', 'Duck', 'Goose') AS replaced
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, customers):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT CONCAT(first_name, ' ', last_name) AS full_name,
                        LOWER(email) AS email_lower,
@@ -106,40 +106,40 @@ def _(mo, customers):
                 ORDER BY name_len DESC
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         DESC products
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category_id
                 FROM products
                 WHERE product_name ILIKE '%pro%'
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT DISTINCT category_id
                 FROM products
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -152,8 +152,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, 
                        price,
@@ -164,7 +164,7 @@ def _(mo, products):
                 WHERE category_id = 3
                 ORDER BY price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -177,8 +177,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT CURRENT_DATE AS today,
                        EXTRACT(YEAR FROM DATE '2024-06-15') AS yr,
@@ -186,13 +186,13 @@ def _(mo):
                        EXTRACT(DOW FROM DATE '2024-06-15') AS day_of_week,
                        DATE '2024-06-15' + INTERVAL 30 DAY AS plus_30_days
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, order_date, orders):
-    _df = mo.sql(
+def _(order_date, con):
+    con.execute(
         f"""
         SELECT EXTRACT(YEAR FROM order_date) AS yr,
                        EXTRACT(MONTH FROM order_date) AS mo,
@@ -202,7 +202,7 @@ def _(mo, order_date, orders):
                 GROUP BY yr, mo
                 ORDER BY yr, mo
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -215,8 +215,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, price,
                     CASE
@@ -228,13 +228,13 @@ def _(mo, products):
                 FROM products
                 ORDER BY price
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
                     CASE
@@ -248,7 +248,7 @@ def _(mo, products):
                 GROUP BY price_tier
                 ORDER BY avg_price
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -261,21 +261,21 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT category_id, COUNT(*) AS num_products
                 FROM products
                 GROUP BY category_id
                 ORDER BY num_products DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT category_id,
                        COUNT(*) AS cnt,
@@ -287,7 +287,7 @@ def _(mo, products):
                 GROUP BY category_id
                 ORDER BY avg_price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -300,8 +300,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT category_id,
                        ROUND(AVG(price), 2) AS avg_price,
@@ -311,13 +311,13 @@ def _(mo, products):
                 HAVING AVG(price) > 50
                 ORDER BY avg_price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT category_id,
                        ROUND(AVG(price), 2) AS avg_price
@@ -327,7 +327,7 @@ def _(mo, products):
                 HAVING AVG(price) > 30            -- then filter groups
                 ORDER BY avg_price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -340,8 +340,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT category_id,
                     COUNT(*) AS total,
@@ -351,13 +351,13 @@ def _(mo, products):
                 GROUP BY category_id
                 ORDER BY total DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT status,
                        COUNT(*) AS cnt,
@@ -367,7 +367,7 @@ def _(mo, orders):
                 GROUP BY status
                 ORDER BY total_revenue DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -380,21 +380,21 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, category_id, price
                 FROM products
                 WHERE price > (SELECT AVG(price) FROM products)
                 ORDER BY price DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, customers, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT first_name, last_name, email
                 FROM customers
@@ -403,13 +403,13 @@ def _(mo, customers, orders):
                 )
                 ORDER BY last_name
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, customers, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT first_name, last_name, email
                 FROM customers
@@ -418,13 +418,13 @@ def _(mo, customers, orders):
                 )
                 ORDER BY last_name
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT product_name, price,
                        ROUND(price - (SELECT AVG(price) FROM products), 2) AS diff_from_avg,
@@ -433,7 +433,7 @@ def _(mo, products):
                 ORDER BY price DESC
                 LIMIT 10
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -446,8 +446,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, products):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT category_id,
                        COUNT(*) AS num_products,
@@ -462,13 +462,13 @@ def _(mo, products):
                 GROUP BY category_id
                 ORDER BY cat_avg DESC
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, orders):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT status,
                        COUNT(*) AS cnt,
@@ -477,7 +477,7 @@ def _(mo, orders):
                 GROUP BY status
                 ORDER BY pct DESC
         """
-    )
+    ).fetchdf()
     return
 
 

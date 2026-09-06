@@ -10,6 +10,13 @@ def _():
     return (mo,)
 
 
+@app.cell
+def _():
+    import duckdb
+    con = duckdb.connect(database=":memory:")
+    return (con,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -19,8 +26,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE TABLE raw_orders (
             order_id      INT,
@@ -34,8 +41,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO raw_orders
         VALUES
@@ -48,19 +55,19 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
         FROM raw_orders;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE TABLE customers (
             id   INT,
@@ -72,8 +79,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         CREATE TABLE orders (
             order_id    INT,

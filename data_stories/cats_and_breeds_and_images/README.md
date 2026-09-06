@@ -26,7 +26,6 @@ display time.
 | `cats_and_breeds_duckdb_marimo.py` | The notebook — 6 sections |
 | `display_utils.py` | Table display **and the image gallery** |
 | `plot_utils.py` | Chart functions |
-| `README.MP.md` | The design discussion behind the image feature |
 | `data/*.csv` | Four CSV files |
 
 ---
@@ -84,9 +83,12 @@ https://robohash.org/Luna?set=4
 - The `image_url` column is **just text** — the database has no idea it is a picture.
 - `display_utils.py` is what turns that text into a thumbnail.
 
-`README.MP.md` records the design discussion behind this, including the options that
-were rejected. It is a good short read on a genuine data-modelling question: *should
-a derived, deterministic value be stored in a column at all?*
+Two other approaches were considered and rejected: real breed photos from a
+third-party API (adds a dependency and an API key, and images could vanish if
+the service changes), and locally generated/stored images (heaviest in file
+size, for no real teaching benefit over a deterministic URL). This is a good
+example of a genuine data-modelling question: *should a derived, deterministic
+value be stored in a column at all?*
 
 ---
 

@@ -1,124 +1,36 @@
-Consider the following schemas:
+# SQL JOIN Operations
 
-departments(
-   dept_id,
-   dept_name,
-   dept_location,
-   dept_manager,
-   created_date
-)
+Two Marimo notebooks that teach SQL's `JOIN` operations (`INNER`,
+`LEFT`, `RIGHT`, `FULL OUTER`, and more) against a realistic employee
+dataset, with display/plot code kept out of the notebooks and in
+`display_tables.py` / `plots.py`.
 
-countries(
-   country_code,  -- 3 characters
-   country_name,
-   population
-)
+| Notebook | Cells | Dataset |
+|---|---|---|
+| [`Join_Operations_Tutorial_1_Employees.py`](Join_Operations_Tutorial_1_Employees.py) | 20 hands-on exercises | `data/employees.csv` (3,060 rows), `data/departments.csv` (7 depts — 5 active + 2 unused), `data/countries.csv` (10 countries) |
+| [`Join_Operations_Tutorial_2.py`](Join_Operations_Tutorial_2.py) | Comprehensive, basic → intermediate+ | Same three tables, built up from scratch inside the notebook |
 
-employees(
-   emp_id, 
-   emp_name, 
-   salary,       -- as an integer
-   dept_id,      -- points to departments.dept_id
-   country_code, -- points to countries.country_code
-   gender,       -- MALE/FEMALE/UNKNOWN
-   education,    -- BA, BS, MS, MSIS, PHD, MBA, LAW
-   dob,          -- date of birth
-   hire_date     -- date of hire
-)
+Both notebooks follow the same three-part pattern per example: a
+natural-language question, the DuckDB SQL that answers it, and a
+styled result table (plus a chart where meaningful).
 
-1. make sure data looks as real as possible
+**Dataset design notes:** `employees.dept_id` includes 10 rows set to
+`"TOP-SECRET"`, a department that doesn't exist in `departments` — a
+deliberate case for exploring unmatched rows in `LEFT`/`RIGHT` joins.
+Country and salary distributions are intentionally unbalanced (e.g.
+USA/China/India are the largest groups) so `GROUP BY` and join results
+look like real-world data rather than a perfectly even toy dataset.
 
-2. Create departments table with 7 departments,
-   but do not use 2 of them at all 
-   
-   5 used departments: SALES, BUSINESS, MARKETING, SOFTWARE, HARDWARE
-   
-   2 not used department: AI, IT
+Run either notebook with:
 
-3. create 10 countries: USA, CANADA, CHINA, INDIA, ...
+```bash
+pip install marimo duckdb pandas matplotlib
+marimo edit Join_Operations_Tutorial_1_Employees.py
+# or
+marimo edit Join_Operations_Tutorial_2.py
+```
 
-4. Create 2000 employees with real names, 
-   
-   -- do not use "emp_name_1", "emp_name_2", ...
+Run from inside this folder so the relative `data/*.csv` paths resolve.
 
-   -- 10 employees will have a dept_id = "TOP-SECRET"
-      and it is not defined in the departments table
-       
-   -- only 50 employees have PHD degrees
-   -- only 30 employees have LAW degrees
-   -- only 100 employees have MSIS degrees
-   -- only 40 employees have MBA degrees
-   -- the rest have BA, BS, MS degrees
-   -- do not balance country_code for employees
-   -- we have 500 from USA 
-   -- we have 300 from CHINA 
-   -- we have 400 from INDIA
-   -- the rest is from other countries (mixed)
-   
-5. Create three CSV files as:
-   employees.csv
-   departments.csv
-   countries.csv
-    
-6. The main goal is to teach SQL's JOIN operations
--- inner join
--- left join
--- right join
-
-7. you are the expert in Jupyter/Notebook/DuckDB.  
-
-8. Create a Jupyter/Notebook/DuckDB by reading 
-this file and showing basic statistics
-
-9. The goal is to teach SQL's "JOIN" by creating 
-   20 notebooks cells. 
-
-10. For each cell:
-
-a. Create a NL query: what are we doing: 
-   Explain this in a simple English
-
-b. how we implement in DuckDB's SQL Group By.
-   show a beautifully formatted SQL
-   
-c. show the result set in a very nice beautiful table 
-   (not a regular table).
-   Define  table render/display functions in a separate file
-   (display_tables.py) and then import and use them in 
-   the notebook (render/display functions code should not 
-   be in the notebook)
-
-d. show a beautiful and meaningful plot for the result set.
-   Define a generic plot functions in a separate file
-   (plots.py) and then import and use them in 
-   the notebook (plot code should not be in the notebook)
-   
-=====
-
-Update employees.csv as:
-
-1. Create 3060 employees with real names, 
-   
-   -- do not use "emp_name_1", "emp_name_2", ...
-
-   -- 10 employees will have a dept_id = "TOP-SECRET"
-      and it is not defined in the departments table
-       
-   -- do not balance country_code for employees
-
-900 from USA
-200 from Canada
-500 from China
-800 from India
-150 from United Kingdom
-100 from Germany
-150 from Brazil
-50  from Australia
-120 from Japan
-90  from France
-
-2. Salaries for USA and INDIA will be higher salaries
-
-3. Do not use the same salaries per country or department
-
-4. Employees in SALES make more in salaries
+---
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
