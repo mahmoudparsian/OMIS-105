@@ -9,10 +9,10 @@
 
 # 1. 🏛️ Course Description
 
-* In this course, you will learn the fundamentals 
-of modern relational data management. Topics include 
-SQL, schema design, data modeling, querying data with 
-SQL, database applications, and transactions.
+* In [this course](https://www.scu.edu/business/isa/academics/courses/), 
+you will learn the fundamentals of modern relational data 
+management. Topics include SQL, schema design, data modeling, 
+querying data with SQL, database applications, and transactions.
 
 * Through lectures, hands-on labs, and assignments, 
 you will discover how real-world database systems 
@@ -20,8 +20,8 @@ work, the principles behind them, and how they shape
 the way organizations store, retrieve, and analyze 
 information every day.
 
-* [This course](https://www.scu.edu/business/isa/academics/courses/)
-  covers the core issues in databases and database management systems (DBMS).
+* This course covers the core issues in databases and database 
+  management systems (DBMS).
 * Students will acquire technical and managerial skills in planning, analysis,
   design, implementation, and maintenance of databases.
 * Hands-on training in relational database design, normalization, SQL,
