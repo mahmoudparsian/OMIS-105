@@ -50,7 +50,7 @@ def _():
 @app.cell
 def _(con):
     # ── Load CSV data into DuckDB tables ──────────────────────────────────────────
-    DATA_DIR = "/Users/max/mp/data_analytics/SQL-Project-Employee-Database/mp_emps_project/data/"
+    DATA_DIR = "data/"
 
     # since we are going to run these many times...
     con.execute("""

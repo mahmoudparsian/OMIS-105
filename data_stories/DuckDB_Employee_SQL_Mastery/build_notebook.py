@@ -40,7 +40,7 @@ con = duckdb.connect()
 print("✅ DuckDB connected. Ready to query!")"""))
 
 cells.append(code_cell("""# ── Load CSV data into DuckDB tables ──────────────────────────────────────────
-DATA_DIR = "/Users/max/mp/data_analytics/SQL-Project-Employee-Database/mp_emps_project/data/"
+DATA_DIR = "data/"
 
 # Create tables and load data
 con.execute(\"\"\"
