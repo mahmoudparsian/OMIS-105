@@ -91,7 +91,7 @@ def _():
     con = duckdb.connect(database=":memory:")
     print("DuckDB version: ", duckdb.__version__)
     print("DuckDB Connection Object: ", con)
-    return
+    return (con,)
 
 
 @app.cell(hide_code=True)
@@ -103,9 +103,9 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
-        f"""
+def _(con):
+    con.execute(
+        """
         -- SQL Cell
         CREATE OR REPLACE TABLE students (
             student_id   INTEGER,
@@ -119,14 +119,9 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
-        f"""
-        -- SQL cell
-        -- Describe the structure of students table
-        DESC students;
-        """
-    )
+def _(con):
+    # Describe the structure of students table
+    con.execute("DESC students;").fetchdf()
     return
 
 
@@ -145,11 +140,11 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
-        f"""
+def _(con):
+    con.execute(
+        """
         -- SQL cell
-        INSERT INTO students (student_id, name, major, favorite_food) 
+        INSERT INTO students (student_id, name, major, favorite_food)
         VALUES
             (1, 'Alice',   'Marketing',  'Pizza'),
             (2, 'Bob',     'Finance',    'Sushi'),
@@ -173,13 +168,13 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
-        f"""
-        SELECT * 
+def _(con):
+    con.execute(
+        """
+        SELECT *
         FROM students
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -201,15 +196,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
-        f"""
-        SELECT name, 
+def _(con):
+    con.execute(
+        """
+        SELECT name,
                major
         FROM   students
         WHERE  major = 'Marketing'
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -227,15 +222,15 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
-        f"""
-        SELECT name, 
+def _(con):
+    con.execute(
+        """
+        SELECT name,
                favorite_food
         FROM   students
         WHERE  favorite_food = 'Pizza'
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -252,16 +247,16 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
-        f"""
+def _(con):
+    con.execute(
+        """
         SELECT major,
                COUNT(*) AS num_students
         FROM   students
         GROUP BY major
         ORDER BY num_students DESC
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -284,16 +279,16 @@ def _(mo):
 
 
 @app.cell
-def _(mo, students):
-    _df = mo.sql(
-        f"""
+def _(con):
+    con.execute(
+        """
         -- Edit this query! Try different foods, different columns, or add yourself.
-        SELECT name, 
+        SELECT name,
                favorite_food
         FROM   students
         WHERE  favorite_food = 'Pizza'
         """
-    )
+    ).fetchdf()
     return
 
 

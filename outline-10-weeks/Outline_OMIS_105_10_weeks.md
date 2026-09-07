@@ -2,7 +2,7 @@
 marp: true
 theme: default
 paginate: true
-header: "OMIS 105 – Database Management Systems"
+header: "OMIS 105 — Introduction to Database Management Systems"
 footer: "Course Outline & Syllabus Overview"
 style: |
   section {
@@ -26,7 +26,7 @@ style: |
 ---
 
 # OMIS 105
-## Database Management Systems
+## Introduction to Database Management Systems
 ### Course Outline & Syllabus Overview
 ### Course Roadmap (10 Weeks)
 
@@ -50,19 +50,8 @@ is powered by a **database**.
 drive real business decisions.
 
 * By the end of this course, 
-	* you will think like a **data architect**, and 
-	* write SQL like a **professional analyst**.
-
----
-# Why This Course Matters
-
-- Every modern system uses databases
-- SQL is a top industry skill
-- You will learn to:
-  - Store data
-  - Query data
-  - Design databases
-  - Generate insights
+  * you will think like a **data architect**, and 
+  * write SQL like a **professional analyst**.
 
 ---
 
@@ -79,8 +68,8 @@ By the end of this course:
 
 # Why Databases Matter
 
-- **90% of Fortune 1000** companies rely on relational databases
-- **SQL** is the #1 most requested technical skill in business analytics job postings
+- The large majority of **Fortune 1000** companies rely on relational databases
+- **SQL** is consistently one of the most requested technical skills in business analytics job postings
 - Every business decision — pricing, inventory, marketing, finance — depends on **data stored in databases**
 - Database skills bridge the gap between **business strategy** and **technical execution**
 
@@ -88,7 +77,7 @@ By the end of this course:
 
 ---
 
-# Course Structure
+# Course Structure: The Journey
 
 We move from:
 
@@ -163,7 +152,7 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 | Material | Description |
 |----------|-------------|
-| **Slides** | 40–50 Marp slides covering concepts and examples |
+| **Slides** | Two Marp slide decks covering concepts and examples |
 | **Dataset** | CSV files that grow in complexity week over week |
 | **Demo Notebooks** | Marimo notebooks with live SQL demonstrations |
 | **Lab (Student)** | Hands-on exercises to practice on your own |
@@ -177,16 +166,6 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 ---
 
-# Week 1 — Foundations
-
-### What You Will Learn
-- What databases are and why they replaced spreadsheets
-- Core vocabulary: tables, rows, columns, schemas, data types
-- Constraints that enforce data quality (PRIMARY KEY, NOT NULL, CHECK)
-- Setting up DuckDB and writing your first SQL queries
-- Basic SELECT, WHERE, ORDER BY, LIMIT, and aggregate functions
-
----
 # Week 1  
 ## Introduction to Databases
 
@@ -196,6 +175,17 @@ The dataset **grows each week**, mirroring real-world complexity.
 - First SQL query
 
 👉 Goal: Build confidence
+
+---
+
+# Week 1 — Database Foundations
+
+### What You Will Learn
+- What databases are and why they replaced spreadsheets
+- Core vocabulary: tables, rows, columns, schemas, data types
+- Constraints that enforce data quality (PRIMARY KEY, NOT NULL, CHECK)
+- Setting up DuckDB and writing your first SQL queries
+- Basic SELECT, WHERE, ORDER BY, LIMIT, and aggregate functions
 
 ---
 
@@ -220,9 +210,9 @@ The dataset **grows each week**, mirroring real-world complexity.
 - Tables, rows, columns
 - Primary keys, foreign keys
 - Relationships (1-1, 1-M, M-M)
-	- 1-1 (1 to 1)
-	- 1-M (1 to Many)
-	- M-M (Many to Many) 
+  - 1-1 (1 to 1)
+  - 1-M (1 to Many)
+  - M-M (Many to Many) 
 - Intro to ER thinking
 
 👉 Goal: Think in structure
@@ -379,8 +369,7 @@ Real business questions span **multiple tables**:
 - *"Which products have never been ordered?"* → products LEFT JOIN order_items
 - *"What is revenue by category by month?"* → order_items + products + categories + orders
 
-- **JOINs** are the single most important SQL skill.
-- A 2024 Stack Overflow survey found that SQL JOIN proficiency is the **top technical differentiator** between junior and senior data analysts.
+**JOINs** are arguably the single most important SQL skill: almost no real dataset lives in one table, so the ability to combine tables correctly is what separates someone who can query a spreadsheet from someone who can query a database.
 
 > If you master JOINs, you can answer almost any business question.
 
@@ -414,11 +403,11 @@ Real business questions span **multiple tables**:
 
 ### Why This Matters in the Real World
 
-A poorly designed database at a healthcare company stored patient names inside appointment records. When a patient changed their name after marriage:
+Imagine a healthcare system that stores a patient's name inside every appointment record instead of a separate `patients` table. When a patient changes their name after marriage:
 
-- **37 records** needed manual updates across 4 systems
-- **3 records** were missed, causing insurance claim rejections
-- The fix cost **$45,000** in staff time and system patches
+- Every appointment row that mentions them needs a manual update, one at a time
+- Miss even one, and a claim or a chart now disagrees with the patient's real name
+- Nobody finds out until it causes a real problem — an insurance rejection, a mismatched record
 
 Normalization prevents this by ensuring every fact is stored **exactly once**. It is the discipline that separates a database that works for 5 years from one that collapses under its own weight.
 
@@ -454,11 +443,11 @@ Normalization prevents this by ensuring every fact is stored **exactly once**. I
 
 ### Why This Matters in the Real World
 
-A retail company's daily sales report took **47 minutes** to run. After a DBA added three targeted indexes and rewrote two subqueries:
+Imagine a retail company's daily sales report that takes almost an hour to run, because it scans every row of a multi-million-row `orders` table every single time. A DBA adds a few targeted indexes and rewrites the slowest subqueries:
 
-- Report time dropped to **12 seconds**
-- The same server could handle **4x more concurrent users**
-- Annual cloud hosting costs dropped by **$28,000**
+- The same report now finishes in seconds instead of tens of minutes
+- The database server has far more headroom to serve other users at the same time
+- Nobody needs to buy bigger, more expensive hardware to fix a query that was just poorly written
 
 Performance tuning is not about making things "a little faster." It is about the difference between a system that **scales** and one that **collapses** under load. The techniques in this week directly translate to cost savings and user satisfaction.
 
@@ -610,30 +599,36 @@ Knowing relational databases gives you the vocabulary to evaluate and adopt any 
 
 # Grading Breakdown
 
-| Component      | Weight | Description |
-|----------------|--------|-------------|
-| In-Class-Labs  | 60%    | Lab in class with Marimo Notebook & DuckDB |
-| Midterm Exam   | 20%    | Comprehensive, covers Weeks 1–5 |
-| Final Exam     | 20%    | Comprehensive, covers Weeks 1–10 |
+1000 points total:
 
-* **Midterm Exam**: closed books/notes/internet/software
-* **Final Exam**: closed books/notes/internet/software
+| Component     | Points | Weight | Description |
+|----------------|-------:|--------|-------------|
+| In-Class Labs  | 600    | 60%    | 20 labs × 30 points, one per class session |
+| Midterm Exam   | 200    | 20%    | Comprehensive, covers Weeks 1–5 |
+| Final Exam     | 200    | 20%    | Comprehensive, covers Weeks 1–10 |
+
+* Your **lowest lab score is dropped**
+* **Midterm and Final Exams**: closed book/notes/internet/software
 
 ---
 
 # Weekly Rhythm
 
-| Activity | When | Duration |
-|----------|------|----------|
-| **Session 1**: <br> Lecture + live demo + in-class-lab | Day 1 | 2 hours |
-| **Session 2**: <br> Lecture + live demo + in-class-lab | Day 2 | 2 hours |
-| **Lab due** | End of the same class period | 40 to 60 minutes |
+| Session | When | Structure |
+|---------|------|-----------|
+| **Session 1** | Day 1, 2 hours | ~45 min lecture + live demo, then in-class lab — due by end of session |
+| **Session 2** | Day 2, 2 hours | ~45 min lecture + live demo, then in-class lab — due by end of session |
+
+Two labs per week, 20 labs total across the quarter.
 
 ---
 
 # Attendance
 
 Each week builds on the previous one — **attendance matters**.
+
+* Each lab must be completed and submitted **during the class session** it's assigned in
+* If you are absent, you receive a **zero** on that lab — there is no makeup, since the lab environment and instructor support are only available in class
 
 ---
 
@@ -649,7 +644,8 @@ Each week builds on the previous one — **attendance matters**.
 
 # Getting Help
 
-- **Office hours**: To be announced in Camino
+- **Office hours**: Announced during the first week of classes
+- **Camino Discussions**: Post your question — the instructor, TA, and classmates respond
 - **Email**: mparsian@scu.edu
 - **Lab sessions**: Bring questions — we work through problems together
 - **Peer study groups**: Encouraged! Teaching SQL to others deepens your own understanding
@@ -660,11 +656,10 @@ Each week builds on the previous one — **attendance matters**.
 
 Before Week 1, consider:
 
-1. **Install Python** (3.10+) 
-2. **Install Marimo**: `pip install "marimo[sql]"`
-3. **Install DuckDB**: `pip install duckdb`
-4. **Review OMIS 30** material — variables, loops, functions
-5. **Skim** a SQL tutorial online (any free resource)
+1. **Install Python** (3.10+)
+2. **Install the tools**: `pip install duckdb pandas marimo`
+3. **Review OMIS 30** material — variables, loops, functions
+4. **Skim** a SQL tutorial online (any free resource)
 
 None of this is required — we start from the beginning.
 
@@ -721,7 +716,7 @@ This course is not about memorizing SQL.
 
 ---
 
-# Let’s Get Started 🚀
+# Let's Get Started 🚀
 
 
 > * The best time to learn databases was 10 years ago. <br>

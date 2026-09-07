@@ -1,5 +1,5 @@
 ---
-title: OMIS 105 - Tech Stack & Welcome Notebook
+title: OMIS 105 — Tech Stack & Welcome Notebooks
 author: Instructor
 marp: true
 theme: default
@@ -12,7 +12,7 @@ style: |
 ---
 
 # OMIS 105
-## Welcome Notebook & Tech Stack
+## Welcome Notebooks & Tech Stack
 
 Quarter: Fall 2026
 Instructor: Dr. Mahmoud Parsian (mparsian@scu.edu)
@@ -24,41 +24,42 @@ Instructor: Dr. Mahmoud Parsian (mparsian@scu.edu)
 - **Language:** Python · SQL
 - **Database:** DuckDB (in-memory)
 - **Notebooks:** Marimo (reactive)
-- **Audience:** Junior/Senior business students
+- **Audience:** Senior business students
 - Zero prior exposure to notebooks, SQL, or databases
 
 ---
 
 # Purpose
 
-Day-one onboarding notebook for
+Day-one onboarding notebooks for
 **OMIS 105 — Introduction to Database Management Systems**
 
-This is the first thing students open.
+These are among the first things students open.
 
 - Introduces Marimo
 - Introduces the concept of a database
 - Walks through the very first SQL queries
 
-👉 One self-guided, interactive notebook
+👉 Two self-guided, interactive notebooks
 
 ---
 
-# Files in This Folder
+# Where to Find the Notebooks
+
+`weekly_lectures/week01-database-foundations/sql_notebooks/`:
 
 | File | Purpose |
 |------|---------|
-| `SQL_101_DuckDB_Notebook_1.py` | Day-one student notebook |
-| `SQL_101_DuckDB_Notebook_2.py` | Day-one student notebook |
-| `Outline_OMIS_105_10_weeks.md` | 10-week course outline |
+| `SQL_Notebook_01_marimo.py` | Day-one student notebook — first table, first queries |
+| `SQL_Notebook_02_marimo.py` | Day-one student notebook — broader SQL 101 tour, with charts |
 
 ---
 
-# Notebook Structure (1/2)
+# Notebook 1: Structure (1/2)
 
 1. **What is a notebook?** — Cells, text vs SQL, Cmd/Ctrl+Enter
 2. **What is a database?** — Tables = spreadsheets with rows/columns
-3. **First table: `students`** — CREATE TABLE + INSERT, 6 rows
+3. **First table: `students`** — CREATE TABLE + INSERT, 7 rows
 4. **Asking questions with SQL** — three business questions:
    - "Who are the Marketing majors?" → WHERE
    - "Who likes Pizza?" → WHERE (different column)
@@ -66,7 +67,7 @@ This is the first thing students open.
 
 ---
 
-# Notebook Structure (2/2)
+# Notebook 1: Structure (2/2)
 
 5. **Try It Yourself** — editable SQL cell, guided suggestions
 6. **Why Marimo is reactive** — automatic cell updates explained
@@ -74,29 +75,43 @@ This is the first thing students open.
 
 ---
 
-# Marimo Conventions (Pure SQL Cells)
+# Notebook 2: SQL 101 Tour
 
-- SQL cells use `_df = mo.sql(f"""...""")` with a bare `return`
-- `duckdb.connect(database=':memory:')` created, NOT returned
-  (Marimo auto-discovers the connection)
+A broader, denser walkthrough — better for a second sitting or self-paced
+review than a first-day walkthrough:
+
+- Creating tables & inserting data
+- Basic SELECT, filtering with WHERE/IN
+- Sorting & LIMIT, aggregate functions, GROUP BY
+- Data modification: INSERT, UPDATE, DELETE
+- Charts via `plot_util.py` (`display_result`, `plot_bar`, `plot_hbar`, `plot_pie`)
+
+---
+
+# Marimo Conventions (`con.execute()`)
+
+- `duckdb.connect(database=':memory:')` created — the cell **returns** `(con,)`
+- Query cells: `con.execute("""...""").fetchdf()` displays the result
+- Every cell touching the database takes `con` as a parameter (`def _(con):`)
+  — that's what wires it into Marimo's reactivity
 - Markdown cells use `mo.md("""...""")` with `hide_code=True`
-- Use `--` SQL comments, not Python `#`, inside SQL cells
+- Use `--` SQL comments inside SQL string literals, not Python `#`
 - `CREATE OR REPLACE TABLE` for re-runnability
 
 ---
 
-# Design Decisions (1/2)
+# Notebook 1: Design Decisions (1/2)
 
 - **Favorite foods, not business data.**
   Low-stakes data (Pizza, Sushi, Tacos) keeps focus on the tool,
   not the business scenario. Business data starts in Week 1.
-- **Only 6 rows.** Small enough to see everything at a glance.
+- **Only a handful of rows.** Small enough to see everything at a glance.
 - **Three queries only.** Enough to show the pattern —
   SELECT + FROM + WHERE, then GROUP BY.
 
 ---
 
-# Design Decisions (2/2)
+# Notebook 1: Design Decisions (2/2)
 
 - **"Try It Yourself" cell.**
   Hands-on editing builds comfort with the tool.
@@ -108,13 +123,15 @@ This is the first thing students open.
 
 # Teaching Notes
 
-- **In-class usage:** Open live. Walk through the first
+- **In-class usage:** Open Notebook 1 live. Walk through the first
   few cells together (5 min), then give students 10 minutes
   to edit "Try It Yourself" on their own laptops.
 - **Reactivity demo:** After editing, scroll back up to show
   other cells didn't break. "Marimo keeps everything consistent."
 - **Common question:** "Where is the data stored?"
   → In memory only. Data disappears when the notebook closes.
+- **Notebook 2** is denser — better suited to a second sitting
+  or self-paced review than the first-day walkthrough.
 
 ---
 
@@ -122,6 +139,7 @@ This is the first thing students open.
 
 | Folder | Content |
 |--------|---------|
+| `weekly_lectures/week01-database-foundations/` | The welcome notebooks above, plus demo1–demo6 |
 | `weekly_reviews/` | Weeks 1–3, 4–6 notebooks, CSVs, plot helpers |
 | `software_installation/` | Install guides, setup script, verification |
 | `data_stories/` | Standalone Python + DuckDB CRUD demos |

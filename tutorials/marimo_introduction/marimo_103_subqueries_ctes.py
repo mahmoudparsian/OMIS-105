@@ -444,8 +444,8 @@ def _(mo):
       to `<` and see which products come back
     - Rewrite the `NOT IN` query in Section 2 using a `LEFT JOIN ...
       WHERE ... IS NULL` instead, and compare the two approaches
-    - Continue to `outline-10-weeks/sql_notebooks/` and the
-      `weekly_reviews/` notebooks — CTEs and subqueries show up
+    - Continue to `weekly_lectures/week01-database-foundations/sql_notebooks/`
+      and the `weekly_reviews/` notebooks — CTEs and subqueries show up
       constantly in Weeks 7–10
 
     ---

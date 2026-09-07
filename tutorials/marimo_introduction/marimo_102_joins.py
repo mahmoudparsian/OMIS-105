@@ -447,9 +447,9 @@ def _(mo):
     - Add a 6th customer and a couple of orders, then re-run the notebook
     - Continue to `marimo_103_subqueries_ctes.py`, in this same folder,
       to learn subqueries and CTEs
-    - Continue to `outline-10-weeks/sql_notebooks/` and the
-      `weekly_reviews/` notebooks for multi-table practice with bigger
-      datasets
+    - Continue to `weekly_lectures/week01-database-foundations/sql_notebooks/`
+      and the `weekly_reviews/` notebooks for multi-table practice with
+      bigger datasets
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

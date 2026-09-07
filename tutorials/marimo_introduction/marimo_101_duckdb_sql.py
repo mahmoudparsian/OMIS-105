@@ -390,7 +390,7 @@ def _(mo):
     - Continue to `marimo_102_joins.py`, in this same folder, to learn `JOIN`
     - Explore Marimo's own guided tour: `marimo_introduction.py`, in this same folder
     - Run `marimo tutorial sql` in your terminal for Marimo's official SQL tutorial
-    - Practice more in `outline-10-weeks/sql_notebooks/`, the notebooks used in class
+    - Practice more in `weekly_lectures/week01-database-foundations/sql_notebooks/`, the notebooks used in class
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
