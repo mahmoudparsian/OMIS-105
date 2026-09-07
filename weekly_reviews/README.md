@@ -1,63 +1,76 @@
 # Weekly Reviews
 
-Cumulative review notebooks and lecture notes for
+Cumulative review materials for
 **OMIS 105 — Introduction to Database Management Systems**.
 
-These materials consolidate multiple weeks into comprehensive
-notebooks with accompanying lecture notes. Use them for review
-sessions, exam preparation, or as a reference during later weeks.
+One self-contained folder per week, mirroring the layout of
+`weekly_lectures/`. Each folder holds a Marimo review notebook, teaching
+notes, and whatever data that week needs. Nothing is shared between
+folders — you can copy a single week's folder anywhere and it still runs.
 
-## Files in This Folder
+## The Ten Weeks
 
-### Weeks 1–3: Database Foundations, Relational Modeling & SQL Basics
+| Week | Folder | Topic |
+|------|--------|-------|
+| 1 | `week01-database-foundations` | Querying a single table |
+| 2 | `week02-relational-modeling` | Relational design & JOINs |
+| 3 | `week03-sql-basics` | Aggregation, grouping & subqueries |
+| 4 | `week04-sql-aggregation` | Advanced aggregation & window functions |
+| 5 | `week05-sql-joins` | Advanced joins & set operations |
+| 6 | `week06-database-design` | Database design, constraints & views |
+| 7 | `week07-query-performance` | Window functions & query performance |
+| 8 | `week08-transactions-acid` | Transactions, ACID & constraints |
+| 9 | `week09-project-integration` | CTEs, subqueries & advanced window functions |
+| 10 | `week10-review-modern-data` | Modern DuckDB — JSON, PIVOT & lists |
 
-| File | Description |
-|------|-------------|
-| `weeks_1_3_notebook.py` | Marimo notebook: SELECT, WHERE, ORDER BY, LIMIT, DISTINCT, normalization, JOINs, GROUP BY, HAVING, subqueries, plots |
-| `weeks_1_3_lecture_notes.md` | Lecture plan (6 sessions × 2 hours) with discussion points and homework |
-| `orders_data.csv` | 20-row retail orders dataset (6 customers, 6 products, 3 categories) |
+## What Is in Each Folder
 
-### Weeks 4–6: Aggregation, Joins & Database Design
+```
+weekNN-topic/
+├── README.md                    # What this week covers, how to run it
+├── weekNN_review_notebook.py    # The Marimo review notebook
+├── weekNN_review_notes.md       # Teaching notes: timing, discussion, homework
+├── data/                        # CSV for that week (Weeks 1–6 only)
+└── plot_helpers.py              # Matplotlib helpers (Week 3 only)
+```
 
-| File | Description |
-|------|-------------|
-| `weeks_4_6_notebook.py` | Marimo notebook: window functions, CASE, CTEs, FULL/CROSS/SELF JOINs, set operations, normalization (1NF/2NF/3NF), constraints, views |
-| `weeks_4_6_lecture_notes.md` | Lecture notes (6 sessions) with discussion guides |
-| `company_data.csv` | 30-row tech company dataset (30 employees, 5 departments) |
+## Running a Review Notebook
 
-### Weeks 7–8: Window Functions, Performance, Transactions & ACID
+```bash
+cd weekly_reviews/week01-database-foundations
+marimo edit week01_review_notebook.py
+```
 
-| File | Description |
-|------|-------------|
-| `weeks_7_8_notebook.py` | Marimo notebook: ROW_NUMBER, RANK, PARTITION BY, EXPLAIN, indexes, sargable predicates, CTEs, BEGIN/COMMIT/ROLLBACK, CHECK/NOT NULL constraints, audit logging |
-| `weeks_7_8_lecture_notes.md` | Lecture notes (4 sessions) with discussion guides |
+Every notebook is independent. It creates its own in-memory DuckDB
+connection and builds every table it needs, so you can open Week 7
+without having run Weeks 1–6.
 
-### Weeks 9–10: CTEs, Subqueries, Advanced Windows & Modern DuckDB
+## Datasets
 
-| File | Description |
-|------|-------------|
-| `weeks_9_10_notebook.py` | Marimo notebook: chained CTEs, correlated subqueries, EXISTS/IN, LAG/LEAD, running totals, moving averages, DENSE_RANK, NTILE, FIRST_VALUE, JSON extraction, PIVOT, LIST/UNNEST, STRFTIME, CROSS JOIN |
-| `weeks_9_10_lecture_notes.md` | Lecture notes (4 sessions) with discussion guides |
+| Weeks | Domain | Source | Tables |
+|-------|--------|--------|--------|
+| 1–3 | Retail orders | `data/orders_data.csv` (20 rows, flat → normalized) | `customers`, `products`, `sales` |
+| 4–6 | Tech company | `data/company_data.csv` (30 rows, flat → normalized) | `departments`, `employees`, `projects`, `assignments` |
+| 7–8 | CloudMetrics SaaS | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `support_tickets`, `accounts`, `audit_log` |
+| 9–10 | CloudMetrics SaaS (extended) | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `events` (JSON), `kpi_targets` |
 
-### Shared
+The Weeks 4–6 dataset has deliberate imperfections — NULL `dept_id`s, an
+empty department, a self-referencing `manager_id` — so that OUTER JOINs,
+SELF JOINs, and anti-joins have something real to find.
 
-| File | Description |
-|------|-------------|
-| `plot_helpers.py` | Matplotlib plotting functions (plot_bar, plot_hbar, plot_pie, plot_grouped_bar) |
-| `marimo_template.py` | Marimo notebook template for creating new notebooks |
+## Shared Files
 
-## Dataset Summary
-
-| Weeks | Domain | Tables | Key Features |
-|-------|--------|--------|-------------|
-| 1–3 | Retail orders | orders (flat CSV → normalized) | 20 rows, 6 customers, 6 products |
-| 4–6 | Tech company | employees, departments (flat CSV → normalized) | 30 employees, NULLs for OUTER JOIN, self-referencing manager_id |
-| 7–10 | CloudMetrics SaaS | plans, customers, payments, support_tickets, accounts, events, kpi_targets | 10 companies, JSON metadata, 3 subscription tiers, audit logging |
+| File | Purpose |
+|------|---------|
+| `marimo_template.py` | Starting template for a new review notebook |
+| `CLAUDE.md` | Guidance for Claude Code when working in this folder |
 
 ## Tech Stack
 
 - **Database:** DuckDB (in-memory)
 - **Notebooks:** Marimo (reactive Python notebooks)
 - **Language:** Python 3 + SQL
+
+---
 
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

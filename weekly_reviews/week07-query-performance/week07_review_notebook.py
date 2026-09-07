@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.9"
+__generated_with = "0.23.10"
 app = marimo.App(width="medium", sql_output="pandas")
 
 
@@ -14,22 +14,43 @@ def _():
 @app.cell
 def _():
     import duckdb
+
     con = duckdb.connect(database=":memory:")
     return (con,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""
-    # OMIS 105 — Weeks 7 & 8 Review
+    mo.md(r"""
+    # OMIS 105 — Week 7 Review: Window Functions & Query Performance
 
-    ## Window Functions · Query Performance · Transactions · ACID
+    **Course:** OMIS 105 — Introduction to Database Management Systems
+    **Author:** Dr. Mahmoud Parsian
+    **Tech Stack:** Python · DuckDB · Marimo
 
-    **Dataset: CloudMetrics SaaS** — A software-as-a-service company
-    that sells analytics tools to businesses. 10 customers across
-    8 industries, 3 subscription plans, 25 payment records, and
-    15 support tickets.
+    ---
 
+    Two halves. First, window functions that rank and compare without
+    collapsing rows. Second, what the database actually *does* with your
+    query — and how to help it go faster.
+
+    ### What This Notebook Covers
+
+    | Topic | SQL You Will Use |
+    |-------|-----------------|
+    | Number and rank rows | `ROW_NUMBER`, `RANK`, `PARTITION BY` |
+    | Compare to a group | `AVG(...) OVER (PARTITION BY ...)` |
+    | See the plan | `EXPLAIN` |
+    | Speed up lookups | `CREATE INDEX`, sargable predicates |
+    | Keep queries readable | `WITH ... AS`, chained CTEs |
+
+    ### How to Use
+
+    Run the cells from top to bottom. Every database cell takes `con`, the
+    DuckDB connection created in the setup cell. Read the markdown between
+    queries — it explains the *why*, not just the *how*.
+
+    ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
     """)
     return
@@ -37,24 +58,27 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""
+    mo.md(r"""
     ---
-    ## Setting Up the Database
+    ## Setup — Build the CloudMetrics Database
 
-    We create five tables that model a SaaS business:
+    **CloudMetrics** is a software-as-a-service company selling analytics tools to
+    businesses. All the data is created inline below — there is no CSV to load, so
+    this notebook runs anywhere.
 
-    - **plans** — three subscription tiers (Starter, Professional, Enterprise)
-    - **customers** — 10 companies, each on one plan
-    - **payments** — 25 monthly payment records (completed, failed, or refunded)
-    - **support_tickets** — 15 support requests with priority and category
-    - **accounts** — account balances for transaction exercises (Week 8)
+    | Table | Rows | What It Holds |
+    |-------|------|---------------|
+    | `plans` | 3 | Subscription tiers and monthly prices |
+    | `customers` | 10 | Companies, their industry, and their plan |
+    | `payments` | 25 | Monthly payments — completed, failed, refunded |
+    | `support_tickets` | 15 | Support requests by priority and category |
     """)
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Create the plans table (3 subscription tiers)
         CREATE OR REPLACE TABLE plans AS
@@ -69,18 +93,18 @@ def _(mo):
 
 
 @app.cell
-def _(mo, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM plans ORDER BY plan_id;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Create the customers table (10 companies)
         CREATE OR REPLACE TABLE customers AS
@@ -102,18 +126,18 @@ def _(mo, plans):
 
 
 @app.cell
-def _(customers, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM customers ORDER BY customer_id;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(customers, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Create the payments table (25 records)
         CREATE OR REPLACE TABLE payments AS
@@ -150,18 +174,18 @@ def _(customers, mo):
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM payments ORDER BY payment_id;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(customers, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Create the support_tickets table (15 tickets)
         CREATE OR REPLACE TABLE support_tickets AS
@@ -188,12 +212,12 @@ def _(customers, mo):
 
 
 @app.cell
-def _(mo, support_tickets):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM support_tickets ORDER BY ticket_id;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -201,7 +225,7 @@ def _(mo, support_tickets):
 def _(mo):
     mo.md("""
     ---
-    ## Part 1: Window Functions (Week 7)
+    ## Part 1: Window Functions
 
     A **window function** computes a value for each row using a
     "window" of related rows — without collapsing the result into
@@ -225,8 +249,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Number customers by signup date (earliest = 1)
         SELECT customer_id,
@@ -236,7 +260,7 @@ def _(customers, mo):
         FROM   customers
         ORDER BY signup_rank;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -251,8 +275,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Number each customer's payments in chronological order
         SELECT c.company_name,
@@ -267,7 +291,7 @@ def _(customers, mo, payments):
         JOIN   customers c ON p.customer_id = c.customer_id
         ORDER BY c.company_name, payment_num;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -283,8 +307,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Rank customers by total completed payments
         SELECT c.company_name,
@@ -296,7 +320,7 @@ def _(customers, mo, payments):
         GROUP BY c.company_name
         ORDER BY revenue_rank;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -312,8 +336,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Compare ROW_NUMBER and RANK
         SELECT c.company_name,
@@ -326,7 +350,7 @@ def _(customers, mo, payments):
         GROUP BY c.company_name
         ORDER BY row_num;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -342,8 +366,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Each payment vs its plan's average
         SELECT c.company_name,
@@ -359,7 +383,7 @@ def _(customers, mo, payments, plans):
         WHERE  p.status = 'completed'
         ORDER BY pl.plan_name, c.company_name;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -375,8 +399,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Top 2 customers per plan by total revenue
         SELECT plan_name, company_name, total_paid, rn
@@ -397,7 +421,7 @@ def _(customers, mo, payments, plans):
         WHERE rn <= 2
         ORDER BY plan_name, rn;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -413,8 +437,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, support_tickets):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Rank resolved tickets by resolution time within priority
         SELECT ticket_id,
@@ -429,7 +453,7 @@ def _(mo, support_tickets):
         FROM   support_tickets
         ORDER BY priority, speed_rank;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -437,7 +461,7 @@ def _(mo, support_tickets):
 def _(mo):
     mo.md("""
     ---
-    ## Part 2: Query Performance (Week 7)
+    ## Part 2: Query Performance
 
     Databases are fast because they **plan** before executing.
     Understanding query plans helps you write better SQL.
@@ -456,8 +480,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Bad: SELECT * (fetches everything)
         -- SELECT * FROM payments;
@@ -469,7 +493,7 @@ def _(mo, payments):
         ORDER BY amount DESC
         LIMIT 5;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -484,8 +508,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- See the execution plan for a JOIN query
         EXPLAIN
@@ -495,7 +519,7 @@ def _(customers, mo, payments):
         WHERE  p.status = 'completed'
         GROUP BY c.company_name;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -511,8 +535,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Create an index on payment_date
         CREATE INDEX IF NOT EXISTS idx_payment_date
@@ -523,15 +547,15 @@ def _(mo, payments):
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Now queries filtering by payment_date can use the index
         EXPLAIN
         SELECT * FROM payments
         WHERE  payment_date >= '2025-04-01';
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -552,8 +576,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Sargable: DuckDB can use the index on payment_date
         SELECT payment_id, payment_date, amount
@@ -561,13 +585,13 @@ def _(mo, payments):
         WHERE  payment_date BETWEEN '2025-03-01' AND '2025-03-31'
         ORDER BY payment_date;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Non-sargable: same result, but the function call
         -- prevents index usage
@@ -576,7 +600,7 @@ def _(mo, payments):
         WHERE  MONTH(payment_date) = 3
         ORDER BY payment_date;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -592,8 +616,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- CTE: calculate revenue per customer, then filter
         WITH customer_revenue AS (
@@ -612,7 +636,7 @@ def _(customers, mo, payments, plans):
         WHERE  total_paid > 200
         ORDER BY total_paid DESC;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -628,8 +652,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Chained CTEs: revenue per plan, then compare to target
         WITH plan_revenue AS (
@@ -653,461 +677,35 @@ def _(customers, mo, payments, plans):
         SELECT * FROM plan_summary
         ORDER BY total_revenue DESC;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""
+    mo.md(r"""
     ---
-    ## Part 3: Transactions & ACID (Week 8)
-
-    A **transaction** is a group of SQL statements that must either
-    ALL succeed or ALL fail. This is critical for financial operations.
-
-    **ACID properties:**
-    - **A**tomicity — All or nothing
-    - **C**onsistency — Database stays valid
-    - **I**solation — Transactions don't interfere
-    - **D**urability — Committed data survives crashes
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.1 Create the Accounts Table
-
-    Each customer has an account balance. We'll use this table
-    for transaction exercises.
-    """)
-    return
-
-
-@app.cell
-def _(customers, mo):
-    _df = mo.sql(
-        f"""
-        -- Create accounts with starting balances
-        CREATE OR REPLACE TABLE accounts AS
-        SELECT * FROM (VALUES
-            (1001, 1,  5000.00),
-            (1002, 2,  1200.00),
-            (1003, 3,  15000.00),
-            (1004, 4,  3500.00),
-            (1005, 5,  800.00),
-            (1006, 6,  12000.00),
-            (1007, 7,  2500.00),
-            (1008, 8,  9000.00),
-            (1009, 9,  600.00),
-            (1010, 10, 4000.00)
-        ) AS t(account_id, customer_id, balance);
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        SELECT * FROM accounts ORDER BY account_id;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.2 BEGIN / COMMIT — A Successful Transfer
-
-    Transfer $500 from Acme Corp (1001) to DataFlow Inc (1004).
-    Both UPDATEs succeed → COMMIT makes it permanent.
-    """)
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Step 1: Start the transaction
-        BEGIN TRANSACTION;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Step 2: Debit $500 from Acme Corp
-        UPDATE accounts SET balance = balance - 500
-        WHERE  account_id = 1001;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Step 3: Credit $500 to DataFlow Inc
-        UPDATE accounts SET balance = balance + 500
-        WHERE  account_id = 1004;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Step 4: Commit — make it permanent
-        COMMIT;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Verify: Acme should be 4500, DataFlow should be 4000
-        SELECT account_id, customer_id, balance
-        FROM   accounts
-        WHERE  account_id IN (1001, 1004)
-        ORDER BY account_id;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.3 BEGIN / ROLLBACK — Undoing a Mistake
-
-    Suppose we accidentally debit Bright Ideas (1002) by $2000.
-    That would overdraw the account! ROLLBACK undoes everything.
-    """)
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Check current balance before the transaction
-        SELECT account_id, balance
-        FROM   accounts
-        WHERE  account_id = 1002;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Start a transaction, make the accidental debit
-        BEGIN TRANSACTION;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Oops! $2000 debit on a $1200 account
-        UPDATE accounts SET balance = balance - 2000
-        WHERE  account_id = 1002;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- We realize the mistake — ROLLBACK!
-        ROLLBACK;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Verify: balance should still be 1200 (unchanged)
-        SELECT account_id, balance
-        FROM   accounts
-        WHERE  account_id = 1002;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.4 CHECK Constraint — The Database Enforces Rules
-
-    A `CHECK` constraint lets the database reject invalid data
-    automatically. No application code needed.
-    """)
-    return
-
-
-@app.cell
-def _(mo):
-    _df = mo.sql(
-        f"""
-        -- Create a table with a CHECK constraint: no negative balances
-        CREATE OR REPLACE TABLE safe_accounts (
-            account_id  INTEGER PRIMARY KEY,
-            owner_name  VARCHAR NOT NULL,
-            balance     DECIMAL(10,2) CHECK (balance >= 0)
-        );
-        """
-    )
-    return
-
-
-@app.cell
-def _(mo, safe_accounts):
-    _df = mo.sql(
-        f"""
-        -- This works: positive balance
-        INSERT INTO safe_accounts VALUES (1, 'Alice', 500.00);
-        """
-    )
-    return
-
-
-@app.cell
-def _(mo, safe_accounts):
-    _df = mo.sql(
-        f"""
-        -- Verify
-        SELECT * FROM safe_accounts;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    **Try inserting a negative balance — the CHECK constraint will
-    reject it.** In a live session, uncomment the cell below to see
-    the error.
-
-    ```sql
-    -- This FAILS: CHECK constraint violation
-    INSERT INTO safe_accounts VALUES (2, 'Bob', -100.00);
-    ```
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.5 NOT NULL Constraint
-
-    `NOT NULL` ensures a column always has a value.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    **Try inserting without an owner_name — the NOT NULL constraint
-    will reject it.**
-
-    ```sql
-    -- This FAILS: NOT NULL violation
-    INSERT INTO safe_accounts VALUES (3, NULL, 200.00);
-    ```
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.6 PRIMARY KEY Violation
-
-    A PRIMARY KEY must be unique. Inserting a duplicate is rejected.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    **Try inserting a duplicate account_id — the PRIMARY KEY
-    constraint will reject it.**
-
-    ```sql
-    -- This FAILS: duplicate primary key
-    INSERT INTO safe_accounts VALUES (1, 'Charlie', 300.00);
-    ```
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.7 Audit Logging — Tracking Every Transaction
-
-    Financial systems must record every operation. An audit log
-    answers: *who did what, when, and how much?*
-    """)
-    return
-
-
-@app.cell
-def _(mo):
-    _df = mo.sql(
-        f"""
-        -- Create an audit log table
-        CREATE OR REPLACE TABLE audit_log (
-            log_id      INTEGER PRIMARY KEY,
-            account_id  INTEGER NOT NULL,
-            action      VARCHAR NOT NULL,
-            amount      DECIMAL(10,2),
-            log_time    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        """
-    )
-    return
-
-
-@app.cell
-def _(audit_log, mo):
-    _df = mo.sql(
-        f"""
-        -- Log a transfer that happened earlier
-        INSERT INTO audit_log VALUES
-            (1, 1001, 'debit',  500.00, '2025-05-01 10:00:00'),
-            (2, 1004, 'credit', 500.00, '2025-05-01 10:00:00');
-        """
-    )
-    return
-
-
-@app.cell
-def _(audit_log, mo):
-    _df = mo.sql(
-        f"""
-        -- View the audit log
-        SELECT * FROM audit_log ORDER BY log_id;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.8 Putting It All Together — Full Transfer Workflow
-
-    A complete transfer with debit, credit, and audit logging,
-    wrapped in a transaction.
-    """)
-    return
-
-
-@app.cell
-def _(accounts, audit_log, mo):
-    _df = mo.sql(
-        f"""
-        -- Full workflow: Transfer $1000 from Falcon (1006) to GrowthLab (1007)
-        BEGIN TRANSACTION;
-
-        UPDATE accounts SET balance = balance - 1000
-        WHERE  account_id = 1006;
-
-        UPDATE accounts SET balance = balance + 1000
-        WHERE  account_id = 1007;
-
-        INSERT INTO audit_log VALUES
-            (3, 1006, 'debit',  1000.00, CURRENT_TIMESTAMP),
-            (4, 1007, 'credit', 1000.00, CURRENT_TIMESTAMP);
-
-        COMMIT;
-        """
-    )
-    return
-
-
-@app.cell
-def _(accounts, mo):
-    _df = mo.sql(
-        f"""
-        -- Verify balances: Falcon should be 11000, GrowthLab should be 3500
-        SELECT account_id, customer_id, balance
-        FROM   accounts
-        WHERE  account_id IN (1006, 1007)
-        ORDER BY account_id;
-        """
-    )
-    return
-
-
-@app.cell
-def _(audit_log, mo):
-    _df = mo.sql(
-        f"""
-        -- Verify audit log has all 4 entries
-        SELECT * FROM audit_log ORDER BY log_id;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ---
-    ## Summary
-
-    **Week 7 — Window Functions & Performance:**
-    - `ROW_NUMBER()` assigns unique sequential numbers
-    - `RANK()` handles ties (same rank, skip next)
-    - `PARTITION BY` divides rows into groups
+    ## Week 7 Summary
+
+    **Window functions**
+    - `ROW_NUMBER()` assigns unique sequential numbers — no ties
+    - `RANK()` gives ties the same rank, then skips numbers
+    - `PARTITION BY` restarts the calculation for each group
     - `AVG() OVER (PARTITION BY ...)` compares each row to its group
-    - `EXPLAIN` shows the query plan
-    - `CREATE INDEX` speeds up lookups
-    - Sargable predicates allow index usage
-    - CTEs make complex queries readable
 
-    **Week 8 — Transactions & ACID:**
-    - `BEGIN` / `COMMIT` makes changes permanent
-    - `BEGIN` / `ROLLBACK` undoes all changes
-    - `CHECK` constraints enforce business rules
-    - `NOT NULL` ensures required fields
-    - `PRIMARY KEY` prevents duplicates
-    - Audit logs track every operation
+    **Query performance**
+    - `EXPLAIN` shows the plan the database chose
+    - `CREATE INDEX` speeds up lookups on a column
+    - A **sargable** predicate leaves the column bare
+      (`payment_date >= '2025-04-01'`), so an index can be used;
+      wrapping it in a function (`MONTH(payment_date) = 4`) cannot
+    - Select only the columns you need — `SELECT *` moves data you throw away
+    - CTEs cost nothing at runtime and make complex queries readable
 
-    *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
+    ### Looking Ahead
+
+    A fast query is worthless if it leaves the data half-updated. Week 8 covers
+    transactions: making a group of changes all-or-nothing.
     """)
     return
 

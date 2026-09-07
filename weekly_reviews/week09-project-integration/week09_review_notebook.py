@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.9"
+__generated_with = "0.23.10"
 app = marimo.App(width="medium", sql_output="pandas")
 
 
@@ -14,21 +14,44 @@ def _():
 @app.cell
 def _():
     import duckdb
+
     con = duckdb.connect(database=":memory:")
     return (con,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""
-    # OMIS 105 — Weeks 9 & 10 Review
+    mo.md(r"""
+    # OMIS 105 — Week 9 Review: CTEs, Subqueries & Advanced Window Functions
 
-    ## CTEs · Subqueries · Advanced Window Functions · Modern DuckDB
+    **Course:** OMIS 105 — Introduction to Database Management Systems
+    **Author:** Dr. Mahmoud Parsian
+    **Tech Stack:** Python · DuckDB · Marimo
 
-    **Dataset: CloudMetrics SaaS (Extended)** — The same SaaS company
-    from Weeks 7–8, now with user activity events (including JSON
-    metadata) and quarterly KPI targets.
+    ---
 
+    This is the integration week. Every analytical question here needs more
+    than one step: name an intermediate result with a CTE, or nest a query
+    inside another, then rank and compare across rows.
+
+    ### What This Notebook Covers
+
+    | Topic | SQL You Will Use |
+    |-------|-----------------|
+    | Name intermediate results | `WITH ... AS`, chained CTEs |
+    | Nest a query | Subqueries in `WHERE`, in `FROM`, correlated subqueries |
+    | Test for existence | `EXISTS`, `IN` |
+    | Look forward and back | `LAG`, `LEAD` |
+    | Accumulate and smooth | Running totals, moving averages |
+    | Rank and bucket | `DENSE_RANK`, `NTILE`, `FIRST_VALUE` |
+
+    ### How to Use
+
+    Run the cells from top to bottom. Every database cell takes `con`, the
+    DuckDB connection created in the setup cell. Read the markdown between
+    queries — it explains the *why*, not just the *how*.
+
+    ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
     """)
     return
@@ -36,24 +59,28 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""
+    mo.md(r"""
     ---
-    ## Setting Up the Database
+    ## Setup — Build the CloudMetrics Database (Extended)
 
-    We create five tables:
+    The same **CloudMetrics** SaaS company from Weeks 7–8, plus two new tables:
+    user activity `events` (with JSON metadata) and quarterly `kpi_targets`.
+    All the data is created inline — there is no CSV to load.
 
-    - **plans** — three subscription tiers
-    - **customers** — 10 companies
-    - **payments** — 25 monthly payment records
-    - **events** — 25 user activity events with JSON metadata
-    - **kpi_targets** — 6 quarterly performance targets
+    | Table | Rows | What It Holds |
+    |-------|------|---------------|
+    | `plans` | 3 | Subscription tiers and monthly prices |
+    | `customers` | 10 | Companies, their industry, and their plan |
+    | `payments` | 25 | Monthly payments — completed, failed, refunded |
+    | `events` | 25 | User activity, with a JSON `metadata` column |
+    | `kpi_targets` | 6 | Quarterly revenue and signup targets |
     """)
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Subscription plans
         CREATE OR REPLACE TABLE plans AS
@@ -68,8 +95,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- 10 customer companies
         CREATE OR REPLACE TABLE customers AS
@@ -91,8 +118,8 @@ def _(mo, plans):
 
 
 @app.cell
-def _(customers, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- 25 payment records
         CREATE OR REPLACE TABLE payments AS
@@ -129,8 +156,8 @@ def _(customers, mo):
 
 
 @app.cell
-def _(customers, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- 25 user activity events with JSON metadata
         CREATE OR REPLACE TABLE events AS
@@ -167,18 +194,18 @@ def _(customers, mo):
 
 
 @app.cell
-def _(events, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM events ORDER BY event_id;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Quarterly KPI targets
         CREATE OR REPLACE TABLE kpi_targets AS
@@ -196,12 +223,12 @@ def _(mo):
 
 
 @app.cell
-def _(kpi_targets, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT * FROM kpi_targets ORDER BY metric, quarter;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -209,7 +236,7 @@ def _(kpi_targets, mo):
 def _(mo):
     mo.md("""
     ---
-    ## Part 1: CTEs & Subqueries (Week 9)
+    ## Part 1: CTEs & Subqueries
 
     A **CTE** (Common Table Expression) is a named temporary result
     set defined with `WITH`. A **subquery** is a query nested inside
@@ -230,8 +257,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         WITH customer_revenue AS (
             SELECT c.customer_id,
@@ -247,7 +274,7 @@ def _(customers, mo, payments):
         WHERE  total_paid > 200
         ORDER BY total_paid DESC;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -263,8 +290,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments, plans):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         WITH customer_revenue AS (
             SELECT c.customer_id,
@@ -288,7 +315,7 @@ def _(customers, mo, payments, plans):
         SELECT * FROM plan_summary
         ORDER BY plan_revenue DESC;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -303,8 +330,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Subquery calculates the average; outer query filters
         SELECT c.company_name,
@@ -324,7 +351,7 @@ def _(customers, mo, payments):
         )
         ORDER BY total_paid DESC;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -340,8 +367,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Join each payment with the customer's total
         SELECT c.company_name,
@@ -360,7 +387,7 @@ def _(customers, mo, payments):
         WHERE  p.status = 'completed'
         ORDER BY c.company_name, p.payment_date;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -377,8 +404,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Correlated subquery: runs once per customer
         SELECT c.company_name,
@@ -395,7 +422,7 @@ def _(customers, mo, payments):
           )
         ORDER BY c.company_name;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -410,8 +437,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Find customers who have at least one failed payment
         SELECT c.customer_id, c.company_name
@@ -422,7 +449,7 @@ def _(customers, mo, payments):
               AND  p.status = 'failed'
         );
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -437,8 +464,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, events, mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Find events from Enterprise-plan customers
         SELECT e.event_id,
@@ -452,7 +479,7 @@ def _(customers, events, mo):
         )
         ORDER BY e.event_date;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -460,7 +487,7 @@ def _(customers, events, mo):
 def _(mo):
     mo.md("""
     ---
-    ## Part 2: Advanced Window Functions (Week 9)
+    ## Part 2: Advanced Window Functions
 
     Building on the ROW_NUMBER and RANK from Week 7, we now
     explore LAG, LEAD, running totals, moving averages, and more.
@@ -480,8 +507,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Each payment next to the customer's previous payment
         SELECT c.company_name,
@@ -500,7 +527,7 @@ def _(customers, mo, payments):
         WHERE  p.status = 'completed'
         ORDER BY c.company_name, p.payment_date;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -516,8 +543,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Each payment with a preview of the next one
         SELECT c.company_name,
@@ -536,7 +563,7 @@ def _(customers, mo, payments):
         WHERE  p.status = 'completed'
         ORDER BY c.company_name, p.payment_date;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -551,8 +578,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Cumulative revenue over time (all customers combined)
         SELECT payment_date,
@@ -563,7 +590,7 @@ def _(mo, payments):
         WHERE  status = 'completed'
         ORDER BY payment_date, payment_id;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -579,8 +606,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- 3-payment moving average of payment amounts
         SELECT payment_id,
@@ -596,7 +623,7 @@ def _(mo, payments):
         WHERE  status = 'completed'
         ORDER BY payment_date, payment_id;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -618,8 +645,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Compare RANK and DENSE_RANK
         SELECT c.company_name,
@@ -632,7 +659,7 @@ def _(customers, mo, payments):
         GROUP BY c.company_name
         ORDER BY rank_num;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -648,8 +675,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Divide customers into revenue quartiles
         SELECT company_name,
@@ -665,7 +692,7 @@ def _(customers, mo, payments):
         )
         ORDER BY quartile, total_paid DESC;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -681,8 +708,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Each payment with the customer's first payment date
         SELECT c.company_name,
@@ -697,7 +724,7 @@ def _(customers, mo, payments):
         WHERE  p.status = 'completed'
         ORDER BY c.company_name, p.payment_date;
         """
-    )
+    ).fetchdf()
     return
 
 
@@ -712,8 +739,8 @@ def _(mo):
 
 
 @app.cell
-def _(customers, mo, payments):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         -- Each customer's share of total revenue
         WITH customer_totals AS (
@@ -732,345 +759,35 @@ def _(customers, mo, payments):
         FROM   customer_totals
         ORDER BY total_paid DESC;
         """
-    )
+    ).fetchdf()
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""
+    mo.md(r"""
     ---
-    ## Part 3: Modern DuckDB Features (Week 10)
+    ## Week 9 Summary
 
-    DuckDB can query JSON, pivot tables, collect values into lists,
-    and more — features that go beyond standard SQL.
-    """)
-    return
+    **CTEs and subqueries**
+    - `WITH name AS (...)` names a temporary result set
+    - Chained CTEs build on each other, separated by commas
+    - A subquery can sit in `WHERE`, in `FROM` (a derived table), or in `SELECT`
+    - A **correlated** subquery references the outer query and runs once per row
+    - `EXISTS` asks "are there any rows?"; `IN` asks "is this value in that set?"
 
+    **Advanced window functions**
+    - `LAG()` / `LEAD()` reach into the previous / next row
+    - `SUM() OVER (ORDER BY ...)` gives a running total
+    - `ROWS BETWEEN n PRECEDING AND CURRENT ROW` gives a moving average
+    - `DENSE_RANK()` ranks ties together with no gaps afterwards
+    - `NTILE(n)` splits rows into n equal buckets (quartiles, deciles)
+    - `FIRST_VALUE()` returns the first row's value across the whole window
 
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.1 json_extract_string — Pull Fields from JSON
+    ### Looking Ahead
 
-    The `metadata` column stores JSON. We can extract specific
-    fields using `json_extract_string(column, '$.field')`.
-    """)
-    return
-
-
-@app.cell
-def _(events, mo):
-    _df = mo.sql(
-        f"""
-        -- Extract page and referral from JSON metadata
-        SELECT event_id,
-               event_type,
-               json_extract_string(metadata, '$.page')     AS page,
-               json_extract_string(metadata, '$.referral') AS referral
-        FROM   events
-        ORDER BY event_id;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.2 json_extract + CAST — Extract Numeric Values
-
-    The `amount` field inside JSON is text. We cast it to a number
-    for calculations.
-    """)
-    return
-
-
-@app.cell
-def _(customers, events, mo):
-    _df = mo.sql(
-        f"""
-        -- Extract purchase amounts from JSON
-        SELECT c.company_name,
-               e.event_date,
-               CAST(json_extract(e.metadata, '$.amount') AS DECIMAL(10,2))
-                   AS purchase_amount
-        FROM   events e
-        JOIN   customers c ON e.customer_id = c.customer_id
-        WHERE  e.event_type = 'purchase'
-        ORDER BY e.event_date;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.3 Referral Analysis — Which Source Drives Purchases?
-
-    Combine JSON extraction with GROUP BY to analyze referral
-    sources.
-    """)
-    return
-
-
-@app.cell
-def _(events, mo):
-    _df = mo.sql(
-        f"""
-        -- Count events by referral source
-        SELECT json_extract_string(metadata, '$.referral') AS referral,
-               event_type,
-               COUNT(*) AS event_count
-        FROM   events
-        GROUP BY referral, event_type
-        ORDER BY referral, event_count DESC;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.4 PIVOT — Reshape Event Counts into Columns
-
-    `PIVOT` rotates rows into columns — like a pivot table in Excel.
-    Each event_type becomes its own column.
-    """)
-    return
-
-
-@app.cell
-def _(customers, events, mo):
-    _df = mo.sql(
-        f"""
-        -- Pivot: one row per customer, one column per event type
-        PIVOT (
-            SELECT c.company_name, e.event_type
-            FROM   events e
-            JOIN   customers c ON e.customer_id = c.customer_id
-        )
-        ON event_type
-        USING COUNT(*)
-        ORDER BY company_name;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.5 LIST() — Collect Values into an Array
-
-    `LIST()` is an aggregate that collects all values into an
-    array instead of counting or summing.
-    """)
-    return
-
-
-@app.cell
-def _(customers, events, mo):
-    _df = mo.sql(
-        f"""
-        -- Collect all event types per customer into a list
-        SELECT c.company_name,
-               LIST(DISTINCT e.event_type ORDER BY e.event_type) AS event_types,
-               COUNT(*) AS total_events
-        FROM   events e
-        JOIN   customers c ON e.customer_id = c.customer_id
-        GROUP BY c.company_name
-        ORDER BY total_events DESC;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.6 UNNEST — Expand a List Back into Rows
-
-    `UNNEST` is the opposite of `LIST` — it turns an array
-    into individual rows.
-    """)
-    return
-
-
-@app.cell
-def _(customers, events, mo):
-    _df = mo.sql(
-        f"""
-        -- First collect, then unnest to demonstrate the round-trip
-        WITH customer_events AS (
-            SELECT c.company_name,
-                   LIST(DISTINCT e.event_type ORDER BY e.event_type) AS event_types
-            FROM   events e
-            JOIN   customers c ON e.customer_id = c.customer_id
-            GROUP BY c.company_name
-        )
-        SELECT company_name,
-               UNNEST(event_types) AS event_type
-        FROM   customer_events
-        ORDER BY company_name, event_type;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.7 STRFTIME — Day of Week Analysis
-
-    `STRFTIME(date, '%A')` extracts the day name. Which days
-    are most active?
-    """)
-    return
-
-
-@app.cell
-def _(events, mo):
-    _df = mo.sql(
-        f"""
-        -- Event count by day of week
-        SELECT STRFTIME(event_date, '%A') AS day_of_week,
-               COUNT(*) AS event_count
-        FROM   events
-        GROUP BY day_of_week
-        ORDER BY event_count DESC;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.8 CROSS JOIN — Compare Actuals vs KPI Targets
-
-    A `CROSS JOIN` pairs every row from one table with every row
-    from another. Here we compare actual metrics to targets.
-    """)
-    return
-
-
-@app.cell
-def _(events, kpi_targets, mo, payments):
-    _df = mo.sql(
-        f"""
-        -- Calculate actual revenue per quarter
-        WITH actual_revenue AS (
-            SELECT CASE
-                       WHEN payment_date BETWEEN '2025-01-01' AND '2025-03-31'
-                       THEN 'Q1-2025'
-                       ELSE 'Q2-2025'
-                   END AS quarter,
-                   ROUND(SUM(amount), 2) AS actual_value
-            FROM   payments
-            WHERE  status = 'completed'
-            GROUP BY quarter
-        )
-        -- Compare actuals to targets
-        SELECT t.quarter,
-               t.metric,
-               t.target_value,
-               a.actual_value,
-               ROUND(a.actual_value - t.target_value, 2) AS gap
-        FROM   kpi_targets t
-        JOIN   actual_revenue a ON t.quarter = a.quarter
-        WHERE  t.metric = 'revenue'
-        ORDER BY t.quarter;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 3.9 Grand Finale — CTE + Window + JSON + HAVING
-
-    One query that combines everything: a CTE for JSON extraction,
-    a window function for ranking, and HAVING for filtering.
-    """)
-    return
-
-
-@app.cell
-def _(customers, events, mo):
-    _df = mo.sql(
-        f"""
-        -- Find the top referral source per customer (by event count),
-        -- but only for customers with 3+ events
-        WITH customer_referrals AS (
-            SELECT c.company_name,
-                   json_extract_string(e.metadata, '$.referral') AS referral,
-                   COUNT(*) AS ref_count
-            FROM   events e
-            JOIN   customers c ON e.customer_id = c.customer_id
-            GROUP BY c.company_name, referral
-        ),
-        ranked AS (
-            SELECT company_name,
-                   referral,
-                   ref_count,
-                   ROW_NUMBER() OVER (
-                       PARTITION BY company_name
-                       ORDER BY ref_count DESC
-                   ) AS rn,
-                   SUM(ref_count) OVER (
-                       PARTITION BY company_name
-                   ) AS total_events
-            FROM   customer_referrals
-        )
-        SELECT company_name,
-               referral     AS top_referral,
-               ref_count,
-               total_events
-        FROM   ranked
-        WHERE  rn = 1
-          AND  total_events >= 3
-        ORDER BY total_events DESC;
-        """
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ---
-    ## Summary
-
-    **Week 9 — CTEs & Subqueries:**
-    - `WITH ... AS` defines a named temporary result set (CTE)
-    - Chained CTEs build on each other (separated by commas)
-    - Subqueries can appear in WHERE, FROM, or SELECT
-    - Correlated subqueries reference the outer query
-    - `EXISTS` checks if a subquery returns any rows
-    - `IN` checks membership in a set
-
-    **Week 9 — Advanced Window Functions:**
-    - `LAG()` / `LEAD()` — access previous / next row
-    - `SUM() OVER (ORDER BY ...)` — running total
-    - `ROWS BETWEEN n PRECEDING AND CURRENT ROW` — moving average
-    - `DENSE_RANK()` — no gaps after ties
-    - `NTILE(n)` — divide into n buckets
-    - `FIRST_VALUE()` — first value in the window
-
-    **Week 10 — Modern DuckDB:**
-    - `json_extract_string()` — pull text from JSON
-    - `json_extract() + CAST` — pull numbers from JSON
-    - `PIVOT` — rows to columns (like Excel pivot tables)
-    - `LIST()` — collect values into an array
-    - `UNNEST` — expand an array into rows
-    - `STRFTIME()` — format dates (day of week, month name)
-    - `CROSS JOIN` — pair every row with every row (actuals vs targets)
-
-    *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
+    Week 10 closes the course with the features that make DuckDB more than
+    standard SQL: JSON, `PIVOT`, and lists.
     """)
     return
 
