@@ -10,6 +10,14 @@ def _():
     return (mo,)
 
 
+@app.cell
+def _():
+    import duckdb
+
+    con = duckdb.connect(database=":memory:")
+    return (con,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -28,10 +36,10 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
-        CREATE TABLE customers (
+        CREATE OR REPLACE TABLE customers (
             id   INT,
             name VARCHAR
         );
@@ -49,7 +57,7 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(con):
     # Insert your data here
     return
 
@@ -63,13 +71,13 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT *
         FROM customers;
         """
-    )
+    ).fetchdf()
     return
 
 

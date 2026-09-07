@@ -10,6 +10,14 @@ def _():
     return (mo,)
 
 
+@app.cell
+def _():
+    import duckdb
+
+    con = duckdb.connect(database=":memory:")
+    return (con,)
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -19,10 +27,10 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
-        CREATE TABLE review (
+        CREATE OR REPLACE TABLE review (
             id       INT,
             category VARCHAR,
             value    INT
@@ -33,8 +41,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         INSERT INTO review
         VALUES
@@ -47,8 +55,8 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    _df = mo.sql(
+def _(con):
+    con.execute(
         f"""
         SELECT
             category,
@@ -56,7 +64,7 @@ def _(mo):
         FROM review
         GROUP BY category;
         """
-    )
+    ).fetchdf()
     return
 
 

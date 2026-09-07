@@ -92,9 +92,8 @@ marimo edit demo1.py
 - **Slides:** Marp (Markdown → PDF)
 - **Language:** Python 3 + SQL
 
-Notebooks run SQL through `con.execute()` against an in-memory DuckDB
-connection. Two files are still on the older `mo.sql()` pattern —
-`week09_notebook_marimo.py` and `week10_notebook_marimo.py`.
+Every notebook in this folder runs SQL through `con.execute()` against an
+in-memory DuckDB connection.
 
 ## Related Folders
 
