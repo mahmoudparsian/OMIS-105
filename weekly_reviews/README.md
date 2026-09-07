@@ -4,24 +4,25 @@ Cumulative review materials for
 **OMIS 105 — Introduction to Database Management Systems**.
 
 One self-contained folder per week, mirroring the layout of
-`weekly_lectures/`. Each folder holds a Marimo review notebook, teaching
-notes, and whatever data that week needs. Nothing is shared between
-folders — you can copy a single week's folder anywhere and it still runs.
+[`weekly_lectures/`](../weekly_lectures). Each folder holds a Marimo
+review notebook, teaching notes, and whatever data that week needs.
+Nothing is shared between folders — you can copy a single week's folder
+anywhere and it still runs.
 
 ## The Ten Weeks
 
 | Week | Folder | Topic |
 |------|--------|-------|
-| 1 | `week01-database-foundations` | Querying a single table |
-| 2 | `week02-relational-modeling` | Relational design & JOINs |
-| 3 | `week03-sql-basics` | Aggregation, grouping & subqueries |
-| 4 | `week04-sql-aggregation` | Advanced aggregation & window functions |
-| 5 | `week05-sql-joins` | Advanced joins & set operations |
-| 6 | `week06-database-design` | Database design, constraints & views |
-| 7 | `week07-query-performance` | Window functions & query performance |
-| 8 | `week08-transactions-acid` | Transactions, ACID & constraints |
-| 9 | `week09-project-integration` | CTEs, subqueries & advanced window functions |
-| 10 | `week10-review-modern-data` | Modern DuckDB — JSON, PIVOT & lists |
+| 1 | [`week01-database-foundations/`](week01-database-foundations/) | Querying a single table |
+| 2 | [`week02-relational-modeling/`](week02-relational-modeling/) | Relational design & JOINs |
+| 3 | [`week03-sql-basics/`](week03-sql-basics/) | Aggregation, grouping & subqueries |
+| 4 | [`week04-sql-aggregation/`](week04-sql-aggregation/) | Advanced aggregation & window functions |
+| 5 | [`week05-sql-joins/`](week05-sql-joins/) | Advanced joins & set operations |
+| 6 | [`week06-database-design/`](week06-database-design/) | Database design, constraints & views |
+| 7 | [`week07-query-performance/`](week07-query-performance/) | Window functions & query performance |
+| 8 | [`week08-transactions-acid/`](week08-transactions-acid/) | Transactions, ACID & constraints |
+| 9 | [`week09-project-integration/`](week09-project-integration/) | CTEs, subqueries & advanced window functions |
+| 10 | [`week10-review-modern-data/`](week10-review-modern-data/) | Modern DuckDB — JSON, PIVOT & lists |
 
 ## What Is in Each Folder
 
