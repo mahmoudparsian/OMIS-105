@@ -34,7 +34,6 @@
 
 ```sql
 % duckdb
--- Loading resources from /Users/max/.duckdbrc
 DuckDB v1.5.3 (Variegata)
 Enter ".help" for usage hints.
 ```
