@@ -19,7 +19,7 @@ This copy comes from the community-maintained fork,
 [`datacharmer/test_db`](https://github.com/datacharmer/test_db), with
 two changes for this course:
 
-- **`dataset_small`** — a ~600 KB, 1,000-employee slice (about 0.3%
+- **`dataset_small`** — a 1,000-employee slice (about 0.3%
   of the full 300,024-employee dataset) — small enough to load
   instantly, still large enough that `GROUP BY`, multi-year salary
   trends, and manager turnover all produce real, varied answers.

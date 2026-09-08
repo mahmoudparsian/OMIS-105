@@ -12,8 +12,8 @@ there is: **the entire planet.**
 
 The result, nicknamed simply **"world,"** ships with almost every
 MySQL install on Earth and has quietly taught SQL to millions of
-students for more than 20 years. It is small enough to fit in a
-2 MB file, yet real enough to answer genuinely interesting
+students for more than 20 years. It is small enough to open
+instantly, yet real enough to answer genuinely interesting
 questions: *Which country is the most densely populated? Where does
 a capital city lose out to a bigger rival in its own country? Which
 continent has the widest life-expectancy gap?*
