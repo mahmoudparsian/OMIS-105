@@ -217,7 +217,111 @@ rows from multiple tables into a single result.
 
 ---
 
-# 18. 📗 References
+# 18. 🗓️ Weekly Topics
+
+Ten weeks, two 2-hour sessions each. This table is the authoritative
+topic list for the course.
+
+| Week | Topic | Key SQL Concepts |
+|------|-------|-----------------|
+| 01 | Database Foundations | `SELECT`, `WHERE`, `ORDER BY`, `LIMIT`, `LIKE`, `DISTINCT` |
+| 02 | Relational Modeling | `GROUP BY`, `HAVING`, multi-table schemas |
+| 03 | SQL Basics | `CASE`, string functions, `UPPER`, `YEAR`, computed columns |
+| 04 | SQL Aggregation | `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `INNER JOIN`, `LEFT JOIN` |
+| 05 | SQL Joins | Multi-table `JOIN`, `LEFT JOIN`, `IS NULL`, `COALESCE` |
+| 06 | Database Design | Normalization (1NF, 2NF, 3NF), decomposition |
+| 07 | Query Performance | Window functions (`ROW_NUMBER`, `RANK`), `EXPLAIN`, indexes, CTEs |
+| 08 | Transactions & ACID | `BEGIN`, `COMMIT`, `ROLLBACK`, `CHECK`, `NOT NULL` |
+| 09 | Project Integration | CTEs, subqueries, `EXISTS`, `LAG`, `LEAD`, `NTILE`, `FIRST_VALUE` |
+| 10 | Review & Modern Data | JSON querying, `PIVOT`, `LIST`, `UNNEST`, `CROSS JOIN` |
+
+The [`weekly_lectures/`](./weekly_lectures) slide decks and the
+[10-week outline](./outline-10-weeks) describe a somewhat slower pacing.
+Where the two disagree, the table above is the one to follow.
+
+Graded work is 20 in-class labs (30 points each), a midterm, and a final
+— see [`course_information/ASSIGNMENTS_and_GRADING.md`](./course_information/ASSIGNMENTS_and_GRADING.md)
+for the full breakdown.
+
+---
+
+# 19. 🛠️ Working in This Repository
+
+Notes for anyone editing or extending the course materials.
+
+## Notebook Conventions (Marimo + DuckDB)
+
+Every notebook in this repository runs SQL through `con.execute()`
+against an in-memory DuckDB connection — **not** through `mo.sql()`:
+
+```python
+import duckdb
+con = duckdb.connect(database=":memory:")   # this cell returns (con,)
+...
+con.execute("CREATE OR REPLACE TABLE ...")  # DDL/DML: no .fetchdf()
+con.execute("SELECT ...").fetchdf()         # a query cell ends with .fetchdf()
+```
+
+- Every cell that touches the database takes `con` as a parameter
+  (`def _(con):`). That is what wires the cell into Marimo's reactivity
+  graph, since `con.execute()` does not register table names as Python
+  variables the way `mo.sql()` did.
+- Use `CREATE OR REPLACE TABLE` so a notebook can be re-run.
+- Markdown cells: `mo.md("""...""")` with `hide_code=True`.
+- No Python comments (`#`) inside SQL — use `--`, so Marimo renders the
+  cell as native SQL.
+- All of `weekly_lectures/` and `weekly_reviews/` follows this pattern. A
+  few older notebooks in `data_stories/`, `tutorials/`, and `resources/`
+  still use `mo.sql()`; convert one if you happen to edit it.
+
+## Verifying a Notebook
+
+A Marimo notebook is a runnable Python file. Run it **from its own
+folder**, so relative `data/` paths resolve, and run it **twice** — the
+second run is what catches a missing `CREATE OR REPLACE`:
+
+```bash
+cd weekly_lectures/week03-sql-basics
+MPLBACKEND=Agg python3 demo1.py && MPLBACKEND=Agg python3 demo1.py
+```
+
+Exit code 0 means every cell ran. This is a real check: a notebook
+querying a table that does not exist exits 1. Running a notebook does not
+rewrite the file, so it is safe to do on a dirty working tree.
+
+## ⚠️ `marimo check --fix` — never point it at a directory
+
+`marimo check --fix` treats **every** `.md` file it finds as a notebook
+and rewrites it, injecting YAML frontmatter into plain Markdown and
+escaping any `"""` inside. Pointed at a lecture or review folder it will
+mangle READMEs, slide decks, labs, quizzes, and notes. `--ignore-scripts`
+does not prevent this.
+
+- Safe: `marimo check` (read-only, no `--fix`) — always.
+- Safe: `marimo check --fix weekly_reviews/week01-*/*.py` — name the
+  `.py` files explicitly.
+- Recovery, if it happens: `git checkout -- .`
+
+`.marimo.toml` at the repository root sets `[lint] ignore = ["MF007"]`.
+MF007 is `markdown-indentation`: Marimo wants `mo.md()` bodies dedented
+to column 0, but this course indents them to match the surrounding
+Python. That style is deliberate.
+
+## Writing Style
+
+Course materials are written for senior business students with zero prior
+SQL exposure, many of them ESL:
+
+- Short sentences, simple vocabulary.
+- Warm, encouraging, professional tone.
+- No jargon without an explanation on first use.
+- Bullet points for steps and options — prose otherwise.
+- Footer on course documents:
+  `*OMIS 105 — Introduction to Database Management Systems — Fall 2026*`
+
+---
+
+# 20. 📗 References
 
 [1. SQL Introduction - DuckDB Documentation](https://duckdb.org/docs/current/sql/introduction)
 

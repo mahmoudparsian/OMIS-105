@@ -24,7 +24,7 @@ marimo edit 02_sql_queries_marimo.py       # the analysis
 | `video-games-developers.csv` | 686 developers |
 | `sales_db.duckdb` | Built by notebook 1 |
 | `video_game_sales_profile.html` | An automated data profile — open it in a browser |
-| `metadata.txt`, `CLAUDE.md`, `what-to-do.txt` | Notes (provenance) |
+| `metadata.txt` | Notes on the dataset (provenance) |
 
 **Run notebook 1 first.**
 

@@ -30,7 +30,6 @@ marimo edit notebook_02_intermediate.py   # Week 5
 | `mysql_sql/` | The same schema in MySQL dialect |
 | `scripts/`, `create_duckdb.sh` | Build tooling |
 | `blog/` | Source material, including a schema diagram (`blog/movies_db_schema.webp`) |
-| `CLAUDE.md`, `what_to_do.txt` | Build notes (provenance) |
 
 ---
 

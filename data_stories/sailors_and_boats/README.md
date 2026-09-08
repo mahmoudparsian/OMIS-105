@@ -234,7 +234,7 @@ sailors_and_boats/
 ├── tests/                ← the smoke suite
 ├── docs/screenshots/     ← one PNG per app page, plus the capture script
 ├── *.sh                  ← the nine entry points you actually run, plus _shared.sh
-└── README.md, DESIGN.md, CLAUDE.md   ← the documentation
+└── README.md, DESIGN.md   ← the documentation
 ```
 
 ### 5.1 Scripts you run

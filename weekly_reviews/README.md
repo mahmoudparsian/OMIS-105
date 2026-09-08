@@ -72,6 +72,86 @@ A week folder is a better starting point than a blank template: it
 already has the setup cell, the `con.execute()` pattern, the title and
 summary cells, and a README to edit.
 
+## The Self-Containment Rule
+
+This is the point of the folder-per-week layout: **a week folder must run
+on its own**, with no dependency on any sibling folder. If you add or move
+anything, keep this true.
+
+- Each notebook opens its own `duckdb.connect(database=":memory:")`.
+- Each notebook builds *every* table it queries. Week 3 rebuilds the
+  normalized tables Week 2 taught; Weeks 5–6 rebuild the company schema
+  Week 4 built.
+- CSVs are duplicated into the week folders that need them, never shared.
+- The data path is resolved from the notebook's own location:
+
+  ```python
+  from pathlib import Path
+  DATA_DIR = Path(__file__).parent / "data"
+  ```
+
+  and interpolated into the SQL f-string:
+  `read_csv_auto('{DATA_DIR}/orders_data.csv')`.
+
+## Notebook Conventions
+
+SQL runs through `con.execute()`, not `mo.sql()`:
+
+```python
+import duckdb
+con = duckdb.connect(database=":memory:")   # this cell returns (con,)
+...
+con.execute("CREATE OR REPLACE TABLE ...")  # DDL/DML: no .fetchdf()
+con.execute("SELECT ...").fetchdf()         # a query cell ends with .fetchdf()
+```
+
+Every cell that touches the database takes `con` as a parameter
+(`def _(con):`) — that is what wires it into Marimo's reactivity graph.
+Markdown cells use `mo.md("""...""")` with `hide_code=True`, tables use
+`CREATE OR REPLACE TABLE` for re-runnability, and SQL comments use `--`
+rather than `#`, so Marimo renders the cell as native SQL.
+
+## Verifying a Change
+
+A review notebook is a runnable Python file. After editing one, run it
+from its own folder (so the relative `data/` path resolves) and run it
+**twice** — the second run is what catches a missing `CREATE OR REPLACE`:
+
+```bash
+cd weekly_reviews/weekNN-topic
+MPLBACKEND=Agg python3 weekNN_review_notebook.py && \
+MPLBACKEND=Agg python3 weekNN_review_notebook.py
+```
+
+Exit code 0 means every cell ran. Do this for any notebook you touch.
+
+> ⚠️ Never run `marimo check --fix` against this directory — it treats
+> every `.md` file as a notebook and rewrites it, READMEs and teaching
+> notes included. Name the `.py` files explicitly instead, or use plain
+> read-only `marimo check`. See "Working in This Repository" in the
+> [root README](../README.md).
+
+## Dataset Design Principles
+
+- **Small but rich:** 10–30 rows per table. Enough for meaningful
+  queries, small enough for students to verify by eye.
+- **Intentional edge cases:** NULL `dept_id`s, an empty department, a
+  self-referencing `manager_id`, failed and refunded payments,
+  unresolved tickets, JSON with varying fields.
+- **Business relevance:** SaaS metrics — MRR, churn, customer lifetime
+  value — are exactly what analysts compute daily.
+
+## Teaching Philosophy
+
+1. **Business first, syntax second.** Every concept starts with a
+   business question.
+2. **Live coding, not slides.** Most class time is spent in Marimo.
+3. **Errors are learning.** Let students see and debug real errors.
+4. **Spiral, don't stack.** Each week revisits earlier concepts in new
+   contexts.
+5. **Keep schemas small.** 2–5 tables, 10–30 rows. Clarity beats
+   complexity.
+
 ## Tech Stack
 
 - **Database:** DuckDB (in-memory)

@@ -22,7 +22,6 @@ marimo edit 02_sql_queries_tutorial_marimo.py     # the tutorial
 | `insurance.csv` | **1,773 policyholders** |
 | `insurance_db.duckdb` | Built by notebook 1 |
 | `build_nb1.py`, `build_nb2.py` | Generator scripts — not the notebooks |
-| `CLAUDE.md`, `what-to-do.txt` | Build notes (provenance) |
 
 **Run notebook 1 first.**
 

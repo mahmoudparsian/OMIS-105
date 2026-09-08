@@ -21,7 +21,6 @@ marimo edit top_500_movies.py    # the analysis
 | `util_plot.py` | Chart functions |
 | `top_500_movies_ranked.csv` | **452 films** after filtering |
 | `top_500_movies.duckdb` | The database |
-| `CLAUDE.md`, `what_to_do.txt` | Build notes (provenance) |
 
 ---
 

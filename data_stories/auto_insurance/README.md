@@ -23,7 +23,6 @@ marimo edit 02_sql_queries_marimo.py                     # the analysis
 | `util_plot.py` | Chart functions |
 | `auto_insurance.csv` | **9,134 customers, 24 columns** |
 | `auto_insurance_db.duckdb` | Built by notebook 1 |
-| `CLAUDE.md`, `what-to-do.txt` | Build notes (provenance) |
 
 **Run notebook 1 first.**
 

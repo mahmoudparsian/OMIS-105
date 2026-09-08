@@ -23,7 +23,6 @@ marimo edit 02_netflix_analysis.py    # the analysis
 | `netflix_titles.csv` | **8,809 titles** |
 | `netflix.duckdb` | Built by notebook 1 |
 | `kaggle_notebooks/` | Reference notebooks from Kaggle |
-| `CLAUDE.md`, `what_to_do.txt` | Build notes (provenance) |
 
 **Run notebook 1 first.**
 

@@ -23,7 +23,6 @@ marimo edit 02_sql_queries_marimo.py       # the analysis
 | `books.csv` | **10,014 books** |
 | `ratings.csv` | **981,756 ratings** |
 | `books_db.duckdb` | Built by notebook 1 |
-| `CLAUDE.md`, `what-to-do.txt` | Build notes (provenance) |
 
 **Run notebook 1 first.** Notebook 2 expects the database to exist.
 

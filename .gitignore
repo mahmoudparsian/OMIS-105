@@ -1,14 +1,15 @@
 .env*
 
-# CLAUDE.md files are local AI-assistant context by default. Two are
-# deliberately tracked (2026-09-07) so the shareable repo guidance —
-# conventions, verification recipes, tooling hazards — travels with a
-# clone. Anything instructor-private belongs in CLAUDE.local.md, which
-# is never tracked: this repo is public.
+# AI-assistant working files stay local — none of them belong on GitHub
+# (2026-09-08). The shareable guidance they used to carry (repo layout,
+# notebook conventions, verification recipes, tooling hazards) now lives
+# in the README.md files, which are the published documentation.
 CLAUDE.md*
-!/CLAUDE.md
-!/weekly_reviews/CLAUDE.md
 CLAUDE.local.md
+AGENTS.md
+.claude/
+.cursor/
+.aider*
 
 # Instructor answer keys — untracked 2026-09-07. Kept on disk locally,
 # never committed: this repo is public and students read it. The

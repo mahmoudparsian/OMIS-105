@@ -35,7 +35,6 @@ The logo and food art are original SVGs (not the trademarked In-N-Out logo).
 |------|---------|
 | `README.md` | This file — overview, how to run, and the tour of all screens. |
 | `database_schema_design.md` | Long-form explanation of the schema: every table, keys, relationships, normalization, and the soft-delete design. |
-| `CLAUDE.md` | Guidance for AI assistants (and humans) working in the repo — architecture notes, conventions, gotchas, and the roadmap. |
 
 **Configuration**
 
@@ -159,8 +158,7 @@ See `database_schema_design.md` for the full write-up.
 
 ## Possible future work
 
-Ideas for future iterations, roughly ordered by classroom value. (The detailed,
-living backlog lives in `CLAUDE.md`.)
+Ideas for future iterations, roughly ordered by classroom value.
 
 **Teaching-focused**
 
