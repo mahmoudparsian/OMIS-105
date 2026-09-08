@@ -146,7 +146,7 @@ I'd close with a comparison: "Look at what you just did. You designed a data mod
 
 | Lecture | In Class | Homework |
 |---------|----------|----------|
-| 1 | Software setup + My_Very_First_DuckDB_Notebook | Add rows, write 3 queries |
+| 1 | Software setup + `My_Very_First_DuckDB_Notebook` | Add rows, write 3 queries |
 | 2 | Design a table from scratch (bookstore example) | Design your own table, 5 queries |
 
 ---
