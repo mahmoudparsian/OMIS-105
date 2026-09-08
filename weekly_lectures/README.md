@@ -34,7 +34,6 @@ Weeks 2–8 share a common layout:
 | `slides_1.md`, `slides_2.md` | Marp slide decks — one per class session |
 | `demo1.py`, `demo2.py` | Live-demo Marimo notebooks — one per session |
 | `labNN_student.md` | **The week's lab**, with blanks for students to fill in |
-| `labNN_instructor.md` | The same lab with answers and teaching commentary |
 | `quiz.md` | Short quiz questions for the week |
 | `data/` | CSV files the demos and lab read |
 | `lab.md`, `notes.md`, `solution.sql` | Brief scratch notes — see the caveat below |
@@ -62,8 +61,8 @@ These three are **short scratch stubs**, typically 4–8 lines: a rough lab
 outline, a couple of "students usually get confused here" reminders, and a
 few sample SQL statements. They are not the graded materials.
 
-The real lab for each week is `labNN_student.md` (with
-`labNN_instructor.md` as the answer key).
+The real lab for each week is `labNN_student.md`. The matching answer key
+is kept by the instructor and is not published in this repository.
 
 ## How to Use These Files
 
@@ -82,8 +81,8 @@ cd weekly_lectures/week03-sql-basics
 marimo edit demo1.py
 ```
 
-**Labs** are Markdown. Hand out `labNN_student.md`; keep
-`labNN_instructor.md` for yourself.
+**Labs** are Markdown. `labNN_student.md` is the version students work
+from; answer keys are held separately by the instructor.
 
 ## Tech Stack
 

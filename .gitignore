@@ -10,6 +10,11 @@ CLAUDE.md*
 !/weekly_reviews/CLAUDE.md
 CLAUDE.local.md
 
+# Instructor answer keys — untracked 2026-09-07. Kept on disk locally,
+# never committed: this repo is public and students read it. The
+# labNN_student.md companions stay tracked.
+weekly_lectures/*/lab*_instructor.md
+
 what_to_do.txt
 what-to-do.txt
 *.log
