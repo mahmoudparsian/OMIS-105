@@ -1,5 +1,15 @@
 .env*
+
+# CLAUDE.md files are local AI-assistant context by default. Two are
+# deliberately tracked (2026-09-07) so the shareable repo guidance —
+# conventions, verification recipes, tooling hazards — travels with a
+# clone. Anything instructor-private belongs in CLAUDE.local.md, which
+# is never tracked: this repo is public.
 CLAUDE.md*
+!/CLAUDE.md
+!/weekly_reviews/CLAUDE.md
+CLAUDE.local.md
+
 what_to_do.txt
 what-to-do.txt
 *.log
