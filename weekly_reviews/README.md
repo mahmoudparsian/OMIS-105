@@ -59,12 +59,18 @@ The Weeks 4–6 dataset has deliberate imperfections — NULL `dept_id`s, an
 empty department, a self-referencing `manager_id` — so that OUTER JOINs,
 SELF JOINs, and anti-joins have something real to find.
 
-## Shared Files
+## Starting a New Review Notebook
 
-| File | Purpose |
-|------|---------|
-| `marimo_template.py` | Starting template for a new review notebook |
-| `CLAUDE.md` | Guidance for Claude Code when working in this folder |
+Copy the week folder closest to what you need and edit it — the notebooks
+are self-contained, so a copy runs immediately:
+
+```bash
+cp -R week07-query-performance week11-my-topic
+```
+
+A week folder is a better starting point than a blank template: it
+already has the setup cell, the `con.execute()` pattern, the title and
+summary cells, and a README to edit.
 
 ## Tech Stack
 
