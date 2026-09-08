@@ -1,0 +1,36 @@
+# marimo project configuration for the OMIS 105 repository.
+
+[lint]
+# MF007 = markdown-indentation. Marimo wants the body of an mo.md() cell
+# dedented to column 0. Every notebook in this course indents it to match
+# the surrounding Python, which is the house style and is applied
+# consistently across weekly_lectures/ and weekly_reviews/. Without this
+# line, `marimo check` reports ~25 warnings and `--fix` reflows every
+# markdown cell in the repo.
+ignore = ["MF007"]
+
+# ---------------------------------------------------------------------
+# WARNING: never run `marimo check --fix` on a DIRECTORY in this repo.
+#
+# It treats every .md file it finds as a marimo notebook and rewrites it,
+# injecting YAML frontmatter:
+#
+#     ---
+#     title: Readme
+#     marimo-version: 0.23.10
+#     ---
+#
+# into plain Markdown — READMEs, slide decks, labs, quizzes, notes — and
+# escaping any triple quotes inside them to \"\"\". Pointing it at
+# weekly_lectures/ and weekly_reviews/ rewrote 116 files in one command.
+# The `--ignore-scripts` flag does NOT prevent this; it was tested.
+#
+# Files matched by .gitignore (the CLAUDE.md files) cannot be restored
+# with `git checkout`, so that damage has to be repaired by hand.
+#
+# Safe invocation — name the .py files explicitly:
+#
+#     marimo check --fix weekly_reviews/week01-database-foundations/*.py
+#
+# Read-only checking (`marimo check` with no --fix) is always safe.
+# ---------------------------------------------------------------------
