@@ -13,13 +13,10 @@ def _():
 
 @app.cell
 def _():
-    from pathlib import Path
-
     import duckdb
 
-    DATA_DIR = Path(__file__).parent / "data"
     con = duckdb.connect(database=":memory:")
-    return DATA_DIR, con
+    return (con,)
 
 
 @app.cell(hide_code=True)
@@ -57,7 +54,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r'''
+    mo.md(r"""
     ---
     ## Setup — Build the Database
 
@@ -68,25 +65,27 @@ def _(mo):
     file paths, runs anywhere. Best for small teaching tables.
 
     **Option B — load a CSV.** Put the file in this folder's `data/`
-    directory and add a cell like this. `DATA_DIR` is already defined in the
-    setup cell, resolved from the notebook's own location, so the folder
-    works no matter where Marimo is launched from:
+    directory, then add a `DATA_DIR` line to the setup cell and a loader
+    cell. Resolving the path from `__file__` means the folder works no
+    matter where Marimo is launched from:
 
     ```python
+    # in the setup cell, alongside the duckdb import:
+    from pathlib import Path
+    DATA_DIR = Path(__file__).parent / "data"
+    # ...and return it: return DATA_DIR, con
+
+    # then a loader cell:
     @app.cell
     def _(DATA_DIR, con):
-        con.execute(
-            f"""
-            CREATE OR REPLACE TABLE orders AS
-            SELECT * FROM read_csv_auto('{DATA_DIR}/orders_data.csv');
-            """
-        )
+        sql = f"CREATE OR REPLACE TABLE orders AS SELECT * FROM read_csv_auto('{DATA_DIR}/orders_data.csv')"
+        con.execute(sql)
         return
     ```
 
     Whichever you choose, **build every table this notebook queries**. A week
     folder must run on its own.
-    ''')
+    """)
     return
 
 
