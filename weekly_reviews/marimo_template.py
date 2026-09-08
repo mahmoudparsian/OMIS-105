@@ -57,45 +57,36 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""
+    mo.md(r'''
     ---
     ## Setup — Build the Database
 
-    Delete whichever half of this section you do not need.
+    There are two ways to get data in. Pick one.
 
-    **Option A — load a CSV.** Put the file in this folder's `data/`
-    directory. `DATA_DIR` is resolved from the notebook's own location, so
-    the folder works no matter where Marimo is launched from.
+    **Option A — create the data inline.** This is what the cells below do:
+    `CREATE OR REPLACE TABLE ... AS SELECT * FROM (VALUES ...)`. No CSV, no
+    file paths, runs anywhere. Best for small teaching tables.
 
-    **Option B — create the data inline.** Use `CREATE OR REPLACE TABLE ...
-    AS SELECT * FROM (VALUES ...)`. No CSV, no file paths, runs anywhere.
+    **Option B — load a CSV.** Put the file in this folder's `data/`
+    directory and add a cell like this. `DATA_DIR` is already defined in the
+    setup cell, resolved from the notebook's own location, so the folder
+    works no matter where Marimo is launched from:
+
+    ```python
+    @app.cell
+    def _(DATA_DIR, con):
+        con.execute(
+            f"""
+            CREATE OR REPLACE TABLE orders AS
+            SELECT * FROM read_csv_auto('{DATA_DIR}/orders_data.csv');
+            """
+        )
+        return
+    ```
 
     Whichever you choose, **build every table this notebook queries**. A week
     folder must run on its own.
-    """)
-    return
-
-
-@app.cell
-def _(DATA_DIR, con):
-    con.execute(
-        f"""
-        CREATE OR REPLACE TABLE orders AS
-        SELECT * FROM read_csv_auto('{DATA_DIR}/orders_data.csv');
-        """
-    )
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        SELECT 'orders_data.csv loaded!' AS status,
-               COUNT(*)                  AS total_rows
-        FROM   orders;
-        """
-    ).fetchdf()
+    ''')
     return
 
 
