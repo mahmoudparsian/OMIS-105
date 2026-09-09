@@ -109,24 +109,30 @@ By the end of this course, you will be able to:
 | **DuckDB** | Database engine | Zero setup, standard SQL, fast analytics |
 | **Python** | Programming language | Industry standard, DuckDB integration |
 | **Marimo Notebooks** | Interactive coding | Run SQL, see results instantly, document work |
-| **qStudio** | SQL Editing | Run SQL, see results instantly |
+| **qStudio** | Desktop SQL editor | Browse tables visually, save queries to a file |
 
 All tools are **free** and **open source**.
 
 ---
 
-# Our Dataset: <br> ShopSmart E-Commerce
+# Our Dataset: ShopSmart E-Commerce
+
+<style scoped>
+table { font-size: 17px; }
+</style>
 
 Throughout the course, we build a realistic **e-commerce database**:
 
 | Table | Description | Rows |
 |-------|-------------|------|
-| `products` | 64 items across 8 categories | 64 |
+| `categories` | Product categories | 8 |
+| `products` | Items across the 8 categories | 64 |
 | `customers` | Buyers with contact info | 40 |
 | `orders` | Purchase transactions | 200 |
 | `order_items` | Line items per order | 607 |
 | `reviews` | Customer product ratings | 150 |
 | `suppliers` | Product vendors | 10 |
+| `product_suppliers` | Which supplier sells which product | 90 |
 | `shipping` | Delivery tracking | 141 |
 
 The dataset **grows each week**, mirroring real-world complexity.
@@ -185,7 +191,7 @@ The dataset **grows each week**, mirroring real-world complexity.
 - Core vocabulary: tables, rows, columns, schemas, data types
 - Constraints that enforce data quality (PRIMARY KEY, NOT NULL, CHECK)
 - Setting up DuckDB and writing your first SQL queries
-- Basic SELECT, WHERE, ORDER BY, LIMIT, and aggregate functions
+- Basic SELECT, WHERE, ORDER BY, LIMIT, LIKE, and DISTINCT
 
 ---
 
@@ -193,7 +199,7 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 ### Why This Matters in the Real World
 
-**The cost of bad data**: IBM estimates poor data quality costs the U.S. economy **$3.1 trillion per year**. Flat files (spreadsheets) break down when:
+**The cost of bad data**: IBM estimated that poor data quality costs the U.S. economy **$3.1 trillion per year** (2016). Flat files (spreadsheets) break down when:
 
 - Two employees edit the same file simultaneously
 - A typo in "Electronics" creates an invisible data silo
@@ -585,7 +591,7 @@ The relational model you have learned is the **foundation** — but the landscap
 - **Snowflake** and **BigQuery** process petabytes in the cloud
 - **Pinecone** (vector DB) enables AI-powered search and recommendations
 
-Knowing relational databases gives you the vocabulary to evaluate and adopt any of these technologies. The SQL skills you learned transfer directly to BigQuery, Snowflake, and most modern data platforms.
+Knowing relational databases gives you the vocabulary to evaluate any of these. The SQL you learn here transfers directly to BigQuery, Snowflake, and most modern data platforms.
 
 > The best database professionals never stop learning — but they all started here.
 
@@ -627,7 +633,7 @@ Two labs per week, 20 labs total across the quarter.
 
 Each week builds on the previous one — **attendance matters**.
 
-* Each lab must be completed and submitted **during the class session** it's assigned in
+* Each lab must be completed and submitted **during the class session in which it is assigned**
 * If you are absent, you receive a **zero** on that lab — there is no makeup, since the lab environment and instructor support are only available in class
 
 ---
@@ -652,16 +658,37 @@ Each week builds on the previous one — **attendance matters**.
 
 ---
 
+# Where Everything Lives
+
+Everything for this course is on GitHub:
+
+**https://github.com/mahmoudparsian/OMIS-105**
+
+| Folder | What Is In It |
+|--------|---------------|
+| `software_installation/` | Set up your laptop — do this first |
+| `weekly_lectures/` | Slides, demo notebooks, and data, week by week |
+| `weekly_reviews/` | One review notebook per week |
+| `tutorials/` | Standalone SQL and DuckDB walkthroughs |
+| `course_information/` | Grading, attendance, and course policies |
+
+New material is added every week. `tutorials/git/README.md` shows you how to
+download the repository once and refresh it with a single command.
+
+---
+
 # Recommended Preparation
 
-Before Week 1, consider:
+Before Week 1:
 
-1. **Install Python** (3.10+)
-2. **Install the tools**: `pip install duckdb pandas marimo`
-3. **Review OMIS 30** material — variables, loops, functions
-4. **Skim** a SQL tutorial online (any free resource)
+1. **Install the software** — follow `software_installation/README.md`
+   in the course repository, start to finish. It installs Python, DuckDB,
+   Marimo, Pandas, Matplotlib, and qStudio, and verifies each one
+2. **Review OMIS 30** material — variables, loops, functions
+3. **Skim** a SQL tutorial online (any free resource)
 
-None of this is required — we start from the beginning.
+Only step 1 matters — do it before the first class. Steps 2 and 3 are
+optional; we start SQL from the beginning.
 
 ---
 
@@ -738,14 +765,19 @@ Thank you!
 
 ---
 
-# Appendix — Advanced SQL (Optional Enrichment)
+# Appendix — Advanced SQL (Preview)
 
-### Not assessed — beyond the 10-week core
+<style scoped>
+section { font-size: 22px; }
+</style>
 
-The 10-week core takes SQL as far as **JOINs** in Week 5. The techniques below go
-further. They appear in several of the `data_stories/` notebooks, so they are listed
-here for students who want to read ahead — but they are **not taught in the labs and
-not required for the exam**.
+### Where the second half of the quarter is heading
+
+Weeks 1–5 take SQL as far as **JOINs**. The techniques below build on that
+foundation. **Window functions and CTEs come back in Weeks 7 and 9** — you are
+seeing them early here, not instead. The remaining items (set operations, views,
+RFM analysis) are enrichment: they appear in several of the `data_stories/`
+notebooks for students who want to read ahead.
 
 - Window functions: ROW_NUMBER, RANK, LAG, LEAD, NTILE
 - Running totals and moving averages
@@ -754,6 +786,10 @@ not required for the exam**.
 - Set operations: UNION, INTERSECT, EXCEPT
 - Creating and using Views — saved queries as virtual tables
 - RFM analysis (Recency, Frequency, Monetary) for customer segmentation
+
+---
+
+# Appendix — Why Advanced SQL Matters
 
 ### Why This Matters in the Real World
 

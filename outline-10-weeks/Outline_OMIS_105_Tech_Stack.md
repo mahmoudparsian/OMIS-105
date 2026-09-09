@@ -1,6 +1,6 @@
 ---
 title: OMIS 105 — Tech Stack & Welcome Notebooks
-author: Instructor
+author: Dr. Mahmoud Parsian
 marp: true
 theme: default
 paginate: true
@@ -84,13 +84,15 @@ review than a first-day walkthrough:
 - Basic SELECT, filtering with WHERE/IN
 - Sorting & LIMIT, aggregate functions, GROUP BY
 - Data modification: INSERT, UPDATE, DELETE
-- Charts via `plot_util.py` (`display_result`, `plot_bar`, `plot_hbar`, `plot_pie`)
+- Charts via `plot_util.py` (`display_result`, `plot_bar`, `plot_hbar`,
+  `plot_pie`, `plot_line`)
 
 ---
 
 # Marimo Conventions (`con.execute()`)
 
-- `duckdb.connect(database=':memory:')` created — the cell **returns** `(con,)`
+- The connection is created with `duckdb.connect(database=':memory:')`,
+  and that cell **returns** `(con,)`
 - Query cells: `con.execute("""...""").fetchdf()` displays the result
 - Every cell touching the database takes `con` as a parameter (`def _(con):`)
   — that's what wires it into Marimo's reactivity
@@ -104,7 +106,8 @@ review than a first-day walkthrough:
 
 - **Favorite foods, not business data.**
   Low-stakes data (Pizza, Sushi, Tacos) keeps focus on the tool,
-  not the business scenario. Business data starts in Week 1.
+  not the business scenario. Business data starts right after,
+  in the Week 1 demos.
 - **Only a handful of rows.** Small enough to see everything at a glance.
 - **Three queries only.** Enough to show the pattern —
   SELECT + FROM + WHERE, then GROUP BY.
@@ -116,7 +119,7 @@ review than a first-day walkthrough:
 - **"Try It Yourself" cell.**
   Hands-on editing builds comfort with the tool.
   Specific suggestions lower the barrier.
-- **No plots.** Charts come in Week 3.
+- **No plots.** Notebook 2 is where charts appear.
   Day one is about reading tables and writing SQL.
 
 ---
@@ -140,9 +143,10 @@ review than a first-day walkthrough:
 | Folder | Content |
 |--------|---------|
 | `weekly_lectures/week01-database-foundations/` | The welcome notebooks above, plus demo1–demo6 |
-| `weekly_reviews/` | Weeks 1–3, 4–6 notebooks, CSVs, plot helpers |
+| `weekly_reviews/` | One self-contained review notebook per week (`week01`–`week10`) |
 | `software_installation/` | Install guides, setup script, verification |
-| `data_stories/` | Standalone Python + DuckDB CRUD demos |
+| `tutorials/` | Standalone SQL, DuckDB, and Git walkthroughs |
+| `data_stories/` | Standalone Python + DuckDB demo notebooks |
 
 ---
 
