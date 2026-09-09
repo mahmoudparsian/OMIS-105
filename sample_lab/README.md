@@ -20,10 +20,45 @@ and `CASE` expressions.
 
 ## Running it
 
+To open the notebook in the interactive Marimo editor (what students
+actually use):
+
+```bash
+cd sample_lab
+marimo edit sample_lab_student.py
+```
+
+To just check that the notebook runs cleanly, top to bottom, without
+opening a browser (a Marimo notebook is a regular Python file, so plain
+`python3` executes every cell in order):
+
 ```bash
 cd sample_lab
 MPLBACKEND=Agg python3 sample_lab_student.py
 ```
+
+`MPLBACKEND=Agg` tells Matplotlib to render to memory instead of trying
+to open a GUI window — harmless here since this lab doesn't plot
+anything, but it's the repo-wide convention (see the root
+[`README.md`](../README.md), §19 "Verifying a Notebook"), so it's used
+consistently. Run it **twice**: the second run is what catches a missing
+`CREATE OR REPLACE TABLE`.
+
+## Checking your answers against the solution
+
+`sample_lab_student_solution.py` is a separate notebook — a finished
+copy of the lab with every query already filled in. Run it the same two
+ways:
+
+```bash
+cd sample_lab
+marimo edit sample_lab_student_solution.py                 # browse it interactively
+MPLBACKEND=Agg python3 sample_lab_student_solution.py       # just confirm it runs clean
+```
+
+Use it to check your own answers after you attempt each question
+yourself — not as a shortcut to skip the lab. Copying it in as your
+submission defeats the point of the exercise.
 
 ---
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
