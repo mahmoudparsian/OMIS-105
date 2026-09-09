@@ -9,6 +9,7 @@ self-contained Marimo notebook, not tied to any specific week.
 | [`sample_lab_student_solution.py`](./sample_lab_student_solution.py) | A worked solution, provided for reference |
 | `data/products.csv` | The dataset the lab queries |
 | `data/expensive_products.csv` | A small reference file used by one of the questions |
+| [`solution_output.html`](./solution_output.html) | A static snapshot of the solution notebook, with every query's output already run — see [Viewing the solution output](#viewing-the-solution-output) below |
 
 ## What it covers
 
@@ -59,6 +60,40 @@ MPLBACKEND=Agg python3 sample_lab_student_solution.py       # just confirm it ru
 Use it to check your own answers after you attempt each question
 yourself — not as a shortcut to skip the lab. Copying it in as your
 submission defeats the point of the exercise.
+
+## Viewing the solution output
+
+`solution_output.html` is a static, already-run snapshot of
+`sample_lab_student_solution.py` — every question's code **and** its
+result table, frozen into one HTML file
+(via `marimo export html sample_lab_student_solution.py -o solution_output.html`).
+It's for a quick look at expected results without installing anything
+or running DuckDB yourself.
+
+**GitHub's file browser does not render `.html` files** — clicking one
+there shows the raw source code, not the page. To actually view it:
+
+- **Rendered, straight from GitHub:** open it through
+  [htmlpreview.github.io](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mahmoudparsian/OMIS-105/main/sample_lab/solution_output.html),
+  a free proxy that renders a raw GitHub file in your browser. (Third-party
+  service, public repo only — fine for this, not for anything private.)
+- **Locally, guaranteed to work:** download the file and double-click it,
+  or run:
+  ```bash
+  open sample_lab/solution_output.html        # macOS
+  # or: xdg-open sample_lab/solution_output.html   (Linux)
+  # or: start sample_lab/solution_output.html      (Windows)
+  ```
+  It needs an internet connection either way — the page loads its
+  Marimo viewer assets from a CDN rather than bundling them.
+
+If you edit the solution notebook, regenerate this file so it stays in
+sync:
+
+```bash
+cd sample_lab
+MPLBACKEND=Agg marimo export html sample_lab_student_solution.py -o solution_output.html -f
+```
 
 ---
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
