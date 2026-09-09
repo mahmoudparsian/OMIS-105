@@ -19,6 +19,7 @@
 
 | Notebook | Start Here If... | What It Covers |
 |----------|-------------------|-----------------|
+| DuckDB/SQL Notebook <br> `marimo_100_introduction.py` | You've never used Marimo before | Cells, reactivity, UI elements |
 | DuckDB/SQL Notebook <br> `marimo_101_duckdb_sql.py` | You've never used Marimo before | Cells, reactivity, UI elements, then DuckDB/SQL (`CREATE TABLE`, `INSERT`, `SELECT`, `WHERE`, `ORDER BY`, `GROUP BY`, and an interactive dropdown filter) on a small campus-bookstore dataset |
 | DuckDB/SQL Notebook <br> `marimo_102_joins.py` | You've finished 101 | Multi-table data (`customers`, `products`, `orders` — 5–8 rows each) and `JOIN`: `INNER JOIN` vs. `LEFT JOIN`, table aliases, join + `GROUP BY`, and an interactive customer picker |
 | DuckDB/SQL Notebook <br> `marimo_103_subqueries_ctes.py` | You've finished 102 | Subqueries in `WHERE`, `FROM`, and with `IN`/`NOT IN`; CTEs (`WITH ... AS`) and chaining multiple CTEs; an interactive threshold slider |
