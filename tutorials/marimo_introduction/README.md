@@ -2,16 +2,15 @@
 
 ## 1. Getting Started with Marimo
 
-* **[Meet Marimo — slides](./marimo_introduction_slides.md)** — a short
+* **[Meet Marimo — slides as MD format](./marimo_introduction_slides.md)** — a short
   [Marp](https://marp.app/) deck introducing Marimo for the first time,
   aimed at using it with DuckDB. Start here if you have never opened a
   notebook before.
 
-  Preview it in VS Code with the Marp extension, or export it:
-
-  ```bash
-  marp marimo_introduction_slides.md --pdf
-  ```
+* **[Meet Marimo — slides as PDF format](./marimo_introduction_slides.md)** — a short
+  [Marp](https://marp.app/) deck introducing Marimo for the first time,
+  aimed at using it with DuckDB. Start here if you have never opened a
+  notebook before.
 
 * [Getting Started with the Marimo Notebook (pdf format)](./getting_started_with_the_marimo_notebook.pdf)
 
