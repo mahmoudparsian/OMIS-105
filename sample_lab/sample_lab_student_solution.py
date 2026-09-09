@@ -42,7 +42,7 @@ def _(mo):
 
 @app.cell
 def _():
-    DATA_DIR = "./data"  # CSVs are in week01-database-foundations/data/
+    DATA_DIR = "./data"  # CSVs are in sample_lab/data/
     return (DATA_DIR,)
 
 

@@ -56,6 +56,7 @@ information every day.
 |[`outline-10-weeks`](./outline-10-weeks) | Outline/TOC for 10 Weeks |
 |[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks |
 |[`weekly_reviews`](./weekly_reviews) | Weekly Reviews and Notebooks: 10 weeks |
+|[`sample_lab`](./sample_lab) | A preview in-class lab (Marimo notebook) — see [`sample_lab/README.md`](./sample_lab/README.md) |
 |[`books`](./books) | DuckDB and Database Books |
 |[`data_stories`](./data_stories) | Data Stories: 36 self-contained Marimo notebooks for deep learning — see [`data_stories/README.md`](./data_stories/README.md) for **which story maps to which week** |
 |[`resources`](./resources)| DuckDB Resources, Examples, Sample Databases |
