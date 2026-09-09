@@ -8,7 +8,9 @@
 
 ## Overview
 
-This folder contains everything you need to set up your computer for OMIS 105. Follow **Step 1 → Step 2 → Step 3 → Step 4 below, in order** — don't skip ahead or run any install command until its step tells you to. By the end, you will have **Python**, **DuckDB**, **Marimo**, **Pandas**, and **qStudio** installed and verified.
+This folder contains everything you need to set up your computer for OMIS 105. Follow **Step 0 → Step 1 → Step 2 → Step 3 → Step 4 below, in order** — don't skip ahead or run any install command until its step tells you to. By the end, you will have **Python**, **DuckDB**, **Marimo**, **Pandas**, and **qStudio** installed and verified.
+
+**Set aside about an hour**, and do this **before the first class**. If you get stuck at any step, stop there and bring it to office hours — don't skip a step and hope the next one works.
 
 ## What You'll End Up With
 
@@ -21,6 +23,53 @@ This folder contains everything you need to set up your computer for OMIS 105. F
 | [qStudio](https://www.timestored.com/qstudio/download) | Free SQL editor for writing and exploring queries visually | any recent | Step 4 | Step 4 |
 
 This table is just a reference — **the actual install commands are in the steps below, not here.**
+
+---
+
+## Step 0 — Get the Course Files
+
+Steps 2 and 3 run files that live in this folder, so you need a copy on your own computer first.
+
+1. Go to **https://github.com/mahmoudparsian/OMIS-105**
+2. Click the green **`< > Code`** button near the top right
+3. Click **Download ZIP**. It is a large file — give it a minute to finish
+4. Find **`OMIS-105-main.zip`** in your **Downloads** folder and double-click it to unzip
+5. You now have a folder called **`OMIS-105-main`**. Inside it, open the folder named **`software_installation`** — that is where Steps 2 and 3 live
+
+### Now open a terminal *in that folder*
+
+This trick matters: Steps 2 and 3 only work if your terminal is pointed at the `software_installation` folder. You do **not** need to type any folder names.
+
+**Mac**
+
+1. Press `Cmd + Space`, type `Terminal`, press Enter
+2. Type `cd` followed by **one space** — do not press Enter yet:
+
+   ```
+   cd 
+   ```
+
+3. Drag the **`software_installation`** folder from Finder and drop it onto the Terminal window. The full path appears by itself
+4. Now press Enter
+
+**Windows**
+
+1. Open the **`software_installation`** folder in File Explorer
+2. Click once on the **address bar** at the top (the strip showing the folder path)
+3. Type `cmd` and press Enter
+
+A Command Prompt opens already pointed at the right folder.
+
+### Check that it worked
+
+Type this and press Enter:
+
+| OS | Command |
+|----|---------|
+| Mac | `ls` |
+| Windows | `dir` |
+
+You should see `step_2_setup_software.py` in the list. If you do, you are in the right place. If you don't, repeat the drag step above.
 
 ---
 
@@ -44,13 +93,14 @@ One script does all of it: installs the three packages,
 then verifies each one, then runs a real DuckDB query 
 to prove it all works together.
 
-Open your terminal (Mac) or Command Prompt (Windows), 
-navigate to this folder, and run:
+Use the terminal window you opened in **Step 0** — the one already pointed at the `software_installation` folder. Type this and press Enter:
 
 | OS | Command |
 |----|---------|
 | Mac | `python3 step_2_setup_software.py` |
 | Windows | `python step_2_setup_software.py` |
+
+> **If you see `can't open file ... No such file or directory`,** your terminal is not in the right folder. Go back to Step 0 and redo the drag (Mac) or address-bar (Windows) trick.
 
 Watch for **`[+] PASS`** next to DuckDB, Pandas, and Marimo, and **"ALL CHECKS PASSED"** at the end. If you see any `[X] FAIL`, follow the fix instructions the script prints and run it again — don't move on until every check passes.
 
@@ -58,12 +108,22 @@ Watch for **`[+] PASS`** next to DuckDB, Pandas, and Marimo, and **"ALL CHECKS P
 
 Step 2 verifies the packages individually; this step opens a real Marimo notebook to confirm Python, DuckDB, and Marimo all work together the way you'll use them in class.
 
-| OS | Command |
-|----|---------|
-| Mac | `marimo edit step_3_verification.py` |
-| Windows | `marimo edit step_3_verification.py` |
+In the same terminal window, type:
+
+```
+marimo edit step_3_verification.py
+```
 
 Marimo opens in your web browser. The notebook runs a few checks and then executes a real SQL query. If you can see the query results, **your Python + DuckDB + Marimo setup is complete.**
+
+When you are finished looking at it, go back to the terminal and press `Ctrl + C` to stop Marimo.
+
+> **If you see `marimo: command not found`,** Marimo installed correctly but your computer doesn't know where to find it. Use this instead — it always works:
+>
+> | OS | Command |
+> |----|---------|
+> | Mac | `python3 -m marimo edit step_3_verification.py` |
+> | Windows | `python -m marimo edit step_3_verification.py` |
 
 ## Step 4 — Install and Verify qStudio
 
@@ -85,9 +145,22 @@ qStudio is a free SQL editor you download separately (it's a desktop application
 
 ## Quick Summary
 
+Mac:
+
 ```
-Step 1:  Install Python                          (follow the guide for your OS, then verify)
+Step 0:  Download ZIP from GitHub, unzip, open Terminal in software_installation/
+Step 1:  Install Python                          (follow the Mac guide, then verify)
 Step 2:  python3 step_2_setup_software.py        (installs + verifies DuckDB, Pandas, Marimo)
+Step 3:  marimo edit step_3_verification.py      (final check — everything together, in Marimo)
+Step 4:  Install qStudio                         (download from timestored.com, then verify)
+```
+
+Windows:
+
+```
+Step 0:  Download ZIP from GitHub, unzip, open Command Prompt in software_installation\
+Step 1:  Install Python                          (follow the Windows guide, then verify)
+Step 2:  python step_2_setup_software.py         (installs + verifies DuckDB, Pandas, Marimo)
 Step 3:  marimo edit step_3_verification.py      (final check — everything together, in Marimo)
 Step 4:  Install qStudio                         (download from timestored.com, then verify)
 ```

@@ -86,13 +86,15 @@ If all three commands work and you see `Hello, OMIS 105!` at the end, Python is 
 
 ## Next Step
 
-Once Python is working, run the course setup script:
+Once Python is working, go back to [`README.md`](README.md) and continue with **Step 2**. You will run the course setup script:
 
 ```
 python step_2_setup_software.py
 ```
 
 This script will automatically install DuckDB, Pandas, and Marimo, then verify everything works.
+
+> Your Command Prompt must be pointed at the `software_installation` folder for this to work. **Step 0** in the README shows the address-bar trick that does it.
 
 ---
 

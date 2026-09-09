@@ -81,13 +81,15 @@ If all three commands work and you see `Hello, OMIS 105!` at the end, Python is 
 
 ## Next Step
 
-Once Python is working, run the course setup script:
+Once Python is working, go back to [`README.md`](README.md) and continue with **Step 2**. You will run the course setup script:
 
 ```
 python3 step_2_setup_software.py
 ```
 
 This script will automatically install DuckDB, Pandas, and Marimo, then verify everything works.
+
+> Your Terminal must be pointed at the `software_installation` folder for this to work. **Step 0** in the README shows the drag-and-drop trick that does it.
 
 ---
 
@@ -117,6 +119,20 @@ python3 -m pip --version
 ```
 
 If that works, use `python3 -m pip install` instead of `pip3 install` for all commands.
+
+### "error: externally-managed-environment"
+
+You may see this when installing packages. It means your `python3` came
+from Homebrew rather than from python.org. It is not a broken computer —
+that Python simply protects itself from changes.
+
+**`step_2_setup_software.py` already handles this for you** — it notices
+the message and installs anyway. If you hit it while typing a `pip3`
+command by hand, add the flag the script uses:
+
+```
+pip3 install --break-system-packages duckdb
+```
 
 ### Permission denied errors
 

@@ -8,7 +8,7 @@ Author : Dr. Mahmoud Parsian
 
 PURPOSE
 -------
-Run this script FIRST, before anything else.
+Run this script AFTER you have installed Python (Step 1).
 It will:
   1. Check that your Python version is 3.10 or higher
   2. Install the required packages (duckdb, pandas, marimo)
@@ -46,6 +46,9 @@ def check_python():
         sys.exit(1)
     else:
         print(f"  [+] PASS  Python {v}")
+        # If a student has more than one Python, this line tells us
+        # which one the packages are about to be installed into.
+        print(f"            (using {sys.executable})")
         return True
 
 
@@ -53,25 +56,61 @@ def check_python():
 #  STEP 2: Install packages
 # ════════════════════════════════════════════════════════════════
 
+def pip_install(pkg, extra_args=()):
+    """Run pip install for one package. Returns the finished process."""
+    return subprocess.run(
+        [sys.executable, "-m", "pip", "install", "-q", *extra_args, pkg],
+        capture_output=True, text=True
+    )
+
+
+def is_externally_managed(result):
+    """True if pip refused because the Python install is 'externally managed'.
+
+    Homebrew Python (Mac) and most Linux system Pythons block plain
+    'pip install' this way. It is a safety rule about the computer's
+    own Python, not a problem with the student's machine.
+    """
+    return "externally-managed-environment" in (result.stdout + result.stderr)
+
+
 def install_packages():
     packages = ["duckdb", "pandas", "marimo"]
+    explained = False
+
     print()
     print("  Installing required packages...")
-    print(f"  (This may take a minute the first time)")
+    print("  (This may take a minute the first time)")
     print()
 
     for pkg in packages:
         print(f"  Installing {pkg}...", end=" ", flush=True)
-        result = subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-q", pkg],
-            capture_output=True, text=True
-        )
+        result = pip_install(pkg)
+
+        # Some Pythons (Homebrew on Mac, most Linux) refuse a plain
+        # install to protect the system Python. Retry in the one way
+        # that works, and explain it in plain language the first time.
+        if result.returncode != 0 and is_externally_managed(result):
+            print("retrying")
+            if not explained:
+                print()
+                print("    NOTE: Your Python protects itself from changes.")
+                print("    That is normal. Installing anyway — this is safe")
+                print("    for the three packages this course uses.")
+                print()
+                explained = True
+            print(f"  Installing {pkg} (second try)...", end=" ", flush=True)
+            result = pip_install(pkg, ["--break-system-packages"])
+
         if result.returncode == 0:
             print("done")
         else:
             print("PROBLEM")
-            print(f"    Error: {result.stderr.strip()[:200]}")
-            print(f"    Try running manually:  pip install {pkg}")
+            print()
+            for line in (result.stderr or result.stdout).strip().splitlines()[:8]:
+                print(f"    {line}")
+            print()
+            print("    Write down this error and bring it to office hours.")
             print()
 
 
@@ -83,12 +122,18 @@ def verify_packages():
     print()
     results = []
 
-    # DuckDB
+    # DuckDB — the course needs 1.0 or newer
     try:
         import duckdb
         r = duckdb.query("SELECT 42 AS answer").fetchone()
         assert r[0] == 42
-        results.append(("DuckDB", duckdb.__version__, True))
+        if int(duckdb.__version__.split(".")[0]) < 1:
+            results.append(
+                ("DuckDB", f"{duckdb.__version__} is too old, need 1.0 or newer "
+                           f"— run: pip install --upgrade duckdb", False)
+            )
+        else:
+            results.append(("DuckDB", duckdb.__version__, True))
     except ImportError:
         results.append(("DuckDB", "not found", False))
     except Exception as e:
@@ -163,6 +208,7 @@ def test_duckdb_query():
 
 def main():
     width = 52
+    exe = sys.executable  # the exact Python that just installed everything
 
     print()
     print("=" * width)
@@ -209,11 +255,16 @@ def main():
         print("  You are ready for OMIS 105.")
         print("=" * width)
         print()
-        print("  NEXT STEP — Launch Marimo:")
+        print("  NEXT STEP — Launch Marimo (Step 3):")
         print()
-        print("    1. Open your terminal / Command Prompt")
-        print("    2. Type:  marimo edit step_3_verification.py")
-        print("    3. Press Enter")
+        print("    In this same window, type:")
+        print()
+        print("      marimo edit step_3_verification.py")
+        print()
+        print("    If that says 'command not found', use this instead —")
+        print("    it always works:")
+        print()
+        print(f"      {exe} -m marimo edit step_3_verification.py")
         print()
         print("  Marimo will open in your web browser as an interactive notebook.")
         print()
