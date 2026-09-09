@@ -12,7 +12,7 @@
   aimed at using it with DuckDB. Start here if you have never opened a
   notebook before.
 
-* [Getting Started with the Marimo Notebook (pdf format)](./getting_started_with_the_marimo_notebook.pdf)
+* [Getting Started with the Marimo Notebook (pdf format)](./marimo_notebook_by_Akshay_Agrawal.pdf)
 
 ## 2. Notebooks in This Folder: SQL/DuckDB
 
