@@ -8,7 +8,7 @@
 
 ## Overview
 
-This folder contains everything you need to set up your computer for OMIS 105. Follow **Step 0 → Step 1 → Step 2 → Step 3 → Step 4 below, in order** — don't skip ahead or run any install command until its step tells you to. By the end, you will have **Python**, **DuckDB**, **Marimo**, **Pandas**, and **qStudio** installed and verified.
+This folder contains everything you need to set up your computer for OMIS 105. Follow **Step 0 → Step 1 → Step 2 → Step 3 → Step 4 below, in order** — don't skip ahead or run any install command until its step tells you to. By the end, you will have **Python**, **DuckDB**, **Marimo**, **Pandas**, **Matplotlib**, and **qStudio** installed and verified.
 
 **Set aside about an hour**, and do this **before the first class**. If you get stuck at any step, stop there and bring it to office hours — don't skip a step and hope the next one works.
 
@@ -20,6 +20,7 @@ This folder contains everything you need to set up your computer for OMIS 105. F
 | [DuckDB](https://duckdb.org) | In-process SQL database engine — no server to install or configure | 1.0+ | Step 2 | Steps 2, 3 |
 | [Marimo](https://marimo.io) | Interactive notebook environment (replaces Jupyter for this course) | any recent | Step 2 | Steps 2, 3 |
 | [Pandas](https://pandas.pydata.org) | Data manipulation library — DuckDB query results come back as Pandas tables | any recent | Step 2 | Steps 2, 3 |
+| [Matplotlib](https://matplotlib.org) | Charting library — the class notebooks that draw charts import it | any recent | Step 2 | Steps 2, 3 |
 | [qStudio](https://www.timestored.com/qstudio/download) | Free SQL editor for writing and exploring queries visually | any recent | Step 4 | Step 4 |
 
 This table is just a reference — **the actual install commands are in the steps below, not here.**
@@ -35,6 +36,8 @@ Steps 2 and 3 run files that live in this folder, so you need a copy on your own
 3. Click **Download ZIP**. It is a large file — give it a minute to finish
 4. Find **`OMIS-105-main.zip`** in your **Downloads** folder and double-click it to unzip
 5. You now have a folder called **`OMIS-105-main`**. Inside it, open the folder named **`software_installation`** — that is where Steps 2 and 3 live
+
+> **Already know Git?** You can `git clone` the repository instead of downloading the ZIP — then a single `git pull` gets you each week's new material. See [`tutorials/git/README.md`](../tutorials/git/README.md). If that sentence means nothing to you, ignore it and use the ZIP.
 
 ### Now open a terminal *in that folder*
 
@@ -87,13 +90,17 @@ Each guide ends with a "Verify Your Installation"
 section — run those commands before moving on. 
 Do not continue to Step 2 until Python is confirmed working.
 
-## Step 2 — Install and Verify DuckDB, Marimo, and Pandas
+## Step 2 — Install and Verify DuckDB, Marimo, Pandas, and Matplotlib
 
-One script does all of it: installs the three packages, 
+One script does all of it: installs the four packages, 
 then verifies each one, then runs a real DuckDB query 
 to prove it all works together.
 
-Use the terminal window you opened in **Step 0** — the one already pointed at the `software_installation` folder. Type this and press Enter:
+Use the terminal window you opened in **Step 0** — the one already pointed at the `software_installation` folder.
+
+> **Did you close that window while installing Python?** Step 1 asks you to close and reopen your terminal, so it is probably gone. Just redo the short trick in **Step 0** — drag the folder in (Mac) or type `cmd` in the address bar (Windows) — to open a new one in the right place.
+
+Type this and press Enter:
 
 | OS | Command |
 |----|---------|
@@ -102,7 +109,7 @@ Use the terminal window you opened in **Step 0** — the one already pointed at 
 
 > **If you see `can't open file ... No such file or directory`,** your terminal is not in the right folder. Go back to Step 0 and redo the drag (Mac) or address-bar (Windows) trick.
 
-Watch for **`[+] PASS`** next to DuckDB, Pandas, and Marimo, and **"ALL CHECKS PASSED"** at the end. If you see any `[X] FAIL`, follow the fix instructions the script prints and run it again — don't move on until every check passes.
+Watch for **`[+] PASS`** next to DuckDB, Pandas, Marimo, and Matplotlib, and **"ALL CHECKS PASSED"** at the end. If you see any `[X] FAIL`, follow the fix instructions the script prints and run it again — don't move on until every check passes.
 
 ## Step 3 — Verify Everything Together in Marimo
 
@@ -137,7 +144,7 @@ qStudio is a free SQL editor you download separately (it's a desktop application
 |------|---------|
 | `step_1_install_python_macbook.md` | Python installation guide for **Mac** |
 | `step_1_install_python_windows.md` | Python installation guide for **Windows** |
-| `step_2_setup_software.py` | Script that installs and verifies DuckDB, Marimo, and Pandas |
+| `step_2_setup_software.py` | Script that installs and verifies DuckDB, Marimo, Pandas, and Matplotlib |
 | `step_3_verification.py` | Marimo notebook that verifies everything works together |
 | `step_4_install_qstudio.md` | qStudio installation, connection, and verification guide (Mac and Windows) |
 
@@ -150,7 +157,7 @@ Mac:
 ```
 Step 0:  Download ZIP from GitHub, unzip, open Terminal in software_installation/
 Step 1:  Install Python                          (follow the Mac guide, then verify)
-Step 2:  python3 step_2_setup_software.py        (installs + verifies DuckDB, Pandas, Marimo)
+Step 2:  python3 step_2_setup_software.py        (installs + verifies DuckDB, Pandas, Marimo, Matplotlib)
 Step 3:  marimo edit step_3_verification.py      (final check — everything together, in Marimo)
 Step 4:  Install qStudio                         (download from timestored.com, then verify)
 ```
@@ -160,7 +167,7 @@ Windows:
 ```
 Step 0:  Download ZIP from GitHub, unzip, open Command Prompt in software_installation\
 Step 1:  Install Python                          (follow the Windows guide, then verify)
-Step 2:  python step_2_setup_software.py         (installs + verifies DuckDB, Pandas, Marimo)
+Step 2:  python step_2_setup_software.py         (installs + verifies DuckDB, Pandas, Marimo, Matplotlib)
 Step 3:  marimo edit step_3_verification.py      (final check — everything together, in Marimo)
 Step 4:  Install qStudio                         (download from timestored.com, then verify)
 ```

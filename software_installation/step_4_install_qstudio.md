@@ -17,7 +17,7 @@ You will use qStudio to practice writing SQL queries on your own and to explore 
 | Software | qStudio (free, open-source) |
 | Operating system | macOS, Windows, or Linux |
 | Internet connection | Required for download |
-| Disk space | ~100 MB |
+| Disk space | ~500 MB (the Mac download alone is 162 MB) |
 
 ---
 

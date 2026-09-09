@@ -24,9 +24,9 @@ def _(mo):
 
     If you can read this, **Marimo is working!**
 
-    This notebook verifies that Python, DuckDB, Pandas, and Marimo
-    are all installed correctly, then runs a real SQL query to prove
-    everything works end-to-end.
+    This notebook verifies that Python, DuckDB, Pandas, Marimo, and
+    Matplotlib are all installed correctly, then runs a real SQL query
+    to prove everything works end-to-end.
 
     Works on **macOS**, **Windows**, and **Linux**.
     """)
@@ -116,7 +116,23 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    ### Check 5 — Platform Info
+    ### Check 5 — Matplotlib
+    """)
+    return
+
+
+@app.cell
+def _():
+    import matplotlib as _mpl
+
+    print(f"  [+] PASS  Matplotlib {_mpl.__version__}")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ### Check 6 — Platform Info
     """)
     return
 
@@ -232,7 +248,8 @@ def _(mo):
     ## You're All Set!
 
     If you can see Alice, Bob, and Carol in the tables above —
-    **congratulations!** Python, DuckDB, Pandas, and Marimo are all working.
+    **congratulations!** Python, DuckDB, Pandas, Marimo, and Matplotlib
+    are all working.
 
     **You are ready for OMIS 105. See you in class!**
 

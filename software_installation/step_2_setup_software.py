@@ -11,7 +11,7 @@ PURPOSE
 Run this script AFTER you have installed Python (Step 1).
 It will:
   1. Check that your Python version is 3.10 or higher
-  2. Install the required packages (duckdb, pandas, marimo)
+  2. Install the required packages (duckdb, pandas, marimo, matplotlib)
   3. Verify each package works correctly
   4. Run a small DuckDB query to prove everything is working
   5. Show you how to launch Marimo
@@ -75,7 +75,9 @@ def is_externally_managed(result):
 
 
 def install_packages():
-    packages = ["duckdb", "pandas", "marimo"]
+    # matplotlib is needed from Week 1 — several class notebooks import it
+    # at the top of the file and will not open without it.
+    packages = ["duckdb", "pandas", "marimo", "matplotlib"]
     explained = False
 
     print()
@@ -152,6 +154,13 @@ def verify_packages():
         results.append(("Marimo", marimo.__version__, True))
     except ImportError:
         results.append(("Marimo", "not found", False))
+
+    # Matplotlib — the class notebooks that draw charts need this
+    try:
+        import matplotlib
+        results.append(("Matplotlib", matplotlib.__version__, True))
+    except ImportError:
+        results.append(("Matplotlib", "not found", False))
 
     return results
 

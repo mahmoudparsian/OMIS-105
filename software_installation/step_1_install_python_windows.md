@@ -13,9 +13,9 @@
 | Python version | **3.10 or higher** (we recommend 3.12+) |
 | Operating system | Windows 10 or Windows 11 |
 | Internet connection | Required for download and package installation |
-| Disk space | ~200 MB |
+| Disk space | ~600 MB (Python itself, plus the packages Step 2 installs) |
 
-After Python is installed, you will run a setup script (`step_2_setup_software.py`) that automatically installs everything else (DuckDB, Pandas, Marimo). You will also install qStudio separately (see `step_4_install_qstudio.md`).
+After Python is installed, you will run a setup script (`step_2_setup_software.py`) that automatically installs everything else (DuckDB, Pandas, Marimo, Matplotlib). You will also install qStudio separately (see `step_4_install_qstudio.md`).
 
 ---
 

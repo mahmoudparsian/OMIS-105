@@ -13,9 +13,9 @@
 | Python version | **3.10 or higher** (we recommend 3.12+) |
 | Operating system | macOS |
 | Internet connection | Required for download and package installation |
-| Disk space | ~200 MB |
+| Disk space | ~600 MB (Python itself, plus the packages Step 2 installs) |
 
-After Python is installed, you will run a setup script (`step_2_setup_software.py`) that automatically installs everything else (DuckDB, Pandas, Marimo). You will also install qStudio separately (see `step_4_install_qstudio.md`).
+After Python is installed, you will run a setup script (`step_2_setup_software.py`) that automatically installs everything else (DuckDB, Pandas, Marimo, Matplotlib). You will also install qStudio separately (see `step_4_install_qstudio.md`).
 
 ---
 
@@ -99,16 +99,19 @@ This script will automatically install DuckDB, Pandas, and Marimo, then verify e
 
 This means Python 3 is not installed or not in your PATH. Go back to Step 2 and download it from python.org.
 
-### I have Python 2 and Python 3 both installed
+### Should I type `python` or `python3`?
 
-That's fine. macOS sometimes ships with Python 2 pre-installed. Always use `python3` and `pip3` to make sure you're using the right version:
+Always type **`python3`** and **`pip3`** on a Mac.
+
+On most Macs, plain `python` does not exist at all, so the command simply
+fails. On a Mac where it does exist, it may point at a different Python
+than the one you just installed. Typing `python3` and `pip3` removes the
+guesswork:
 
 ```
 python3 --version
 pip3 install duckdb
 ```
-
-Never use plain `python` or `pip` on a Mac — those may point to the old Python 2.
 
 ### "pip3" is not recognized
 
@@ -139,10 +142,14 @@ pip3 install --break-system-packages duckdb
 If you see "Permission denied" when installing packages:
 
 ```
-pip3 install --user duckdb pandas marimo
+pip3 install --user duckdb pandas marimo matplotlib
 ```
 
 The `--user` flag installs packages in your home folder, avoiding permission issues.
+
+> If this gives you `externally-managed-environment` instead, `--user`
+> will not help — that is the different problem described just above.
+> Use `--break-system-packages` for those commands.
 
 ### "No module named pip"
 
