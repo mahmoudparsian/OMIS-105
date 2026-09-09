@@ -62,7 +62,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _():
     import duckdb
-    from where_builder import query_with_where, query_with_two_conditions
+    from SQL_WHERE_builder import query_with_where, query_with_two_conditions
 
     con = duckdb.connect()
 
