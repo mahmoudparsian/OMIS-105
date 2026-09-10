@@ -14,8 +14,9 @@ style: |
 # OMIS 105
 ## Welcome Notebooks & Tech Stack
 
-Quarter: Fall 2026
-Instructor: Dr. Mahmoud Parsian (mparsian@scu.edu)
+Quarter: Fall 2026 <br>
+Instructor: Dr. Mahmoud Parsian <br>
+Email: mparsian@scu.edu
 
 ---
 
@@ -25,7 +26,7 @@ Instructor: Dr. Mahmoud Parsian (mparsian@scu.edu)
 - **Database:** DuckDB (in-memory)
 - **Notebooks:** Marimo (reactive)
 - **Audience:** Senior business students
-- Zero prior exposure to notebooks, SQL, or databases
+- **Experience:** Zero prior exposure to notebooks, SQL, or databases
 
 ---
 
