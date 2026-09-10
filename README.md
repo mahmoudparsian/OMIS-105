@@ -39,7 +39,7 @@ information every day.
 
 # 3. Course Prerequisite
 
-* OMIS 30: Introduction to Programming
+* [OMIS 30: Introduction to Programming](https://www.scu.edu/business/isa/academics/courses/)
 
 ---
 
