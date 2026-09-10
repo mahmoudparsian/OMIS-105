@@ -40,6 +40,10 @@ style: |
 * 100 minutes each session
 * 200 minutes/week
 
+---
+
+# Prerequisite
+
 **Prerequisite**: OMIS 30 — Introduction to Programming
 
 ---
