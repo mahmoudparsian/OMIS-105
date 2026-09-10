@@ -69,12 +69,19 @@ information every day.
 
 # 6. What is a Database?
 
+##  Database as Collection of Digital Data
+
 A database is an organized collection of digital 
 data or information, stored electronically in a 
 system. It lets users **store**, **access**, 
 **update**, and **manage** information quickly.
 
 ![](./images/database_system.png)
+
+## Database as Set of Tables
+
+![](./images/what_is_a_database_2_tables.png)
+
 
 ## How It Works
 
