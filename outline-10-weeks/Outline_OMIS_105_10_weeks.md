@@ -34,7 +34,11 @@ style: |
 
 **Quarter**: Fall 2026
 
-**Schedule**: 2 sessions per week, about 2 hours each (about 4 hours/week)
+**Schedule**: 
+
+* 2 sessions per week, 
+* 100 minutes each session
+* 200 minutes/week
 
 **Prerequisite**: OMIS 30 — Introduction to Programming
 
@@ -234,7 +238,13 @@ that *reacts* to data problems and one that *prevents* them.
 
 👉 Goal: Think in structure
 
-See details on [Table Relationships](./table_relationships.md)
+---
+
+## Table Relationships
+
+- Relationships (1-1, 1-M, M-M)
+
+- See details on [Table Relationships](./table_relationships.md)
 
 ---
 
@@ -247,6 +257,12 @@ See details on [Table Relationships](./table_relationships.md)
 ### Relational Model: Set of Tables
 
 ![](./images/relational_tables.png)
+
+---
+
+### Relational Model: Set of Tables
+
+![](./images/relational_database_tables_01.png)
 
 ---
 
@@ -285,6 +301,7 @@ and links tables through keys. This is how businesses maintain
 # Week 3  
 ## SQL Core (Part 1)
 
+- CREATE TABLE
 - SELECT
 - WHERE
 - ORDER BY
