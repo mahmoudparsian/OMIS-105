@@ -34,7 +34,7 @@ style: |
 
 **Quarter**: Fall 2026
 
-**Schedule**: 2 sessions per week, 2 hours each (4 hours/week)
+**Schedule**: 2 sessions per week, about 2 hours each (about 4 hours/week)
 
 **Prerequisite**: OMIS 30 — Introduction to Programming
 
@@ -144,8 +144,11 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 | Weeks | Theme | Focus |
 |---|---|---|
-| Weeks 1–2 | FOUNDATIONS | What are databases? How do they work? |
-| Weeks 3–5 | SQL MASTERY | The language of data |
+| Week 1 | FOUNDATIONS | What are databases? |
+| Week 2 | FOUNDATIONS | What are databases? How do they work? |
+| Week 3 | SQL MASTERY | The language of data, basics |
+| Week 4 | SQL MASTERY | The language of data, intermediate |
+| Week 5 | SQL MASTERY | The language of data, intermediate |
 | Week 6 | DESIGN | Building databases the right way |
 | Week 7 | PERFORMANCE | Making databases fast |
 | Week 8 | TRANSACTIONS | Making databases safe |
@@ -199,17 +202,25 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 ### Why This Matters in the Real World
 
-**The cost of bad data**: IBM estimated that poor data quality costs the U.S. economy **$3.1 trillion per year** (2016). Flat files (spreadsheets) break down when:
+**The cost of bad data**: IBM estimated that 
+poor data quality costs the U.S. economy 
+**$3.1 trillion per year** (2016). 
+
+Flat files (spreadsheets) break down when:
 
 - Two employees edit the same file simultaneously
 - A typo in "Electronics" creates an invisible data silo
 - Someone deletes a row and takes critical information with it
 
-**Databases solve these problems** with structure, constraints, and controlled access. Understanding this foundation is the difference between a business that *reacts* to data problems and one that *prevents* them.
+**Databases solve these problems** with structure, 
+constraints, and controlled access. Understanding 
+this foundation is the difference between a business 
+that *reacts* to data problems and one that *prevents* them.
 
 > Every data-driven company begins with a well-structured database.
 
 ---
+
 # Week 2  
 ## Relational Model & Data Modeling
 
@@ -223,7 +234,10 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 👉 Goal: Think in structure
 
+See details on [Table Relationships](./table_relationships.md)
+
 ---
+
 # Relational Model: A Table: `students`
 
 ![](./images/relational_table.webp)
@@ -252,15 +266,19 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 ### Why This Matters in the Real World
 
-**Amazon** tracks millions of products, customers, and orders. If customer data were stored inside every order record:
+**Amazon** tracks millions of products, customers, and orders. 
+If customer data were stored inside every order record:
 
 - Updating one email address would require modifying **thousands of rows**
 - Deleting a customer's last order would **erase their profile**
 - Storage costs would **balloon** with redundant copies
 
-The relational model stores each fact **exactly once** and links tables through keys. This is how businesses maintain **a single source of truth** across terabytes of data.
+The relational model stores each fact **exactly once** 
+and links tables through keys. This is how businesses maintain 
+**a single source of truth** across terabytes of data.
 
-> Good relational design is invisible when it works — and catastrophic when it doesn't.
+> Good relational design is invisible when it works — 
+> and catastrophic when it doesn't.
 
 ---
 
