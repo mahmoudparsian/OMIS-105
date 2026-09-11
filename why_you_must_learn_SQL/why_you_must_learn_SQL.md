@@ -3,7 +3,7 @@
 * **Course:** OMIS 105 — Introduction to Database Management Systems
 * **Quarter:** Fall 2026
 * **Author:** Dr. Mahmoud Parsian
-* **Last updated:** August 5, 2026
+* **Last updated:** September 11, 2026
 
 ---
 
@@ -35,6 +35,7 @@
 16. [The Verdict](#section-16)
 17. [Summary of Lessons](#section-17)
 18. [How to Prompt AI Better](#section-18)
+19. [Flagship Example: One Bad Prompt, One Good Prompt, Two Very Different Answers](#section-19)
 
 ---
 
@@ -48,25 +49,16 @@
 
 > "Why do I need to learn SQL? I can just ask AI to write it for me."
 
-Fair question. AI tools like ChatGPT and Claude **can** generate SQL.
-The queries they produce often look correct, run without errors,
-and return a table of results. So what's the problem?
+Fair question. AI tools like ChatGPT and Claude **can** generate SQL. The queries they produce often look correct, run without errors, and return a table of results. So what's the problem?
 
 **The problem is that "runs without errors" and "gives the right answer"
 are two completely different things.**
 
-A query can execute perfectly and still return the **wrong number**.
-The wrong revenue. The wrong customer count. The wrong average.
-The wrong ranking. And if you don't know SQL, you will never notice.
+A query can execute perfectly and still return the **wrong number**. The wrong revenue. The wrong customer count. The wrong average. The wrong ranking. And if you don't know SQL, you will never notice.
 
-In this document, we will use a realistic retail database to show you
-**seven real examples** where AI-generated SQL runs successfully but
-produces an incorrect answer — the kind of mistake that could cost a
-company money, damage a report, or lead to a bad business decision.
+In this document, we will use a realistic retail database to show you **seven real examples** where AI-generated SQL runs successfully but produces an incorrect answer — the kind of mistake that could cost a company money, damage a report, or lead to a bad business decision.
 
-We will also show you **four examples** where AI gets it right — and
-explain why **you still need SQL knowledge** to verify and trust the
-output.
+We will also show you **four examples** where AI gets it right — and explain why **you still need SQL knowledge** to verify and trust the output.
 
 > **Note:** You don't need to understand every SQL keyword in this
 > document yet. Focus on the **results** — what the AI got wrong and
@@ -78,13 +70,9 @@ output.
 
 ## 2 — The Company: BrightCart Retail
 
-BrightCart is a small online retailer that sells office supplies and
-electronics. They have been in business since 2023 and track everything
-in a database: customers, products, orders, line items, and employees.
+BrightCart is a small online retailer that sells office supplies and electronics. They have been in business since 2023 and track everything in a database: customers, products, orders, line items, and employees.
 
-You are a new business analyst at BrightCart. Your manager gives you
-questions about the business, and you decide to let AI write the SQL.
-Let's see how that goes.
+You are a new business analyst at BrightCart. Your manager gives you questions about the business, and you decide to let AI write the SQL. Let's see how that goes.
 
 ---
 
@@ -123,19 +111,13 @@ BrightCart's database has five tables. Here is what each one stores:
 | Product → Line Items | `order_items` | `product_id` | `products.product_id` | Each line item refers to one product; one product can appear in many line items |
 | Manager → Employee | `employees` | `manager_id` | `employees.employee_id` | Each employee may report to one manager, who is also an employee |
 
-The `order_items` table sits at the center — it connects orders to
-products and stores the actual quantity and price for each purchase.
-This is a common pattern in retail databases.
+The `order_items` table sits at the center — it connects orders to products and stores the actual quantity and price for each purchase. This is a common pattern in retail databases.
 
 Two important things to notice:
 
-1. **`products.unit_price`** is the **current** catalog price. But prices
-   change over time. The price a customer actually paid is stored in
-   **`order_items.sale_price`**. These two numbers can be different.
+1. **`products.unit_price`** is the **current** catalog price. But prices change over time. The price a customer actually paid is stored in **`order_items.sale_price`**. These two numbers can be different.
 
-2. **`orders.status`** tells you whether an order was actually fulfilled.
-   Not every order in the database represents real revenue — some were
-   cancelled, returned, or are still pending.
+2. **`orders.status`** tells you whether an order was actually fulfilled. Not every order in the database represents real revenue — some were cancelled, returned, or are still pending.
 
 ---
 
@@ -143,9 +125,7 @@ Two important things to notice:
 
 ## 4 — Setting Up the Data in qStudio
 
-Open qStudio, connect to DuckDB, and run the following SQL blocks
-one at a time. This creates the five tables and fills them with
-realistic data.
+Open qStudio, connect to DuckDB, and run the following SQL blocks one at a time. This creates the five tables and fills them with realistic data.
 
 ### 4.1 — Create the Tables
 
@@ -294,7 +274,7 @@ UNION ALL
 SELECT 'employees',   COUNT(*) FROM employees;
 ```
 
-You should see: 
+You should see:
 
 ```
 ┌─────────────┬───────┐
@@ -317,8 +297,7 @@ You should see:
 
 ### The Business Question
 
-Your manager asks: **"How many orders has each customer placed?
-I want to see all customers, including those who haven't ordered yet."**
+Your manager asks: **"How many orders has each customer placed? I want to see all customers, including those who haven't ordered yet."**
 
 ### What You Asked AI
 
@@ -328,8 +307,7 @@ You open a chatbot and type:
 > placed. I want to see all customers, including those with no orders.
 > Tables: customers and orders, linked by customer_id."
 
-The prompt is clear — it even says "including those with no orders."
-Let's see what the AI produces.
+The prompt is clear — it even says "including those with no orders." Let's see what the AI produces.
 
 ### What AI Generated
 
@@ -360,20 +338,15 @@ ORDER BY total_orders DESC;
 └────────────┴───────────┴──────────────┘
 ```
 
-The query runs perfectly. No errors. Six customers, 
-each with at least one order. Looks good, right?
+The query runs perfectly. No errors. Six customers, each with at least one order. Looks good, right?
 
 ### What's Wrong
 
 BrightCart has **8** customers, not 6. Where are Grace Lee and Henry Davis?
 
-The AI used a **JOIN** (also called an INNER JOIN), which only returns
-customers that have a **matching** row in the orders table. Grace and
-Henry have never placed an order, so they have no match — and they
-silently disappear from the results.
+The AI used a **JOIN** (also called an INNER JOIN), which only returns customers that have a **matching** row in the orders table. Grace and Henry have never placed an order, so they have no match — and they silently disappear from the results.
 
-The manager explicitly asked for **all customers, including those who
-haven't ordered**. The AI ignored that requirement.
+The manager explicitly asked for **all customers, including those who haven't ordered**. The AI ignored that requirement.
 
 ### The Correct SQL
 
@@ -406,16 +379,13 @@ ORDER BY total_orders DESC;
 └────────────┴───────────┴──────────────┘
 ```
 
-Now we see all 8 customers. Grace and Henry show 0 
-orders — exactly the information the manager needed.
+Now we see all 8 customers. Grace and Henry show 0 orders — exactly the information the manager needed.
 
 ### The Business Impact
 
 If you used the AI's answer, you would report:
 *"Our least active customer has 1 order. Everyone is buying."*
-In reality, 25% of your customers have **never purchased anything**.
-That's critical information for a re-engagement campaign. The AI's
-answer hid it completely.
+In reality, 25% of your customers have **never purchased anything**. That's critical information for a re-engagement campaign. The AI's answer hid it completely.
 
 > **The Lesson:** `JOIN` and `LEFT JOIN` are not the same thing.
 > A single wrong word can make entire rows of data disappear
@@ -436,9 +406,7 @@ Your manager asks: **"What was our total revenue from all orders?"**
 > "Write a DuckDB query to calculate total revenue from all orders.
 > Tables: customers, products, orders, order_items."
 
-Notice what's missing from the prompt: you didn't specify **which price
-column** to use — because you don't know there are two. The AI has to
-guess, and it guesses wrong.
+Notice what's missing from the prompt: you didn't specify **which price column** to use — because you don't know there are two. The AI has to guess, and it guesses wrong.
 
 ### What AI Generated
 
@@ -459,18 +427,14 @@ The query runs. One clean number. You report $852.78 to your manager.
 
 ### What's Wrong
 
-The AI calculated revenue using **`products.unit_price`** — the **current**
-catalog price. But two products have had price increases since these
-orders were placed:
+The AI calculated revenue using **`products.unit_price`** — the **current** catalog price. But two products have had price increases since these orders were placed:
 
 | `Product` | `Price When Sold` | `Current Price` |
 |-----------|-------------------|-----------------|
 | Wireless Mouse | $24.99 | $29.99 |
 | Standing Desk Mat | $39.99 | $45.99 |
 
-The price customers **actually paid** is stored in
-**`order_items.sale_price`**. The AI joined to the wrong table and used
-the wrong price column.
+The price customers **actually paid** is stored in **`order_items.sale_price`**. The AI joined to the wrong table and used the wrong price column.
 
 ### The Correct SQL
 
@@ -485,16 +449,11 @@ FROM   order_items;
 |-----------------|
 | 799.78          |
 
-The real revenue is **$799.78**, not $852.78.
-The AI's answer was **$53.00 too high** — a 6.6% overstatement.
+The real revenue is **$799.78**, not $852.78. The AI's answer was **$53.00 too high** — a 6.6% overstatement.
 
 ### The Business Impact
 
-A 6.6% revenue overstatement in a report might seem small on 10 orders.
-On a company doing $10 million in annual sales, the same mistake
-overstates revenue by **$660,000**. That's the kind of error that leads
-to wrong financial forecasts, incorrect tax filings, and very difficult
-conversations with auditors.
+A 6.6% revenue overstatement in a report might seem small on 10 orders. On a company doing $10 million in annual sales, the same mistake overstates revenue by **$660,000**. That's the kind of error that leads to wrong financial forecasts, incorrect tax filings, and very difficult conversations with auditors.
 
 > **The Lesson:** Databases often store the same type of information
 > (like "price") in multiple places. The **current** price and the
@@ -516,9 +475,7 @@ Your manager asks: **"How many orders did we successfully deliver in Q4 2024?"**
 
 > "How many orders were delivered in Q4 2024? Table: orders."
 
-You said "delivered," but you didn't tell the AI that the table has a
-`status` column that needs to be filtered. The AI treats "delivered"
-as a time-range description, not as a SQL filter condition.
+You said "delivered," but you didn't tell the AI that the table has a `status` column that needs to be filtered. The AI treats "delivered" as a time-range description, not as a SQL filter condition.
 
 ### What AI Generated
 
@@ -538,8 +495,7 @@ Ten orders delivered in Q4. You put "10" in the quarterly report.
 
 ### What's Wrong
 
-The AI counted **all** orders in that date range, regardless of status.
-But not all orders were delivered:
+The AI counted **all** orders in that date range, regardless of status. But not all orders were delivered:
 
 | `order_id` | `status` | `Should Count?` |
 |------------|----------|-----------------|
@@ -554,8 +510,7 @@ But not all orders were delivered:
 | 1009 | **Pending** | **No** |
 | 1010 | Delivered | Yes |
 
-Three orders were not successfully delivered: one was cancelled,
-one was returned, and one is still pending.
+Three orders were not successfully delivered: one was cancelled, one was returned, and one is still pending.
 
 ### The Correct SQL
 
@@ -572,16 +527,11 @@ WHERE  order_date BETWEEN '2024-10-01' AND '2024-12-31'
 |--------------------|
 | 7                  |
 
-The real answer is **7**, not 10.
-The AI inflated the count by **43%**.
+The real answer is **7**, not 10. The AI inflated the count by **43%**.
 
 ### The Business Impact
 
-If you report 10 deliveries when only 7 actually shipped, 
-your fulfillment metrics look artificially strong. The 
-operations team thinks everything is fine. Meanwhile, 
-30% of orders are failing — a serious problem that nobody 
-is investigating because the report said 10.
+If you report 10 deliveries when only 7 actually shipped, your fulfillment metrics look artificially strong. The operations team thinks everything is fine. Meanwhile, 30% of orders are failing — a serious problem that nobody is investigating because the report said 10.
 
 > **The Lesson:** AI doesn't understand your business rules. It doesn't
 > know that "delivered" means `status = 'Delivered'`, not just "exists
@@ -621,20 +571,13 @@ Three employees. The rest must all be in Sales, right?
 
 ### What's Wrong
 
-BrightCart has **7** employees. Two are in Sales (Sarah and Mike).
-That leaves **5** who are not in Sales. But the AI only found 3.
+BrightCart has **7** employees. Two are in Sales (Sarah and Mike). That leaves **5** who are not in Sales. But the AI only found 3.
 
-Where are Carlos Rivera and Amy Zhang? They are recent hires whose
-department has not been assigned yet — their `department` column is
-**NULL** (empty/unknown).
+Where are Carlos Rivera and Amy Zhang? They are recent hires whose department has not been assigned yet — their `department` column is **NULL** (empty/unknown).
 
-In SQL, `NULL` is special. It does not equal anything, and it does
-not *not-equal* anything either. The comparison `NULL != 'Sales'` does
-not return TRUE — it returns **NULL**, which SQL treats as "unknown,"
-and the row is excluded.
+In SQL, `NULL` is special. It does not equal anything, and it does not *not-equal* anything either. The comparison `NULL != 'Sales'` does not return TRUE — it returns **NULL**, which SQL treats as "unknown," and the row is excluded.
 
-This is one of the most common mistakes in SQL, and AI makes it
-frequently.
+This is one of the most common mistakes in SQL, and AI makes it frequently.
 
 ### The Correct SQL
 
@@ -657,17 +600,11 @@ WHERE  department != 'Sales'
 | Carlos | Rivera | *NULL* |
 | Amy | Zhang | *NULL* |
 
-Now we see all 5 employees who are not in Sales, 
-including the two unassigned new hires.
+Now we see all 5 employees who are not in Sales, including the two unassigned new hires.
 
 ### The Business Impact
 
-If you used the AI's answer to send a company-wide 
-announcement to "everyone outside Sales," Carlos and 
-Amy would never receive it.  If you used it to calculate 
-headcount for budget planning, your non-Sales departments 
-would appear to have 3 people instead of 5 — understaffed 
-by 40%.
+If you used the AI's answer to send a company-wide announcement to "everyone outside Sales," Carlos and Amy would never receive it. If you used it to calculate headcount for budget planning, your non-Sales departments would appear to have 3 people instead of 5 — understaffed by 40%.
 
 > **The Lesson:** NULL is not a value — it means "unknown." Standard
 > comparisons (`=`, `!=`, `>`, `<`) do not work with NULL. You must
@@ -689,10 +626,7 @@ Your manager asks: **"What is our average order value for delivered orders?"**
 > "Calculate the average order value for delivered orders.
 > Tables: orders and order_items, linked by order_id."
 
-"Average order value" sounds clear in English, but it is ambiguous in
-SQL: do you mean the average of each **line item's value**, or the
-average of each **order's total**? The AI picks the simpler
-interpretation — and gets the wrong number.
+"Average order value" sounds clear in English, but it is ambiguous in SQL: do you mean the average of each **line item's value**, or the average of each **order's total**? The AI picks the simpler interpretation — and gets the wrong number.
 
 ### What AI Generated
 
@@ -728,13 +662,9 @@ Here are the delivered orders and their actual totals:
 | 1008 | (2 × $49.99) + (1 × $12.99) | $112.97 |
 | 1010 | (1 × $24.99) | $24.99 |
 
-The average of these 7 order totals is:
-($62.97 + $49.99 + $104.98 + $88.96 + $114.96 + $112.97 + $24.99) ÷ 7 = **$79.97**
+The average of these 7 order totals is: ($62.97 + $49.99 + $104.98 + $88.96 + $114.96 + $112.97 + $24.99) ÷ 7 = **$79.97**
 
-The AI's answer of `$46.65` is **42% too low** because it 
-averaged 12 line items instead of 7 order totals. An order 
-with 3 line items got 3 times the weight of an order with 
-1 line item.
+The AI's answer of `$46.65` is **42% too low** because it averaged 12 line items instead of 7 order totals. An order with 3 line items got 3 times the weight of an order with 1 line item.
 
 ### The Correct SQL
 
@@ -761,12 +691,7 @@ The real average order value is **$79.97**, not $46.65.
 
 ### The Business Impact
 
-Average order value is a key metric for pricing strategy, 
-marketing spend, and revenue forecasting. If you report 
-`$47` instead of `$80`, management might conclude that 
-customers aren't spending enough and launch unnecessary 
-discounts — cutting into margins to solve a problem
-that doesn't exist.
+Average order value is a key metric for pricing strategy, marketing spend, and revenue forecasting. If you report `$47` instead of `$80`, management might conclude that customers aren't spending enough and launch unnecessary discounts — cutting into margins to solve a problem that doesn't exist.
 
 > **The Lesson:** "Average" depends on **what you're averaging**. Are
 > you averaging line items or orders? AI often gets the "grain" wrong —
@@ -781,9 +706,7 @@ that doesn't exist.
 
 ### The Business Question
 
-Your manager asks: **"Rank our products by total units sold from
-delivered orders. If two products sold the same quantity, they must
-share the same rank."**
+Your manager asks: **"Rank our products by total units sold from delivered orders. If two products sold the same quantity, they must share the same rank."**
 
 ### What AI Generated
 
@@ -814,17 +737,11 @@ Five products, each with a unique rank. Looks clean, right?
 
 ### What's Wrong
 
-Look at the bottom two products: the Standing Desk Mat and the
-Webcam HD **both sold exactly 1 unit**. They are tied. The manager
-explicitly asked for tied products to share the same rank.
+Look at the bottom two products: the Standing Desk Mat and the Webcam HD **both sold exactly 1 unit**. They are tied. The manager explicitly asked for tied products to share the same rank.
 
-But the AI used **`ROW_NUMBER()`**, which assigns a unique sequential
-number to every row — it **never produces ties**. The Desk Mat got
-rank 4 and the Webcam got rank 5 purely based on arbitrary internal
-ordering, not on actual performance.
+But the AI used **`ROW_NUMBER()`**, which assigns a unique sequential number to every row — it **never produces ties**. The Desk Mat got rank 4 and the Webcam got rank 5 purely based on arbitrary internal ordering, not on actual performance.
 
-The correct function is **`RANK()`**, which gives tied rows the same
-rank number.
+The correct function is **`RANK()`**, which gives tied rows the same rank number.
 
 ### The Correct SQL
 
@@ -851,18 +768,11 @@ GROUP BY p.product_name;
 | Standing Desk Mat | 1 | **4** |
 | Webcam HD | 1 | **4** |
 
-Now both products that sold 1 unit share **rank 4** — exactly what
-the manager asked for.
+Now both products that sold 1 unit share **rank 4** — exactly what the manager asked for.
 
 ### The Business Impact
 
-Imagine the ranking is used to decide which products to 
-discontinue: *"Cut the lowest-ranked product."* With the 
-AI's answer, only the Webcam (rank 5) gets flagged. The 
-Desk Mat (rank 4) looks like it performed better — even 
-though they had identical sales. You might discontinue 
-one product while keeping another that performed exactly
-the same. Fair decisions require accurate rankings.
+Imagine the ranking is used to decide which products to discontinue: *"Cut the lowest-ranked product."* With the AI's answer, only the Webcam (rank 5) gets flagged. The Desk Mat (rank 4) looks like it performed better — even though they had identical sales. You might discontinue one product while keeping another that performed exactly the same. Fair decisions require accurate rankings.
 
 > **The Lesson:** `ROW_NUMBER()`, `RANK()`, and `DENSE_RANK()` are
 > three different functions that look similar but behave differently
@@ -878,8 +788,7 @@ the same. Fair decisions require accurate rankings.
 
 ### The Business Question
 
-Your manager asks: **"For each customer who has placed an order,
-show me their single most recent order with the order date and status."**
+Your manager asks: **"For each customer who has placed an order, show me their single most recent order with the order date and status."**
 
 ### What AI Generated
 
@@ -907,24 +816,15 @@ LIMIT    6;
 | Emma | Williams | 1008 | 2024-11-01 | Delivered |
 | David | Kim | 1007 | 2024-10-20 | Delivered |
 
-Six rows. Six customers have orders, 
-so one row per customer, right?
+Six rows. Six customers have orders, so one row per customer, right?
 
 ### What's Wrong
 
-Look carefully: **Emma Williams appears twice** 
-(orders 1009 and 1008). And **Frank Brown is completely 
-missing** — his most recent order (1010, October 10) 
-didn't make the global top-6 cutoff.
+Look carefully: **Emma Williams appears twice** (orders 1009 and 1008). And **Frank Brown is completely missing** — his most recent order (1010, October 10) didn't make the global top-6 cutoff.
 
-The AI used `ORDER BY ... LIMIT 6`, which returns the 
-**6 most recent orders across all customers**. It does 
-not return the most recent order **for each** customer. 
-`LIMIT` is a global cap — it has no concept of "per group."
+The AI used `ORDER BY ... LIMIT 6`, which returns the **6 most recent orders across all customers**. It does not return the most recent order **for each** customer. `LIMIT` is a global cap — it has no concept of "per group."
 
-To get one row per customer, you need a **window function** 
-that partitions the data by customer and picks the top row 
-within each partition.
+To get one row per customer, you need a **window function** that partitions the data by customer and picks the top row within each partition.
 
 ### The Correct SQL
 
@@ -963,18 +863,11 @@ ORDER BY order_date DESC;
 | David | Kim | 1007 | 2024-10-20 | Delivered |
 | Frank | Brown | 1010 | 2024-10-10 | Delivered |
 
-Now each customer appears **exactly once** with their 
-most recent order. Frank is back.
+Now each customer appears **exactly once** with their most recent order. Frank is back.
 
 ### The Business Impact
 
-If you used the AI's answer to contact each customer 
-about their most recent experience, Emma would receive 
-**two messages** while Frank would receive **none**. 
-You would also miss that Frank's last order was back 
-in October — he may be at risk of churning and could
-benefit from a follow-up. Meanwhile, the duplicated 
-effort on Emma wastes resources and looks unprofessional.
+If you used the AI's answer to contact each customer about their most recent experience, Emma would receive **two messages** while Frank would receive **none**. You would also miss that Frank's last order was back in October — he may be at risk of churning and could benefit from a follow-up. Meanwhile, the duplicated effort on Emma wastes resources and looks unprofessional.
 
 > **The Lesson:** `LIMIT` restricts the total number of rows returned —
 > it cannot select "the top N per group." Whenever you need the top
@@ -986,10 +879,7 @@ effort on Emma wastes resources and looks unprofessional.
 
 # Part II — When AI Gets It Right
 
-The examples above might make it seem like AI always fails. It doesn't.
-AI **can** produce correct SQL — and when it does, it saves time.
-But here's the catch: **you can only benefit from AI's correct answers
-if you have the knowledge to recognize them as correct.**
+The examples above might make it seem like AI always fails. It doesn't. AI **can** produce correct SQL — and when it does, it saves time. But here's the catch: **you can only benefit from AI's correct answers if you have the knowledge to recognize them as correct.**
 
 ---
 
@@ -999,8 +889,7 @@ if you have the knowledge to recognize them as correct.**
 
 ### The Business Question
 
-Your manager asks: **"Who are our top 3 customers by total spending
-on delivered orders?"**
+Your manager asks: **"Who are our top 3 customers by total spending on delivered orders?"**
 
 ### What AI Generated
 
@@ -1029,14 +918,11 @@ LIMIT    3;
 
 ### Is This Correct?
 
-Yes. This query is correct. It joins the right tables, filters by
-delivered status, uses `sale_price` (not `unit_price`), groups by
-customer, sorts descending, and limits to the top 3.
+Yes. This query is correct. It joins the right tables, filters by delivered status, uses `sale_price` (not `unit_price`), groups by customer, sorts descending, and limits to the top 3.
 
 ### So Why Do You Still Need to Know SQL?
 
-Because **how would you know it's correct if you didn't understand
-the SQL?**
+Because **how would you know it's correct if you didn't understand the SQL?**
 
 To verify this answer, you need to understand:
 
@@ -1049,10 +935,7 @@ To verify this answer, you need to understand:
 | `ORDER BY ... DESC` | Is it sorting highest-to-lowest? |
 | `LIMIT 3` | Is it showing the top 3, not the bottom 3? |
 
-If you cannot read the SQL, you cannot answer any of these 
-questions. You are forced to **blindly trust** that the AI 
-got it right — even though the seven examples above proved 
-it often doesn't.
+If you cannot read the SQL, you cannot answer any of these questions. You are forced to **blindly trust** that the AI got it right — even though the seven examples above proved it often doesn't.
 
 > **The Lesson:** Even when AI writes correct SQL, your job is to
 > **verify** it. Verification requires understanding. Understanding
@@ -1066,9 +949,7 @@ it often doesn't.
 
 ### The Business Question
 
-Your manager asks: **"Show me total revenue by product category for
-delivered orders only. Include the number of orders and total units
-sold for each category. Use the actual price the customer paid."**
+Your manager asks: **"Show me total revenue by product category for delivered orders only. Include the number of orders and total units sold for each category. Use the actual price the customer paid."**
 
 ### What AI Generated
 
@@ -1097,8 +978,7 @@ ORDER BY total_revenue DESC;
 
 ### Is This Correct?
 
-Yes. This query is correct. But don't take our word for it —
-**prove it yourself.**
+Yes. This query is correct. But don't take our word for it — **prove it yourself.**
 
 ### Student Challenge
 
@@ -1121,9 +1001,7 @@ Here is a checklist to guide your analysis:
 
 ### Bonus Verification
 
-If you want to double-check the numbers, you can verify the
-Electronics total manually. The delivered orders containing
-electronics products are:
+If you want to double-check the numbers, you can verify the Electronics total manually. The delivered orders containing electronics products are:
 
 | `order_id` | `product` | `qty` | `sale_price` | `line_total` |
 |-----------|-----------|-------|-------------|-------------|
@@ -1138,8 +1016,7 @@ electronics products are:
 
 Electronics total: <br>
 
-`$49.98` + `$49.99` + `$79.99` + `$24.99` + `$49.99` +
-`$74.97` + `$99.98` + `$24.99` = **`$454.88`** ✓
+`$49.98` + `$49.99` + `$79.99` + `$24.99` + `$49.99` + `$74.97` + `$99.98` + `$24.99` = **`$454.88`** ✓
 
 All three categories combined: <br>
 
@@ -1160,8 +1037,7 @@ All three categories combined: <br>
 
 ### The Business Question
 
-Your manager asks: **"For each department that has employees assigned,
-show the headcount, average salary, lowest salary, and highest salary."**
+Your manager asks: **"For each department that has employees assigned, show the headcount, average salary, lowest salary, and highest salary."**
 
 ### What AI Generated
 
@@ -1209,17 +1085,9 @@ Carlos and Amy are correctly excluded by `WHERE department IS NOT NULL`.
 
 ### Why This Matters
 
-Remember Example 4? There the AI **forgot** about NULL 
-and silently dropped employees from the result. Here, 
-the AI handled NULL correctly — it used `IS NOT NULL` 
-to exclude unassigned employees, which is exactly
-what the manager requested.
+Remember Example 4? There the AI **forgot** about NULL and silently dropped employees from the result. Here, the AI handled NULL correctly — it used `IS NOT NULL` to exclude unassigned employees, which is exactly what the manager requested.
 
-But you could only confirm this by reading the SQL. 
-If you didn't understand the `WHERE department IS NOT NULL` 
-clause, you might not realize that two employees were 
-intentionally excluded — or worse, you might not notice 
-they were missing at all.
+But you could only confirm this by reading the SQL. If you didn't understand the `WHERE department IS NOT NULL` clause, you might not realize that two employees were intentionally excluded — or worse, you might not notice they were missing at all.
 
 ### Think About It
 
@@ -1243,13 +1111,9 @@ they were missing at all.
 
 ### The Business Question
 
-Your manager asks: **"Show me every product in our catalog — including
-products that have never been sold — along with their total units sold
-and total revenue from delivered orders. Products with no sales should
-show zero."**
+Your manager asks: **"Show me every product in our catalog — including products that have never been sold — along with their total units sold and total revenue from delivered orders. Products with no sales should show zero."**
 
-This is a challenging query because it combines two separate ideas:
-"all products" (even unsold ones) and "only delivered revenue."
+This is a challenging query because it combines two separate ideas: "all products" (even unsold ones) and "only delivered revenue."
 
 ### What AI Generated
 
@@ -1286,8 +1150,7 @@ ORDER BY total_revenue DESC;
 
 ### Is This Correct?
 
-Yes. This is a sophisticated query, and the AI nailed it. Let's
-break down **why** it works:
+Yes. This is a sophisticated query, and the AI nailed it. Let's break down **why** it works:
 
 | Technique | Why It's Here | Which Lesson Applies |
 |-----------|--------------|---------------------|
@@ -1299,17 +1162,13 @@ break down **why** it works:
 
 ### Verification
 
-The six product totals add up: 
+The six product totals add up:
 
-`$199.96` + `$174.93` + `$79.99` + `$64.95` + `$39.99` + `$0.00` = **`$559.82`** 
+`$199.96` + `$174.93` + `$79.99` + `$64.95` + `$39.99` + `$0.00` = **`$559.82`**
 
-— which matches the total delivered
-revenue we verified in earlier examples. ✓
+— which matches the total delivered revenue we verified in earlier examples. ✓
 
-Notice that the Paper Shredder (product 106, discontinued) 
-is included with zero sales. It was never ordered, so the 
-`LEFT JOIN` produces `NULL` values, and `COALESCE` converts 
-them to `0`.  This is exactly what the manager asked for.
+Notice that the Paper Shredder (product 106, discontinued) is included with zero sales. It was never ordered, so the `LEFT JOIN` produces `NULL` values, and `COALESCE` converts them to `0`. This is exactly what the manager asked for.
 
 ### Think About It
 
@@ -1339,12 +1198,9 @@ them to `0`.  This is exactly what the manager asked for.
 
 ## 16 — The Verdict
 
-AI is a powerful tool. It can save time, suggest 
-approaches  you haven't considered, and help you 
-write SQL faster — **once you already understand SQL**.
+AI is a powerful tool. It can save time, suggest approaches you haven't considered, and help you write SQL faster — **once you already understand SQL**.
 
-But AI is not a substitute for understanding. Here is 
-what we demonstrated across eleven examples:
+But AI is not a substitute for understanding. Here is what we demonstrated across eleven examples:
 
 | Example | AI's Answer | Correct Answer | Error |
 |---------|------------|----------------|-------|
@@ -1356,8 +1212,7 @@ what we demonstrated across eleven examples:
 | 6. Product ranking | 5 unique ranks | 2 products share rank 4 | **Tied products given different ranks** |
 | 7. Most recent order | Emma appears twice | Each customer once | **1 customer duplicated, 1 missing** |
 
-Every one of these queries ran without a single error message.
-Every one returned a clean, professional-looking table.
+Every one of these queries ran without a single error message. Every one returned a clean, professional-looking table.
 **Every one was wrong.**
 
 In a real company, these mistakes lead to:
@@ -1402,8 +1257,7 @@ Do not trust a SQL query you cannot read either.**
 
 ### The Bottom Line
 
-Learn SQL **first**. Then use AI to write it **faster**.
-Never the other way around.
+Learn SQL **first**. Then use AI to write it **faster**. Never the other way around.
 
 ---
 
@@ -1411,17 +1265,11 @@ Never the other way around.
 
 ## 18 — How to Prompt AI Better
 
-This document proved that blind trust in AI-generated SQL 
-is dangerous.  But the answer is not to avoid AI — it is 
-to **use it properly**. Once you understand SQL, AI becomes 
-a powerful accelerator. Here are six rules for getting 
-better results.
+This document proved that blind trust in AI-generated SQL is dangerous. But the answer is not to avoid AI — it is to **use it properly**. Once you understand SQL, AI becomes a powerful accelerator. Here are seven rules for getting better results.
 
 ### Rule 1 — Include the Schema
 
-Don't say "write a query for our orders database." Give the AI the
-actual `CREATE TABLE` statements. The more context it has about your
-columns, types, and relationships, the better its choices will be.
+Don't say "write a query for our orders database." Give the AI the actual `CREATE TABLE` statements. The more context it has about your columns, types, and relationships, the better its choices will be.
 
 **Weak prompt:**
 > "Write SQL to find total revenue by customer."
@@ -1437,27 +1285,39 @@ The strong prompt eliminates Examples 2 and 3 before the AI even starts.
 
 ### Rule 2 — State the Business Rules Explicitly
 
-AI does not know your business. If "revenue" only counts 
-delivered orders, say so. If employees with NULL departments 
-should be excluded, say so. If tied products must share the 
-same rank, say so. Every unstated assumption is an opportunity 
-for a mistake.
+AI does not know your business. If "revenue" only counts delivered orders, say so. If employees with NULL departments should be excluded, say so. If tied products must share the same rank, say so. Every unstated assumption is an opportunity for a mistake.
 
-Think of it this way: the seven failures in Part I all came 
-from business rules the AI had to **guess**. The fewer guesses, 
-the fewer errors.
+Think of it this way: the seven failures in Part I all came from business rules the AI had to **guess**. The fewer guesses, the fewer errors.
 
 ### Rule 3 — Specify Edge Cases
 
-Mention NULLs, ties, cancelled orders, customers with no purchases —
-whatever applies to your data. Examples 1, 4, 6, and 7 all involved
-edge cases that the AI ignored.
+Mention NULLs, ties, cancelled orders, customers with no purchases — whatever applies to your data. Examples 1, 4, 6, and 7 all involved edge cases that the AI ignored.
 
 A useful prompt addition:
 > "Note: some employees have NULL in the department column. Handle
 > them according to [your requirement]."
 
-### Rule 4 — Ask the AI to Explain Its Choices
+### Rule 4 — Name the SQL Dialect
+
+Don't just say "SQL" — say **"DuckDB SQL."** Left unstated, the AI defaults to whatever dialect shows up most in its training data — usually MySQL or generic ANSI SQL — and that can produce queries that fail outright, or worse, run and quietly behave differently.
+
+**Weak prompt:**
+> "Write SQL to get the top 3 products per category."
+
+**Strong prompt:**
+> "Write **DuckDB SQL** to get the top 3 products per category."
+
+A few real examples of what goes wrong without it:
+
+| MySQL-flavored answer | What happens in DuckDB |
+|------------------------|-------------------------|
+| `` `column_name` `` (backticks) | Syntax error — DuckDB expects double quotes |
+| `LIMIT 10, 3` (offset, count) | Syntax error — DuckDB wants `LIMIT 3 OFFSET 10` |
+| `DATE_FORMAT(order_date, '%Y-%m')` | Function doesn't exist — DuckDB uses `strftime(order_date, '%Y-%m')` |
+
+Naming the dialect also works in your favor, not just against errors: it unlocks DuckDB-specific features — `QUALIFY`, `PIVOT`/`UNPIVOT`, `LIST`/`UNNEST` — that you'll meet later in this course and that can make a query shorter than a generic ANSI SQL answer would be.
+
+### Rule 5 — Ask the AI to Explain Its Choices
 
 After the AI generates SQL, ask follow-up questions:
 
@@ -1469,21 +1329,15 @@ After the AI generates SQL, ask follow-up questions:
 > 
 > "How does this query handle NULL values?"
 
-If the AI cannot justify its decisions clearly, 
-that is a red flag. A correct query should have 
-a clear explanation for every choice.
+If the AI cannot justify its decisions clearly, that is a red flag. A correct query should have a clear explanation for every choice.
 
-### Rule 5 — Verify with Known Data
+### Rule 6 — Verify with Known Data
 
-Run the AI's query on a small dataset where you already know the
-correct answer — like the BrightCart data in this document. If the
-numbers don't match your hand calculations, you have caught a bug
-before it reaches a real report.
+Run the AI's query on a small dataset where you already know the correct answer — like the BrightCart data in this document. If the numbers don't match your hand calculations, you have caught a bug before it reaches a real report.
 
-This is the same verification technique we used in Examples 8–11.
-It works because you built the knowledge to check the output.
+This is the same verification technique we used in Examples 8–11. It works because you built the knowledge to check the output.
 
-### Rule 6 — Read the SQL Before You Run It
+### Rule 7 — Read the SQL Before You Run It
 
 Even if you trust the AI, **read the query first.** Use this checklist:
 
@@ -1497,16 +1351,167 @@ Even if you trust the AI, **read the query first.** Use this checklist:
 | Ranking function | `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — does it handle ties? | Example 6 |
 | LIMIT vs window | Is `LIMIT` being used where `PARTITION BY` is needed? | Example 7 |
 
-This checklist is exactly what you built by studying the 
-eleven examples in this document. It turns you from a passive 
-consumer of AI output into an active, critical reviewer.
+This checklist is exactly what you built by studying the eleven examples in this document. It turns you from a passive consumer of AI output into an active, critical reviewer.
+
+### Put It All Together: A Reusable Prompt Template
+
+Rules 1–4 are about what you give the AI *before* it writes anything. Bake all four into one template, fill in the brackets, and you eliminate most of the mistakes from Part I before the AI writes a single line:
+
+```
+Given these tables (DuckDB SQL):
+[paste your CREATE TABLE statements]
+
+Write a DuckDB query to: [your specific question].
+
+Business rules:
+- [e.g., "revenue" means order_items.sale_price, not products.unit_price]
+- [e.g., only include orders where status = 'Delivered']
+- [e.g., include every customer, even those with zero orders]
+
+Edge cases to handle:
+- [e.g., some rows have NULL in [column] — include or exclude them?]
+- [e.g., if two rows tie, they must share the same rank]
+```
+
+Rules 5–7 are about what you do *after* the AI answers: ask it to explain its choices, verify the numbers against data you already know, and read the query yourself before you trust it.
+
+### Try It Yourself
+
+Go back to the weak prompt from Example 5 (Section 9): *"Calculate the average order value for delivered orders. Tables: orders and order_items, linked by order_id."* That prompt produced the wrong answer — $46.65 instead of $79.97.
+
+Using the template above, rewrite it as a strong prompt. Then paste your version into an AI chatbot. Does it get $79.97 on the first try? If not, which rule did your prompt still miss?
 
 ### The Real Skill
 
-The goal of this course is not to make AI unnecessary — it is to make
-**you** the person who can tell whether AI's answer is right or wrong.
+The goal of this course is not to make AI unnecessary — it is to make **you** the person who can tell whether AI's answer is right or wrong.
 
 That is a skill no AI can replace.
+
+---
+
+<a id="section-19"></a>
+
+## 19 — Flagship Example: One Bad Prompt, One Good Prompt, Two Very Different Answers
+
+Every example so far showed you a wrong query and a hand-corrected one. This example does something closer to what you'll actually do at work: it shows the **same question**, asked two different ways — a weak prompt and a prompt that applies Rules 1–3 from Section 18 — and lets you watch the AI produce two completely different business answers from the exact same data.
+
+### The Business Question
+
+Your manager asks: **"Which of our customers are repeat customers — meaning they have more than one delivered order? For each one, show how many delivered orders they placed and their total spending across those delivered orders."**
+
+This is exactly the kind of question a marketing team asks to build a loyalty program: find the best, most loyal customers and reward them. It's a completely reasonable, everyday business request.
+
+### The Weak Prompt
+
+You're in a hurry, so you type the question into a chatbot without applying any of the rules from Section 18:
+
+> "Write SQL to find customers with more than one order, and their total spending.
+> Tables: customers, orders, order_items."
+
+Notice everything this leaves out: no schema, no mention of "delivered," no mention of which price column to use, and no warning that a single order can contain several line items.
+
+### What AI Generated
+
+```sql
+SELECT   c.first_name,
+         c.last_name,
+         COUNT(*) AS order_count,
+         SUM(oi.quantity * p.unit_price) AS total_spent
+FROM     customers c
+         JOIN orders o
+           ON c.customer_id = o.customer_id
+         JOIN order_items oi
+           ON o.order_id = oi.order_id
+         JOIN products p
+           ON oi.product_id = p.product_id
+GROUP BY c.first_name, c.last_name
+HAVING   COUNT(*) > 1
+ORDER BY total_spent DESC;
+```
+
+### The AI's Answer
+
+| `first_name` | `last_name` | `order_count` | `total_spent` |
+|--------------|-------------|---------------|----------------|
+| Bob | Martinez | 3 | 201.96 |
+| Emma | Williams | 3 | 192.96 |
+| Carol | Johnson | 3 | 168.95 |
+| David | Kim | 2 | 135.96 |
+| Alice | Chen | 3 | 122.96 |
+
+Five repeat customers, ready to load into the loyalty program. The query ran without a single error.
+
+### What's Wrong — Three Mistakes at Once
+
+This one query repeats three mistakes from Part I simultaneously.
+
+1. **`COUNT(*)` counts line items, not orders — the fan-out bug.** Joining `order_items` turns each order into one row per line item. David Kim placed exactly **one** order (order 1007), but that order has two line items — so `COUNT(*)` reports 2, and he is wrongly flagged as a repeat customer. This is the same wrong-grain mistake as Example 5, now showing up as a headcount instead of an average.
+
+2. **No status filter — the same mistake as Example 3.** Bob's second "order" (1004) was **Cancelled**. Emma's second "order" (1009) is still **Pending**. Carol's second "order" (1006) was **Returned**. None of these should count as evidence of repeat business or contribute revenue. The AI counted all of them anyway.
+
+3. **`products.unit_price` instead of `order_items.sale_price` — the same mistake as Example 2.** Every dollar figure above uses today's catalog price, not what the customer actually paid.
+
+Stack those three mistakes together and the damage compounds. Once you remove the cancelled, returned, and pending orders, **only Alice Chen has more than one delivered order.** The other four names on this list don't belong there at all — and this isn't a report headed to a drawer, it's a list of people about to receive a "thank you for your loyalty" email they didn't earn.
+
+### The Revised Prompt
+
+Now apply Rules 1–3 from Section 18 — schema, business rules, edge cases — before sending anything to the AI:
+
+> "Given these tables (DuckDB SQL): [paste the `customers`, `orders`, and
+> `order_items` `CREATE TABLE` statements]. Write a DuckDB query to find repeat
+> customers — customers with more than one **delivered** order. Use
+> `COUNT(DISTINCT o.order_id)` to count orders, not `COUNT(*)`, because one order
+> can have several line items. For revenue, use `order_items.sale_price` (the
+> price the customer actually paid), not `products.unit_price`. Only count orders
+> where `status = 'Delivered'` — exclude Cancelled, Returned, and Pending orders
+> from both the order count and the total spending."
+
+Every sentence in this prompt closes one of the three gaps above.
+
+### What AI Generated This Time
+
+```sql
+SELECT   c.first_name,
+         c.last_name,
+         COUNT(DISTINCT o.order_id) AS order_count,
+         SUM(oi.quantity * oi.sale_price) AS total_spent
+FROM     customers c
+         JOIN orders o
+           ON c.customer_id = o.customer_id
+         JOIN order_items oi
+           ON o.order_id = oi.order_id
+WHERE    o.status = 'Delivered'
+GROUP BY c.first_name, c.last_name
+HAVING   COUNT(DISTINCT o.order_id) > 1
+ORDER BY total_spent DESC;
+```
+
+### The Correct Answer
+
+| `first_name` | `last_name` | `order_count` | `total_spent` |
+|--------------|-------------|---------------|----------------|
+| Alice | Chen | 2 | 112.96 |
+
+One repeat customer, not five. And $112.96 — not $122.96 — is her real total. (You already verified this exact number once before, in Example 8's Top 3 Customers list.)
+
+### Side-by-Side: The Two Prompts
+
+| | Weak Prompt | Revised Prompt |
+|---|---|---|
+| Schema included? | No | Yes (Rule 1) |
+| "Delivered only" stated? | No | Yes (Rule 2) |
+| Price column specified? | No | Yes (Rule 1) |
+| Multi-line-item orders addressed? | No | Yes (Rule 3) |
+| Repeat customers found | **5** | **1** |
+| Top total spending shown | **$201.96** | **$112.96** |
+| Correct? | No | Yes |
+
+Same manager, same question, same data — **the only thing that changed was the prompt** — and it changed the business decision entirely. Load the AI's first answer into a loyalty campaign and you'd email four customers (Bob, Carol, David, Emma) who don't qualify, while still correctly reaching the one who does.
+
+> **The Lesson:** A weak prompt and a strong prompt are not two versions of the
+> same question — on real data, they can produce two completely different business
+> decisions. Everything in Section 18 exists to close that gap. Rules 1–3 alone —
+> schema, business rules, edge cases — turned five wrong names into one right one.
 
 ---
 
