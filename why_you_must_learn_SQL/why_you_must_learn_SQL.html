@@ -1019,13 +1019,21 @@ FROM   order_items;</code></pre></div>
 
 <h3 id="toc_28">The Business Impact</h3>
 
-<p>A 6.6% revenue overstatement in a report might seem small on 10 orders. On a company doing \(10 million in annual sales, the same mistake overstates revenue by **\)660,000**. That&rsquo;s the kind of error that leads to wrong financial forecasts, incorrect tax filings, and very difficult conversations with auditors.</p>
+<p>A <code>6.6%</code> revenue overstatement in a report might 
+seem small on <code>10</code> orders. On a company doing 
+<code>$10 million</code> in annual sales, the same mistake 
+overstates revenue by <strong><code>$660,000</code></strong>. That&rsquo;s the 
+kind of error that leads to wrong financial 
+forecasts, incorrect tax filings, and very 
+difficult conversations with auditors.</p>
 
 <blockquote>
-<p><strong>The Lesson:</strong> Databases often store the same type of information
-(like &ldquo;price&rdquo;) in multiple places. The <strong>current</strong> price and the
-<strong>historical</strong> price are different numbers. AI doesn&rsquo;t understand your
-business well enough to know which one to use. You do — but only
+<p><strong>The Lesson:</strong> Databases often store the 
+same type of information (like &ldquo;price&rdquo;) in 
+multiple places. The <strong>current</strong> price and 
+the <strong>historical</strong> price are different numbers. 
+AI doesn&rsquo;t understand your business well enough 
+to know which one to use. You do — but only
 if you understand the schema and the SQL.</p>
 </blockquote>
 
@@ -2375,19 +2383,26 @@ ORDER BY total_revenue DESC;</code></pre></div>
 
 <p><code>$199.96</code> + <code>$174.93</code> + <code>$79.99</code> + <code>$64.95</code> + <code>$39.99</code> + <code>$0.00</code> = <strong><code>$559.82</code></strong></p>
 
-<p>— which matches the total delivered revenue we verified in earlier examples. ✓</p>
+<p>— which matches the total delivered revenue we verified 
+in earlier examples. ✓</p>
 
-<p>Notice that the Paper Shredder (product 106, discontinued) is included with zero sales. It was never ordered, so the <code>LEFT JOIN</code> produces <code>NULL</code> values, and <code>COALESCE</code> converts them to <code>0</code>. This is exactly what the manager asked for.</p>
+<p>Notice that the Paper Shredder (product 106, discontinued) 
+is included with zero sales. It was never ordered, so the 
+<code>LEFT JOIN</code> produces <code>NULL</code> values, and <code>COALESCE</code> converts 
+them to <code>0</code>. This is exactly what the manager asked for.</p>
 
 <h3 id="toc_98">Think About It</h3>
 
 <blockquote>
-<p><strong>Question for you:</strong> The <code>current_price</code> column shows today&rsquo;s
-catalog price (\(29.99 for the Wireless Mouse), but the `total_revenue`
-column is based on the historical `sale_price` (\)24.99 per unit).
-That means \(29.99 × 7 units = \)209.93, but the actual revenue is
-$174.93. Why is this difference a feature, not a bug? What would
-go wrong if the query used <code>current_price</code> to calculate revenue?</p>
+<p><strong>Question for you:</strong> The <code>current_price</code> column 
+shows today&rsquo;s catalog price (<code>$29.99</code> for the 
+Wireless Mouse), but the <code>total_revenue</code> column 
+is based on the historical <code>sale_price</code> (<code>$24.99</code> 
+per unit). That means <code>$29.99 × 7 units = $209.93</code>, 
+but the actual revenue is <code>$174.93</code>. Why is this 
+difference a feature, not a bug? What would go 
+wrong if the query used <code>current_price</code> to 
+calculate revenue?</p>
 
 <p><em>(Hint: Review Example 2.)</em></p>
 

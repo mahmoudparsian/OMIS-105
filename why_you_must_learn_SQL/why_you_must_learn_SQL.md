@@ -453,12 +453,20 @@ The real revenue is **$799.78**, not $852.78. The AI's answer was **$53.00 too h
 
 ### The Business Impact
 
-A 6.6% revenue overstatement in a report might seem small on 10 orders. On a company doing $10 million in annual sales, the same mistake overstates revenue by **$660,000**. That's the kind of error that leads to wrong financial forecasts, incorrect tax filings, and very difficult conversations with auditors.
+A `6.6%` revenue overstatement in a report might 
+seem small on `10` orders. On a company doing 
+`$10 million` in annual sales, the same mistake 
+overstates revenue by **`$660,000`**. That's the 
+kind of error that leads to wrong financial 
+forecasts, incorrect tax filings, and very 
+difficult conversations with auditors.
 
-> **The Lesson:** Databases often store the same type of information
-> (like "price") in multiple places. The **current** price and the
-> **historical** price are different numbers. AI doesn't understand your
-> business well enough to know which one to use. You do — but only
+> **The Lesson:** Databases often store the 
+> same type of information (like "price") in 
+> multiple places. The **current** price and 
+> the **historical** price are different numbers. 
+> AI doesn't understand your business well enough 
+> to know which one to use. You do — but only
 > if you understand the schema and the SQL.
 
 ---
@@ -1166,18 +1174,25 @@ The six product totals add up:
 
 `$199.96` + `$174.93` + `$79.99` + `$64.95` + `$39.99` + `$0.00` = **`$559.82`**
 
-— which matches the total delivered revenue we verified in earlier examples. ✓
+— which matches the total delivered revenue we verified 
+in earlier examples. ✓
 
-Notice that the Paper Shredder (product 106, discontinued) is included with zero sales. It was never ordered, so the `LEFT JOIN` produces `NULL` values, and `COALESCE` converts them to `0`. This is exactly what the manager asked for.
+Notice that the Paper Shredder (product 106, discontinued) 
+is included with zero sales. It was never ordered, so the 
+`LEFT JOIN` produces `NULL` values, and `COALESCE` converts 
+them to `0`. This is exactly what the manager asked for.
 
 ### Think About It
 
-> **Question for you:** The `current_price` column shows today's
-> catalog price ($29.99 for the Wireless Mouse), but the `total_revenue`
-> column is based on the historical `sale_price` ($24.99 per unit).
-> That means $29.99 × 7 units = $209.93, but the actual revenue is
-> $174.93. Why is this difference a feature, not a bug? What would
-> go wrong if the query used `current_price` to calculate revenue?
+> **Question for you:** The `current_price` column 
+> shows today's catalog price (`$29.99` for the 
+> Wireless Mouse), but the `total_revenue` column 
+> is based on the historical `sale_price` (`$24.99` 
+> per unit). That means `$29.99 × 7 units = $209.93`, 
+> but the actual revenue is `$174.93`. Why is this 
+> difference a feature, not a bug? What would go 
+> wrong if the query used `current_price` to 
+> calculate revenue?
 >
 > *(Hint: Review Example 2.)*
 
