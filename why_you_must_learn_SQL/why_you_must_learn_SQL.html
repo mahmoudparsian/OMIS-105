@@ -477,7 +477,7 @@ pre[class*="language-"] {
 <li><strong>Course:</strong> OMIS 105 — Introduction to Database Management Systems</li>
 <li><strong>Quarter:</strong> Fall 2026</li>
 <li><strong>Author:</strong> Dr. Mahmoud Parsian</li>
-<li><strong>Last updated:</strong> August 5, 2026</li>
+<li><strong>Last updated:</strong> September 11, 2026</li>
 </ul>
 
 <hr>
@@ -515,6 +515,7 @@ pre[class*="language-"] {
 <li><a href="#section-16">The Verdict</a></li>
 <li><a href="#section-17">Summary of Lessons</a></li>
 <li><a href="#section-18">How to Prompt AI Better</a></li>
+<li><a href="#section-19">Flagship Example: One Bad Prompt, One Good Prompt, Two Very Different Answers</a></li>
 </ol>
 
 <hr>
@@ -531,25 +532,16 @@ pre[class*="language-"] {
 <p>&ldquo;Why do I need to learn SQL? I can just ask AI to write it for me.&rdquo;</p>
 </blockquote>
 
-<p>Fair question. AI tools like ChatGPT and Claude <strong>can</strong> generate SQL.
-The queries they produce often look correct, run without errors,
-and return a table of results. So what&rsquo;s the problem?</p>
+<p>Fair question. AI tools like ChatGPT and Claude <strong>can</strong> generate SQL. The queries they produce often look correct, run without errors, and return a table of results. So what&rsquo;s the problem?</p>
 
 <p><strong>The problem is that &ldquo;runs without errors&rdquo; and &ldquo;gives the right answer&rdquo;
 are two completely different things.</strong></p>
 
-<p>A query can execute perfectly and still return the <strong>wrong number</strong>.
-The wrong revenue. The wrong customer count. The wrong average.
-The wrong ranking. And if you don&rsquo;t know SQL, you will never notice.</p>
+<p>A query can execute perfectly and still return the <strong>wrong number</strong>. The wrong revenue. The wrong customer count. The wrong average. The wrong ranking. And if you don&rsquo;t know SQL, you will never notice.</p>
 
-<p>In this document, we will use a realistic retail database to show you
-<strong>seven real examples</strong> where AI-generated SQL runs successfully but
-produces an incorrect answer — the kind of mistake that could cost a
-company money, damage a report, or lead to a bad business decision.</p>
+<p>In this document, we will use a realistic retail database to show you <strong>seven real examples</strong> where AI-generated SQL runs successfully but produces an incorrect answer — the kind of mistake that could cost a company money, damage a report, or lead to a bad business decision.</p>
 
-<p>We will also show you <strong>four examples</strong> where AI gets it right — and
-explain why <strong>you still need SQL knowledge</strong> to verify and trust the
-output.</p>
+<p>We will also show you <strong>four examples</strong> where AI gets it right — and explain why <strong>you still need SQL knowledge</strong> to verify and trust the output.</p>
 
 <blockquote>
 <p><strong>Note:</strong> You don&rsquo;t need to understand every SQL keyword in this
@@ -563,13 +555,9 @@ why it matters. You will learn all of these techniques during the course.</p>
 
 <h2 id="toc_4">2 — The Company: BrightCart Retail</h2>
 
-<p>BrightCart is a small online retailer that sells office supplies and
-electronics. They have been in business since 2023 and track everything
-in a database: customers, products, orders, line items, and employees.</p>
+<p>BrightCart is a small online retailer that sells office supplies and electronics. They have been in business since 2023 and track everything in a database: customers, products, orders, line items, and employees.</p>
 
-<p>You are a new business analyst at BrightCart. Your manager gives you
-questions about the business, and you decide to let AI write the SQL.
-Let&rsquo;s see how that goes.</p>
+<p>You are a new business analyst at BrightCart. Your manager gives you questions about the business, and you decide to let AI write the SQL. Let&rsquo;s see how that goes.</p>
 
 <hr>
 
@@ -672,19 +660,13 @@ Let&rsquo;s see how that goes.</p>
 </tbody>
 </table>
 
-<p>The <code>order_items</code> table sits at the center — it connects orders to
-products and stores the actual quantity and price for each purchase.
-This is a common pattern in retail databases.</p>
+<p>The <code>order_items</code> table sits at the center — it connects orders to products and stores the actual quantity and price for each purchase. This is a common pattern in retail databases.</p>
 
 <p>Two important things to notice:</p>
 
 <ol>
-<li><p><strong><code>products.unit_price</code></strong> is the <strong>current</strong> catalog price. But prices
-change over time. The price a customer actually paid is stored in
-<strong><code>order_items.sale_price</code></strong>. These two numbers can be different.</p></li>
-<li><p><strong><code>orders.status</code></strong> tells you whether an order was actually fulfilled.
-Not every order in the database represents real revenue — some were
-cancelled, returned, or are still pending.</p></li>
+<li><p><strong><code>products.unit_price</code></strong> is the <strong>current</strong> catalog price. But prices change over time. The price a customer actually paid is stored in <strong><code>order_items.sale_price</code></strong>. These two numbers can be different.</p></li>
+<li><p><strong><code>orders.status</code></strong> tells you whether an order was actually fulfilled. Not every order in the database represents real revenue — some were cancelled, returned, or are still pending.</p></li>
 </ol>
 
 <hr>
@@ -693,9 +675,7 @@ cancelled, returned, or are still pending.</p></li>
 
 <h2 id="toc_7">4 — Setting Up the Data in qStudio</h2>
 
-<p>Open qStudio, connect to DuckDB, and run the following SQL blocks
-one at a time. This creates the five tables and fills them with
-realistic data.</p>
+<p>Open qStudio, connect to DuckDB, and run the following SQL blocks one at a time. This creates the five tables and fills them with realistic data.</p>
 
 <h3 id="toc_8">4.1 — Create the Tables</h3>
 
@@ -830,7 +810,7 @@ SELECT &#39;order_items&#39;, COUNT(*) FROM order_items
 UNION ALL
 SELECT &#39;employees&#39;,   COUNT(*) FROM employees;</code></pre></div>
 
-<p>You should see: </p>
+<p>You should see:</p>
 
 <div><pre><code class="language-none">┌─────────────┬───────┐
 │ table_name  │ rows  │
@@ -851,8 +831,7 @@ SELECT &#39;employees&#39;,   COUNT(*) FROM employees;</code></pre></div>
 
 <h3 id="toc_12">The Business Question</h3>
 
-<p>Your manager asks: <strong>&ldquo;How many orders has each customer placed?
-I want to see all customers, including those who haven&rsquo;t ordered yet.&rdquo;</strong></p>
+<p>Your manager asks: <strong>&ldquo;How many orders has each customer placed? I want to see all customers, including those who haven&rsquo;t ordered yet.&rdquo;</strong></p>
 
 <h3 id="toc_13">What You Asked AI</h3>
 
@@ -864,8 +843,7 @@ placed. I want to see all customers, including those with no orders.
 Tables: customers and orders, linked by customer_id.&rdquo;</p>
 </blockquote>
 
-<p>The prompt is clear — it even says &ldquo;including those with no orders.&rdquo;
-Let&rsquo;s see what the AI produces.</p>
+<p>The prompt is clear — it even says &ldquo;including those with no orders.&rdquo; Let&rsquo;s see what the AI produces.</p>
 
 <h3 id="toc_14">What AI Generated</h3>
 
@@ -892,20 +870,15 @@ ORDER BY total_orders DESC;</code></pre></div>
 │ Frank      │ Brown     │            1 │
 └────────────┴───────────┴──────────────┘</code></pre></div>
 
-<p>The query runs perfectly. No errors. Six customers, 
-each with at least one order. Looks good, right?</p>
+<p>The query runs perfectly. No errors. Six customers, each with at least one order. Looks good, right?</p>
 
 <h3 id="toc_16">What&rsquo;s Wrong</h3>
 
 <p>BrightCart has <strong>8</strong> customers, not 6. Where are Grace Lee and Henry Davis?</p>
 
-<p>The AI used a <strong>JOIN</strong> (also called an INNER JOIN), which only returns
-customers that have a <strong>matching</strong> row in the orders table. Grace and
-Henry have never placed an order, so they have no match — and they
-silently disappear from the results.</p>
+<p>The AI used a <strong>JOIN</strong> (also called an INNER JOIN), which only returns customers that have a <strong>matching</strong> row in the orders table. Grace and Henry have never placed an order, so they have no match — and they silently disappear from the results.</p>
 
-<p>The manager explicitly asked for <strong>all customers, including those who
-haven&rsquo;t ordered</strong>. The AI ignored that requirement.</p>
+<p>The manager explicitly asked for <strong>all customers, including those who haven&rsquo;t ordered</strong>. The AI ignored that requirement.</p>
 
 <h3 id="toc_17">The Correct SQL</h3>
 
@@ -934,16 +907,13 @@ ORDER BY total_orders DESC;</code></pre></div>
 │ Henry      │ Davis     │            0 │
 └────────────┴───────────┴──────────────┘</code></pre></div>
 
-<p>Now we see all 8 customers. Grace and Henry show 0 
-orders — exactly the information the manager needed.</p>
+<p>Now we see all 8 customers. Grace and Henry show 0 orders — exactly the information the manager needed.</p>
 
 <h3 id="toc_19">The Business Impact</h3>
 
 <p>If you used the AI&rsquo;s answer, you would report:
 <em>&ldquo;Our least active customer has 1 order. Everyone is buying.&rdquo;</em>
-In reality, 25% of your customers have <strong>never purchased anything</strong>.
-That&rsquo;s critical information for a re-engagement campaign. The AI&rsquo;s
-answer hid it completely.</p>
+In reality, 25% of your customers have <strong>never purchased anything</strong>. That&rsquo;s critical information for a re-engagement campaign. The AI&rsquo;s answer hid it completely.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> <code>JOIN</code> and <code>LEFT JOIN</code> are not the same thing.
@@ -968,9 +938,7 @@ from your results — and the query will still run without any error.</p>
 Tables: customers, products, orders, order_items.&rdquo;</p>
 </blockquote>
 
-<p>Notice what&rsquo;s missing from the prompt: you didn&rsquo;t specify <strong>which price
-column</strong> to use — because you don&rsquo;t know there are two. The AI has to
-guess, and it guesses wrong.</p>
+<p>Notice what&rsquo;s missing from the prompt: you didn&rsquo;t specify <strong>which price column</strong> to use — because you don&rsquo;t know there are two. The AI has to guess, and it guesses wrong.</p>
 
 <h3 id="toc_23">What AI Generated</h3>
 
@@ -999,9 +967,7 @@ FROM   order_items oi
 
 <h3 id="toc_25">What&rsquo;s Wrong</h3>
 
-<p>The AI calculated revenue using <strong><code>products.unit_price</code></strong> — the <strong>current</strong>
-catalog price. But two products have had price increases since these
-orders were placed:</p>
+<p>The AI calculated revenue using <strong><code>products.unit_price</code></strong> — the <strong>current</strong> catalog price. But two products have had price increases since these orders were placed:</p>
 
 <table>
 <thead>
@@ -1026,9 +992,7 @@ orders were placed:</p>
 </tbody>
 </table>
 
-<p>The price customers <strong>actually paid</strong> is stored in
-<strong><code>order_items.sale_price</code></strong>. The AI joined to the wrong table and used
-the wrong price column.</p>
+<p>The price customers <strong>actually paid</strong> is stored in <strong><code>order_items.sale_price</code></strong>. The AI joined to the wrong table and used the wrong price column.</p>
 
 <h3 id="toc_26">The Correct SQL</h3>
 
@@ -1051,16 +1015,11 @@ FROM   order_items;</code></pre></div>
 </tbody>
 </table>
 
-<p>The real revenue is <strong>$799.78</strong>, not \(852.78.
-The AI&rsquo;s answer was **\)53.00 too high** — a 6.6% overstatement.</p>
+<p>The real revenue is <strong>$799.78</strong>, not \(852.78. The AI&rsquo;s answer was **\)53.00 too high** — a 6.6% overstatement.</p>
 
 <h3 id="toc_28">The Business Impact</h3>
 
-<p>A 6.6% revenue overstatement in a report might seem small on 10 orders.
-On a company doing \(10 million in annual sales, the same mistake
-overstates revenue by **\)660,000**. That&rsquo;s the kind of error that leads
-to wrong financial forecasts, incorrect tax filings, and very difficult
-conversations with auditors.</p>
+<p>A 6.6% revenue overstatement in a report might seem small on 10 orders. On a company doing \(10 million in annual sales, the same mistake overstates revenue by **\)660,000**. That&rsquo;s the kind of error that leads to wrong financial forecasts, incorrect tax filings, and very difficult conversations with auditors.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> Databases often store the same type of information
@@ -1086,9 +1045,7 @@ if you understand the schema and the SQL.</p>
 <p>&ldquo;How many orders were delivered in Q4 2024? Table: orders.&rdquo;</p>
 </blockquote>
 
-<p>You said &ldquo;delivered,&rdquo; but you didn&rsquo;t tell the AI that the table has a
-<code>status</code> column that needs to be filtered. The AI treats &ldquo;delivered&rdquo;
-as a time-range description, not as a SQL filter condition.</p>
+<p>You said &ldquo;delivered,&rdquo; but you didn&rsquo;t tell the AI that the table has a <code>status</code> column that needs to be filtered. The AI treats &ldquo;delivered&rdquo; as a time-range description, not as a SQL filter condition.</p>
 
 <h3 id="toc_32">What AI Generated</h3>
 
@@ -1116,8 +1073,7 @@ WHERE  order_date BETWEEN &#39;2024-10-01&#39; AND &#39;2024-12-31&#39;;</code><
 
 <h3 id="toc_34">What&rsquo;s Wrong</h3>
 
-<p>The AI counted <strong>all</strong> orders in that date range, regardless of status.
-But not all orders were delivered:</p>
+<p>The AI counted <strong>all</strong> orders in that date range, regardless of status. But not all orders were delivered:</p>
 
 <table>
 <thead>
@@ -1182,8 +1138,7 @@ But not all orders were delivered:</p>
 </tbody>
 </table>
 
-<p>Three orders were not successfully delivered: one was cancelled,
-one was returned, and one is still pending.</p>
+<p>Three orders were not successfully delivered: one was cancelled, one was returned, and one is still pending.</p>
 
 <h3 id="toc_35">The Correct SQL</h3>
 
@@ -1208,16 +1163,11 @@ WHERE  order_date BETWEEN &#39;2024-10-01&#39; AND &#39;2024-12-31&#39;
 </tbody>
 </table>
 
-<p>The real answer is <strong>7</strong>, not 10.
-The AI inflated the count by <strong>43%</strong>.</p>
+<p>The real answer is <strong>7</strong>, not 10. The AI inflated the count by <strong>43%</strong>.</p>
 
 <h3 id="toc_37">The Business Impact</h3>
 
-<p>If you report 10 deliveries when only 7 actually shipped, 
-your fulfillment metrics look artificially strong. The 
-operations team thinks everything is fine. Meanwhile, 
-30% of orders are failing — a serious problem that nobody 
-is investigating because the report said 10.</p>
+<p>If you report 10 deliveries when only 7 actually shipped, your fulfillment metrics look artificially strong. The operations team thinks everything is fine. Meanwhile, 30% of orders are failing — a serious problem that nobody is investigating because the report said 10.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> AI doesn&rsquo;t understand your business rules. It doesn&rsquo;t
@@ -1279,20 +1229,13 @@ WHERE  department != &#39;Sales&#39;;</code></pre></div>
 
 <h3 id="toc_42">What&rsquo;s Wrong</h3>
 
-<p>BrightCart has <strong>7</strong> employees. Two are in Sales (Sarah and Mike).
-That leaves <strong>5</strong> who are not in Sales. But the AI only found 3.</p>
+<p>BrightCart has <strong>7</strong> employees. Two are in Sales (Sarah and Mike). That leaves <strong>5</strong> who are not in Sales. But the AI only found 3.</p>
 
-<p>Where are Carlos Rivera and Amy Zhang? They are recent hires whose
-department has not been assigned yet — their <code>department</code> column is
-<strong>NULL</strong> (empty/unknown).</p>
+<p>Where are Carlos Rivera and Amy Zhang? They are recent hires whose department has not been assigned yet — their <code>department</code> column is <strong>NULL</strong> (empty/unknown).</p>
 
-<p>In SQL, <code>NULL</code> is special. It does not equal anything, and it does
-not <em>not-equal</em> anything either. The comparison <code>NULL != &#39;Sales&#39;</code> does
-not return TRUE — it returns <strong>NULL</strong>, which SQL treats as &ldquo;unknown,&rdquo;
-and the row is excluded.</p>
+<p>In SQL, <code>NULL</code> is special. It does not equal anything, and it does not <em>not-equal</em> anything either. The comparison <code>NULL != &#39;Sales&#39;</code> does not return TRUE — it returns <strong>NULL</strong>, which SQL treats as &ldquo;unknown,&rdquo; and the row is excluded.</p>
 
-<p>This is one of the most common mistakes in SQL, and AI makes it
-frequently.</p>
+<p>This is one of the most common mistakes in SQL, and AI makes it frequently.</p>
 
 <h3 id="toc_43">The Correct SQL</h3>
 
@@ -1343,17 +1286,11 @@ WHERE  department != &#39;Sales&#39;
 </tbody>
 </table>
 
-<p>Now we see all 5 employees who are not in Sales, 
-including the two unassigned new hires.</p>
+<p>Now we see all 5 employees who are not in Sales, including the two unassigned new hires.</p>
 
 <h3 id="toc_45">The Business Impact</h3>
 
-<p>If you used the AI&rsquo;s answer to send a company-wide 
-announcement to &ldquo;everyone outside Sales,&rdquo; Carlos and 
-Amy would never receive it.  If you used it to calculate 
-headcount for budget planning, your non-Sales departments 
-would appear to have 3 people instead of 5 — understaffed 
-by 40%.</p>
+<p>If you used the AI&rsquo;s answer to send a company-wide announcement to &ldquo;everyone outside Sales,&rdquo; Carlos and Amy would never receive it. If you used it to calculate headcount for budget planning, your non-Sales departments would appear to have 3 people instead of 5 — understaffed by 40%.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> NULL is not a value — it means &ldquo;unknown.&rdquo; Standard
@@ -1379,10 +1316,7 @@ and the query runs without any error or warning.</p>
 Tables: orders and order<em>items, linked by order</em>id.&rdquo;</p>
 </blockquote>
 
-<p>&ldquo;Average order value&rdquo; sounds clear in English, but it is ambiguous in
-SQL: do you mean the average of each <strong>line item&rsquo;s value</strong>, or the
-average of each <strong>order&rsquo;s total</strong>? The AI picks the simpler
-interpretation — and gets the wrong number.</p>
+<p>&ldquo;Average order value&rdquo; sounds clear in English, but it is ambiguous in SQL: do you mean the average of each <strong>line item&rsquo;s value</strong>, or the average of each <strong>order&rsquo;s total</strong>? The AI picks the simpler interpretation — and gets the wrong number.</p>
 
 <h3 id="toc_49">What AI Generated</h3>
 
@@ -1464,13 +1398,9 @@ WHERE  o.status = &#39;Delivered&#39;;</code></pre></div>
 </tbody>
 </table>
 
-<p>The average of these 7 order totals is:
-(\(62.97 + \)49.99 + \(104.98 + \)88.96 + \(114.96 + \)112.97 + \(24.99) ÷ 7 = **\)79.97**</p>
+<p>The average of these 7 order totals is: (\(62.97 + \)49.99 + \(104.98 + \)88.96 + \(114.96 + \)112.97 + \(24.99) ÷ 7 = **\)79.97**</p>
 
-<p>The AI&rsquo;s answer of <code>$46.65</code> is <strong>42% too low</strong> because it 
-averaged 12 line items instead of 7 order totals. An order 
-with 3 line items got 3 times the weight of an order with 
-1 line item.</p>
+<p>The AI&rsquo;s answer of <code>$46.65</code> is <strong>42% too low</strong> because it averaged 12 line items instead of 7 order totals. An order with 3 line items got 3 times the weight of an order with 1 line item.</p>
 
 <h3 id="toc_52">The Correct SQL</h3>
 
@@ -1505,12 +1435,7 @@ FROM (
 
 <h3 id="toc_54">The Business Impact</h3>
 
-<p>Average order value is a key metric for pricing strategy, 
-marketing spend, and revenue forecasting. If you report 
-<code>$47</code> instead of <code>$80</code>, management might conclude that 
-customers aren&rsquo;t spending enough and launch unnecessary 
-discounts — cutting into margins to solve a problem
-that doesn&rsquo;t exist.</p>
+<p>Average order value is a key metric for pricing strategy, marketing spend, and revenue forecasting. If you report <code>$47</code> instead of <code>$80</code>, management might conclude that customers aren&rsquo;t spending enough and launch unnecessary discounts — cutting into margins to solve a problem that doesn&rsquo;t exist.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> &ldquo;Average&rdquo; depends on <strong>what you&rsquo;re averaging</strong>. Are
@@ -1527,9 +1452,7 @@ fine. The number looks reasonable. But it&rsquo;s the wrong number.</p>
 
 <h3 id="toc_56">The Business Question</h3>
 
-<p>Your manager asks: <strong>&ldquo;Rank our products by total units sold from
-delivered orders. If two products sold the same quantity, they must
-share the same rank.&rdquo;</strong></p>
+<p>Your manager asks: <strong>&ldquo;Rank our products by total units sold from delivered orders. If two products sold the same quantity, they must share the same rank.&rdquo;</strong></p>
 
 <h3 id="toc_57">What AI Generated</h3>
 
@@ -1588,17 +1511,11 @@ GROUP BY p.product_name;</code></pre></div>
 
 <h3 id="toc_59">What&rsquo;s Wrong</h3>
 
-<p>Look at the bottom two products: the Standing Desk Mat and the
-Webcam HD <strong>both sold exactly 1 unit</strong>. They are tied. The manager
-explicitly asked for tied products to share the same rank.</p>
+<p>Look at the bottom two products: the Standing Desk Mat and the Webcam HD <strong>both sold exactly 1 unit</strong>. They are tied. The manager explicitly asked for tied products to share the same rank.</p>
 
-<p>But the AI used <strong><code>ROW_NUMBER()</code></strong>, which assigns a unique sequential
-number to every row — it <strong>never produces ties</strong>. The Desk Mat got
-rank 4 and the Webcam got rank 5 purely based on arbitrary internal
-ordering, not on actual performance.</p>
+<p>But the AI used <strong><code>ROW_NUMBER()</code></strong>, which assigns a unique sequential number to every row — it <strong>never produces ties</strong>. The Desk Mat got rank 4 and the Webcam got rank 5 purely based on arbitrary internal ordering, not on actual performance.</p>
 
-<p>The correct function is <strong><code>RANK()</code></strong>, which gives tied rows the same
-rank number.</p>
+<p>The correct function is <strong><code>RANK()</code></strong>, which gives tied rows the same rank number.</p>
 
 <h3 id="toc_60">The Correct SQL</h3>
 
@@ -1653,18 +1570,11 @@ GROUP BY p.product_name;</code></pre></div>
 </tbody>
 </table>
 
-<p>Now both products that sold 1 unit share <strong>rank 4</strong> — exactly what
-the manager asked for.</p>
+<p>Now both products that sold 1 unit share <strong>rank 4</strong> — exactly what the manager asked for.</p>
 
 <h3 id="toc_62">The Business Impact</h3>
 
-<p>Imagine the ranking is used to decide which products to 
-discontinue: <em>&ldquo;Cut the lowest-ranked product.&rdquo;</em> With the 
-AI&rsquo;s answer, only the Webcam (rank 5) gets flagged. The 
-Desk Mat (rank 4) looks like it performed better — even 
-though they had identical sales. You might discontinue 
-one product while keeping another that performed exactly
-the same. Fair decisions require accurate rankings.</p>
+<p>Imagine the ranking is used to decide which products to discontinue: <em>&ldquo;Cut the lowest-ranked product.&rdquo;</em> With the AI&rsquo;s answer, only the Webcam (rank 5) gets flagged. The Desk Mat (rank 4) looks like it performed better — even though they had identical sales. You might discontinue one product while keeping another that performed exactly the same. Fair decisions require accurate rankings.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> <code>ROW_NUMBER()</code>, <code>RANK()</code>, and <code>DENSE_RANK()</code> are
@@ -1682,8 +1592,7 @@ which function the AI chose.</p>
 
 <h3 id="toc_64">The Business Question</h3>
 
-<p>Your manager asks: <strong>&ldquo;For each customer who has placed an order,
-show me their single most recent order with the order date and status.&rdquo;</strong></p>
+<p>Your manager asks: <strong>&ldquo;For each customer who has placed an order, show me their single most recent order with the order date and status.&rdquo;</strong></p>
 
 <h3 id="toc_65">What AI Generated</h3>
 
@@ -1757,24 +1666,15 @@ LIMIT    6;</code></pre></div>
 </tbody>
 </table>
 
-<p>Six rows. Six customers have orders, 
-so one row per customer, right?</p>
+<p>Six rows. Six customers have orders, so one row per customer, right?</p>
 
 <h3 id="toc_67">What&rsquo;s Wrong</h3>
 
-<p>Look carefully: <strong>Emma Williams appears twice</strong> 
-(orders 1009 and 1008). And <strong>Frank Brown is completely 
-missing</strong> — his most recent order (1010, October 10) 
-didn&rsquo;t make the global top-6 cutoff.</p>
+<p>Look carefully: <strong>Emma Williams appears twice</strong> (orders 1009 and 1008). And <strong>Frank Brown is completely missing</strong> — his most recent order (1010, October 10) didn&rsquo;t make the global top-6 cutoff.</p>
 
-<p>The AI used <code>ORDER BY ... LIMIT 6</code>, which returns the 
-<strong>6 most recent orders across all customers</strong>. It does 
-not return the most recent order <strong>for each</strong> customer. 
-<code>LIMIT</code> is a global cap — it has no concept of &ldquo;per group.&rdquo;</p>
+<p>The AI used <code>ORDER BY ... LIMIT 6</code>, which returns the <strong>6 most recent orders across all customers</strong>. It does not return the most recent order <strong>for each</strong> customer. <code>LIMIT</code> is a global cap — it has no concept of &ldquo;per group.&rdquo;</p>
 
-<p>To get one row per customer, you need a <strong>window function</strong> 
-that partitions the data by customer and picks the top row 
-within each partition.</p>
+<p>To get one row per customer, you need a <strong>window function</strong> that partitions the data by customer and picks the top row within each partition.</p>
 
 <h3 id="toc_68">The Correct SQL</h3>
 
@@ -1859,18 +1759,11 @@ ORDER BY order_date DESC;</code></pre></div>
 </tbody>
 </table>
 
-<p>Now each customer appears <strong>exactly once</strong> with their 
-most recent order. Frank is back.</p>
+<p>Now each customer appears <strong>exactly once</strong> with their most recent order. Frank is back.</p>
 
 <h3 id="toc_70">The Business Impact</h3>
 
-<p>If you used the AI&rsquo;s answer to contact each customer 
-about their most recent experience, Emma would receive 
-<strong>two messages</strong> while Frank would receive <strong>none</strong>. 
-You would also miss that Frank&rsquo;s last order was back 
-in October — he may be at risk of churning and could
-benefit from a follow-up. Meanwhile, the duplicated 
-effort on Emma wastes resources and looks unprofessional.</p>
+<p>If you used the AI&rsquo;s answer to contact each customer about their most recent experience, Emma would receive <strong>two messages</strong> while Frank would receive <strong>none</strong>. You would also miss that Frank&rsquo;s last order was back in October — he may be at risk of churning and could benefit from a follow-up. Meanwhile, the duplicated effort on Emma wastes resources and looks unprofessional.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> <code>LIMIT</code> restricts the total number of rows returned —
@@ -1884,10 +1777,7 @@ like <code>ROW_NUMBER() OVER (PARTITION BY ...)</code>. AI frequently reaches fo
 
 <h1 id="toc_71">Part II — When AI Gets It Right</h1>
 
-<p>The examples above might make it seem like AI always fails. It doesn&rsquo;t.
-AI <strong>can</strong> produce correct SQL — and when it does, it saves time.
-But here&rsquo;s the catch: <strong>you can only benefit from AI&rsquo;s correct answers
-if you have the knowledge to recognize them as correct.</strong></p>
+<p>The examples above might make it seem like AI always fails. It doesn&rsquo;t. AI <strong>can</strong> produce correct SQL — and when it does, it saves time. But here&rsquo;s the catch: <strong>you can only benefit from AI&rsquo;s correct answers if you have the knowledge to recognize them as correct.</strong></p>
 
 <hr>
 
@@ -1897,8 +1787,7 @@ if you have the knowledge to recognize them as correct.</strong></p>
 
 <h3 id="toc_73">The Business Question</h3>
 
-<p>Your manager asks: <strong>&ldquo;Who are our top 3 customers by total spending
-on delivered orders?&rdquo;</strong></p>
+<p>Your manager asks: <strong>&ldquo;Who are our top 3 customers by total spending on delivered orders?&rdquo;</strong></p>
 
 <h3 id="toc_74">What AI Generated</h3>
 
@@ -1947,14 +1836,11 @@ LIMIT    3;</code></pre></div>
 
 <h3 id="toc_76">Is This Correct?</h3>
 
-<p>Yes. This query is correct. It joins the right tables, filters by
-delivered status, uses <code>sale_price</code> (not <code>unit_price</code>), groups by
-customer, sorts descending, and limits to the top 3.</p>
+<p>Yes. This query is correct. It joins the right tables, filters by delivered status, uses <code>sale_price</code> (not <code>unit_price</code>), groups by customer, sorts descending, and limits to the top 3.</p>
 
 <h3 id="toc_77">So Why Do You Still Need to Know SQL?</h3>
 
-<p>Because <strong>how would you know it&rsquo;s correct if you didn&rsquo;t understand
-the SQL?</strong></p>
+<p>Because <strong>how would you know it&rsquo;s correct if you didn&rsquo;t understand the SQL?</strong></p>
 
 <p>To verify this answer, you need to understand:</p>
 
@@ -1994,10 +1880,7 @@ the SQL?</strong></p>
 </tbody>
 </table>
 
-<p>If you cannot read the SQL, you cannot answer any of these 
-questions. You are forced to <strong>blindly trust</strong> that the AI 
-got it right — even though the seven examples above proved 
-it often doesn&rsquo;t.</p>
+<p>If you cannot read the SQL, you cannot answer any of these questions. You are forced to <strong>blindly trust</strong> that the AI got it right — even though the seven examples above proved it often doesn&rsquo;t.</p>
 
 <blockquote>
 <p><strong>The Lesson:</strong> Even when AI writes correct SQL, your job is to
@@ -2013,9 +1896,7 @@ requires learning. There is no shortcut.</p>
 
 <h3 id="toc_79">The Business Question</h3>
 
-<p>Your manager asks: <strong>&ldquo;Show me total revenue by product category for
-delivered orders only. Include the number of orders and total units
-sold for each category. Use the actual price the customer paid.&rdquo;</strong></p>
+<p>Your manager asks: <strong>&ldquo;Show me total revenue by product category for delivered orders only. Include the number of orders and total units sold for each category. Use the actual price the customer paid.&rdquo;</strong></p>
 
 <h3 id="toc_80">What AI Generated</h3>
 
@@ -2068,8 +1949,7 @@ ORDER BY total_revenue DESC;</code></pre></div>
 
 <h3 id="toc_82">Is This Correct?</h3>
 
-<p>Yes. This query is correct. But don&rsquo;t take our word for it —
-<strong>prove it yourself.</strong></p>
+<p>Yes. This query is correct. But don&rsquo;t take our word for it — <strong>prove it yourself.</strong></p>
 
 <h3 id="toc_83">Student Challenge</h3>
 
@@ -2124,9 +2004,7 @@ AI getting that same thing wrong.</p>
 
 <h3 id="toc_84">Bonus Verification</h3>
 
-<p>If you want to double-check the numbers, you can verify the
-Electronics total manually. The delivered orders containing
-electronics products are:</p>
+<p>If you want to double-check the numbers, you can verify the Electronics total manually. The delivered orders containing electronics products are:</p>
 
 <table>
 <thead>
@@ -2201,8 +2079,7 @@ electronics products are:</p>
 
 <p>Electronics total: <br></p>
 
-<p><code>$49.98</code> + <code>$49.99</code> + <code>$79.99</code> + <code>$24.99</code> + <code>$49.99</code> +
-<code>$74.97</code> + <code>$99.98</code> + <code>$24.99</code> = <strong><code>$454.88</code></strong> ✓</p>
+<p><code>$49.98</code> + <code>$49.99</code> + <code>$79.99</code> + <code>$24.99</code> + <code>$49.99</code> + <code>$74.97</code> + <code>$99.98</code> + <code>$24.99</code> = <strong><code>$454.88</code></strong> ✓</p>
 
 <p>All three categories combined: <br></p>
 
@@ -2225,8 +2102,7 @@ accelerator. Without that understanding, it&rsquo;s just a black box.</p>
 
 <h3 id="toc_86">The Business Question</h3>
 
-<p>Your manager asks: <strong>&ldquo;For each department that has employees assigned,
-show the headcount, average salary, lowest salary, and highest salary.&rdquo;</strong></p>
+<p>Your manager asks: <strong>&ldquo;For each department that has employees assigned, show the headcount, average salary, lowest salary, and highest salary.&rdquo;</strong></p>
 
 <h3 id="toc_87">What AI Generated</h3>
 
@@ -2340,17 +2216,9 @@ ORDER BY avg_salary DESC;</code></pre></div>
 
 <h3 id="toc_90">Why This Matters</h3>
 
-<p>Remember Example 4? There the AI <strong>forgot</strong> about NULL 
-and silently dropped employees from the result. Here, 
-the AI handled NULL correctly — it used <code>IS NOT NULL</code> 
-to exclude unassigned employees, which is exactly
-what the manager requested.</p>
+<p>Remember Example 4? There the AI <strong>forgot</strong> about NULL and silently dropped employees from the result. Here, the AI handled NULL correctly — it used <code>IS NOT NULL</code> to exclude unassigned employees, which is exactly what the manager requested.</p>
 
-<p>But you could only confirm this by reading the SQL. 
-If you didn&rsquo;t understand the <code>WHERE department IS NOT NULL</code> 
-clause, you might not realize that two employees were 
-intentionally excluded — or worse, you might not notice 
-they were missing at all.</p>
+<p>But you could only confirm this by reading the SQL. If you didn&rsquo;t understand the <code>WHERE department IS NOT NULL</code> clause, you might not realize that two employees were intentionally excluded — or worse, you might not notice they were missing at all.</p>
 
 <h3 id="toc_91">Think About It</h3>
 
@@ -2376,13 +2244,9 @@ NULL handling matches what the manager actually wanted.</p>
 
 <h3 id="toc_93">The Business Question</h3>
 
-<p>Your manager asks: <strong>&ldquo;Show me every product in our catalog — including
-products that have never been sold — along with their total units sold
-and total revenue from delivered orders. Products with no sales should
-show zero.&rdquo;</strong></p>
+<p>Your manager asks: <strong>&ldquo;Show me every product in our catalog — including products that have never been sold — along with their total units sold and total revenue from delivered orders. Products with no sales should show zero.&rdquo;</strong></p>
 
-<p>This is a challenging query because it combines two separate ideas:
-&ldquo;all products&rdquo; (even unsold ones) and &ldquo;only delivered revenue.&rdquo;</p>
+<p>This is a challenging query because it combines two separate ideas: &ldquo;all products&rdquo; (even unsold ones) and &ldquo;only delivered revenue.&rdquo;</p>
 
 <h3 id="toc_94">What AI Generated</h3>
 
@@ -2465,8 +2329,7 @@ ORDER BY total_revenue DESC;</code></pre></div>
 
 <h3 id="toc_96">Is This Correct?</h3>
 
-<p>Yes. This is a sophisticated query, and the AI nailed it. Let&rsquo;s
-break down <strong>why</strong> it works:</p>
+<p>Yes. This is a sophisticated query, and the AI nailed it. Let&rsquo;s break down <strong>why</strong> it works:</p>
 
 <table>
 <thead>
@@ -2508,17 +2371,13 @@ break down <strong>why</strong> it works:</p>
 
 <h3 id="toc_97">Verification</h3>
 
-<p>The six product totals add up: </p>
+<p>The six product totals add up:</p>
 
-<p><code>$199.96</code> + <code>$174.93</code> + <code>$79.99</code> + <code>$64.95</code> + <code>$39.99</code> + <code>$0.00</code> = <strong><code>$559.82</code></strong> </p>
+<p><code>$199.96</code> + <code>$174.93</code> + <code>$79.99</code> + <code>$64.95</code> + <code>$39.99</code> + <code>$0.00</code> = <strong><code>$559.82</code></strong></p>
 
-<p>— which matches the total delivered
-revenue we verified in earlier examples. ✓</p>
+<p>— which matches the total delivered revenue we verified in earlier examples. ✓</p>
 
-<p>Notice that the Paper Shredder (product 106, discontinued) 
-is included with zero sales. It was never ordered, so the 
-<code>LEFT JOIN</code> produces <code>NULL</code> values, and <code>COALESCE</code> converts 
-them to <code>0</code>.  This is exactly what the manager asked for.</p>
+<p>Notice that the Paper Shredder (product 106, discontinued) is included with zero sales. It was never ordered, so the <code>LEFT JOIN</code> produces <code>NULL</code> values, and <code>COALESCE</code> converts them to <code>0</code>. This is exactly what the manager asked for.</p>
 
 <h3 id="toc_98">Think About It</h3>
 
@@ -2550,12 +2409,9 @@ was the right one</strong> is exactly why you need to learn SQL.</p>
 
 <h2 id="toc_100">16 — The Verdict</h2>
 
-<p>AI is a powerful tool. It can save time, suggest 
-approaches  you haven&rsquo;t considered, and help you 
-write SQL faster — <strong>once you already understand SQL</strong>.</p>
+<p>AI is a powerful tool. It can save time, suggest approaches you haven&rsquo;t considered, and help you write SQL faster — <strong>once you already understand SQL</strong>.</p>
 
-<p>But AI is not a substitute for understanding. Here is 
-what we demonstrated across eleven examples:</p>
+<p>But AI is not a substitute for understanding. Here is what we demonstrated across eleven examples:</p>
 
 <table>
 <thead>
@@ -2613,8 +2469,7 @@ what we demonstrated across eleven examples:</p>
 </tbody>
 </table>
 
-<p>Every one of these queries ran without a single error message.
-Every one returned a clean, professional-looking table.
+<p>Every one of these queries ran without a single error message. Every one returned a clean, professional-looking table.
 <strong>Every one was wrong.</strong></p>
 
 <p>In a real company, these mistakes lead to:</p>
@@ -2733,8 +2588,7 @@ Do not trust a SQL query you cannot read either.</strong></p>
 
 <h3 id="toc_102">The Bottom Line</h3>
 
-<p>Learn SQL <strong>first</strong>. Then use AI to write it <strong>faster</strong>.
-Never the other way around.</p>
+<p>Learn SQL <strong>first</strong>. Then use AI to write it <strong>faster</strong>. Never the other way around.</p>
 
 <hr>
 
@@ -2742,17 +2596,11 @@ Never the other way around.</p>
 
 <h2 id="toc_103">18 — How to Prompt AI Better</h2>
 
-<p>This document proved that blind trust in AI-generated SQL 
-is dangerous.  But the answer is not to avoid AI — it is 
-to <strong>use it properly</strong>. Once you understand SQL, AI becomes 
-a powerful accelerator. Here are six rules for getting 
-better results.</p>
+<p>This document proved that blind trust in AI-generated SQL is dangerous. But the answer is not to avoid AI — it is to <strong>use it properly</strong>. Once you understand SQL, AI becomes a powerful accelerator. Here are seven rules for getting better results.</p>
 
 <h3 id="toc_104">Rule 1 — Include the Schema</h3>
 
-<p>Don&rsquo;t say &ldquo;write a query for our orders database.&rdquo; Give the AI the
-actual <code>CREATE TABLE</code> statements. The more context it has about your
-columns, types, and relationships, the better its choices will be.</p>
+<p>Don&rsquo;t say &ldquo;write a query for our orders database.&rdquo; Give the AI the actual <code>CREATE TABLE</code> statements. The more context it has about your columns, types, and relationships, the better its choices will be.</p>
 
 <p><strong>Weak prompt:</strong></p>
 
@@ -2774,21 +2622,13 @@ where <code>status = &#39;Delivered&#39;</code>.&rdquo;</p>
 
 <h3 id="toc_105">Rule 2 — State the Business Rules Explicitly</h3>
 
-<p>AI does not know your business. If &ldquo;revenue&rdquo; only counts 
-delivered orders, say so. If employees with NULL departments 
-should be excluded, say so. If tied products must share the 
-same rank, say so. Every unstated assumption is an opportunity 
-for a mistake.</p>
+<p>AI does not know your business. If &ldquo;revenue&rdquo; only counts delivered orders, say so. If employees with NULL departments should be excluded, say so. If tied products must share the same rank, say so. Every unstated assumption is an opportunity for a mistake.</p>
 
-<p>Think of it this way: the seven failures in Part I all came 
-from business rules the AI had to <strong>guess</strong>. The fewer guesses, 
-the fewer errors.</p>
+<p>Think of it this way: the seven failures in Part I all came from business rules the AI had to <strong>guess</strong>. The fewer guesses, the fewer errors.</p>
 
 <h3 id="toc_106">Rule 3 — Specify Edge Cases</h3>
 
-<p>Mention NULLs, ties, cancelled orders, customers with no purchases —
-whatever applies to your data. Examples 1, 4, 6, and 7 all involved
-edge cases that the AI ignored.</p>
+<p>Mention NULLs, ties, cancelled orders, customers with no purchases — whatever applies to your data. Examples 1, 4, 6, and 7 all involved edge cases that the AI ignored.</p>
 
 <p>A useful prompt addition:</p>
 
@@ -2797,7 +2637,51 @@ edge cases that the AI ignored.</p>
 them according to [your requirement].&rdquo;</p>
 </blockquote>
 
-<h3 id="toc_107">Rule 4 — Ask the AI to Explain Its Choices</h3>
+<h3 id="toc_107">Rule 4 — Name the SQL Dialect</h3>
+
+<p>Don&rsquo;t just say &ldquo;SQL&rdquo; — say <strong>&ldquo;DuckDB SQL.&rdquo;</strong> Left unstated, the AI defaults to whatever dialect shows up most in its training data — usually MySQL or generic ANSI SQL — and that can produce queries that fail outright, or worse, run and quietly behave differently.</p>
+
+<p><strong>Weak prompt:</strong></p>
+
+<blockquote>
+<p>&ldquo;Write SQL to get the top 3 products per category.&rdquo;</p>
+</blockquote>
+
+<p><strong>Strong prompt:</strong></p>
+
+<blockquote>
+<p>&ldquo;Write <strong>DuckDB SQL</strong> to get the top 3 products per category.&rdquo;</p>
+</blockquote>
+
+<p>A few real examples of what goes wrong without it:</p>
+
+<table>
+<thead>
+<tr>
+<th>MySQL-flavored answer</th>
+<th>What happens in DuckDB</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>`column_name`</code> (backticks)</td>
+<td>Syntax error — DuckDB expects double quotes</td>
+</tr>
+<tr>
+<td><code>LIMIT 10, 3</code> (offset, count)</td>
+<td>Syntax error — DuckDB wants <code>LIMIT 3 OFFSET 10</code></td>
+</tr>
+<tr>
+<td><code>DATE_FORMAT(order_date, &#39;%Y-%m&#39;)</code></td>
+<td>Function doesn&rsquo;t exist — DuckDB uses <code>strftime(order_date, &#39;%Y-%m&#39;)</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Naming the dialect also works in your favor, not just against errors: it unlocks DuckDB-specific features — <code>QUALIFY</code>, <code>PIVOT</code>/<code>UNPIVOT</code>, <code>LIST</code>/<code>UNNEST</code> — that you&rsquo;ll meet later in this course and that can make a query shorter than a generic ANSI SQL answer would be.</p>
+
+<h3 id="toc_108">Rule 5 — Ask the AI to Explain Its Choices</h3>
 
 <p>After the AI generates SQL, ask follow-up questions:</p>
 
@@ -2811,21 +2695,15 @@ them according to [your requirement].&rdquo;</p>
 <p>&ldquo;How does this query handle NULL values?&rdquo;</p>
 </blockquote>
 
-<p>If the AI cannot justify its decisions clearly, 
-that is a red flag. A correct query should have 
-a clear explanation for every choice.</p>
+<p>If the AI cannot justify its decisions clearly, that is a red flag. A correct query should have a clear explanation for every choice.</p>
 
-<h3 id="toc_108">Rule 5 — Verify with Known Data</h3>
+<h3 id="toc_109">Rule 6 — Verify with Known Data</h3>
 
-<p>Run the AI&rsquo;s query on a small dataset where you already know the
-correct answer — like the BrightCart data in this document. If the
-numbers don&rsquo;t match your hand calculations, you have caught a bug
-before it reaches a real report.</p>
+<p>Run the AI&rsquo;s query on a small dataset where you already know the correct answer — like the BrightCart data in this document. If the numbers don&rsquo;t match your hand calculations, you have caught a bug before it reaches a real report.</p>
 
-<p>This is the same verification technique we used in Examples 8–11.
-It works because you built the knowledge to check the output.</p>
+<p>This is the same verification technique we used in Examples 8–11. It works because you built the knowledge to check the output.</p>
 
-<h3 id="toc_109">Rule 6 — Read the SQL Before You Run It</h3>
+<h3 id="toc_110">Rule 7 — Read the SQL Before You Run It</h3>
 
 <p>Even if you trust the AI, <strong>read the query first.</strong> Use this checklist:</p>
 
@@ -2877,20 +2755,261 @@ It works because you built the knowledge to check the output.</p>
 </tbody>
 </table>
 
-<p>This checklist is exactly what you built by studying the 
-eleven examples in this document. It turns you from a passive 
-consumer of AI output into an active, critical reviewer.</p>
+<p>This checklist is exactly what you built by studying the eleven examples in this document. It turns you from a passive consumer of AI output into an active, critical reviewer.</p>
 
-<h3 id="toc_110">The Real Skill</h3>
+<h3 id="toc_111">Put It All Together: A Reusable Prompt Template</h3>
 
-<p>The goal of this course is not to make AI unnecessary — it is to make
-<strong>you</strong> the person who can tell whether AI&rsquo;s answer is right or wrong.</p>
+<p>Rules 1–4 are about what you give the AI <em>before</em> it writes anything. Bake all four into one template, fill in the brackets, and you eliminate most of the mistakes from Part I before the AI writes a single line:</p>
+
+<div><pre><code class="language-none">Given these tables (DuckDB SQL):
+[paste your CREATE TABLE statements]
+
+Write a DuckDB query to: [your specific question].
+
+Business rules:
+- [e.g., &quot;revenue&quot; means order_items.sale_price, not products.unit_price]
+- [e.g., only include orders where status = &#39;Delivered&#39;]
+- [e.g., include every customer, even those with zero orders]
+
+Edge cases to handle:
+- [e.g., some rows have NULL in [column] — include or exclude them?]
+- [e.g., if two rows tie, they must share the same rank]</code></pre></div>
+
+<p>Rules 5–7 are about what you do <em>after</em> the AI answers: ask it to explain its choices, verify the numbers against data you already know, and read the query yourself before you trust it.</p>
+
+<h3 id="toc_112">Try It Yourself</h3>
+
+<p>Go back to the weak prompt from Example 5 (Section 9): <em>&ldquo;Calculate the average order value for delivered orders. Tables: orders and order<em>items, linked by order</em>id.&rdquo;</em> That prompt produced the wrong answer — \(46.65 instead of \)79.97.</p>
+
+<p>Using the template above, rewrite it as a strong prompt. Then paste your version into an AI chatbot. Does it get $79.97 on the first try? If not, which rule did your prompt still miss?</p>
+
+<h3 id="toc_113">The Real Skill</h3>
+
+<p>The goal of this course is not to make AI unnecessary — it is to make <strong>you</strong> the person who can tell whether AI&rsquo;s answer is right or wrong.</p>
 
 <p>That is a skill no AI can replace.</p>
 
 <hr>
 
-<h1 id="toc_111">References</h1>
+<p><a id="section-19"></a></p>
+
+<h2 id="toc_114">19 — Flagship Example: One Bad Prompt, One Good Prompt, Two Very Different Answers</h2>
+
+<p>Every example so far showed you a wrong query and a hand-corrected one. This example does something closer to what you&rsquo;ll actually do at work: it shows the <strong>same question</strong>, asked two different ways — a weak prompt and a prompt that applies Rules 1–3 from Section 18 — and lets you watch the AI produce two completely different business answers from the exact same data.</p>
+
+<h3 id="toc_115">The Business Question</h3>
+
+<p>Your manager asks: <strong>&ldquo;Which of our customers are repeat customers — meaning they have more than one delivered order? For each one, show how many delivered orders they placed and their total spending across those delivered orders.&rdquo;</strong></p>
+
+<p>This is exactly the kind of question a marketing team asks to build a loyalty program: find the best, most loyal customers and reward them. It&rsquo;s a completely reasonable, everyday business request.</p>
+
+<h3 id="toc_116">The Weak Prompt</h3>
+
+<p>You&rsquo;re in a hurry, so you type the question into a chatbot without applying any of the rules from Section 18:</p>
+
+<blockquote>
+<p>&ldquo;Write SQL to find customers with more than one order, and their total spending.
+Tables: customers, orders, order_items.&rdquo;</p>
+</blockquote>
+
+<p>Notice everything this leaves out: no schema, no mention of &ldquo;delivered,&rdquo; no mention of which price column to use, and no warning that a single order can contain several line items.</p>
+
+<h3 id="toc_117">What AI Generated</h3>
+
+<div><pre><code class="language-sql">SELECT   c.first_name,
+         c.last_name,
+         COUNT(*) AS order_count,
+         SUM(oi.quantity * p.unit_price) AS total_spent
+FROM     customers c
+         JOIN orders o
+           ON c.customer_id = o.customer_id
+         JOIN order_items oi
+           ON o.order_id = oi.order_id
+         JOIN products p
+           ON oi.product_id = p.product_id
+GROUP BY c.first_name, c.last_name
+HAVING   COUNT(*) &gt; 1
+ORDER BY total_spent DESC;</code></pre></div>
+
+<h3 id="toc_118">The AI&rsquo;s Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>first_name</code></th>
+<th><code>last_name</code></th>
+<th><code>order_count</code></th>
+<th><code>total_spent</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Bob</td>
+<td>Martinez</td>
+<td>3</td>
+<td>201.96</td>
+</tr>
+<tr>
+<td>Emma</td>
+<td>Williams</td>
+<td>3</td>
+<td>192.96</td>
+</tr>
+<tr>
+<td>Carol</td>
+<td>Johnson</td>
+<td>3</td>
+<td>168.95</td>
+</tr>
+<tr>
+<td>David</td>
+<td>Kim</td>
+<td>2</td>
+<td>135.96</td>
+</tr>
+<tr>
+<td>Alice</td>
+<td>Chen</td>
+<td>3</td>
+<td>122.96</td>
+</tr>
+</tbody>
+</table>
+
+<p>Five repeat customers, ready to load into the loyalty program. The query ran without a single error.</p>
+
+<h3 id="toc_119">What&rsquo;s Wrong — Three Mistakes at Once</h3>
+
+<p>This one query repeats three mistakes from Part I simultaneously.</p>
+
+<ol>
+<li><p><strong><code>COUNT(*)</code> counts line items, not orders — the fan-out bug.</strong> Joining <code>order_items</code> turns each order into one row per line item. David Kim placed exactly <strong>one</strong> order (order 1007), but that order has two line items — so <code>COUNT(*)</code> reports 2, and he is wrongly flagged as a repeat customer. This is the same wrong-grain mistake as Example 5, now showing up as a headcount instead of an average.</p></li>
+<li><p><strong>No status filter — the same mistake as Example 3.</strong> Bob&rsquo;s second &ldquo;order&rdquo; (1004) was <strong>Cancelled</strong>. Emma&rsquo;s second &ldquo;order&rdquo; (1009) is still <strong>Pending</strong>. Carol&rsquo;s second &ldquo;order&rdquo; (1006) was <strong>Returned</strong>. None of these should count as evidence of repeat business or contribute revenue. The AI counted all of them anyway.</p></li>
+<li><p><strong><code>products.unit_price</code> instead of <code>order_items.sale_price</code> — the same mistake as Example 2.</strong> Every dollar figure above uses today&rsquo;s catalog price, not what the customer actually paid.</p></li>
+</ol>
+
+<p>Stack those three mistakes together and the damage compounds. Once you remove the cancelled, returned, and pending orders, <strong>only Alice Chen has more than one delivered order.</strong> The other four names on this list don&rsquo;t belong there at all — and this isn&rsquo;t a report headed to a drawer, it&rsquo;s a list of people about to receive a &ldquo;thank you for your loyalty&rdquo; email they didn&rsquo;t earn.</p>
+
+<h3 id="toc_120">The Revised Prompt</h3>
+
+<p>Now apply Rules 1–3 from Section 18 — schema, business rules, edge cases — before sending anything to the AI:</p>
+
+<blockquote>
+<p>&ldquo;Given these tables (DuckDB SQL): [paste the <code>customers</code>, <code>orders</code>, and
+<code>order_items</code> <code>CREATE TABLE</code> statements]. Write a DuckDB query to find repeat
+customers — customers with more than one <strong>delivered</strong> order. Use
+<code>COUNT(DISTINCT o.order_id)</code> to count orders, not <code>COUNT(*)</code>, because one order
+can have several line items. For revenue, use <code>order_items.sale_price</code> (the
+price the customer actually paid), not <code>products.unit_price</code>. Only count orders
+where <code>status = &#39;Delivered&#39;</code> — exclude Cancelled, Returned, and Pending orders
+from both the order count and the total spending.&rdquo;</p>
+</blockquote>
+
+<p>Every sentence in this prompt closes one of the three gaps above.</p>
+
+<h3 id="toc_121">What AI Generated This Time</h3>
+
+<div><pre><code class="language-sql">SELECT   c.first_name,
+         c.last_name,
+         COUNT(DISTINCT o.order_id) AS order_count,
+         SUM(oi.quantity * oi.sale_price) AS total_spent
+FROM     customers c
+         JOIN orders o
+           ON c.customer_id = o.customer_id
+         JOIN order_items oi
+           ON o.order_id = oi.order_id
+WHERE    o.status = &#39;Delivered&#39;
+GROUP BY c.first_name, c.last_name
+HAVING   COUNT(DISTINCT o.order_id) &gt; 1
+ORDER BY total_spent DESC;</code></pre></div>
+
+<h3 id="toc_122">The Correct Answer</h3>
+
+<table>
+<thead>
+<tr>
+<th><code>first_name</code></th>
+<th><code>last_name</code></th>
+<th><code>order_count</code></th>
+<th><code>total_spent</code></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Alice</td>
+<td>Chen</td>
+<td>2</td>
+<td>112.96</td>
+</tr>
+</tbody>
+</table>
+
+<p>One repeat customer, not five. And \(112.96 — not \)122.96 — is her real total. (You already verified this exact number once before, in Example 8&rsquo;s Top 3 Customers list.)</p>
+
+<h3 id="toc_123">Side-by-Side: The Two Prompts</h3>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Weak Prompt</th>
+<th>Revised Prompt</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Schema included?</td>
+<td>No</td>
+<td>Yes (Rule 1)</td>
+</tr>
+<tr>
+<td>&ldquo;Delivered only&rdquo; stated?</td>
+<td>No</td>
+<td>Yes (Rule 2)</td>
+</tr>
+<tr>
+<td>Price column specified?</td>
+<td>No</td>
+<td>Yes (Rule 1)</td>
+</tr>
+<tr>
+<td>Multi-line-item orders addressed?</td>
+<td>No</td>
+<td>Yes (Rule 3)</td>
+</tr>
+<tr>
+<td>Repeat customers found</td>
+<td><strong>5</strong></td>
+<td><strong>1</strong></td>
+</tr>
+<tr>
+<td>Top total spending shown</td>
+<td><strong>$201.96</strong></td>
+<td><strong>$112.96</strong></td>
+</tr>
+<tr>
+<td>Correct?</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+<p>Same manager, same question, same data — <strong>the only thing that changed was the prompt</strong> — and it changed the business decision entirely. Load the AI&rsquo;s first answer into a loyalty campaign and you&rsquo;d email four customers (Bob, Carol, David, Emma) who don&rsquo;t qualify, while still correctly reaching the one who does.</p>
+
+<blockquote>
+<p><strong>The Lesson:</strong> A weak prompt and a strong prompt are not two versions of the
+same question — on real data, they can produce two completely different business
+decisions. Everything in Section 18 exists to close that gap. Rules 1–3 alone —
+schema, business rules, edge cases — turned five wrong names into one right one.</p>
+</blockquote>
+
+<hr>
+
+<h1 id="toc_124">References</h1>
 
 <p><a href="https://mavenanalytics.io/blog/do-you-still-need-to-learn-sql-in-the-age-of-ai">1. Do You Still Need to Learn SQL in the Age of AI?</a></p>
 
