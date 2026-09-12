@@ -1,4 +1,4 @@
-# Sample Lab
+# Sample Lab: <br> A Marimo Notebook
 
 A preview of what an **in-class lab** looks like in 
 this course — a self-contained Marimo notebook, 
@@ -16,9 +16,10 @@ not tied to any specific week.
 
 ## What it covers
 
-**Sample Lab: Getting Started with DuckDB and SQL Basics** — 16 questions
-across 5 parts: exploration, filtering and sorting, aggregation,
-computed columns, and a bonus challenge. Concepts: `SELECT`, `WHERE`,
+**Sample Lab: Getting Started with DuckDB and SQL Basics** <br>
+
+* **16 questions** across 5 parts: exploration, filtering and sorting, aggregation, computed columns, and a bonus challenge. 
+* **Concepts:** `SELECT`, `WHERE`,
 `ORDER BY`, `LIMIT`, `LIKE`, `DISTINCT`, `COUNT`/`SUM`/`AVG`/`MIN`/`MAX`,
 and `CASE` expressions.
 
@@ -43,6 +44,7 @@ cd sample_lab
 MPLBACKEND=Agg python3 sample_lab_student.py
 ```
 
+### Explain `MPLBACKEND=Agg`
 `MPLBACKEND=Agg` tells Matplotlib to render to memory 
 instead of trying to open a GUI window — harmless here 
 since this lab doesn't plot anything, but it's the repo-wide 
