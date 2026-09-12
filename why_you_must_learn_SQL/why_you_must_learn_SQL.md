@@ -92,17 +92,7 @@ BrightCart's database has five tables. Here is what each one stores:
 
 ### How the Tables Connect
 
-```
-┌────────────┐    1:N    ┌────────────┐    1:N    ┌──────────────┐    N:1    ┌────────────┐
-│ customers  │──────────>│   orders   │──────────>│  order_items │<──────────│  products  │
-│ (8 rows)   │           │ (10 rows)  │           │  (15 rows)   │           │ (6 rows)   │
-└────────────┘           └────────────┘           └──────────────┘           └────────────┘
-                                                         
-┌────────────┐
-│ employees  │
-│ (7 rows)   │──── manager_id references employee_id (self-join)
-└────────────┘
-```
+![Entity relationship diagram of the BrightCart database](images/er_diagram.png)
 
 | Foreign Key | In Table | Column | References | Meaning |
 |-------------|----------|--------|------------|---------|
@@ -293,7 +283,7 @@ You should see:
 
 <a id="section-5"></a>
 
-## 5 — Example 1: The Missing Customers
+## 5 — Example 1: The Missing Customers — AI Drops Data You Need
 
 ### The Business Question
 
@@ -395,7 +385,7 @@ In reality, 25% of your customers have **never purchased anything**. That's crit
 
 <a id="section-6"></a>
 
-## 6 — Example 2: The Wrong Revenue
+## 6 — Example 2: The Wrong Revenue — AI Uses the Wrong Price
 
 ### The Business Question
 
@@ -453,27 +443,15 @@ The real revenue is **$799.78**, not $852.78. The AI's answer was **$53.00 too h
 
 ### The Business Impact
 
-A `6.6%` revenue overstatement in a report might 
-seem small on `10` orders. On a company doing 
-`$10 million` in annual sales, the same mistake 
-overstates revenue by **`$660,000`**. That's the 
-kind of error that leads to wrong financial 
-forecasts, incorrect tax filings, and very 
-difficult conversations with auditors.
+A `6.6%` revenue overstatement in a report might seem small on `10` orders. On a company doing `$10 million` in annual sales, the same mistake overstates revenue by **`$660,000`**. That's the kind of error that leads to wrong financial forecasts, incorrect tax filings, and very difficult conversations with auditors.
 
-> **The Lesson:** Databases often store the 
-> same type of information (like "price") in 
-> multiple places. The **current** price and 
-> the **historical** price are different numbers. 
-> AI doesn't understand your business well enough 
-> to know which one to use. You do — but only
-> if you understand the schema and the SQL.
+> **The Lesson:** Databases often store the same type of information (like "price") in multiple places. The **current** price and the **historical** price are different numbers. AI doesn't understand your business well enough to know which one to use. You do — but only if you understand the schema and the SQL.
 
 ---
 
 <a id="section-7"></a>
 
-## 7 — Example 3: The Inflated Numbers
+## 7 — Example 3: The Inflated Numbers — AI Counts Cancelled Orders
 
 ### The Business Question
 
@@ -551,7 +529,7 @@ If you report 10 deliveries when only 7 actually shipped, your fulfillment metri
 
 <a id="section-8"></a>
 
-## 8 — Example 4: The NULL Trap
+## 8 — Example 4: The NULL Trap — AI Forgets About Missing Data
 
 ### The Business Question
 
@@ -623,7 +601,7 @@ If you used the AI's answer to send a company-wide announcement to "everyone out
 
 <a id="section-9"></a>
 
-## 9 — Example 5: The Wrong Average
+## 9 — Example 5: The Wrong Average — AI Confuses Rows with Orders
 
 ### The Business Question
 
@@ -1174,25 +1152,13 @@ The six product totals add up:
 
 `$199.96` + `$174.93` + `$79.99` + `$64.95` + `$39.99` + `$0.00` = **`$559.82`**
 
-— which matches the total delivered revenue we verified 
-in earlier examples. ✓
+— which matches the total delivered revenue we verified in earlier examples. ✓
 
-Notice that the Paper Shredder (product 106, discontinued) 
-is included with zero sales. It was never ordered, so the 
-`LEFT JOIN` produces `NULL` values, and `COALESCE` converts 
-them to `0`. This is exactly what the manager asked for.
+Notice that the Paper Shredder (product 106, discontinued) is included with zero sales. It was never ordered, so the `LEFT JOIN` produces `NULL` values, and `COALESCE` converts them to `0`. This is exactly what the manager asked for.
 
 ### Think About It
 
-> **Question for you:** The `current_price` column 
-> shows today's catalog price (`$29.99` for the 
-> Wireless Mouse), but the `total_revenue` column 
-> is based on the historical `sale_price` (`$24.99` 
-> per unit). That means `$29.99 × 7 units = $209.93`, 
-> but the actual revenue is `$174.93`. Why is this 
-> difference a feature, not a bug? What would go 
-> wrong if the query used `current_price` to 
-> calculate revenue?
+> **Question for you:** The `current_price` column shows today's catalog price (`$29.99` for the Wireless Mouse), but the `total_revenue` column is based on the historical `sale_price` (`$24.99` per unit). That means `$29.99 × 7 units = $209.93`, but the actual revenue is `$174.93`. Why is this difference a feature, not a bug? What would go wrong if the query used `current_price` to calculate revenue?
 >
 > *(Hint: Review Example 2.)*
 
@@ -1215,7 +1181,7 @@ them to `0`. This is exactly what the manager asked for.
 
 AI is a powerful tool. It can save time, suggest approaches you haven't considered, and help you write SQL faster — **once you already understand SQL**.
 
-But AI is not a substitute for understanding. Here is what we demonstrated across eleven examples:
+But AI is not a substitute for understanding. Here is what went wrong in the seven examples from Part I:
 
 | Example | AI's Answer | Correct Answer | Error |
 |---------|------------|----------------|-------|
