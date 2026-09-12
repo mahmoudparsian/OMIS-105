@@ -34,11 +34,15 @@ def _(mo):
     mo.md(r"""
     ## Setup
 
-    This notebook already connects to DuckDB and loads
-    `./data/products.csv` into a table called `products`.
-    Run the two setup cells below, then answer each question
-    by writing your SQL **inside the `con.execute(...)` cell**
-    that follows it.
+    ```
+    This notebook already connects to DuckDB and
+    loads ./data/products.csv` into a table called
+    `products`.
+
+    Run the two setup cells below, then answer
+    each question by writing your SQL **inside
+    the `con.execute(...)` cell** that follows it.
+    ```
     """)
     return
 
@@ -51,6 +55,8 @@ def _():
 
 @app.cell
 def _():
+    # Create a Connection to DuckDB
+
     import duckdb
 
     con = duckdb.connect(database=":memory:")

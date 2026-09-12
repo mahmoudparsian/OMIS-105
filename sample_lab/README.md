@@ -1,6 +1,6 @@
 # Sample Lab
 
-A preview of what an in-class lab looks like in 
+A preview of what an **in-class lab** looks like in 
 this course — a self-contained Marimo notebook, 
 not tied to any specific week.
 

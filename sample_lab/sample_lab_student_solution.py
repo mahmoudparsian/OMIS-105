@@ -42,12 +42,15 @@ def _(mo):
 
 @app.cell
 def _():
-    DATA_DIR = "./data"  # CSVs are in sample_lab/data/
+    # CSVs are in sample_lab/data/
+    DATA_DIR = "./data"  
     return (DATA_DIR,)
 
 
 @app.cell
 def _():
+    # Create a Connection to DuckDB Database
+
     import duckdb
 
     con = duckdb.connect(database=":memory:")
@@ -86,7 +89,9 @@ def _(mo):
 def _(con):
     con.execute(
         f"""
-        SELECT * FROM products LIMIT 10
+        SELECT * 
+        FROM products 
+        LIMIT 10
         """
     ).fetchdf()
     return
@@ -104,7 +109,8 @@ def _(mo):
 def _(con):
     con.execute(
         f"""
-        SELECT COUNT(*) AS total_products FROM products
+        SELECT COUNT(*) AS total_products 
+        FROM products
         """
     ).fetchdf()
     return
