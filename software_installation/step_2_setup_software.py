@@ -98,7 +98,7 @@ def install_packages():
                 print()
                 print("    NOTE: Your Python protects itself from changes.")
                 print("    That is normal. Installing anyway — this is safe")
-                print("    for the three packages this course uses.")
+                print("    for the four packages this course uses.")
                 print()
                 explained = True
             print(f"  Installing {pkg} (second try)...", end=" ", flush=True)

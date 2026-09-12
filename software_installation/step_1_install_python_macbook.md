@@ -87,7 +87,7 @@ Once Python is working, go back to [`README.md`](README.md) and continue with **
 python3 step_2_setup_software.py
 ```
 
-This script will automatically install DuckDB, Pandas, and Marimo, then verify everything works.
+This script will automatically install DuckDB, Pandas, Marimo, and Matplotlib, then verify everything works.
 
 > Your Terminal must be pointed at the `software_installation` folder for this to work. **Step 0** in the README shows the drag-and-drop trick that does it.
 
