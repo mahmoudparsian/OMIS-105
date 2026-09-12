@@ -32,3 +32,8 @@ __marimo__/
 # (a COPY ... TO export and a persistent DuckDB save — both teaching outputs)
 weekly_lectures/week01-database-foundations/demo2_sql_basics/expensive_products.csv
 weekly_lectures/week01-database-foundations/demo2_sql_basics/shopmart.duckdb
+
+# Default output of why_you_must_learn_SQL/make_pdf_html.sh (the HTML/Chrome
+# fallback pipeline) — named so it never overwrites the LaTeX-built
+# why_you_must_learn_SQL.pdf, which stays tracked. Regenerated on demand.
+why_you_must_learn_SQL/why_you_must_learn_SQL_html.pdf
