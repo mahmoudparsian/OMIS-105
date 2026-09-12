@@ -1007,7 +1007,11 @@ FROM   order_items;</code></pre></div>
 </tbody>
 </table>
 
-<p>The real revenue is <strong>$799.78</strong>, not \(852.78. The AI&rsquo;s answer was **\)53.00 too high** — a 6.6% overstatement.</p>
+<ul>
+<li><p>The real revenue is <strong><code>$799.78</code></strong>, not <strong><code>$852.78</code></strong>. </p></li>
+<li><p>The AI&rsquo;s answer was <strong><code>$53.00</code> too high</strong> — 
+a <strong><code>6.6%</code></strong> overstatement.</p></li>
+</ul>
 
 <h3 id="toc_28">The Business Impact</h3>
 
@@ -1330,7 +1334,7 @@ WHERE  o.status = &#39;Delivered&#39;;</code></pre></div>
 </tbody>
 </table>
 
-<p>$46.65 per order. You put this number in the financial summary.</p>
+<p><code>$46.65</code> per order. You put this number in the financial summary.</p>
 
 <h3 id="toc_51">What&rsquo;s Wrong</h3>
 
@@ -1350,45 +1354,49 @@ WHERE  o.status = &#39;Delivered&#39;;</code></pre></div>
 <tbody>
 <tr>
 <td>1001</td>
-<td>(2 × \(24.99) + (1 × \)12.99)</td>
-<td>$62.97</td>
+<td><code>(2 × $24.99) + (1 × $12.99)</code></td>
+<td><code>$62.97</code></td>
 </tr>
 <tr>
 <td>1002</td>
-<td>(1 × $49.99)</td>
-<td>$49.99</td>
+<td><code>(1 × $49.99)</code></td>
+<td><code>$49.99</code></td>
 </tr>
 <tr>
 <td>1003</td>
-<td>(1 × \(79.99) + (1 × \)24.99)</td>
-<td>$104.98</td>
+<td><code>(1 × $79.99) + (1 × $24.99)</code></td>
+<td><code>$104.98</code></td>
 </tr>
 <tr>
 <td>1005</td>
-<td>(1 × \(49.99) + (3 × \)12.99)</td>
-<td>$88.96</td>
+<td><code>(1 × $49.99) + (3 × $12.99)</code></td>
+<td><code>$88.96</code></td>
 </tr>
 <tr>
 <td>1007</td>
-<td>(3 × \(24.99) + (1 × \)39.99)</td>
-<td>$114.96</td>
+<td><code>(3 × $24.99) + (1 × $39.99)</code></td>
+<td><code>$114.96</code></td>
 </tr>
 <tr>
 <td>1008</td>
-<td>(2 × \(49.99) + (1 × \)12.99)</td>
-<td>$112.97</td>
+<td><code>(2 × $49.99) + (1 × $12.99)</code></td>
+<td><code>$112.97</code></td>
 </tr>
 <tr>
 <td>1010</td>
-<td>(1 × $24.99)</td>
-<td>$24.99</td>
+<td><code>(1 × $24.99)</code></td>
+<td><code>$24.99</code></td>
 </tr>
 </tbody>
 </table>
 
-<p>The average of these 7 order totals is: (\(62.97 + \)49.99 + \(104.98 + \)88.96 + \(114.96 + \)112.97 + \(24.99) ÷ 7 = **\)79.97**</p>
+<p>The average of these 7 order totals is: <br>
+(<code>$62.97 + $49.99 + $104.98 + $88.96 + $114.96 + $112.97 + $24.99) ÷ 7 =</code> <strong><code>$79.97</code></strong></p>
 
-<p>The AI&rsquo;s answer of <code>$46.65</code> is <strong>42% too low</strong> because it averaged 12 line items instead of 7 order totals. An order with 3 line items got 3 times the weight of an order with 1 line item.</p>
+<p>The AI&rsquo;s answer of <code>$46.65</code> is <strong><code>42% too low</code></strong> 
+because it averaged 12 line items instead of 7 
+order totals. An order with 3 line items got 3 
+times the weight of an order with 1 line item.</p>
 
 <h3 id="toc_52">The Correct SQL</h3>
 
@@ -2159,46 +2167,49 @@ ORDER BY avg_salary DESC;</code></pre></div>
 <tr>
 <td>Sarah Wilson</td>
 <td>Sales</td>
-<td>$75,000</td>
+<td><code>$75,000</code></td>
 </tr>
 <tr>
 <td>Mike Taylor</td>
 <td>Sales</td>
-<td>$62,000</td>
+<td><code>$62,000</code></td>
 </tr>
 <tr>
 <td>Lisa Anderson</td>
 <td>Marketing</td>
-<td>$68,000</td>
+<td><code>$68,000</code></td>
 </tr>
 <tr>
 <td>James Thomas</td>
 <td>Engineering</td>
-<td>$95,000</td>
+<td><code>$95,000</code></td>
 </tr>
 <tr>
 <td>Nina Patel</td>
 <td>Engineering</td>
-<td>$85,000</td>
+<td><code>$85,000</code></td>
 </tr>
 <tr>
 <td>Carlos Rivera</td>
 <td><em>NULL</em></td>
-<td>$55,000</td>
+<td><code>$55,000</code></td>
 </tr>
 <tr>
 <td>Amy Zhang</td>
 <td><em>NULL</em></td>
-<td>$58,000</td>
+<td><code>$58,000</code></td>
 </tr>
 </tbody>
 </table>
 
-<p><strong>Engineering:</strong> 2 employees, avg (\(95,000 + \)85,000) ÷ 2 = $90,000 ✓</p>
+<p><strong>Engineering:</strong> 2 employees: <br>
+<code>avg ($95,000 + $85,000)</code> = <code>($95,000 + $85,000) ÷ 2</code> = <code>$90,000</code> ✓</p>
 
-<p><strong>Sales:</strong> 2 employees, avg (\(75,000 + \)62,000) ÷ 2 = $68,500 ✓</p>
+<p><strong>Sales:</strong> 2 employees: <br>
+<code>avg ($75,000 + $62,000)</code> = <code>($75,000 + $62,000) ÷ 2</code> = <code>$68,500</code> ✓</p>
 
-<p><strong>Marketing:</strong> 1 employee, avg $68,000 ✓</p>
+<p><strong>Marketing:</strong> 1 employee: <br>
+<code>avg ($68,000) =  $68,000</code> ✓</p>
 
 <p>Carlos and Amy are correctly excluded by <code>WHERE department IS NOT NULL</code>.</p>
 

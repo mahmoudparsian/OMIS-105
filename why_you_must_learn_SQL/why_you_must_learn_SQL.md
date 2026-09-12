@@ -439,7 +439,12 @@ FROM   order_items;
 |-----------------|
 | 799.78          |
 
-The real revenue is **$799.78**, not $852.78. The AI's answer was **$53.00 too high** — a 6.6% overstatement.
+
+
+* The real revenue is **`$799.78`**, not **`$852.78`**. 
+
+* The AI's answer was **`$53.00` too high** — 
+  a **`6.6%`** overstatement.
 
 ### The Business Impact
 
@@ -630,7 +635,7 @@ WHERE  o.status = 'Delivered';
 |-------------------|
 | 46.65             |
 
-$46.65 per order. You put this number in the financial summary.
+`$46.65` per order. You put this number in the financial summary.
 
 ### What's Wrong
 
@@ -638,19 +643,23 @@ The AI averaged the **individual line items**, not the **order totals**.
 
 Here are the delivered orders and their actual totals:
 
-| `order_id` | Line Items | Order Total |
-|------------|-----------|-------------|
-| 1001 | (2 × $24.99) + (1 × $12.99) | $62.97 |
-| 1002 | (1 × $49.99) | $49.99 |
-| 1003 | (1 × $79.99) + (1 × $24.99) | $104.98 |
-| 1005 | (1 × $49.99) + (3 × $12.99) | $88.96 |
-| 1007 | (3 × $24.99) + (1 × $39.99) | $114.96 |
-| 1008 | (2 × $49.99) + (1 × $12.99) | $112.97 |
-| 1010 | (1 × $24.99) | $24.99 |
+| `order_id` | Line Items                    | Order Total |
+|------------|-------------------------------|-------------|
+| 1001       | `(2 × $24.99) + (1 × $12.99)` | `$62.97`    |
+| 1002       | `(1 × $49.99)`                | `$49.99`    |
+| 1003       | `(1 × $79.99) + (1 × $24.99)` | `$104.98`   |
+| 1005       | `(1 × $49.99) + (3 × $12.99)` | `$88.96`    |
+| 1007       | `(3 × $24.99) + (1 × $39.99)` | `$114.96`   |
+| 1008       | `(2 × $49.99) + (1 × $12.99)` | `$112.97`   |
+| 1010       | `(1 × $24.99)`                | `$24.99`    |
 
-The average of these 7 order totals is: ($62.97 + $49.99 + $104.98 + $88.96 + $114.96 + $112.97 + $24.99) ÷ 7 = **$79.97**
+The average of these 7 order totals is: <br>
+(`$62.97 + $49.99 + $104.98 + $88.96 + $114.96 + $112.97 + $24.99) ÷ 7 =` **`$79.97`**
 
-The AI's answer of `$46.65` is **42% too low** because it averaged 12 line items instead of 7 order totals. An order with 3 line items got 3 times the weight of an order with 1 line item.
+The AI's answer of `$46.65` is **`42% too low`** 
+because it averaged 12 line items instead of 7 
+order totals. An order with 3 line items got 3 
+times the weight of an order with 1 line item.
 
 ### The Correct SQL
 
@@ -1051,21 +1060,25 @@ ORDER BY avg_salary DESC;
 
 Yes. Let's verify against the raw data:
 
-| `employee` | `department` | `salary` |
-|-----------|-------------|---------|
-| Sarah Wilson | Sales | $75,000 |
-| Mike Taylor | Sales | $62,000 |
-| Lisa Anderson | Marketing | $68,000 |
-| James Thomas | Engineering | $95,000 |
-| Nina Patel | Engineering | $85,000 |
-| Carlos Rivera | *NULL* | $55,000 |
-| Amy Zhang | *NULL* | $58,000 |
+| `employee`    | `department` | `salary` |
+|---------------|-------------|---------|
+| Sarah Wilson  | Sales | `$75,000` |
+| Mike Taylor   | Sales | `$62,000` |
+| Lisa Anderson | Marketing | `$68,000` |
+| James Thomas  | Engineering | `$95,000` |
+| Nina Patel    | Engineering | `$85,000` |
+| Carlos Rivera | *NULL* | `$55,000` |
+| Amy Zhang     | *NULL* | `$58,000` |
 
-**Engineering:** 2 employees, avg ($95,000 + $85,000) ÷ 2 = $90,000 ✓
+**Engineering:** 2 employees: <br>
+`avg ($95,000 + $85,000)` = `($95,000 + $85,000) ÷ 2` = `$90,000` ✓
 
-**Sales:** 2 employees, avg ($75,000 + $62,000) ÷ 2 = $68,500 ✓
 
-**Marketing:** 1 employee, avg $68,000 ✓
+**Sales:** 2 employees: <br>
+`avg ($75,000 + $62,000)` = `($75,000 + $62,000) ÷ 2` = `$68,500` ✓
+
+**Marketing:** 1 employee: <br>
+`avg ($68,000) =  $68,000` ✓
 
 Carlos and Amy are correctly excluded by `WHERE department IS NOT NULL`.
 
