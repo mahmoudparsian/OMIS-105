@@ -239,15 +239,15 @@ single-writer, it also cannot demonstrate deadlocks, lock waits, or isolation le
 beyond snapshot. Both stories say so explicitly rather than overclaiming.
 
 **10. `sailors_and_boats/` needs setup beyond the course standard.** Every other
-story in this folder runs on the plain `pip install duckdb pandas marimo` from
-`software_installation/step_2_setup_software.py` — no server, no virtual
+story in this folder runs on the plain `pip install duckdb pandas marimo matplotlib`
+from `software_installation/step_2_setup_software.py` — no server, no virtual
 environment, no API key. `sailors_and_boats/` doesn't fit that path:
 
 - Its `pyproject.toml` / `uv.lock` are meant to be installed with
   [`uv`](https://docs.astral.sh/uv/) (`uv sync`), a tool the course doesn't
   otherwise require.
 - The Streamlit app (`./run_app.sh`) needs `streamlit` and `altair`, on top of
-  the standard three packages.
+  the standard four packages.
 - The app's "Ask in English" text-to-SQL page calls the Anthropic API and
   needs an `ANTHROPIC_API_KEY` in `.env` (see `.env.example`) — a real cost
   and account a student may not have.
