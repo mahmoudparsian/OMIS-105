@@ -22,11 +22,15 @@ Email: mparsian@scu.edu
 
 # Tech Stack
 
-- **Language:** Python · SQL
-- **Database:** DuckDB (in-memory)
-- **Notebooks:** Marimo (reactive)
-- **Audience:** Senior business students
-- **Experience:** Zero prior exposure to notebooks, SQL, or databases
+1. **Language:** Python · SQL
+
+2. **Database:** DuckDB (in-memory)
+
+3. **Notebooks:** Marimo (reactive)
+
+4. **Audience:** Junior/Senior business students
+
+5. **Experience:** Zero prior exposure to notebooks, SQL, or databases
 
 ---
 
@@ -37,8 +41,8 @@ Day-one onboarding notebooks for
 
 These are among the first things students open.
 
-- Introduces Marimo
 - Introduces the concept of a database
+- Introduces Marimo Notebook
 - Walks through the very first SQL queries
 
 👉 Two self-guided, interactive notebooks

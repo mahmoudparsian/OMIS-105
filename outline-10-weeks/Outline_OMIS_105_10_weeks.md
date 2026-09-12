@@ -642,9 +642,7 @@ Knowing relational databases gives you the vocabulary to evaluate any of these. 
 
 ---
 
-# Grading Breakdown
-
-1000 points total:
+# Grading Breakdown: 1000 points total
 
 | Component     | Points | Weight | Description |
 |----------------|-------:|--------|-------------|
@@ -654,6 +652,7 @@ Knowing relational databases gives you the vocabulary to evaluate any of these. 
 
 * Your **lowest lab score is dropped**
 * **Midterm and Final Exams**: closed book/notes/internet/software
+* **Exams** require **LockDown Browser**
 
 ---
 
