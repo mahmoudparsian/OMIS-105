@@ -63,7 +63,7 @@ information every day.
 |[`tutorials`](./tutorials) | Database Tutorials and Notebooks |
 |[`applications`](./applications) | Sample Streamlit apps built with DuckDB (e.g. the In-N-Out POS + analytics teaching app) |
 |[`data`](./data) | Sample data files (CSV and Parquet) |
-|[`software_installation`](./software_installation) | Required software and step-by-step install/verification guides for Python, DuckDB, Marimo, Pandas, and qStudio |
+|[`software_installation`](./software_installation) | Required software and step-by-step install/verification guides for Python, DuckDB, Marimo, Pandas, Matplotlib, and qStudio |
 
 ---
 
