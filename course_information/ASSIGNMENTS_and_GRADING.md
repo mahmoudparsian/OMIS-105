@@ -10,8 +10,8 @@
 | Component                                | Total Points |
 |------------------------------------------|-------------:|
 | ✅ `20` In-Class Labs <br> ✅ Each Lab = `30` points <br> ✅ `One Lab per class` <br> ✅ `20 * 30 = 600`   | `600`        |
-| ✏️ Midterm Exam (in-class, closed book)                   | `200`        |
-| ✏️ Final Exam (in-class, closed book)                     | `200`        |
+| ✏️ Midterm Exam <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `200`        |
+| ✏️ Final Exam <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `200`        |
 | **Total**                                | **`1000`**   |
 
 * **In-Class Lab**: 
@@ -33,10 +33,12 @@ policy, including what happens if you are absent.
 
 1. The lowest in-class lab score will be dropped.
 
-2. All exams (Midterm and Final) are **closed book**, 
+2. All exams (Midterm and Final) are 
+	* **closed book**, 
    **closed notes**, **closed software**, and 
-   **closed Internet**: you are required to install 
-   a LockDown Browser as soon as possible.
+   **closed Internet** 
+	* **you are required to install 
+   a LockDown Browser as soon as possible.**
 
 3. Labs emphasize hands-on SQL, database design, 
   and analytical problem solving.
