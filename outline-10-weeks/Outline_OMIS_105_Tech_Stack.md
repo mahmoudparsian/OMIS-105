@@ -1,21 +1,30 @@
 ---
 title: OMIS 105 — Tech Stack & Welcome Notebooks
+
 author: Dr. Mahmoud Parsian
+
 marp: true
+
 theme: default
+
 paginate: true
+
 class: lead
+
 style: |
   section {
     justify-content: flex-start;
   }
+
 ---
 
 # OMIS 105
 ## Welcome Notebooks & Tech Stack
 
-Quarter: Fall 2026 <br>
+Quarter: Fall 2026 
+
 Instructor: Dr. Mahmoud Parsian <br>
+
 Email: mparsian@scu.edu
 
 ---
@@ -42,7 +51,9 @@ Day-one onboarding notebooks for
 These are among the first things students open.
 
 - Introduces the concept of a database
+
 - Introduces Marimo Notebook
+
 - Walks through the very first SQL queries
 
 👉 Two self-guided, interactive notebooks

@@ -1,9 +1,15 @@
 ---
+
 marp: true
+
 theme: default
+
 paginate: true
+
 header: "OMIS 105 — Introduction to Database Management Systems"
+
 footer: "Course Outline & Syllabus Overview"
+
 style: |
   section {
     font-size: 26px;
@@ -23,14 +29,15 @@ style: |
     font-style: italic;
     color: #4a5568;
   }
+  
 ---
 
 # OMIS 105
 ## Introduction to Database Management Systems
 ### Course Outline & Syllabus Overview
-### Course Roadmap (10 Weeks)
+### Course Roadmap: 10 Weeks
 
-**Instructor**: Dr. Mahmoud Parsian
+**Instructor**: Dr. M. Parsian
 
 **Quarter**: Fall 2026
 
@@ -50,8 +57,8 @@ style: |
 
 # Welcome to OMIS 105
 
-* Every app you use — Amazon, Instagram, Uber, your bank — 
-is powered by a **database**.
+* Every app you use — Amazon, Instagram, Uber, 
+your bank — is powered by a **database**.
 
 * This course gives you the skills to **design**, 
 **build**, **query**, and **manage** databases that 
@@ -76,7 +83,8 @@ By the end of this course:
 
 # Why Databases Matter
 
-- The large majority of **Fortune 1000** companies rely on relational databases
+- The large majority of **Fortune 1000** companies 
+  rely on **relational databases**
 - **SQL** is consistently one of the most requested technical skills in business analytics job postings
 - Every business decision — pricing, inventory, marketing, finance — depends on **data stored in databases**
 - Database skills bridge the gap between **business strategy** and **technical execution**
@@ -212,7 +220,7 @@ The dataset **grows each week**, mirroring real-world complexity.
 
 **The cost of bad data**: IBM estimated that 
 poor data quality costs the U.S. economy 
-**$3.1 trillion per year** (2016). 
+**`$3.1` trillion per year** (2016). 
 
 Flat files (spreadsheets) break down when:
 
@@ -233,12 +241,12 @@ that *reacts* to data problems and one that *prevents* them.
 ## Relational Model & Data Modeling
 
 - Tables, rows, columns
-- Primary keys, foreign keys
-- Relationships (1-1, 1-M, M-M)
+- Primary keys (PK), Foreign keys (FK)
+- Table Relationships:
   - 1-1 (1 to 1)
   - 1-M (1 to Many)
   - M-M (Many to Many) 
-- Intro to ER thinking
+- Intro to ER (entity-relationship) thinking
 
 👉 Goal: Think in structure
 
@@ -246,9 +254,13 @@ that *reacts* to data problems and one that *prevents* them.
 
 ## Table Relationships
 
-- Relationships (1-1, 1-M, M-M)
+- Table Relationships 
+  - 1-1 (1 to 1)
+  - 1-M (1 to Many)
+  - M-M (Many to Many) 
 
-- See details on [Table Relationships](./table_relationships.md)
+
+- See details on [Table Relationships with Examples](./table_relationships.md)
 
 ---
 
@@ -275,7 +287,7 @@ that *reacts* to data problems and one that *prevents* them.
 ### What You Will Learn
 - The relational model (Edgar Codd, 1970 — still dominant today)
 - Primary keys, foreign keys, candidate keys, composite keys
-- Relationships: one-to-one, one-to-many, many-to-many
+- Relationships: **1-to-1**, **1-to-many**, **many-to-many**
 - Junction tables for complex relationships
 - Entity-Relationship (ER) diagrams using Crow's Foot notation
 - Referential integrity — why your data stays consistent
@@ -306,8 +318,11 @@ and links tables through keys. This is how businesses maintain
 ## SQL Core (Part 1)
 
 - CREATE TABLE
+
 - SELECT
+
 - WHERE
+
 - ORDER BY
 
 👉 Goal: Ask questions with data
@@ -317,12 +332,12 @@ and links tables through keys. This is how businesses maintain
 # Week 3 — SQL Mastery, Part 1: Querying a Single Table
 
 ### What You Will Learn
-- SELECT — choosing which columns come back
-- WHERE — filtering rows by a condition
+- **SELECT** — choosing which columns come back
+- **WHERE** — filtering rows by a condition
 - Comparison and logical operators: `=`, `>`, `<`, `AND`, `OR`, `NOT`
-- ORDER BY — sorting results, ascending and descending
-- LIMIT — returning only the first N rows
-- DISTINCT — removing duplicate values
+- **ORDER BY** — sorting results, ascending and descending
+- **LIMIT** — returning only the first N rows
+- **DISTINCT** — removing duplicate values
 - Reading a result set critically: is this actually what I asked for?
 
 ---
@@ -345,7 +360,9 @@ Getting this layer right also builds the habit that matters most: **checking tha
 ## SQL Core (Part 2)
 
 - Aggregation (`SUM`, `COUNT`, `AVG`, `MIN`, `MAX`)
+
 - `GROUP BY`
+
 - `HAVING`
 
 👉 Goal: Generate insights
@@ -383,8 +400,11 @@ Aggregation is the step where rows become *numbers a manager can act on*. It is 
 ## JOINs (Relational Power)
 
 - INNER JOIN
+
 - LEFT JOIN
+
 - RIGHT JOIN
+
 - Multi-table queries
 
 👉 Goal: Connect data
@@ -394,9 +414,9 @@ Aggregation is the step where rows become *numbers a manager can act on*. It is 
 # Week 5 — SQL Mastery, Part 3: JOINs
 
 ### What You Will Learn
-- INNER JOIN — combining matching rows from two tables
-- LEFT JOIN — keeping all rows from one side (finding gaps)
-- RIGHT JOIN and FULL OUTER JOIN
+- **INNER JOIN** — combining matching rows from two tables
+- **LEFT JOIN** — keeping all rows from one side (finding gaps)
+- **RIGHT JOIN** and **FULL OUTER JOIN**
 - Self-joins for comparing rows within the same table
 - Joining 3, 4, or 5 tables in a single query
 - Combining JOINs with GROUP BY and HAVING
@@ -422,9 +442,12 @@ Real business questions span **multiple tables**:
 # Week 6  
 ## Database Design & Normalization
 
-- Bad vs good design
-- 1NF, 2NF, 3NF (intuitive)
-- Reducing redundancy
+- **Bad design** vs **Good design**
+- 1NF: first-normal-form
+- 2NF: second-normal-form
+- 3NF: third-normal-form
+
+- Normal Forms: **Reducing redundancy**
 
 👉 Goal: Design clean databases
 
@@ -464,7 +487,9 @@ Normalization prevents this by ensuring every fact is stored **exactly once**. I
 ## Indexing & Performance
 
 - What is an index?
+
 - Why queries can be slow
+
 - Performance intuition
 
 👉 Goal: Think like a system
@@ -504,7 +529,9 @@ Performance tuning is not about making things "a little faster." It is about the
 ## Transactions & ACID
 
 - Transactions (`BEGIN`, `COMMIT`, `ROLLBACK`)
+
 - ACID properties
+
 - Data correctness
 
 👉 Goal: Understand reliability
@@ -556,7 +583,9 @@ a transaction must:
 ## Project (Integration)
 
 - Design your own database
+
 - Write real queries
+
 - Generate insights
 
 👉 Goal: Apply everything
@@ -597,7 +626,9 @@ This is the workflow at consulting firms (Deloitte, Accenture), tech companies (
 ## Wrap-up & Modern Data
 
 - Review key concepts
+
 - Common mistakes
+
 - Where SQL is used today
 
 👉 Goal: Big-picture understanding
@@ -751,8 +782,11 @@ Product Managers, and Management Consultants.**
 # How You Will Learn
 
 - Hands-on labs every week
+
 - Real datasets
+
 - Business-style questions
+
 - Step-by-step notebooks
 
 ---
@@ -760,7 +794,9 @@ Product Managers, and Management Consultants.**
 # What I Expect From You
 
 - Practice SQL regularly
+
 - Ask questions
+
 - Think in terms of data
 
 ---
@@ -768,7 +804,9 @@ Product Managers, and Management Consultants.**
 # What You Can Expect From Me
 
 - Clear explanations
+
 - Practical examples
+
 - Support throughout the course
 
 ---
