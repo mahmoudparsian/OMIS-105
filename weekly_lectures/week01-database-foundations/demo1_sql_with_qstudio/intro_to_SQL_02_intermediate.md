@@ -1,8 +1,10 @@
 # OMIS 105 — Intermediate SQL with qStudio
 
 * **Course:** OMIS 105 — Introduction to Database Management Systems
+
 * **Quarter:** Fall 2026
-* **Author:** Dr. Mahmoud Parsian
+
+* **Author:** Dr. M. Parsian
 
 ---
 
@@ -427,5 +429,6 @@ ORDER BY avg_gpa DESC;
 | Combined techniques | Multiple clauses together | Real-world queries use many features at once |
 
 ---
+
 
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

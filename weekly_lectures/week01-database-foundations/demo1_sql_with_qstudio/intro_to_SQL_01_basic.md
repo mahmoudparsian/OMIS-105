@@ -2,12 +2,13 @@
 
 * **Course:** OMIS 105 — Introduction to Database Management Systems
 * **Quarter:** Fall 2026
-* **Author:** Dr. Mahmoud Parsian
+* **Author:** Dr. M. Parsian
 
 ---
 # qStudio
 
 * qStudio is a free, open-source SQL editor
+
 * qStudio is a data analysis tool 
 
 * Download page: `https://www.timestored.com/qstudio/download`
