@@ -13,6 +13,7 @@ footer: "Week 1: Foundations"
 ---
 
 # OMIS 105: Database Management Systems
+
 ## Database Management Systems  
 ## Week 1 — Foundations
 ## Instructor: Dr. Parsian

@@ -1,14 +1,21 @@
 ---
+
 title: OMIS 105 - Week 1 (Flagship Expanded)
+
 author: Instructor
+
 marp: true
+
 theme: default
+
 paginate: true
+
 class: lead
 style: |
   section {
     justify-content: flex-start;
   }
+
 ---
 
 # OMIS 105  
@@ -74,7 +81,7 @@ the actual records stored inside it.
 
 ```sql
 -- metadata
-CREATE TABLE employees(
+CREATE TABLE employees (
   name  VARCHAR,
   age   int,
   salary int
@@ -97,8 +104,11 @@ Data → processed → Information
 Example:
 
 - **Raw Data**: sales transactions
+
 - **Insight:** “Top-selling products in CA”
+
 - **Insight:** “Top-5 Customers in NY”
+
 - **Insight:** “Total sales of iPhone 16 in December 2025”
 
 
@@ -138,6 +148,9 @@ Key properties:
 |----------|--------|-------|
 | Alice    | Laptop | 1800  |
 | Alice    | Phone  | 1200  |
+| Alice    | Phone  | 1100  |
+| Jane     | Laptop | 1900  |
+| Jane     | Phone  | 1400  |
 
 👉 What if name changes?
 
@@ -159,11 +172,14 @@ Separate tables:
 
 Database Management System
 
-Responsibilities:
+**Responsibilities:**
 
 - Store data
+
 - Retrieve data
+
 - Ensure consistency
+
 - Handle multiple users
 
 ---
@@ -218,8 +234,11 @@ Data stored in tables:
 Used to:
 
 - Create table
+
 - Query data
+
 - Insert data
+
 - Update data
 
 ---
@@ -238,8 +257,8 @@ SELECT 1;
 
 ```sql
 CREATE TABLE products (
-    id INTEGER,
-    name VARCHAR,
+    product_id INTEGER,
+    product_name VARCHAR,
     price INTEGER
 );
 ```
@@ -257,7 +276,7 @@ VALUES
 ```
 
 ```sql
-INSERT INTO products (id, name, price)
+INSERT INTO products (product_id, product_name, price)
 VALUES
 (11, 'Laptop-X', 1200),
 (23, 'Phone-11', 700),
@@ -346,9 +365,13 @@ Database = Organized memory
 # Hands-On Lab (Today)
 
 - Run SELECT 1
+
 - Create a table
+
 - Insert data
+
 - Query data
+
 - Filter results
 
 ---
