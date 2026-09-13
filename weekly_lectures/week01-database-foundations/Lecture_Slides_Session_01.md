@@ -13,8 +13,8 @@ style: |
 
 # OMIS 105  
 ## Database Management Systems  
-### Week 1: Foundations
-
+## Week 1 — Foundations
+## Instructor: Dr. Parsian
 ---
 
 # Agenda (Today)
@@ -65,14 +65,42 @@ Examples:
 
 ---
 
+### What is Metadata?
+
+Metadata in database tables is "**data about data**"
+—the underlying blueprint that defines how a table 
+is structured, organized, and governed rather than 
+the actual records stored inside it. 
+
+```sql
+-- metadata
+CREATE TABLE employees(
+  name  VARCHAR,
+  age   int,
+  salary int
+);
+```
+
+```sql
+-- data
+INSERT INTO employees 
+VALUES
+('alex', 25, 78000);
+```
+
+---
+
 # From Data to Information
 
 Data → processed → Information
 
 Example:
 
-- Raw: transactions
-- Insight: “Top-selling product”
+- **Raw Data**: sales transactions
+- **Insight:** “Top-selling products in CA”
+- **Insight:** “Top-5 Customers in NY”
+- **Insight:** “Total sales of iPhone 16 in December 2025”
+
 
 ---
 
@@ -83,7 +111,9 @@ A structured collection of data
 Key properties:
 
 - Organized
+
 - Persistent
+
 - Queryable
 
 ---
@@ -104,10 +134,10 @@ Key properties:
 
 # Problem: Data Duplication
 
-| customer | order  |
-|----------|--------|
-| Alice    | Laptop |
-| Alice    | Phone  |
+| customer | order  | price |
+|----------|--------|-------|
+| Alice    | Laptop | 1800  |
+| Alice    | Phone  | 1200  |
 
 👉 What if name changes?
 
@@ -117,8 +147,9 @@ Key properties:
 
 Separate tables:
 
-Customers  
-Orders  
+* Customers  
+
+* Orders  
 
 👉 One change → consistent everywhere
 
@@ -129,6 +160,7 @@ Orders
 Database Management System
 
 Responsibilities:
+
 - Store data
 - Retrieve data
 - Ensure consistency
@@ -138,16 +170,20 @@ Responsibilities:
 
 # Examples of DBMS
 
+- **DuckDB**
 - MySQL
 - PostgreSQL
-- DuckDB
+- Snowflake
+- Oracle
 
 ---
 
 # Roles in Database World
 
 - Developer → builds apps
+
 - Analyst → queries data
+
 - DBA → manages database
 
 ---
@@ -155,6 +191,8 @@ Responsibilities:
 # Relational Model (Preview)
 
 Data stored in tables:
+
+**products** table:
 
 | id  | name   | price   |
 |-----|--------|---------|
@@ -166,16 +204,20 @@ Data stored in tables:
 # Key Terms
 
 - Table
+
 - Row (record)
+
 - Column (attribute)
 
 ---
 
 # What is SQL?
 
-Structured Query Language
+**S**tructured **Q**uery **L**anguage
 
 Used to:
+
+- Create table
 - Query data
 - Insert data
 - Update data
@@ -245,7 +287,9 @@ WHERE price > 700;
 # Compute Values
 
 ```sql
-SELECT name, price * 0.9 AS discounted_price
+SELECT name, 
+       price,
+       price * 0.9 AS discounted_price
 FROM products;
 ```
 
@@ -266,7 +310,9 @@ Think:
 # Example Questions
 
 - Which products are expensive?
+
 - Which products are cheap?
+
 - What is the average price?
 
 ---
@@ -282,7 +328,9 @@ Ask students:
 # Common Beginner Mistakes
 
 - Forgetting quotes
+
 - Confusing columns vs rows
+
 - Thinking SQL = programming
 
 ---
@@ -290,6 +338,7 @@ Ask students:
 # Mental Model
 
 SQL = Asking questions  
+
 Database = Organized memory
 
 ---
@@ -307,8 +356,11 @@ Database = Organized memory
 # Summary
 
 - Databases are everywhere
+
 - SQL is essential
+
 - Tables are simple structures
+
 - You can already query data 🎉
 
 ---
@@ -318,7 +370,9 @@ Database = Organized memory
 Week 2:
 
 - Relationships
+
 - Keys
+
 - Data modeling
 
 ---

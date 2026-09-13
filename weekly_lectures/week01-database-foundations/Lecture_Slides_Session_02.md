@@ -1,14 +1,21 @@
 ---
+
 marp: true
+
 theme: default
+
 paginate: true
+
 header: "OMIS 105 – Database Management Systems"
+
 footer: "Week 1: Foundations"
+
 ---
 
 # OMIS 105: Database Management Systems
+## Database Management Systems  
 ## Week 1 — Foundations
-### Instructor: Dr. Parsian
+## Instructor: Dr. Parsian
 
 ---
 
@@ -145,11 +152,22 @@ A DBMS provides:
 
 # Key Database Concepts
 
+* Table
+
+* Row
+
+* Column
+
+* Primary Key
+
+* Foreign Key
+
+
 ---
 
 # Tables
 
-A **table** is a collection of related data organized in rows and columns.
+A **table** is a collection of **related data** organized in rows and columns.
 
 * Table name: `products` 
 * Column names: 
@@ -158,7 +176,7 @@ A **table** is a collection of related data organized in rows and columns.
 	* `category`
 	* `price`
 
-| product_id | product_name | category | price |
+| `product_id` | `product_name` | `category` | `price` |
 |-----------|-------------|----------|-------|
 | 1 | Smartphone X12 | Electronics | 299.99 |
 | 2 | Laptop Pro 15 | Electronics | 899.99 |
@@ -204,12 +222,12 @@ CREATE TABLE products (
 
 | Type | Description | Example |
 |------|-------------|---------|
-| INTEGER | Whole numbers | `42` |
-| DECIMAL(p,s) | Exact decimals | `29.99` |
-| VARCHAR | Variable-length text | `'Laptop Pro'` |
-| DATE | Calendar date | `'2024-06-15'` |
-| BOOLEAN | True/False | `TRUE` |
-| TIMESTAMP | Date and time | `'2024-06-15 14:30:00'` |
+| **INTEGER** | Whole numbers | `42` |
+| **DECIMAL(p,s)** | Exact decimals | `29.99` |
+| **VARCHAR** | Variable-length text | `'Laptop Pro'` |
+| **DATE** | Calendar date | `'2024-06-15'` |
+| **BOOLEAN** | True/False | `TRUE` |
+| **TIMESTAMP** | Date and time | `'2024-06-15 14:30:00'` |
 
 ---
 
@@ -219,12 +237,12 @@ Rules that enforce data integrity:
 
 | Constraint | Purpose |
 |-----------|---------|
-| PRIMARY KEY | Uniquely identifies each row |
+| PRIMARY KEY (PK) | Uniquely identifies each row |
 | NOT NULL | Column cannot be empty |
 | UNIQUE | No duplicate values allowed |
 | CHECK | Custom validation rule |
 | DEFAULT | Auto-fill value if none given |
-| FOREIGN KEY | Links to another table (Week 2) |
+| FOREIGN KEY (FK) | Links to another table (Week 2) |
 
 ---
 
@@ -235,9 +253,10 @@ CREATE TABLE products (
     product_id     INTEGER PRIMARY KEY,
     product_name   VARCHAR NOT NULL,
     category       VARCHAR NOT NULL,
-    price          DECIMAL(10,2) CHECK (price > 0),
+    price          DECIMAL(10,2) 
+    CHECK (price > 0),
     stock_quantity INTEGER DEFAULT 0
-                   CHECK (stock_quantity >= 0)
+    CHECK (stock_quantity >= 0)
 );
 ```
 
@@ -250,11 +269,13 @@ CREATE TABLE products (
 # Installing DuckDB
 
 **Python (pip)**:
+
 ```bash
 pip install duckdb
 ```
 
 **In a Marimo/Jupyter Notebook**:
+
 ```python
 import duckdb
 
@@ -345,10 +366,10 @@ WHERE price > 100;
 
 ```sql
 SELECT   column1, column2     -- What to show
-FROM     table_name            -- Where to look
-WHERE    condition             -- Which rows
-ORDER BY column1               -- Sort results
-LIMIT    10;                   -- How many rows
+FROM     table_name           -- Where to look
+WHERE    condition            -- Which rows
+ORDER BY column1              -- Sort results
+LIMIT    10;                  -- How many rows
 ```
 
 Each clause has a purpose. We will master these in Weeks 3–5.
@@ -440,18 +461,22 @@ FROM products;
 
 ---
 
-# NULL Values
+## NULL Values
 
 `NULL` means "unknown" or "missing" — not zero, not empty string.
 
 ```sql
 -- Check for NULL
-SELECT * FROM products WHERE stock_quantity IS NULL;
+SELECT * 
+FROM products 
+WHERE stock_quantity IS NULL;
 
 -- Check for NOT NULL
-SELECT * FROM products WHERE stock_quantity IS NOT NULL;
+SELECT * 
+FROM products 
+WHERE stock_quantity IS NOT NULL;
 
--- CAUTION: This does NOT work!
+-- CAUTION: X X X This does NOT work! X X X 
 -- SELECT * FROM products WHERE stock_quantity = NULL;
 ```
 
