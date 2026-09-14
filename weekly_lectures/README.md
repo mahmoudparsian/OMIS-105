@@ -50,10 +50,10 @@ Three folders differ:
   solution.
 - **Week 2** has a third demo, `demo3.py`.
 - **Weeks 9 and 10** have no `demo*.py`. They use full Marimo notebooks
-  instead — `week09_notebook_marimo.py` and
-  `week09_project_template_marimo.py` for the capstone project, and
-  `week10_notebook_marimo.py`, `week10_review_marimo.py`, and
-  `week10_capstone_review.md` for the final review.
+  instead — `week09_notebook_marimo.py` and `lab09_student_marimo.py`
+  (renamed from `week09_project_template_marimo.py`) for the capstone
+  project, and `week10_notebook_marimo.py`, `week10_review_marimo.py`,
+  and `week10_capstone_review.md` for the final review.
 
 ### A caveat on `lab.md`, `notes.md`, and `solution.sql`
 
