@@ -88,7 +88,7 @@ You may also propose your own domain — clear it with the instructor first.
 1. **Introduction** (1 min): What is your domain? What problem does your database solve?
 2. **ER Diagram** (1 min): Walk through your entities and relationships
 3. **Schema Highlights** (1 min): Key tables, interesting constraints
-4. **Live Demo** (3–4 min): Run 3–4 of your best queries in Jupyter
+4. **Live Demo** (3–4 min): Run 3–4 of your best queries in Marimo
 5. **Transaction Demo** (1 min): Show success and failure cases
 6. **Reflection** (30 sec): What did you learn? What would you do differently?
 
@@ -109,7 +109,7 @@ You may also propose your own domain — clear it with the instructor first.
 
 ## Submission
 
-- Upload your **Jupyter notebook** (.ipynb) with all code and outputs
+- Upload your **Marimo notebook** (.py) with all code and outputs
 - Include any **CSV data files**
 - Include your **ER diagram** (image or in notebook)
 - Be prepared to **present live** in Week 10

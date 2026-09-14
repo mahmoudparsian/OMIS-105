@@ -1,8 +1,12 @@
 ---
 marp: true
+
 theme: default
+
 paginate: true
+
 header: "OMIS 105 – Database Management Systems"
+
 footer: "Week 9: Capstone Project"
 ---
 
@@ -324,7 +328,7 @@ def book_class(con, member_id, class_id):
 
 - Start with the **business problem**, not technical details
 - Show the ER diagram **early** to give context
-- **Run queries live** in a Jupyter notebook
+- **Run queries live** in a Marimo notebook
 - Explain **why** you made design choices
 - Keep it within **8 minutes** — practice timing!
 
