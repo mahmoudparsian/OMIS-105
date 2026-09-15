@@ -99,7 +99,7 @@ def _(mo, quantity):
 
     mo.md(f"""
     If notebooks cost **${price_per_item}** each, and you buy
-    **{quantity.value}**, the total is **${total:.2f}**.
+    **{quantity.value}**, the  total  is  **${total:.2f}**.
 
     👉 **Try it:** drag the slider above and watch this text update
     automatically — no "Run All" required. That's reactivity!

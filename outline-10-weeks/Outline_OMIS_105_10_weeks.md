@@ -75,8 +75,11 @@ drive real business decisions.
 By the end of this course:
 
 - Real databases
+
 - Business-style queries
+
 - Analytical insights
+
 - A complete mini project
 
 ---
@@ -195,8 +198,11 @@ The dataset **grows each week**, mirroring real-world complexity.
 ## Introduction to Databases
 
 - What is a database?
+
 - File systems vs DBMS
+
 - Why databases matter
+
 - First SQL query
 
 👉 Goal: Build confidence
