@@ -3,8 +3,22 @@
 * **Course:** OMIS 105 — Introduction to Database Management Systems
 * **Quarter:** Fall 2026
 * **Author:** Dr. Mahmoud Parsian
-* **Last updated:** September 11, 2026
+* **Last updated:** September 14, 2026
 
+
+		Students  must  still  learn  SQL because  AI large 
+		language  models (LLMs) can  generate flawed  code, 
+		and humans need foundational knowledge  to  review, 
+		validate, and  troubleshoot  it.    Even in the age 
+		of generative AI  and  Large Language Models (LLMs) 
+		that  can instantly  generate code,  students  must 
+		learn SQL to  develop a "data mindset,"  accurately 
+		validate AI outputs, and understand  the structural 
+		logic  of  business  data.    While AI  drastically 
+		reduces the need to  memorize syntax, it  does  not 
+		replace the critical thinking required to interface 
+		with data systems.
+	
 ---
 
 ## Table of Contents
