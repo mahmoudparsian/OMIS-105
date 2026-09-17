@@ -19,7 +19,17 @@
 	* The student submits it before the end of the class session.
 
 ---
-## 2. Class Attendance
+
+## 2. Exam Dates
+
+| In-Class-Exam                                | Date |
+|------------------------------------------|-------------|
+| ✏️ **Midterm Exam** <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `Thursday, October 22, 2026`        |
+| ✏️ **Final Exam** <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `TBDL`        |
+
+---
+
+## 3. Class Attendance
 
 **Attendance is mandatory.** Each in-class lab must be
 completed and submitted during the class session in which
@@ -29,7 +39,7 @@ policy, including what happens if you are absent.
 
 ---
 
-## 3. Course Policies
+## 4. Course Policies
 
 1. The lowest in-class lab score will be dropped.
 
@@ -55,7 +65,7 @@ policy, including what happens if you are absent.
 ---
 
 
-## 4. Transparent 1000-Point System
+## 5. Transparent 1000-Point System
 
 The 1000-point grading scale keeps grading 
 simple, transparent, and easy to understand.

@@ -2,17 +2,18 @@
 
 ## 1. Getting Started with Marimo
 
-* **[Meet Marimo — slides as MD format](./marimo_introduction_slides.md)** — a short
-  [Marp](https://marp.app/) deck introducing Marimo for the first time,
-  aimed at using it with DuckDB. Start here if you have never opened a
-  notebook before.
+#### 1.1 [Meet Marimo — slides as MD format](./marimo_introduction_slides.md)
+  a short [MD/Marp](https://marp.app/) deck introducing Marimo 
+  for the first time, aimed at using it with DuckDB. <br>
+  Start here if you have never opened a notebook before.
 
-* **[Meet Marimo — slides as PDF format](./marimo_introduction_slides.md)** — a short
-  [Marp](https://marp.app/) deck introducing Marimo for the first time,
-  aimed at using it with DuckDB. Start here if you have never opened a
-  notebook before.
+#### 1.2 [Meet Marimo — slides as PDF format](./marimo_introduction_slides.pdf)
+  Start here if you have never opened a notebook before.
 
-* [Getting Started with the Marimo Notebook (pdf format)](./marimo_notebook_by_Akshay_Agrawal.pdf)
+#### 1.3 [Getting Started with the Marimo Notebook (pdf)](./marimo_notebook_by_Akshay_Agrawal.pdf)
+
+#### 1.4 [Marimo Notebooks Tutorial URL](https://duckdb.org/docs/current/guides/python/marimo)
+
 
 ## 2. Notebooks in This Folder: SQL/DuckDB
 
