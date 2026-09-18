@@ -25,7 +25,7 @@
 | In-Class-Exam                                | Date |
 |------------------------------------------|-------------|
 | ✏️ **Midterm Exam** <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `Thursday, October 22, 2026`        |
-| ✏️ **Final Exam** <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `TBDL`        |
+| ✏️ **Final Exam** <br> -- in-class, closed book <br> -- LockDown Browser is required                   | [Final-Exam-Schedule](https://www.scu.edu/media/offices/registrar/2026---2027-Final-Exam-Schedule-1.pdf)        |
 
 ---
 
