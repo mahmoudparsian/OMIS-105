@@ -7,11 +7,11 @@ not tied to any specific week.
 
 | File | Description |
 |------|-------------|
-| [`sample_lab_student.py`](./sample_lab_student.py) | The lab students receive — setup is done for you; each question has an empty `con.execute(...)` cell to fill in |
-| [`sample_lab_student_solution.py`](./sample_lab_student_solution.py) | A worked solution, provided for reference |
+| [`sample_lab.py`](./sample_lab.py) | The lab students receive — setup is done for you; each question has an empty `con.execute(...)` cell to fill in |
+| [`sample_lab_solution.py`](./sample_lab_solution.py) | A worked solution, provided for reference |
 | `data/products.csv` | The dataset the lab queries |
 | `data/expensive_products.csv` | A small reference file used by one of the questions |
-| [`solution_output.html`](https://mahmoudparsian.github.io/OMIS-105/sample_lab/solution_output.html) | A static snapshot of the solution notebook, with every query's output already run — see [Viewing the solution output](#viewing-the-solution-output) below |
+| [`sample_lab_solution_output.html`](https://mahmoudparsian.github.io/OMIS-105/sample_lab/solution_output.html) | A static snapshot of the solution notebook, with every query's output already run — see [Viewing the solution output](#viewing-the-solution-output) below |
 
 
 ## What it covers
@@ -30,7 +30,7 @@ actually use):
 
 ```bash
 cd sample_lab
-marimo edit sample_lab_student.py
+marimo edit sample_lab.py
 ```
 
 To just check that the notebook runs cleanly, 
@@ -41,7 +41,7 @@ notebook is a regular Python file, so plain
 
 ```bash
 cd sample_lab
-MPLBACKEND=Agg python3 sample_lab_student.py
+MPLBACKEND=Agg python3 sample_lab.py
 ```
 
 ### Explain `MPLBACKEND=Agg`
@@ -55,14 +55,14 @@ Run it **twice**: the second run is what catches a missing
 
 ## Checking your answers against the solution
 
-`sample_lab_student_solution.py` is a separate notebook — a 
+`sample_lab_solution.py` is a separate notebook — a 
 finished copy of the lab with every query already filled in. 
 Run it the same two ways:
 
 ```bash
 cd sample_lab
-marimo edit sample_lab_student_solution.py               # browse it interactively
-MPLBACKEND=Agg python3 sample_lab_student_solution.py    # just confirm it runs clean
+marimo edit sample_lab_solution.py               # browse it interactively
+MPLBACKEND=Agg python3 sample_lab_solution.py    # just confirm it runs clean
 ```
 
 Use it to check your own answers after you attempt 
@@ -73,13 +73,13 @@ of the exercise.
 ## Viewing the solution output
 
 `solution_output.html` is a static, already-run snapshot of
-`sample_lab_student_solution.py` — every question's code **and** its
+`sample_lab_solution.py` — every question's code **and** its
 result table, frozen into one HTML file
-(via `marimo export html sample_lab_student_solution.py -o solution_output.html`).
+(via `marimo export html sample_lab_solution.py -o solution_output.html`).
 It's for a quick look at expected results without installing anything
 or running DuckDB yourself.
 
-**[View the rendered output](https://mahmoudparsian.github.io/OMIS-105/sample_lab/solution_output.html)**
+**[View the rendered output](https://mahmoudparsian.github.io/OMIS-105/sample_lab/sample_lab_solution_output.html)**
 — opens right in your browser, nothing to install. (It needs an
 internet connection: the page loads its Marimo viewer assets from a
 CDN rather than bundling them.)
@@ -89,7 +89,7 @@ sync:
 
 ```bash
 cd sample_lab
-MPLBACKEND=Agg marimo export html sample_lab_student_solution.py -o solution_output.html -f
+MPLBACKEND=Agg marimo export html sample_lab_solution.py -o sample_lab_solution_output.html -f
 ```
 
 ---
