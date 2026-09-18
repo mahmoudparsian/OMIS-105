@@ -49,6 +49,29 @@ shared course database (a one-time step — see
 ./create_database.sh
 ```
 
+This calls `build_database()` in [`ecommerce_data.py`](./ecommerce_data.py),
+which creates a new file, `ecommerce_database.duckdb`, in this folder,
+runs the `CREATE TABLE` statements for all five tables (with their real
+`PRIMARY KEY`/`FOREIGN KEY`/`UNIQUE`/`CHECK` constraints — see
+notebook 02), and loads each one with generated sample data, seeded so
+the numbers below are identical every time you run it:
+
+| Table | Row count | Primary key | Foreign key(s) |
+|---|---|---|---|
+| `customers` | 30 | `customer_id` | — |
+| `employees` | 6 | `employee_id` | `manager_id` → `employees.employee_id` (self-referencing) |
+| `products` | 15 | `product_id` | — |
+| `orders` | 80 | `order_id` | `customer_id` → `customers`, `employee_id` → `employees` |
+| `order_items` | 192 | (`order_id`, `product_id`) composite | `order_id` → `orders`, `product_id` → `products` |
+
+So each of the 30 customers places a handful of the 80 orders (via
+`orders.customer_id`), and each order is a bundle of 1–4 line items in
+`order_items` (1–5 units of a product per line) — that's why
+`order_items`, at 192 rows, is the largest table: it's where `orders`
+and `products` meet. The whole file is a build artifact (gitignored,
+not committed) — delete it and re-run `./create_database.sh` any time
+you want to reset it to this exact state.
+
 Then confirm it worked:
 
 ```bash
