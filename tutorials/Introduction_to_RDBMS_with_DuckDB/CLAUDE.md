@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-A 12-part, ~2-hour, self-paced course ("Introduction to RDBMS with
+A 13-part, ~2.5-hour, self-paced course ("Introduction to RDBMS with
 DuckDB") taught entirely through interactive [marimo](https://marimo.io)
 notebooks backed by [DuckDB](https://duckdb.org). It is not an
 application — there is no build step, server, or deploy target. The
@@ -131,8 +131,11 @@ because of that, `load_data()` inserts employee rows one at a time in
 check on self-referencing rows — see the comment at that call site
 before "simplifying" it back to a bulk insert).
 
-**The 12 numbered notebooks** (`01_...py` through `12_...py`) are the
-actual course content, meant to be read/run in order. Each is a real
+**The 13 numbered notebooks** (`01_...py` through `13_...py`) are the
+actual course content, meant to be read/run in order (13 is an
+optional bonus deep-dive on window functions after the notebook-12
+capstone — see its own recap for why it isn't renumbered ahead of the
+capstone). Each is a real
 marimo app file (`import marimo; app = marimo.App(...)`, a sequence of
 `@app.cell` functions, `if __name__ == "__main__": app.run()`) and
 follows the same internal shape:

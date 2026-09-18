@@ -1,7 +1,8 @@
 # Introduction to RDBMS with DuckDB
 
-A hands-on, ~2-hour course that takes you from "what is a relational
-database" to writing multi-table, multi-CTE SQL — using
+A hands-on, ~2.5-hour course that takes you from "what is a relational
+database" to writing multi-table, multi-CTE SQL with window functions
+— using
 [marimo](https://marimo.io) reactive notebooks and
 [DuckDB](https://duckdb.org) as an embedded, in-process SQL engine. No
 server to install, no account to create: everything runs locally in
@@ -99,7 +100,7 @@ the next file in order:
 
 ```bash
 marimo edit 02_relational_model_and_keys.py
-# ...and so on through 12_capstone_project.py
+# ...and so on through 13_window_functions.py
 ```
 
 Every notebook (from 2 onward) connects directly to the same shared,
@@ -134,7 +135,7 @@ locked.
 
 ## 3. The dataset
 
-All twelve notebooks share one small, fictional e-commerce database — a
+All thirteen notebooks share one small, fictional e-commerce database — a
 shop with customers, employees, products, orders, and order line items.
 It lives in a single file, `ecommerce_database.duckdb`, built by running
 `./create_database.sh` (which calls `build_database()` in
@@ -169,8 +170,9 @@ order_items(order_id FK, product_id FK, quantity, unit_price)   -- composite PK
 | 10 | [`10_views_and_transactions.py`](./10_views_and_transactions.py) | `CREATE VIEW`, `BEGIN`/`COMMIT`/`ROLLBACK`, atomicity under a real failure | 10 min |
 | 11 | [`11_duckdb_superpowers.py`](./11_duckdb_superpowers.py) | Querying CSV/Parquet files and pandas DataFrames directly, `EXPLAIN`, exporting | 10 min |
 | 12 | [`12_capstone_project.py`](./12_capstone_project.py) | Five guided multi-step business questions + one you design yourself | 15 min |
+| 13 | [`13_window_functions.py`](./13_window_functions.py) | Bonus deep dive: `ROW_NUMBER`/`RANK`/`DENSE_RANK`, running totals, `LAG`/`LEAD` | 15 min |
 
-**Total: ~142 minutes** including reading time — budget roughly 2–2.5
+**Total: ~157 minutes** including reading time — budget roughly 2.5–3
 hours if you work every exercise by hand before checking each solution
 (recommended) rather than skimming.
 
@@ -179,7 +181,8 @@ hours if you work every exercise by hand before checking each solution
 - Read and write `CREATE TABLE` statements with real constraints
   (primary/foreign keys, `NOT NULL`, `UNIQUE`, `CHECK`)
 - Write `SELECT` queries combining filtering, sorting, joins,
-  aggregation, subqueries, CTEs, and basic window functions
+  aggregation, subqueries, CTEs, and window functions (ranking,
+  running totals, `LAG`/`LEAD`)
 - Explain *why* a schema is split into multiple tables (normalization),
   not just that it is
 - Use transactions to make multi-step changes safely
@@ -195,8 +198,8 @@ README.md                              this file
 ecommerce_data.py                      shared sample database (plain Python, not a notebook)
 01_setup_and_marimo_basics.py          \
 02_relational_model_and_keys.py         |
-...                                      > the 12 course notebooks, run in order
-12_capstone_project.py                 /
+...                                      > the 13 course notebooks, run in order
+13_window_functions.py                 /
 CLAUDE.md                              notes for Claude Code sessions that extend this course
 ```
 

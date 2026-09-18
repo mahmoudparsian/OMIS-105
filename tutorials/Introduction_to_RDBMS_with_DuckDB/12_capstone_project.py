@@ -16,7 +16,7 @@ def _(mo):
     mo.md(r"""
     # 12 · Capstone Project
 
-    Notebook **12 of 12** · estimated time: **15 minutes**.
+    Notebook **12 of 13** · estimated time: **15 minutes**.
 
     You're the analyst for this small shop. Below are five real
     business questions, each requiring you to combine more than one
@@ -384,15 +384,21 @@ def _(con, ex6, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Course complete
+    ## Core course complete
 
     You've gone from "what's a relational database" to writing
-    multi-CTE, window-function queries against a real, constrained,
-    five-table schema — and along the way, learned marimo's
-    reactive model well enough to build your own interactive SQL
-    tools. From here:
+    multi-CTE queries with a first taste of window functions, against
+    a real, constrained, five-table schema — and along the way,
+    learned marimo's reactive model well enough to build your own
+    interactive SQL tools.
 
-    - **Keep this folder.** `ecommerce_data.py` and all twelve
+    ➡️ **One more, if you want it:** `13_window_functions.py` — a
+    focused, bonus deep dive on `ROW_NUMBER`/`RANK`/`DENSE_RANK`,
+    running totals, and `LAG`/`LEAD`, going well past the "first
+    taste" from notebook 07. Everything else below applies whether or
+    not you do it.
+
+    - **Keep this folder.** `ecommerce_data.py` and all thirteen
       notebooks are yours to reopen, tweak, and reuse as a
       reference or a template for your own datasets.
     - **Swap in your own data.** Point `read_csv_auto` /
