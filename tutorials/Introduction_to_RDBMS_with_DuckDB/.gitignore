@@ -1,0 +1,4 @@
+ecommerce_database.duckdb
+ecommerce_database.duckdb.wal
+__pycache__/
+*.pyc
