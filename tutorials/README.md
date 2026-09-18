@@ -32,7 +32,7 @@ use the column as a starting point, not a hard rule.
 | [`Transactions/`](Transactions/) | `BEGIN`/`COMMIT`/`ROLLBACK` and ACID properties in action | Week 8 — Transactions & ACID |
 | [`DuckDB_Sub_Queries_Tutorial/`](DuckDB_Sub_Queries_Tutorial/) | Subqueries — scalar, correlated, and `IN`/`EXISTS` patterns, plus CTEs (`WITH`) | Week 9 — Project Integration (CTEs also reinforce Week 7) |
 | [`sales_1000_rows/`](sales_1000_rows/) | Three-level SQL progression (basic → intermediate → advanced) on a sales dataset | Weeks 1–8 — see the folder's own week-by-week breakdown |
-| [`Introduction_to_RDBMS_with_DuckDB/`](Introduction_to_RDBMS_with_DuckDB/) | 12-part, ~2-hour self-paced course covering the whole syllabus in one sequence: relational model & keys, `CREATE TABLE`/`INSERT`, `SELECT`/`WHERE`/`ORDER BY`, joins, aggregation, subqueries/CTEs, constraints & ACID, normalization, views & transactions, DuckDB superpowers, and a capstone | Weeks 1–9 — comprehensive; see the folder's own README for notebook-by-notebook mapping |
+| [`Introduction_to_RDBMS_with_DuckDB/`](Introduction_to_RDBMS_with_DuckDB/) | 13-part, ~2.5-hour self-paced course covering the whole syllabus in one sequence: relational model & keys, `CREATE TABLE`/`INSERT`, `SELECT`/`WHERE`/`ORDER BY`, joins, aggregation, subqueries/CTEs, constraints & ACID, normalization, views & transactions, DuckDB superpowers, a capstone, and a bonus window-functions deep dive | Weeks 1–9 — comprehensive; see the folder's own README for notebook-by-notebook mapping |
 
 ## How to Use
 
