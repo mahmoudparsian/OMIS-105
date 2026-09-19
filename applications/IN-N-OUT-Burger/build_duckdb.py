@@ -1,5 +1,5 @@
 """
-build_db.py  ·  In-N-Out POS demo database builder
+build_duckdb.py  ·  In-N-Out POS demo database builder
 OMIS-105 Introduction to DBMS
 
 Creates innout.duckdb from scratch:
@@ -7,7 +7,7 @@ Creates innout.duckdb from scratch:
   2. loads the menu reference (lookup) tables
   3. generates realistic historical orders (1500 / 2000 / 2500 per store)
 
-Run:  python build_db.py
+Run:  python build_duckdb.py
 """
 
 import os
