@@ -200,7 +200,6 @@ ecommerce_data.py                      shared sample database (plain Python, not
 02_relational_model_and_keys.py         |
 ...                                      > the 13 course notebooks, run in order
 13_window_functions.py                 /
-CLAUDE.md                              notes for Claude Code sessions that extend this course
 ```
 
 Nothing else in this folder is required reading — `ecommerce_data.py`
@@ -287,6 +286,3 @@ This repo was built to be easy to extend without redoing the groundwork:
   print('OK, cells ran:', len(outputs))
   "
   ```
-- See [`CLAUDE.md`](./CLAUDE.md) for the conventions (cell structure,
-  exercise/solution pattern, dataset design) to follow if you're using
-  Claude Code to add or modify notebooks.
