@@ -15,7 +15,7 @@ dashboard).
 The schema has ten tables that fall into two groups.
 
 **Reference (lookup) tables** describe the menu. They change rarely and are
-written mostly by `build_db.py` (and by the "Add a store" form). They answer
+written mostly by `build_duckdb.py` (and by the "Add a store" form). They answer
 the question *"what can be sold, and for how much?"*
 
 - `stores`
