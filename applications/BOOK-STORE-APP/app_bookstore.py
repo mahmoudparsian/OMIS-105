@@ -138,7 +138,6 @@ def alert_green(text: str):
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Santa_Clara_University_seal.svg/200px-Santa_Clara_University_seal.svg.png", width=72)
     st.markdown("## 📚 SCU Bookstore")
     st.caption("Intelligence Platform")
     st.markdown("---")

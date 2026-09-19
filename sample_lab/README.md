@@ -9,7 +9,7 @@ not tied to any specific week.
 |------|-------------|
 | [`sample_lab.py`](./sample_lab.py) | The lab students receive — setup is done for you; each question has an empty `con.execute(...)` cell to fill in |
 | [`sample_lab_solution.py`](./sample_lab_solution.py) | A worked solution, provided for reference |
-| [`sample_lab_solution_output.html`](https://mahmoudparsian.github.io/OMIS-105/sample_lab/solution_output.html) | A static snapshot of the solution notebook, with every query's output already run — see [Viewing the solution output](#viewing-the-solution-output) below |
+| [`sample_lab_solution_output.html`](https://mahmoudparsian.github.io/OMIS-105/sample_lab/sample_lab_solution_output.html) | A static snapshot of the solution notebook, with every query's output already run — see [Viewing the solution output](#viewing-the-solution-output) below |
 | [`data/products.csv`](./data/products.csv) | The dataset the lab queries |
 | [`data/expensive_products.csv`](./data/expensive_products.csv) | A small reference file used by one of the questions |
 

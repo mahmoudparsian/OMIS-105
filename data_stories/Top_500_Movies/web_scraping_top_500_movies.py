@@ -47,6 +47,11 @@ AUDIENCE_REVIEWS_THRESHOLD = 25_000
 LETTERBOXD_VOTES_THRESHOLD = 30_000
 IMDB_VOTES_OVERRIDE        = 100_000  # always keep if IMDb_Votes > this
 
+# NOTE (2026-09-18): flickmetrix.com/api2/values/getFilms now returns 404 —
+# the endpoint is gone. This script is kept for reference/provenance only;
+# the CSV it produced (top_500_movies_ranked.csv) is already checked in and
+# is what the notebook actually uses.
+
 # ── Fetch ──────────────────────────────────────────────────────────────────
 print("Fetching top 500 films...")
 r = requests.get("https://flickmetrix.com/api2/values/getFilms",

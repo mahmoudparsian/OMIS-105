@@ -48,8 +48,9 @@ grew the dataset so it behaves like a real, multi-year sales history:
     the messy duplicates that show up in real-world data exports.
 - **`build_bookstore_db.py`** reads the `data/` folder, loads each CSV
   into DuckDB, removes the duplicate rows with `SELECT DISTINCT`, and
-  prints a before/after row count for every table. Its output is saved in
-  [`build_bookstore_db.log`](build_bookstore_db.log).
+  prints a before/after row count for every table. Its output is saved
+  to `build_bookstore_db.log` (git-ignored — you'll see this file after
+  running the script yourself, but it isn't shipped in the repo).
 
 After cleaning, the database holds:
 
