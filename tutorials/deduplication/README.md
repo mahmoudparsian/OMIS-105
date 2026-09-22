@@ -163,6 +163,10 @@ VALUES
   the earliest `created_on` as the "signup date" but upgrade `status` to
   `verified` if *any* duplicate for that email was ever verified), so no
   information is silently lost by picking one row and discarding the rest.
+- **Problem #9** — Dedupe by the **entire row**: instead of a key column
+  like `email`, treat *every* column as the uniqueness key, so only
+  byte-for-byte identical rows count as duplicates. The `ROW_NUMBER()` +
+  `WITH` + `DELETE` version of the whole-row dedup introduced in §1.2.
 
 ## 4. Repository Files
 
@@ -176,8 +180,9 @@ VALUES
 
 Each problem script resets and reseeds the table before running so it can
 be run independently, in any order, with reproducible output. Problems
-#3–#8 are SQL-only teaching extensions (see §8) with no dedicated Python
-script — run them directly against `users.db`.
+#3–#9 are SQL-only teaching extensions (see §8) with no dedicated Python
+script — run #3–#8 directly against `users.db`; #9 uses its own
+`raw_events` table (see §8.7).
 
 ## 5. Requirements
 
@@ -329,15 +334,18 @@ WHERE user_id IN (SELECT user_id FROM ranked WHERE rn > 1);
 
 Produces an identical result to §7.2.
 
-## 8. Extra Scenarios (Problems #3–#8)
+## 8. Extra Scenarios (Problems #3–#9)
 
-Six more dedup variants worth practicing in class, all built on the same
+Seven more dedup variants worth practicing in class, all built on the same
 `ROW_NUMBER()` + `WITH` pattern from §7.1.1/§7.2.1 — what changes each time
 is either the `PARTITION BY` key, the `ORDER BY` tiebreak, or (for #5 and
 #8) the statement type itself. None of these have a dedicated Python
 script; they are SQL-only and were each run and verified against DuckDB
 before being written up here. Run them directly against `users.db` (e.g.
-`duckdb users.db` at the command line, or `duckdb.sql(...)` in Python).
+`duckdb users.db` at the command line, or `duckdb.sql(...)` in Python) —
+except Problem #9, which (like §1.2) uses its own `raw_events` table
+since `users.db`'s `user_id` primary key rules out whole-row duplicates
+by construction.
 
 ### 8.1 Problem #3 — keep the most recent row overall
 
@@ -662,6 +670,52 @@ since it was never verified:
 This is the pattern to teach alongside straight `DELETE` dedup: whenever
 "pick a winner" would throw away information you actually still need,
 merge first, delete second.
+
+### 8.7 Problem #9 — dedupe by the entire row (exact-duplicate rows)
+
+§1.2 introduced whole-row dedup conceptually, with two quick options
+(`SELECT DISTINCT` and a `GROUP BY`-every-column `DELETE`). This section
+gives it the same `ROW_NUMBER()` + `WITH` + `DELETE` shape as Problems
+#1–#8, so it's clear it's the *same tool*, just pointed at a different
+`PARTITION BY` key: partition by **every column** instead of a single key
+column like `email`. Two rows only rank against each other here if they
+agree on all of them.
+
+Since this table has no `user_id`-style primary key to break ties on (the
+whole point is that duplicate rows are indistinguishable), the query uses
+DuckDB's built-in `rowid` instead — the same tiebreaker §1.2's Option B
+used:
+
+```sql
+WITH ranked AS (
+    SELECT
+        rowid,
+        ROW_NUMBER() OVER (
+            PARTITION BY email, status, created_on
+            ORDER BY rowid ASC
+        ) AS rn
+    FROM raw_events
+)
+DELETE FROM raw_events
+WHERE rowid IN (SELECT rowid FROM ranked WHERE rn > 1);
+```
+
+**Result** (verified against DuckDB, same `raw_events` seed data as §1.2):
+identical to both §1.2 options — the two identical `a@example.com` rows
+collapse to one, `b@example.com` is untouched:
+
+| email          | status       | created_on          |
+|----------------|--------------|----------------------|
+| a@example.com  | verified     | 2026-01-01 00:00:00 |
+| b@example.com  | not-verified | 2026-01-01 00:00:00 |
+
+The `ROW_NUMBER()` form costs more than `SELECT DISTINCT` for this simple
+case — it's overkill for pure whole-row dedup — but it's worth knowing
+because real "whole-row" dedup is often "whole-row-except-a-timestamp":
+swap the `PARTITION BY` list to the columns that must match and keep
+`ORDER BY created_on DESC` (or similar) as the tiebreak, and this becomes
+"keep the newest copy of each exact duplicate," which `SELECT DISTINCT`
+can't express at all.
 
 ---
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
