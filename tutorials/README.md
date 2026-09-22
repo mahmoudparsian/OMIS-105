@@ -29,6 +29,7 @@ use the column as a starting point, not a hard rule.
 | [`Join_Operations/`](Join_Operations/) | `INNER`/`LEFT`/`RIGHT`/`FULL` joins across employees, departments, countries | Week 5 — SQL Joins |
 | [`LIMIT_vs_RANK/`](LIMIT_vs_RANK/) | Why `RANK()` beats `LIMIT` for top-N-per-group queries, incl. ties | Week 7 — Query Performance |
 | [`Ranking_Functions/`](Ranking_Functions/) | `ROW_NUMBER`, `RANK`, `DENSE_RANK`, and `NTILE` window functions | Week 7 — Query Performance (advanced notebook's `NTILE`/`LAG`/`LEAD` also fits Week 9) |
+| [`deduplication/`](deduplication/) | Deleting duplicate rows with `ROW_NUMBER() OVER (PARTITION BY ...)`, plus extensions: composite keys, normalized-value dedup, upsert prevention, and merge-before-delete | Week 7 — Query Performance (window functions; upsert variant also touches Week 8 constraints) |
 | [`Transactions/`](Transactions/) | `BEGIN`/`COMMIT`/`ROLLBACK` and ACID properties in action | Week 8 — Transactions & ACID |
 | [`DuckDB_Sub_Queries/`](DuckDB_Sub_Queries/) | Subqueries — scalar, correlated, and `IN`/`EXISTS` patterns, plus CTEs (`WITH`) | Week 9 — Project Integration (CTEs also reinforce Week 7) |
 | [`sales_1000_rows/`](sales_1000_rows/) | Three-level SQL progression (basic → intermediate → advanced) on a sales dataset | Weeks 1–8 — see the folder's own week-by-week breakdown |
