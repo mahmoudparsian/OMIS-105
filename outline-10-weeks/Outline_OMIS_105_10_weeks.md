@@ -234,6 +234,12 @@ Flat files (spreadsheets) break down when:
 - A typo in "Electronics" creates an invisible data silo
 - Someone deletes a row and takes critical information with it
 
+---
+
+# Week 1 — Business Insight
+
+### Why This Matters in the Real World
+
 **Databases solve these problems** with structure, 
 constraints, and controlled access. Understanding 
 this foundation is the difference between a business 
@@ -284,7 +290,7 @@ that *reacts* to data problems and one that *prevents* them.
 
 ### Relational Model: Set of Tables
 
-![](./images/relational_database_tables_01.png)
+![height:480px](./images/relational_database_tables_01.png)
 
 ---
 
