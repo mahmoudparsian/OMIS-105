@@ -10,8 +10,8 @@
 
 This document collects fixes for the problems Mac students actually
 hit on the first day of class, beyond what's already covered in
-[`step_1_install_python_macbook.md`](step_1_install_python_macbook.md)
-and [`step_4_install_qstudio_macbook.md`](step_4_install_qstudio_macbook.md). Start
+[`step_1_install_python.md`](step_1_install_python.md)
+and [`step_4_install_qstudio.md`](step_4_install_qstudio.md). Start
 there first — come here when something still isn't working.
 
 If your problem isn't listed here, take a screenshot of the error and
@@ -192,30 +192,30 @@ on your PATH yet.
 
 ## 3. Getting `step_2_setup_software.py` and `step_3_verification.py` Onto Your Mac
 
-These two files live inside the course's GitHub repository, in the
-`software_installation` folder. **Step 0** in
+These two files live inside the course's GitHub repository, in this
+`macbook` folder (inside `software_installation`). **Step 0** in
 [`README.md`](README.md) covers this in full — here's the short
 version:
 
 1. Go to **https://github.com/mahmoudparsian/OMIS-105**
 2. Click the green **`< > Code`** button, then **Download ZIP**
 3. Find the ZIP in your **Downloads** folder and double-click it to unzip
-4. Open the unzipped folder, then open **`software_installation`** —
-   both files are inside
+4. Open the unzipped folder, then open **`software_installation`**,
+   then open **`macbook`** — both files are inside
 
 If you only need to re-download these two files specifically (for
 example, you deleted them by accident but still have the rest):
 
-1. Go to **https://github.com/mahmoudparsian/OMIS-105/tree/main/software_installation**
+1. Go to **https://github.com/mahmoudparsian/OMIS-105/tree/main/software_installation/macbook**
 2. Click on `step_2_setup_software.py`
 3. Click the **Download raw file** button (a download-arrow icon
    near the top right of the file view)
 4. Repeat for `step_3_verification.py`
-5. Move both downloaded files into your `software_installation` folder
+5. Move both downloaded files into your `macbook` folder
 
 > **Already comfortable with Git?** `git clone` or `git pull` also
 > works, and makes future weeks easier. See
-> [`tutorials/git/README.md`](../tutorials/git/README.md). If that's
+> [`tutorials/git/README.md`](../../tutorials/git/README.md). If that's
 > unfamiliar, ignore it — the ZIP is simpler for now.
 
 ---
@@ -268,7 +268,7 @@ ready-made install for it yet, and `pip` tries to compile it from
 scratch — which fails without extra developer tools. Simplest fix:
 uninstall it and install **Python 3.12** instead (still meets the
 3.10+ requirement, and everything has ready-made installs for it). See
-[`step_1_install_python_macbook.md`](step_1_install_python_macbook.md).
+[`step_1_install_python.md`](step_1_install_python.md).
 
 ### `marimo edit` doesn't open a browser tab by itself
 
@@ -277,13 +277,14 @@ sandboxed. Look at the Terminal output — Marimo prints a line like
 `http://localhost:2718/?access_token=...`. Copy that whole address and
 paste it into any browser's address bar by hand.
 
-### The unzipped folder looks empty, or I can't find `software_installation` inside it
+### The unzipped folder looks empty, or I can't find `macbook` inside it
 
 Make sure you fully unzipped the file rather than just previewing it —
 double-clicking a `.zip` on a Mac should extract it automatically into
 a real folder sitting next to the `.zip`. If you see a folder with a
 zipper icon, it isn't extracted yet; double-click it again. The real
-folder is named **`OMIS-105-main`**.
+folder is named **`OMIS-105-main`**, and `macbook` is inside its
+`software_installation` folder.
 
 ### macOS says qStudio (or another app) is from an "unidentified developer"
 
@@ -304,12 +305,12 @@ portal or security software). Try:
 - If you're on a VPN, temporarily turning it off
 - Retrying — some campus networks are just briefly unreliable
 
-### My terminal doesn't show the `software_installation` folder when I run `ls`
+### My terminal doesn't show the `macbook` folder when I run `ls`
 
 Your Terminal isn't pointed at the right folder. Redo the drag-and-drop
 trick in **Step 0** of [`README.md`](README.md) — type `cd ` (with a
-trailing space), drag the `software_installation` folder from Finder
-onto the Terminal window, then press Enter.
+trailing space), drag the `macbook` folder from Finder onto the
+Terminal window, then press Enter.
 
 ### I have more than one Python installed and things behave inconsistently
 
@@ -322,13 +323,13 @@ which python3
 If it doesn't point at the Python you installed in Step 1 (usually
 under `/Library/Frameworks/Python.framework/` or `/usr/local/bin/`),
 see the "I installed packages but Python can't find them" section in
-[`step_1_install_python_macbook.md`](step_1_install_python_macbook.md#troubleshooting).
+[`step_1_install_python.md`](step_1_install_python.md#troubleshooting).
 
 ### Everything from Step 1/Step 2 troubleshooting
 
 Package install errors (`externally-managed-environment`, permission
 denied, `pip3` not found, Marimo not launching) are covered in
-[`step_1_install_python_macbook.md`](step_1_install_python_macbook.md#troubleshooting)
+[`step_1_install_python.md`](step_1_install_python.md#troubleshooting)
 — check there first if your problem is about Python packages rather
 than Java or qStudio.
 
@@ -358,7 +359,7 @@ If you've tried the steps above and are still stuck:
 2. Note your **macOS version** (Apple menu → About This Mac) and
    whether your Mac is **Apple Silicon or Intel**
 3. Bring both to **office hours** (see
-   [`course_information/QUESTIONS_and_OFFICE_HOURS.md`](../course_information/QUESTIONS_and_OFFICE_HOURS.md))
+   [`course_information/QUESTIONS_and_OFFICE_HOURS.md`](../../course_information/QUESTIONS_and_OFFICE_HOURS.md))
    or post on the course discussion board
 
 ---

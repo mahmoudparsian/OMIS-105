@@ -45,7 +45,7 @@ skipping this step is the #1 reason qStudio fails to launch.
    You should see something mentioning `21`.
 
 > **`winget` not recognized?** See
-> [`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md#1-qstudio-wont-open-because-it-cant-find-java)
+> [`installation_trouble_shooting.md`](installation_trouble_shooting.md#1-qstudio-wont-open-because-it-cant-find-java)
 > for a manual install option and the full walkthrough.
 
 ---
@@ -145,7 +145,7 @@ qStudio also ships with a built-in example: **File → Open DuckDB Example .sql*
 This means Java isn't installed yet, or isn't the version qStudio
 expects. Go back to **Step 0** above and install Java 21. If you've
 already done that and it's still not working, see
-[`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md#1-qstudio-wont-open-because-it-cant-find-java)
+[`installation_trouble_shooting.md`](installation_trouble_shooting.md#1-qstudio-wont-open-because-it-cant-find-java)
 for less common causes (multiple Javas installed, broken PATH, etc.).
 
 ### "Windows protected your PC" when opening the installer

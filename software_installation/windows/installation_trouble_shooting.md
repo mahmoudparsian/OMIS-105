@@ -10,9 +10,8 @@
 
 This document collects fixes for the problems Windows students
 actually hit on the first day of class, beyond what's already covered
-in
-[`step_1_install_python_windows.md`](step_1_install_python_windows.md)
-and [`step_4_install_qstudio_windows.md`](step_4_install_qstudio_windows.md). Start
+in [`step_1_install_python.md`](step_1_install_python.md)
+and [`step_4_install_qstudio.md`](step_4_install_qstudio.md). Start
 there first — come here when something still isn't working.
 
 If your problem isn't listed here, take a screenshot of the error and
@@ -145,8 +144,8 @@ on your PATH yet.
 
 ## 3. Getting `step_2_setup_software.py` and `step_3_verification.py` Onto Your Windows Laptop
 
-These two files live inside the course's GitHub repository, in the
-`software_installation` folder. **Step 0** in
+These two files live inside the course's GitHub repository, in this
+`windows` folder (inside `software_installation`). **Step 0** in
 [`README.md`](README.md) covers this in full — here's the short
 version:
 
@@ -154,8 +153,8 @@ version:
 2. Click the green **`< > Code`** button, then **Download ZIP**
 3. Find the ZIP in your **Downloads** folder, right-click it, and
    choose **Extract All...**
-4. Open the extracted folder, then open **`software_installation`** —
-   both files are inside
+4. Open the extracted folder, then open **`software_installation`**,
+   then open **`windows`** — both files are inside
 
 > **Extract the ZIP somewhere outside OneDrive if you can** (for
 > example, `C:\OMIS105\` instead of your OneDrive Desktop or
@@ -166,16 +165,16 @@ version:
 If you only need to re-download these two files specifically (for
 example, you deleted them by accident but still have the rest):
 
-1. Go to **https://github.com/mahmoudparsian/OMIS-105/tree/main/software_installation**
+1. Go to **https://github.com/mahmoudparsian/OMIS-105/tree/main/software_installation/windows**
 2. Click on `step_2_setup_software.py`
 3. Click the **Download raw file** button (a download-arrow icon
    near the top right of the file view)
 4. Repeat for `step_3_verification.py`
-5. Move both downloaded files into your `software_installation` folder
+5. Move both downloaded files into your `windows` folder
 
 > **Already comfortable with Git?** `git clone` or `git pull` also
 > works, and makes future weeks easier. See
-> [`tutorials/git/README.md`](../tutorials/git/README.md). If that's
+> [`tutorials/git/README.md`](../../tutorials/git/README.md). If that's
 > unfamiliar, ignore it — the ZIP is simpler for now.
 
 ---
@@ -194,7 +193,7 @@ non-synced location, such as `C:\OMIS105\`, and work from there.
 ### "python" is not recognized, or the Microsoft Store opens instead
 
 These are Python PATH issues, not Java issues — see the full fix in
-[`step_1_install_python_windows.md`](step_1_install_python_windows.md#troubleshooting).
+[`step_1_install_python.md`](step_1_install_python.md#troubleshooting).
 
 ### `winget` command not found
 
@@ -227,7 +226,7 @@ ready-made install for it yet, and `pip` tries to compile it from
 scratch — which fails without extra developer tools. Simplest fix:
 uninstall it and install **Python 3.12** instead (still meets the
 3.10+ requirement, and everything has ready-made installs for it). See
-[`step_1_install_python_windows.md`](step_1_install_python_windows.md).
+[`step_1_install_python.md`](step_1_install_python.md).
 
 ### `marimo edit` doesn't open a browser tab by itself
 
@@ -236,14 +235,15 @@ sandboxed. Look at the Command Prompt output — Marimo prints a line
 like `http://localhost:2718/?access_token=...`. Copy that whole
 address and paste it into any browser's address bar by hand.
 
-### The folder looks empty, or I can't find `software_installation` inside it
+### The folder looks empty, or I can't find `windows` inside it
 
 Make sure you used **Extract All** (right-click the `.zip` →
 **Extract All...**) rather than just double-clicking to peek inside —
 double-clicking opens a "compressed folder" preview that *looks* like
 a real folder but isn't, and running scripts from inside it fails in
 confusing ways. The real, extracted folder is named
-**`OMIS-105-main`**.
+**`OMIS-105-main`**, and `windows` is inside its `software_installation`
+folder.
 
 ### `curl` or `pip install` fails with an SSL / certificate error
 
@@ -255,12 +255,12 @@ portal or security software). Try:
 - If you're on a VPN, temporarily turning it off
 - Retrying — some campus networks are just briefly unreliable
 
-### My Command Prompt doesn't show the `software_installation` folder when I run `dir`
+### My Command Prompt doesn't show the `windows` folder when I run `dir`
 
 Your Command Prompt isn't pointed at the right folder. Redo the
 address-bar trick in **Step 0** of [`README.md`](README.md) — click
-the address bar in File Explorer while inside the
-`software_installation` folder, type `cmd`, and press Enter.
+the address bar in File Explorer while inside the `windows` folder,
+type `cmd`, and press Enter.
 
 ### A path is "too long" error while installing or unzipping
 
@@ -273,7 +273,7 @@ keep the full path short.
 
 Package install errors (permission denied, `pip` not found, Marimo not
 launching, multiple Python installs) are covered in
-[`step_1_install_python_windows.md`](step_1_install_python_windows.md#troubleshooting)
+[`step_1_install_python.md`](step_1_install_python.md#troubleshooting)
 — check there first if your problem is about Python packages rather
 than Java or qStudio.
 
@@ -297,7 +297,7 @@ If you've tried the steps above and are still stuck:
 1. Take a **screenshot** of the error message
 2. Note your **Windows version** (Settings → System → About)
 3. Bring both to **office hours** (see
-   [`course_information/QUESTIONS_and_OFFICE_HOURS.md`](../course_information/QUESTIONS_and_OFFICE_HOURS.md))
+   [`course_information/QUESTIONS_and_OFFICE_HOURS.md`](../../course_information/QUESTIONS_and_OFFICE_HOURS.md))
    or post on the course discussion board
 
 ---

@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    # OMIS 105 — Setup Verification
+    # OMIS 105 — Setup Verification (Windows)
 
     **Course:** OMIS 105 — Introduction to Database Management Systems
     **Quarter:** Fall 2026
@@ -27,8 +27,6 @@ def _(mo):
     This notebook verifies that Python, DuckDB, Pandas, Marimo, and
     Matplotlib are all installed correctly, then runs a real SQL query
     to prove everything works end-to-end.
-
-    Works on **macOS**, **Windows**, and **Linux**.
     """)
     return
 

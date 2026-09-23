@@ -55,7 +55,7 @@ skipping this step is the #1 reason qStudio fails to launch.
    You should see something mentioning `21`.
 
 > Having trouble with Homebrew or the PATH step? See
-> [`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java)
+> [`installation_trouble_shooting.md`](installation_trouble_shooting.md#1-qstudio-wont-open-because-it-cant-find-java)
 > for the full walkthrough, including fixes for common errors.
 
 ---
@@ -134,9 +134,9 @@ So: highlight the statement you want, press **Cmd+E**. Highlight nothing, and th
 > **Do not try Cmd+Q for this.** On macOS, `Cmd+Q` quits the
 > application. Stick with **Cmd+E** and highlight what you want to run.
 
-qStudio's own documentation writes shortcuts with `Ctrl` (the Windows
-convention) — on a Mac, use `Cmd` instead, with `Cmd+Q` as the
-exception above.
+qStudio's own documentation defaults to `Ctrl` in its written
+shortcuts — on a Mac, use `Cmd` instead, with `Cmd+Q` as the exception
+above.
 
 ---
 
@@ -159,7 +159,7 @@ qStudio also ships with a built-in example: **File → Open DuckDB Example .sql*
 This means Java isn't installed yet, or isn't the version qStudio
 expects. Go back to **Step 0** above and install Java 21. If you've
 already done that and it's still not working, see
-[`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java)
+[`installation_trouble_shooting.md`](installation_trouble_shooting.md#1-qstudio-wont-open-because-it-cant-find-java)
 for less common causes (multiple Javas installed, broken PATH, etc.).
 
 ### qStudio won't open ("unidentified developer")

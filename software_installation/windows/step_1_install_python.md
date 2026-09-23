@@ -15,7 +15,7 @@
 | Internet connection | Required for download and package installation |
 | Disk space | ~600 MB (Python itself, plus the packages Step 2 installs) |
 
-After Python is installed, you will run a setup script (`step_2_setup_software.py`) that automatically installs everything else (DuckDB, Pandas, Marimo, Matplotlib). You will also install qStudio separately (see `step_4_install_qstudio_windows.md`).
+After Python is installed, you will run a setup script (`step_2_setup_software.py`) that automatically installs everything else (DuckDB, Pandas, Marimo, Matplotlib). You will also install qStudio separately (see `step_4_install_qstudio.md`).
 
 ---
 
@@ -94,7 +94,7 @@ python step_2_setup_software.py
 
 This script will automatically install DuckDB, Pandas, Marimo, and Matplotlib, then verify everything works.
 
-> Your Command Prompt must be pointed at the `software_installation` folder for this to work. **Step 0** in the README shows the address-bar trick that does it.
+> Your Command Prompt must be pointed at the `windows` folder for this to work. **Step 0** in the README shows the address-bar trick that does it.
 
 ---
 

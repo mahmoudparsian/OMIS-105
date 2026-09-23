@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-OMIS 105 — Software Setup & Verification Script
-=================================================
+OMIS 105 — Software Setup & Verification Script (Windows)
+===========================================================
 Course : OMIS 105 — Introduction to Database Management Systems
 Quarter: Fall 2026
 Author : Dr. Mahmoud Parsian
@@ -18,10 +18,9 @@ It will:
 
 HOW TO RUN
 ----------
-  Mac:     Open Terminal, then type:     python3 step_2_setup_software.py
-  Windows: Open Command Prompt, then:    python step_2_setup_software.py
+  Open Command Prompt, then type:    python step_2_setup_software.py
 
-  If "python" doesn't work on Windows, try "python3" or "py".
+  If "python" doesn't work, try "python3" or "py".
 """
 
 import sys
@@ -40,7 +39,7 @@ def check_python():
         print("  HOW TO FIX:")
         print("    1. Go to https://www.python.org/downloads/")
         print("    2. Download Python 3.12 or later")
-        print("    3. Install it (Windows: CHECK 'Add Python to PATH')")
+        print("    3. Install it (CHECK 'Add python.exe to PATH')")
         print("    4. Close this window, reopen, and run this script again")
         print()
         sys.exit(1)
@@ -67,9 +66,9 @@ def pip_install(pkg, extra_args=()):
 def is_externally_managed(result):
     """True if pip refused because the Python install is 'externally managed'.
 
-    Homebrew Python (Mac) and most Linux system Pythons block plain
-    'pip install' this way. It is a safety rule about the computer's
-    own Python, not a problem with the student's machine.
+    This is rare on a standard Windows Python install, but the check
+    is harmless to keep here in case it ever comes up — for example
+    under WSL or a Linux-style Python setup.
     """
     return "externally-managed-environment" in (result.stdout + result.stderr)
 
@@ -89,9 +88,9 @@ def install_packages():
         print(f"  Installing {pkg}...", end=" ", flush=True)
         result = pip_install(pkg)
 
-        # Some Pythons (Homebrew on Mac, most Linux) refuse a plain
-        # install to protect the system Python. Retry in the one way
-        # that works, and explain it in plain language the first time.
+        # Some Python installs refuse a plain install to protect
+        # themselves. Retry in the one way that works, and explain it
+        # in plain language the first time.
         if result.returncode != 0 and is_externally_managed(result):
             print("retrying")
             if not explained:
@@ -168,8 +167,7 @@ def verify_packages():
 # ════════════════════════════════════════════════════════════════
 #  BONUS CHECK: run a live DuckDB query (shown as part of Step 3's
 #  success output, not its own numbered step — "Step 4" is qStudio,
-#  covered separately in step_4_install_qstudio_macbook.md /
-#  step_4_install_qstudio_windows.md)
+#  covered separately in step_4_install_qstudio.md)
 # ════════════════════════════════════════════════════════════════
 
 def test_duckdb_query():
@@ -281,8 +279,7 @@ def main():
         print("  ALSO — Install qStudio (Step 4):")
         print()
         print("    qStudio is a free SQL editor for writing and testing queries.")
-        print("    Mac:     see step_4_install_qstudio_macbook.md")
-        print("    Windows: see step_4_install_qstudio_windows.md")
+        print("    See step_4_install_qstudio.md for download and setup instructions.")
     else:
         print("  SOME CHECKS FAILED")
         print("  See the errors above and follow the fix instructions.")
