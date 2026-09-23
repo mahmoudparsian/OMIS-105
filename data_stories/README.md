@@ -240,7 +240,7 @@ beyond snapshot. Both stories say so explicitly rather than overclaiming.
 
 **10. `sailors_and_boats/` needs setup beyond the course standard.** Every other
 story in this folder runs on the plain `pip install duckdb pandas marimo matplotlib`
-from `software_installation/step_2_setup_software.py` — no server, no virtual
+from `software_installation/` (see its `README.md`) — no server, no virtual
 environment, no API key. `sailors_and_boats/` doesn't fit that path:
 
 - Its `pyproject.toml` / `uv.lock` are meant to be installed with
