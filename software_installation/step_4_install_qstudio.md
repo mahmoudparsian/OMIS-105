@@ -130,6 +130,14 @@ qStudio also ships with a built-in example: **File → Open DuckDB Example .sql*
 
 ## Troubleshooting
 
+### qStudio won't open, or complains it can't find Java
+
+qStudio needs Java to run. If it won't launch, or the error message
+mentions "Java" or "JRE," see
+[`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java) (Mac) or
+[`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md#1-qstudio-wont-open-because-it-cant-find-java) (Windows)
+for step-by-step instructions to install Java 21.
+
 ### qStudio won't open on Mac ("unidentified developer")
 
 This is a macOS security feature. Go to **System Settings → Privacy & Security**, find the message about qStudio, and click **"Open Anyway"**.

@@ -147,6 +147,8 @@ qStudio is a free SQL editor you download separately (it's a desktop application
 | `step_2_setup_software.py` | Script that installs and verifies DuckDB, Marimo, Pandas, and Matplotlib |
 | `step_3_verification.py` | Marimo notebook that verifies everything works together |
 | `step_4_install_qstudio.md` | qStudio installation, connection, and verification guide (Mac and Windows) |
+| `installation_trouble_shooting_macbook.md` | Fixes for common Mac problems (qStudio needing Java, PATH issues, getting the files) |
+| `installation_trouble_shooting_windows.md` | Fixes for common Windows problems (qStudio needing Java, PATH issues, getting the files) |
 
 ---
 
@@ -231,7 +233,12 @@ duckdb --version
 
 If you run into problems:
 
-1. Check the **Troubleshooting** section in the relevant guide
+1. Check the **Troubleshooting** section in the relevant guide, or the
+   consolidated
+   [`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md) /
+   [`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md)
+   for common Day-1 issues (qStudio needing Java, PATH problems,
+   getting the setup files onto your computer)
 2. Take a **screenshot** of the error message
 3. Note your **operating system** and **Python version**
 4. Bring these to **office hours** (see

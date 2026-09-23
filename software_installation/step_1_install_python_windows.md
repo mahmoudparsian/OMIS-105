@@ -100,6 +100,13 @@ This script will automatically install DuckDB, Pandas, Marimo, and Matplotlib, t
 
 ## Troubleshooting
 
+### "Windows protected your PC" appears when opening the installer
+
+This is Windows SmartScreen — it appears because the installer isn't
+from one of the handful of vendors Windows recognizes by default, not
+because the file is unsafe. Click **"More info"**, then **"Run
+anyway"**.
+
 ### "python" is not recognized
 
 Python was installed without "Add to PATH." The easiest fix:
