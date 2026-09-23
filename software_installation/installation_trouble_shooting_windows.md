@@ -245,6 +245,23 @@ a real folder but isn't, and running scripts from inside it fails in
 confusing ways. The real, extracted folder is named
 **`OMIS-105-main`**.
 
+### `curl` or `pip install` fails with an SSL / certificate error
+
+This usually happens on school or coffee-shop Wi-Fi that intercepts
+secure connections (common on eduroam-style networks with a captive
+portal or security software). Try:
+
+- Switching to a different network (phone hotspot works well to test)
+- If you're on a VPN, temporarily turning it off
+- Retrying — some campus networks are just briefly unreliable
+
+### My Command Prompt doesn't show the `software_installation` folder when I run `dir`
+
+Your Command Prompt isn't pointed at the right folder. Redo the
+address-bar trick in **Step 0** of [`README.md`](README.md) — click
+the address bar in File Explorer while inside the
+`software_installation` folder, type `cmd`, and press Enter.
+
 ### A path is "too long" error while installing or unzipping
 
 Older Windows versions can fail on file paths longer than 260
