@@ -168,7 +168,8 @@ def verify_packages():
 # ════════════════════════════════════════════════════════════════
 #  BONUS CHECK: run a live DuckDB query (shown as part of Step 3's
 #  success output, not its own numbered step — "Step 4" is qStudio,
-#  covered separately in step_4_install_qstudio.md)
+#  covered separately in step_4_install_qstudio_macbook.md /
+#  step_4_install_qstudio_windows.md)
 # ════════════════════════════════════════════════════════════════
 
 def test_duckdb_query():
@@ -280,7 +281,8 @@ def main():
         print("  ALSO — Install qStudio (Step 4):")
         print()
         print("    qStudio is a free SQL editor for writing and testing queries.")
-        print("    See step_4_install_qstudio.md for download and setup instructions.")
+        print("    Mac:     see step_4_install_qstudio_macbook.md")
+        print("    Windows: see step_4_install_qstudio_windows.md")
     else:
         print("  SOME CHECKS FAILED")
         print("  See the errors above and follow the fix instructions.")

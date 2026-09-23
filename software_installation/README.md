@@ -135,7 +135,14 @@ When you are finished looking at it, go back to the terminal and press `Ctrl + C
 
 ## Step 4 — Install Java, Then Install and Verify qStudio
 
-qStudio is a free SQL editor you download separately (it's a desktop application, not a `pip` package), and it requires **Java** to run — qStudio won't open without it. Follow [`step_4_install_qstudio.md`](step_4_install_qstudio.md) — it walks through installing Java, installing qStudio, connecting it to DuckDB, and running a quick test query to confirm it works.
+qStudio is a free SQL editor you download separately (it's a desktop application, not a `pip` package), and it requires **Java** to run — qStudio won't open without it.
+
+| Operating system | What to do |
+|------------------|------------|
+|**Mac users:**    |Follow [`step_4_install_qstudio_macbook.md`](step_4_install_qstudio_macbook.md) |
+|**Windows users:**| Follow [`step_4_install_qstudio_windows.md`](step_4_install_qstudio_windows.md) |
+
+Each guide walks through installing Java, installing qStudio, connecting it to DuckDB, and running a quick test query to confirm it works.
 
 ---
 
@@ -147,7 +154,8 @@ qStudio is a free SQL editor you download separately (it's a desktop application
 | `step_1_install_python_windows.md` | Python installation guide for **Windows** |
 | `step_2_setup_software.py` | Script that installs and verifies DuckDB, Marimo, Pandas, and Matplotlib |
 | `step_3_verification.py` | Marimo notebook that verifies everything works together |
-| `step_4_install_qstudio.md` | Java + qStudio installation, connection, and verification guide (Mac and Windows) |
+| `step_4_install_qstudio_macbook.md` | Java + qStudio installation, connection, and verification guide (Mac) |
+| `step_4_install_qstudio_windows.md` | Java + qStudio installation, connection, and verification guide (Windows) |
 | `installation_trouble_shooting_macbook.md` | Fixes for common Mac problems (qStudio needing Java, PATH issues, getting the files) |
 | `installation_trouble_shooting_windows.md` | Fixes for common Windows problems (qStudio needing Java, PATH issues, getting the files) |
 

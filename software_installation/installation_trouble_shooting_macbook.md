@@ -11,7 +11,7 @@
 This document collects fixes for the problems Mac students actually
 hit on the first day of class, beyond what's already covered in
 [`step_1_install_python_macbook.md`](step_1_install_python_macbook.md)
-and [`step_4_install_qstudio.md`](step_4_install_qstudio.md). Start
+and [`step_4_install_qstudio_macbook.md`](step_4_install_qstudio_macbook.md). Start
 there first — come here when something still isn't working.
 
 If your problem isn't listed here, take a screenshot of the error and

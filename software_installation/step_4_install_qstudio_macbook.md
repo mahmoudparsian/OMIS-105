@@ -1,4 +1,4 @@
-# OMIS 105 <br> How to Install qStudio
+# OMIS 105 <br> How to Install qStudio (Mac)
 
 **Course:** OMIS 105 — Introduction to Database Management Systems  
 **Quarter:** Fall 2026  
@@ -16,7 +16,7 @@ You will use qStudio to practice writing SQL queries on your own and to explore 
 |------|-------------|
 | Software | qStudio (free, open-source) |
 | Java | **Required** — qStudio will not run without it (Java 21 recommended) |
-| Operating system | macOS, Windows, or Linux |
+| Operating system | macOS |
 | Internet connection | Required for download |
 | Disk space | ~500 MB (the Mac download alone is 162 MB), plus ~200 MB for Java |
 
@@ -27,8 +27,6 @@ You will use qStudio to practice writing SQL queries on your own and to explore 
 qStudio is written in Java, and it will not open without a working
 Java installed. **Install this before you try to open qStudio** —
 skipping this step is the #1 reason qStudio fails to launch.
-
-### Mac
 
 1. Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter)
 2. Install Homebrew, a package manager for Mac (skip if you already
@@ -60,42 +58,17 @@ skipping this step is the #1 reason qStudio fails to launch.
 > [`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java)
 > for the full walkthrough, including fixes for common errors.
 
-### Windows
-
-1. Open **Command Prompt** (press `Win`, type `cmd`, press Enter)
-2. Install Java 21:
-
-   ```
-   winget install EclipseAdoptium.Temurin.21.JDK
-   ```
-
-3. Close Command Prompt completely, reopen it, and verify:
-
-   ```
-   java -version
-   ```
-
-   You should see something mentioning `21`.
-
-> **`winget` not recognized?** See
-> [`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md#1-qstudio-wont-open-because-it-cant-find-java)
-> for a manual install option and the full walkthrough.
-
 ---
 
 ## Step 1 — Download qStudio
 
 1. Open your web browser and go to: **https://www.timestored.com/qstudio/download/**
-2. Click the download button for your operating system:
-   - **Mac:** "Download .App Mac with Java" (downloads a `.zip` file)
-   - **Windows:** "Download Installer for Windows" (downloads an `.exe` file)
+2. Click **"Download .App Mac with Java"** — this downloads a `.zip` file
 3. The file will download to your Downloads folder
 
 ---
 
 ## Step 2 — Install qStudio
-
-### Mac
 
 1. Find **`qstudio-mac.zip`** in your Downloads folder and double-click it — macOS unzips it automatically into an app called **QStudio**
 2. Drag **QStudio** into the **Applications** folder
@@ -104,14 +77,6 @@ skipping this step is the #1 reason qStudio fails to launch.
    - Go to **System Settings → Privacy & Security**
    - Scroll down and click **"Open Anyway"** next to the qStudio message
    - Click **Open** in the confirmation dialog
-
-### Windows
-
-1. Open the downloaded `.exe` installer
-2. Click **Next** through the setup screens
-3. Click **Install**
-4. When the installation finishes, click **Finish**
-5. qStudio should now appear in your Start menu
 
 ---
 
@@ -130,7 +95,7 @@ The new database appears in the panel on the left, and qStudio connects to it au
 
 ### Quick Test
 
-Type this in the query editor and press **Ctrl+E** (Windows) or **Cmd+E** (Mac):
+Type this in the query editor and press **Cmd+E**:
 
 ```sql
 SELECT 'Hello, OMIS 105!' AS greeting, 42 AS answer;
@@ -154,25 +119,24 @@ INSERT INTO test_students VALUES
 SELECT * FROM test_students;
 ```
 
-Select all three statements and press **Ctrl+E** / **Cmd+E**. You should see Alice and Bob. Expand the connection in the left panel and you will see `test_students` listed there.
+Select all three statements and press **Cmd+E**. You should see Alice and Bob. Expand the connection in the left panel and you will see `test_students` listed there.
 
 ### Running Queries
 
 **Use this one — it always works:**
 
-| OS | Shortcut | What it runs |
-|----|----------|-------------|
-| Windows | **Ctrl+E** | The highlighted text. If nothing is highlighted, the **whole editor** |
-| Mac | **Cmd+E** | Same |
+| Shortcut | What it runs |
+|----------|-------------|
+| **Cmd+E** | The highlighted text. If nothing is highlighted, the **whole editor** |
 
-So: highlight the statement you want, press it. Highlight nothing, and the whole file runs.
+So: highlight the statement you want, press **Cmd+E**. Highlight nothing, and the whole file runs.
 
-Windows users have a second option — **Ctrl+Q** runs just the one statement your cursor is sitting in, without highlighting anything.
-
-> **Mac users: do not try Cmd+Q for this.** On macOS, `Cmd+Q` quits the
+> **Do not try Cmd+Q for this.** On macOS, `Cmd+Q` quits the
 > application. Stick with **Cmd+E** and highlight what you want to run.
 
-In general, qStudio's own documentation writes shortcuts with `Ctrl`, and on a Mac you use `Cmd` instead — with `Cmd+Q` as the exception above.
+qStudio's own documentation writes shortcuts with `Ctrl` (the Windows
+convention) — on a Mac, use `Cmd` instead, with `Cmd+Q` as the
+exception above.
 
 ---
 
@@ -183,8 +147,6 @@ To open a `.duckdb` file you already have — one you made earlier, or one hande
 1. Go to **File → Open Database (sqlite/duckdb/h2)**
 2. Pick the `.duckdb` file
 3. Click **Open**
-
-On Windows, if you installed with the installer, you can also just double-click a `.duckdb` file and it opens in qStudio.
 
 qStudio also ships with a built-in example: **File → Open DuckDB Example .sql**.
 
@@ -197,11 +159,10 @@ qStudio also ships with a built-in example: **File → Open DuckDB Example .sql*
 This means Java isn't installed yet, or isn't the version qStudio
 expects. Go back to **Step 0** above and install Java 21. If you've
 already done that and it's still not working, see
-[`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java) (Mac) or
-[`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md#1-qstudio-wont-open-because-it-cant-find-java) (Windows)
+[`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java)
 for less common causes (multiple Javas installed, broken PATH, etc.).
 
-### qStudio won't open on Mac ("unidentified developer")
+### qStudio won't open ("unidentified developer")
 
 This is a macOS security feature. Go to **System Settings → Privacy & Security**, find the message about qStudio, and click **"Open Anyway"**.
 
@@ -227,7 +188,7 @@ you run the notebook and vanishes when you close it. qStudio uses the
 **file** you created in Step 3, which persists. They are two separate
 databases and neither can see the other's tables.
 
-### Nothing happens when I press Ctrl+E
+### Nothing happens when I press Cmd+E
 
 Make sure a database is selected in the left panel first — qStudio needs
 to know where to send the query. Also check that your cursor is in the
@@ -239,14 +200,12 @@ query editor, not in the results panel.
 
 | Task | How |
 |------|-----|
-| Install Java (Mac) | `brew install --cask temurin@21` |
-| Install Java (Windows) | `winget install EclipseAdoptium.Temurin.21.JDK` |
+| Install Java | `brew install --cask temurin@21` |
 | Check Java version | `java -version` |
-| Open qStudio | Applications (Mac) or Start menu (Windows) |
+| Open qStudio | Applications folder |
 | Create a DuckDB database | File → New DuckDB Database |
 | Open an existing `.duckdb` file | File → Open Database (sqlite/duckdb/h2) |
-| Run the highlighted text (main one) | Ctrl+E (Win) / Cmd+E (Mac) |
-| Run the statement at the cursor | Ctrl+Q — **Windows only** (Cmd+Q quits on Mac) |
+| Run the highlighted text (or the whole file) | Cmd+E |
 | Browse tables | Expand the database in the left panel |
 
 ---
@@ -256,7 +215,7 @@ query editor, not in the results panel.
 If you've tried the troubleshooting steps above and are still stuck:
 
 1. Take a **screenshot** of the error message
-2. Note your **operating system** and **qStudio version** (Help → About)
+2. Note your **macOS version** and **qStudio version** (Help → About)
 3. Bring both to **office hours** or post on the course discussion board
 
 ---
