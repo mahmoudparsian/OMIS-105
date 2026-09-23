@@ -8,7 +8,7 @@
 
 ## Overview
 
-This folder contains everything you need to set up your computer for OMIS 105. Follow **Step 0 → Step 1 → Step 2 → Step 3 → Step 4 below, in order** — don't skip ahead or run any install command until its step tells you to. By the end, you will have **Python**, **DuckDB**, **Marimo**, **Pandas**, **Matplotlib**, and **qStudio** installed and verified.
+This folder contains everything you need to set up your computer for OMIS 105. Follow **Step 0 → Step 1 → Step 2 → Step 3 → Step 4 below, in order** — don't skip ahead or run any install command until its step tells you to. By the end, you will have **Python**, **DuckDB**, **Marimo**, **Pandas**, **Matplotlib**, **Java**, and **qStudio** installed and verified.
 
 **Set aside about an hour**, and do this **before the first class**. If you get stuck at any step, stop there and bring it to office hours — don't skip a step and hope the next one works.
 
@@ -21,6 +21,7 @@ This folder contains everything you need to set up your computer for OMIS 105. F
 | [Marimo](https://marimo.io) | Interactive notebook environment (replaces Jupyter for this course) | any recent | Step 2 | Steps 2, 3 |
 | [Pandas](https://pandas.pydata.org) | Data manipulation library — DuckDB query results come back as Pandas tables | any recent | Step 2 | Steps 2, 3 |
 | [Matplotlib](https://matplotlib.org) | Charting library — the class notebooks that draw charts import it | any recent | Step 2 | Steps 2, 3 |
+| [Java](https://adoptium.net) | Required by qStudio — qStudio is written in Java and won't open without it | 21 (recommended) | Step 4 | Step 4 |
 | [qStudio](https://www.timestored.com/qstudio/download) | Free SQL editor for writing and exploring queries visually | any recent | Step 4 | Step 4 |
 
 This table is just a reference — **the actual install commands are in the steps below, not here.**
@@ -132,9 +133,9 @@ When you are finished looking at it, go back to the terminal and press `Ctrl + C
 > | Mac | `python3 -m marimo edit step_3_verification.py` |
 > | Windows | `python -m marimo edit step_3_verification.py` |
 
-## Step 4 — Install and Verify qStudio
+## Step 4 — Install Java, Then Install and Verify qStudio
 
-qStudio is a free SQL editor you download separately (it's a desktop application, not a `pip` package). Follow [`step_4_install_qstudio.md`](step_4_install_qstudio.md) — it walks through installing qStudio, connecting it to DuckDB, and running a quick test query to confirm it works.
+qStudio is a free SQL editor you download separately (it's a desktop application, not a `pip` package), and it requires **Java** to run — qStudio won't open without it. Follow [`step_4_install_qstudio.md`](step_4_install_qstudio.md) — it walks through installing Java, installing qStudio, connecting it to DuckDB, and running a quick test query to confirm it works.
 
 ---
 
@@ -146,7 +147,7 @@ qStudio is a free SQL editor you download separately (it's a desktop application
 | `step_1_install_python_windows.md` | Python installation guide for **Windows** |
 | `step_2_setup_software.py` | Script that installs and verifies DuckDB, Marimo, Pandas, and Matplotlib |
 | `step_3_verification.py` | Marimo notebook that verifies everything works together |
-| `step_4_install_qstudio.md` | qStudio installation, connection, and verification guide (Mac and Windows) |
+| `step_4_install_qstudio.md` | Java + qStudio installation, connection, and verification guide (Mac and Windows) |
 | `installation_trouble_shooting_macbook.md` | Fixes for common Mac problems (qStudio needing Java, PATH issues, getting the files) |
 | `installation_trouble_shooting_windows.md` | Fixes for common Windows problems (qStudio needing Java, PATH issues, getting the files) |
 
@@ -161,7 +162,7 @@ Step 0:  Download ZIP from GitHub, unzip, open Terminal in software_installation
 Step 1:  Install Python                          (follow the Mac guide, then verify)
 Step 2:  python3 step_2_setup_software.py        (installs + verifies DuckDB, Pandas, Marimo, Matplotlib)
 Step 3:  marimo edit step_3_verification.py      (final check — everything together, in Marimo)
-Step 4:  Install qStudio                         (download from timestored.com, then verify)
+Step 4:  Install Java, then qStudio              (Java via Homebrew, qStudio from timestored.com, then verify)
 ```
 
 Windows:
@@ -171,7 +172,7 @@ Step 0:  Download ZIP from GitHub, unzip, open Command Prompt in software_instal
 Step 1:  Install Python                          (follow the Windows guide, then verify)
 Step 2:  python step_2_setup_software.py         (installs + verifies DuckDB, Pandas, Marimo, Matplotlib)
 Step 3:  marimo edit step_3_verification.py      (final check — everything together, in Marimo)
-Step 4:  Install qStudio                         (download from timestored.com, then verify)
+Step 4:  Install Java, then qStudio              (Java via winget, qStudio from timestored.com, then verify)
 ```
 
 ---

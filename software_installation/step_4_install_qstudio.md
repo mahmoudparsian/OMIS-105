@@ -15,9 +15,71 @@ You will use qStudio to practice writing SQL queries on your own and to explore 
 | Item | Requirement |
 |------|-------------|
 | Software | qStudio (free, open-source) |
+| Java | **Required** — qStudio will not run without it (Java 21 recommended) |
 | Operating system | macOS, Windows, or Linux |
 | Internet connection | Required for download |
-| Disk space | ~500 MB (the Mac download alone is 162 MB) |
+| Disk space | ~500 MB (the Mac download alone is 162 MB), plus ~200 MB for Java |
+
+---
+
+## Step 0 — Install Java (Required by qStudio)
+
+qStudio is written in Java, and it will not open without a working
+Java installed. **Install this before you try to open qStudio** —
+skipping this step is the #1 reason qStudio fails to launch.
+
+### Mac
+
+1. Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter)
+2. Install Homebrew, a package manager for Mac (skip if you already
+   have it — check with `brew --version`):
+
+   ```
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+   Follow any on-screen prompts (your Mac password, and an "Install
+   Command Line Developer Tools" popup if one appears). When it
+   finishes, it prints 1–2 "Next steps" commands — **run those**, they
+   put `brew` on your PATH.
+3. Install Java 21:
+
+   ```
+   brew install --cask temurin@21
+   ```
+
+4. Verify it worked:
+
+   ```
+   java -version
+   ```
+
+   You should see something mentioning `21`.
+
+> Having trouble with Homebrew or the PATH step? See
+> [`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java)
+> for the full walkthrough, including fixes for common errors.
+
+### Windows
+
+1. Open **Command Prompt** (press `Win`, type `cmd`, press Enter)
+2. Install Java 21:
+
+   ```
+   winget install EclipseAdoptium.Temurin.21.JDK
+   ```
+
+3. Close Command Prompt completely, reopen it, and verify:
+
+   ```
+   java -version
+   ```
+
+   You should see something mentioning `21`.
+
+> **`winget` not recognized?** See
+> [`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md#1-qstudio-wont-open-because-it-cant-find-java)
+> for a manual install option and the full walkthrough.
 
 ---
 
@@ -132,11 +194,12 @@ qStudio also ships with a built-in example: **File → Open DuckDB Example .sql*
 
 ### qStudio won't open, or complains it can't find Java
 
-qStudio needs Java to run. If it won't launch, or the error message
-mentions "Java" or "JRE," see
+This means Java isn't installed yet, or isn't the version qStudio
+expects. Go back to **Step 0** above and install Java 21. If you've
+already done that and it's still not working, see
 [`installation_trouble_shooting_macbook.md`](installation_trouble_shooting_macbook.md#1-qstudio-wont-open-because-it-cant-find-java) (Mac) or
 [`installation_trouble_shooting_windows.md`](installation_trouble_shooting_windows.md#1-qstudio-wont-open-because-it-cant-find-java) (Windows)
-for step-by-step instructions to install Java 21.
+for less common causes (multiple Javas installed, broken PATH, etc.).
 
 ### qStudio won't open on Mac ("unidentified developer")
 
@@ -176,6 +239,9 @@ query editor, not in the results panel.
 
 | Task | How |
 |------|-----|
+| Install Java (Mac) | `brew install --cask temurin@21` |
+| Install Java (Windows) | `winget install EclipseAdoptium.Temurin.21.JDK` |
+| Check Java version | `java -version` |
 | Open qStudio | Applications (Mac) or Start menu (Windows) |
 | Create a DuckDB database | File → New DuckDB Database |
 | Open an existing `.duckdb` file | File → Open Database (sqlite/duckdb/h2) |
