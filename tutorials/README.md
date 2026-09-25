@@ -19,6 +19,7 @@ use the column as a starting point, not a hard rule.
 | [`DuckDB_SQL_Introduction/`](DuckDB_SQL_Introduction/) | First SQL queries against a weather CSV dataset | Week 1 — Database Foundations |
 | [`SQL_Tutorial_Documents/`](SQL_Tutorial_Documents/) | Reference PDFs: intro to RDBMS and intro to SQL | Week 1 — background reading |
 | [`marimo_introduction/`](marimo_introduction/) | Getting started with Marimo notebooks and `mo.sql()`; `101` = first SQL notebook, `102` = joins, `103` = subqueries/CTEs | Week 1 (`101`) → Week 5 (`102`, joins) → Week 9 (`103`, CTEs) |
+| [`marimo_for_labs/`](marimo_for_labs/) | Bulletproof, OS-specific walkthrough: opening a Marimo notebook from the terminal, and DuckDB in-memory vs. persistent connections — including how to write a Windows path correctly (forward vs. backward slashes) | Week 1 — setup, referenced all quarter |
 | [`SQL_Tutorial_Notebooks/`](SQL_Tutorial_Notebooks/) | Quick-tour → fundamentals → comprehensive SQL notebook series | Week 1 (`01` quick tour) → Week 3 (`02` fundamentals) → Weeks 7–9 (`03` comprehensive: joins, CTEs, window functions) |
 | [`marimo_widgets/`](marimo_widgets/) | Interactive Marimo UI widgets (dropdown, radio, slider) for building queries, incl. a `WHERE`-clause builder | Week 1 / Week 3 — SQL basics, filtering |
 | [`GROUP_BY/`](GROUP_BY/) | `GROUP BY` from a 30-second reference to a 35-lesson capstone | Week 2 — Relational Modeling |
