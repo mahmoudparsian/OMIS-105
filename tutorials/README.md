@@ -14,7 +14,7 @@ use the column as a starting point, not a hard rule.
 |---|---|---|
 | [`git/`](git/) | Git and GitHub for students: what they are, installing Git on macOS/Windows, cloning this repository, and keeping it up to date | Before Week 1 — setup |
 | [`DuckDB_101/`](DuckDB_101/) | Intro slides + notebook: what DuckDB is and why it's used in this course | Week 1 — Database Foundations |
-| [`DuckDB_from_Command_Line/`](DuckDB_from_Command_Line/) | Installing and using the DuckDB CLI shell — dot-commands, `.mode`, reading CSVs, script files ([slides PDF](DuckDB_from_command_line/duckdb_from_command_line.pdf)) | Week 1 — Database Foundations |
+| [`DuckDB_from_Command_Line/`](DuckDB_from_Command_Line/) | Installing and using the DuckDB CLI shell — dot-commands, `.mode`, reading CSVs, script files; separate Mac and Windows decks ([Mac PDF](DuckDB_from_Command_Line/duckdb_from_command_line_on_macbook.pdf), [Windows PDF](DuckDB_from_Command_Line/duckdb_from_command_line_on_windows.pdf)) | Week 1 — Database Foundations |
 | [`DuckDB_Querying_CSV_Files/`](DuckDB_Querying_CSV_Files/) | Reading and querying CSV files directly with DuckDB | Week 1 — Database Foundations |
 | [`DuckDB_SQL_Introduction/`](DuckDB_SQL_Introduction/) | First SQL queries against a weather CSV dataset | Week 1 — Database Foundations |
 | [`SQL_Tutorial_Documents/`](SQL_Tutorial_Documents/) | Reference PDFs: intro to RDBMS and intro to SQL | Week 1 — background reading |
