@@ -11,7 +11,7 @@ PURPOSE
 Run this script AFTER you have installed Python (Step 1).
 It will:
   1. Check that your Python version is 3.10 or higher
-  2. Install the required packages (duckdb, pandas, marimo, matplotlib)
+  2. Install the required packages (duckdb, pandas, marimo, matplotlib, sqlglot)
   3. Verify each package works correctly
   4. Run a small DuckDB query to prove everything is working
   5. Show you how to launch Marimo
@@ -74,7 +74,9 @@ def is_externally_managed(result):
 def install_packages():
     # matplotlib is needed from Week 1 — several class notebooks import it
     # at the top of the file and will not open without it.
-    packages = ["duckdb", "pandas", "marimo", "matplotlib"]
+    # sqlglot is needed by Marimo itself to run SQL cells — without it,
+    # Marimo shows "The following packages are required to execute sql: sqlglot".
+    packages = ["duckdb", "pandas", "marimo", "matplotlib", "sqlglot"]
     explained = False
 
     print()
@@ -95,7 +97,7 @@ def install_packages():
                 print()
                 print("    NOTE: Your Python protects itself from changes.")
                 print("    That is normal. Installing anyway — this is safe")
-                print("    for the four packages this course uses.")
+                print("    for the five packages this course uses.")
                 print()
                 explained = True
             print(f"  Installing {pkg} (second try)...", end=" ", flush=True)
@@ -158,6 +160,13 @@ def verify_packages():
         results.append(("Matplotlib", matplotlib.__version__, True))
     except ImportError:
         results.append(("Matplotlib", "not found", False))
+
+    # sqlglot — Marimo needs this to run SQL cells
+    try:
+        import sqlglot
+        results.append(("sqlglot", sqlglot.__version__, True))
+    except ImportError:
+        results.append(("sqlglot", "not found", False))
 
     return results
 

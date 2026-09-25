@@ -286,6 +286,28 @@ zipper icon, it isn't extracted yet; double-click it again. The real
 folder is named **`OMIS-105-main`**, and `macbook` is inside its
 `software_installation` folder.
 
+### Marimo says "The following packages are required to execute sql: sqlglot"
+
+Marimo needs a package called **sqlglot** to run SQL cells — it's
+separate from DuckDB and doesn't get installed automatically with it.
+Fix it from Terminal:
+
+```
+pip3 install sqlglot
+```
+
+If that fails with an `externally-managed-environment` error, add the
+same flag `step_2_setup_software.py` uses:
+
+```
+pip3 install --break-system-packages sqlglot
+```
+
+Then close Marimo completely and reopen it. This should already be
+installed if you ran `step_2_setup_software.py` (Step 2) — if you see
+this error, run that script again to confirm all five packages show
+`[+] PASS`.
+
 ### macOS says qStudio (or another app) is from an "unidentified developer"
 
 This is Gatekeeper, a macOS security feature — not a broken download.
@@ -348,6 +370,7 @@ than Java or qStudio.
 | Check Homebrew is on PATH | `brew --version` |
 | Check where a command lives | `which <command>` |
 | Fix broken Xcode Command Line Tools | `xcode-select --install` |
+| Fix Marimo's "sqlglot" error | `pip3 install sqlglot` |
 
 ---
 

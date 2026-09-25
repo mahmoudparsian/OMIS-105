@@ -239,7 +239,7 @@ single-writer, it also cannot demonstrate deadlocks, lock waits, or isolation le
 beyond snapshot. Both stories say so explicitly rather than overclaiming.
 
 **10. `sailors_and_boats/` needs setup beyond the course standard.** Every other
-story in this folder runs on the plain `pip install duckdb pandas marimo matplotlib`
+story in this folder runs on the plain `pip install duckdb pandas marimo matplotlib sqlglot`
 from `software_installation/` (see its `README.md`) — no server, no virtual
 environment, no API key. `sailors_and_boats/` doesn't fit that path:
 
@@ -247,7 +247,7 @@ environment, no API key. `sailors_and_boats/` doesn't fit that path:
   [`uv`](https://docs.astral.sh/uv/) (`uv sync`), a tool the course doesn't
   otherwise require.
 - The Streamlit app (`./run_app.sh`) needs `streamlit` and `altair`, on top of
-  the standard four packages.
+  the standard five packages.
 - The app's "Ask in English" text-to-SQL page calls the Anthropic API and
   needs an `ANTHROPIC_API_KEY` in `.env` (see `.env.example`) — a real cost
   and account a student may not have.

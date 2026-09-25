@@ -218,6 +218,21 @@ department, you may need administrator rights you don't have on a
 managed machine. Bring this to office hours — Dr. Parsian can help you
 find an alternative (e.g., a portable install, or IT help).
 
+### Marimo says "The following packages are required to execute sql: sqlglot"
+
+Marimo needs a package called **sqlglot** to run SQL cells — it's
+separate from DuckDB and doesn't get installed automatically with it.
+Fix it from Command Prompt:
+
+```
+pip install sqlglot
+```
+
+Then close Marimo completely and reopen it. This should already be
+installed if you ran `step_2_setup_software.py` (Step 2) — if you see
+this error, run that script again to confirm all five packages show
+`[+] PASS`.
+
 ### Downloaded a new Python and package installs suddenly fail to build
 
 If you installed the very newest Python version (released within the
@@ -287,6 +302,7 @@ than Java or qStudio.
 | Check Java version | `java -version` |
 | Check where a command lives / list every copy on PATH | `where python` / `where java` |
 | Open environment variables editor | `Win` key → search "environment variables" |
+| Fix Marimo's "sqlglot" error | `pip install sqlglot` |
 
 ---
 
