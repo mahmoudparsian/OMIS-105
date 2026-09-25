@@ -7,6 +7,13 @@ and any data it needs.
 [10-week syllabus](../outline-10-weeks/Outline_OMIS_105_10_weeks.md) topic
 it reinforces best. Many tutorials are useful outside that week too —
 use the column as a starting point, not a hard rule.
+* **When a tutorial needs Mac- and Windows-specific steps** (install
+commands, PATH setup, path/quoting differences), it's split into two
+fully self-contained files — `..._on_macbook.md` / `..._on_windows.md`,
+with no "see the other OS's version" cross-references — plus a folder
+`README.md` that acts as a picker. See
+[`marimo_for_labs/`](marimo_for_labs/) and
+[`DuckDB_from_Command_Line/`](DuckDB_from_Command_Line/) for examples.
 
 ## Directory Structure
 
