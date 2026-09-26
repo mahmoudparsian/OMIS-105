@@ -195,6 +195,15 @@ non-synced location, such as `C:\OMIS105\`, and work from there.
 These are Python PATH issues, not Java issues — see the full fix in
 [`step_1_install_python.md`](step_1_install_python.md#troubleshooting).
 
+### "pip" is not recognized
+
+Same root cause as "python is not recognized" above — Python (and the
+`Scripts` folder pip lives in) isn't on PATH, usually from skipping
+"Add python.exe to PATH" during install. If `python` itself works but
+`pip` doesn't, you can also sidestep it with
+`python -m pip install <package>` instead of `pip install <package>`.
+Full fix: [`step_1_install_python.md`](step_1_install_python.md#troubleshooting).
+
 ### `winget` command not found
 
 Open the **Microsoft Store**, search for **"App Installer"**, and
