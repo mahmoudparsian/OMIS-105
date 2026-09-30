@@ -155,9 +155,11 @@ terminal, with no Python involved at all.
 - A terminal — either works, but they behave a little differently:
   - **Command Prompt** (press `Win`, type `cmd`, press Enter)
   - **PowerShell** (press `Win`, type `powershell`, press Enter)
-- 5–10 minutes to install the DuckDB CLI (next slides)
+- Time to install the DuckDB CLI (allow extra time for package-manager setup)
 - The sample file `data/students.csv` in this same tutorial folder
 - **Windows 10 or 11**
+- The [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
+  required by DuckDB; install the matching architecture if missing
 
 That's it — no server, no account, no configuration file.
 
@@ -165,8 +167,9 @@ That's it — no server, no account, no configuration file.
 
 # Installing the DuckDB CLI — Option A: `winget` (recommended)
 
-`winget` is Microsoft's own package manager, built into Windows 10
-(1709+) and Windows 11. Check you have it:
+`winget` is Microsoft's package manager, delivered through **App
+Installer** on supported Windows versions. It may be missing on some
+devices. Check whether it is available:
 
 ```powershell
 winget --version
@@ -220,40 +223,45 @@ for you automatically.
 
 # "Windows protected your PC" — SmartScreen Warning
 
-If you try to run the manually downloaded `duckdb.exe` and see a blue
-**"Windows protected your PC"** screen, that's **SmartScreen** — the
-file isn't digitally signed the way a Microsoft Store app is.
+If Windows shows **“Windows protected your PC”**, SmartScreen may not
+recognize the download's reputation. This is not proof that a file is
+unsigned or malicious.
 
-Click **"More info"**, then **"Run anyway"**. This is a one-time
-prompt per file. `winget install DuckDB.cli` never triggers this
-warning, which is the main reason this course recommends it over the
-manual download.
+Verify that you downloaded it from **duckdb.org/install**. If permitted
+by your device policy, use **“More info” → “Run anyway”** for the trusted
+file. If that option is unavailable, contact IT.
+
+`winget` is convenient, but it does not guarantee exemption from
+SmartScreen or other managed-device security controls.
 
 ---
 
 # Verifying the Install
 
 **Open a brand-new** Command Prompt or PowerShell window (PATH
-changes never apply to windows already open), then run:
+changes are not automatically loaded into existing shells), then run:
 
 ```
 duckdb --version
 ```
 
-You should see something like:
+The examples below use **DuckDB 1.5.5**. Your installed version may
+differ; the installation commands are not pinned to 1.5.5.
+
+Example output:
 
 ```text
-v1.1.3 19864453f7
+v1.5.5 (Variegata) d8cdaa33fd
 ```
 
 Confirm **where** it's running from:
 
 ```
-where duckdb
+where.exe duckdb
 ```
 
-(PowerShell also understands `where.exe duckdb`, or the PowerShell-native
-`Get-Command duckdb`.)
+(`where.exe` works in both shells. PowerShell also provides
+`Get-Command duckdb`; bare `where` means something different.)
 
 ---
 
@@ -266,7 +274,7 @@ duckdb
 ```
 
 ```text
-v1.1.3 19864453f7
+v1.5.5 (Variegata) d8cdaa33fd
 Enter ".help" for usage hints.
 Connected to a transient in-memory database.
 Use ".open FILENAME" to reopen on a persistent database.
@@ -274,6 +282,7 @@ D
 ```
 
 The `D` is your **prompt** — DuckDB is waiting for a command.
+**Do not type or paste the `D` shown in examples.**
 
 ⚠️ "In-memory" means: when you close this window, **everything you
 created is gone**. Good for quick experiments.
@@ -296,8 +305,8 @@ duckdb my_class.db
 `duckdb.connect(':memory:')` and `duckdb.connect('my_class.db')`
 in your Marimo notebooks.
 
-An absolute Windows path also works, but **use forward slashes**, not
-the backslashes File Explorer shows you (see "Common Mistakes" ahead):
+An absolute Windows path also works. Forward slashes are a convenient
+convention; Windows backslashes also work. Quote paths with spaces:
 
 ```
 duckdb C:/Users/maria/Desktop/OMIS-105-LABS/my_class.db
@@ -394,7 +403,7 @@ it stays alive for the rest of your session.
 
 # .mode — Changing How Results Look
 
-The default look (`box`, shown so far) is nice to read, but not
+The default look (`duckbox`, shown so far) is nice to read, but not
 easy to paste elsewhere. Switch styles with `.mode`:
 
 ```text
@@ -407,7 +416,7 @@ id,name,gpa
 
 Other useful modes: `.mode markdown` (great for pasting into a
 README), `.mode json`, `.mode line`. Switch back anytime with
-`.mode box`.
+`.mode duckbox`.
 
 ---
 
@@ -420,6 +429,8 @@ Alice
 ```
 
 ```text
+D .mode box
+D .headers on
 D .timer on
 D SELECT COUNT(*) FROM students;
 ┌──────────────┐
@@ -435,22 +446,32 @@ if a query is fast or slow.
 
 ---
 
+<!-- _class: dense -->
+
 # Querying a CSV — No Loading Step
 
 This is DuckDB's superpower, and it works the same on the command
 line as it does in a notebook. No `CREATE TABLE`, no import wizard —
 the file **is** the table.
 
-First, get into this tutorial's folder. **Easiest way** — open the
-folder in File Explorer, click the address bar, type `cmd`, press
-Enter (opens Command Prompt already pointed there). **Or manually:**
+If you see `D`, exit with `.quit` first. Change to this tutorial's
+folder in your shell (adjust the example to your actual repo location).
 
-```
-cd %USERPROFILE%\Desktop\OMIS-105\tutorials\DuckDB_from_Command_Line
+**Command Prompt:**
+```bat
+cd /d "%USERPROFILE%\Desktop\OMIS-105\tutorials\DuckDB_from_Command_Line"
+cd
+dir data
 ```
 
-(Adjust the path if you cloned or unzipped the course repo somewhere
-else. Confirm with plain `cd` and `dir data`.)
+**PowerShell:**
+```powershell
+cd "$env:USERPROFILE\Desktop\OMIS-105\tutorials\DuckDB_from_Command_Line"
+Get-Location
+dir data
+```
+
+Run `duckdb` again, then `.mode box` and `.headers on` at `D`.
 
 ---
 
@@ -460,7 +481,7 @@ else. Confirm with plain `cd` and `dir data`.)
 D SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
   FROM read_csv('data/students.csv')
   GROUP BY major
-  ORDER BY avg_gpa DESC;
+  ORDER BY avg_gpa DESC, major;
 ```
 
 ```text
@@ -469,8 +490,8 @@ D SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
 ├──────────────────────┼─────────┤
 │ Information Systems  │    3.83 │
 │ Accounting           │    3.50 │
-│ Marketing            │    3.35 │
 │ Finance              │    3.35 │
+│ Marketing            │    3.35 │
 └──────────────────────┴─────────┘
 ```
 
@@ -523,7 +544,7 @@ if you go further:
   (no variable expansion) and double quotes as **interpolating**
   strings (a `$name` inside would be substituted). This rarely bites
   you with `-c "SELECT ..."`, but if a query ever needs a literal `$`,
-  wrap the outer quotes in single quotes instead in PowerShell.
+  use a `.sql` file to avoid shell quoting complexity.
 
 ---
 
@@ -531,7 +552,8 @@ if you go further:
 
 **1. Create the file.** Open any plain-text editor (VS Code,
 Notepad — not Word), type the SQL below, and save it as
-`report.sql` in this same folder:
+`report.sql` in this same folder (choose **All files** in Notepad
+and check that the name is not `report.sql.txt`):
 
 ```sql
 SELECT major, COUNT(*) AS n
@@ -564,8 +586,8 @@ D .quit
 D .exit
 ```
 
-Or press **Ctrl+Z** then **Enter** — Windows' "end of input" shortcut
-(different from Ctrl+D on Mac/Linux).
+Use `.quit` or `.exit` for a consistent exit across Windows terminals;
+keyboard end-of-input behavior can depend on the CLI input mode.
 
 ⚠️ If you used an **in-memory** session, everything you built
 disappears the moment you exit. Use a file
@@ -578,11 +600,10 @@ disappears the moment you exit. Use a file
 - **Forgetting the `;`** → prompt hangs at `...>`. Type `;` + Enter.
 - **Typing a dot-command with a `;`** → dot-commands don't need one
   (`.tables;` will error).
-- **Pasting a raw backslash path** (`C:\Users\maria\data.csv`) into a
-  `read_csv(...)` call → use forward slashes instead:
-  `C:/Users/maria/data.csv`. This is the same backslash issue that
-  trips up Python paths in Marimo notebooks — DuckDB and Windows both
-  quietly accept `/`, so standardize on it.
+- **Leaving a file path unquoted in SQL** → use a SQL string:
+  `read_csv('C:/Users/maria/data.csv')`. Forward slashes are a useful
+  convention. Ordinary DuckDB SQL strings also preserve backslashes;
+  they do not have Python's backslash-escape behavior.
 
 ---
 
@@ -592,7 +613,8 @@ disappears the moment you exit. Use a file
   your table is gone. Use a `.db` file if you need it saved.
 - **Running `duckdb` from the wrong folder** →
   `read_csv('data/students.csv')` only works if your terminal is in
-  this tutorial's folder. Check with plain `cd`.
+  this tutorial's folder. Check with `cd` in Command Prompt or
+  `Get-Location` in PowerShell.
 - **Installed with `winget`, but `'duckdb' is not recognized`**
   (Command Prompt) **or `The term 'duckdb' is not recognized as the
   name of a cmdlet...`** (PowerShell) → same cause either way: you're
@@ -611,7 +633,7 @@ cmdlet, function, script file, or operable program.` The fix below
 is identical for both shells.
 
 1. Open a **brand-new** Command Prompt or PowerShell window — PATH
-   changes never reach windows that were already open.
+   changes are not automatically loaded into existing shells.
 2. If you installed manually, confirm the folder you added really
    contains `duckdb.exe`: `dir C:\duckdb`.
 3. Re-check the PATH entry: `Win` → "environment variables" →
@@ -628,17 +650,15 @@ is identical for both shells.
 
 ### SmartScreen keeps blocking `duckdb.exe`
 
-See the SmartScreen slide earlier — click **"More info"** → **"Run
-anyway"**. If your device is school- or company-managed and that
-button is missing, switch to `winget install DuckDB.cli`, which
-installs from Microsoft's own package source and doesn't trigger
-SmartScreen.
+See the SmartScreen slide earlier. If your managed device blocks the
+file or does not offer **“Run anyway”**, ask IT for help. Installing
+through `winget` does not override device security policy.
 
 ### My CSV query says "No files found that match the pattern"
 
-You're not standing in this tutorial's folder, or you pasted a raw
-backslash path. Run plain `cd` to check your current folder, and make
-sure any path inside `read_csv(...)` uses forward slashes.
+Check the file exists and the path is correct. Show your current folder
+with `cd` in Command Prompt or `Get-Location` in PowerShell. Use a
+quoted absolute SQL path if needed: `read_csv('C:/path/data.csv')`.
 
 ---
 
@@ -676,12 +696,9 @@ Option B (manual download) instead.
 
 ---
 
-- **Random/garbled characters appear and don't go away, specifically
-  when running as Administrator?** → a known, unresolved DuckDB CLI
-  bug on Windows 11 (Command Prompt and PowerShell both affected).
-  There's no fix yet — just close that window and open a normal
-  (non-Administrator) one. This course's steps never need Administrator
-  anyway.
+- **Display problems persist?** → try a normal (non-Administrator)
+  terminal and `.mode table`. Record your DuckDB version and terminal
+  version when seeking help; behavior can vary between releases.
 - **Opening a `.db` file says `IO Error: Could not set lock on
   file...`?** → another terminal window — or a session you forgot to
   `.quit` — already has that file open; the message even names the
@@ -689,11 +706,10 @@ Option B (manual download) instead.
 
 ---
 
-- **`winget install DuckDB.cli` finishes but `duckdb.exe` is just...
-  gone from Downloads?** → different from SmartScreen — some
-  school-managed endpoint tools quarantine or delete unsigned `.exe`
-  files after download. Prefer `winget`, which installs from a source
-  most device policies already trust, or ask IT for an exception.
+- **A manually downloaded `duckdb.exe` disappears?** → endpoint
+  protection may have quarantined it. Check the security notification
+  and ask IT if needed. A `winget` install does not normally place the
+  executable in Downloads; use `where.exe duckdb` to locate it.
 - **Folder name has spaces, like `C:\Users\maria\OMIS 105 Labs`?** →
   only the **shell** cares — quote it:
   `cd "C:\Users\maria\OMIS 105 Labs"`. A path written as a SQL string,
@@ -722,17 +738,17 @@ instead of guessing.
 |---|---|
 | `winget install DuckDB.cli` | install the DuckDB CLI (recommended) |
 | `duckdb --version` | confirm the install worked |
-| `where duckdb` | show which copy of `duckdb` will run |
+| `where.exe duckdb` | show which copy of `duckdb` will run |
 | `duckdb` | start in-memory session |
 | `duckdb file.db` | start/reopen a persistent database |
 | `duckdb -c "SQL"` | run one query from your terminal, then exit |
 | `duckdb -c ".read file.sql"` | run a whole script file |
 | `.tables` | list tables |
 | `.schema [table]` | show table structure |
-| `.mode box \| csv \| markdown \| json` | change output style |
+| `.mode duckbox \| csv \| markdown \| json` | change output style |
 | `.headers on \| off` | show/hide column names |
 | `.timer on \| off` | show query run time |
-| `.quit` / `.exit` / **Ctrl+Z, Enter** | leave DuckDB |
+| `.quit` / `.exit` | leave DuckDB |
 
 ---
 
@@ -740,14 +756,15 @@ instead of guessing.
 
 In your terminal, `cd` into this tutorial's folder, then:
 
-1. Confirm the install: `duckdb --version` and `where duckdb`
+1. Confirm the install: `duckdb --version` and `where.exe duckdb`
 2. Start DuckDB: `duckdb`
 3. Run: `SELECT * FROM read_csv('data/students.csv');`
 4. Find the average GPA **per major**, highest first
 5. Switch to `.mode markdown` and rerun your query
-6. Save your query in a file called `my_query.sql`,
-   then run it with `duckdb -c ".read my_query.sql"`
-7. Exit with `.quit` or **Ctrl+Z, Enter**
+6. Save your query in a file called `my_query.sql`, then exit DuckDB
+   with `.quit`
+7. In Command Prompt or PowerShell, run
+   `duckdb -c ".read my_query.sql"`
 
 👉 If you can do all seven steps, you can use DuckDB from the command
 line on Windows with confidence.
@@ -763,7 +780,7 @@ The command line for quick answers and repeatable scripts.
 
 **Resources**
 
-duckdb.org/docs/api/cli — Official CLI documentation
+https://duckdb.org/docs/stable/clients/cli/overview — Official CLI documentation
 duckdb.org/install — Install DuckDB for Windows (winget or manual)
 
 ---

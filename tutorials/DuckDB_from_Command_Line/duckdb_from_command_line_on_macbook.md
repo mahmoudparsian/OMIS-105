@@ -100,7 +100,7 @@ style: |
 2. Two Different "DuckDBs"
 3. What You'll Need
 4. Installing the DuckDB CLI on macOS
-5. Apple Silicon vs. Intel — Why It Matters Here
+5. Apple Silicon vs. Intel — Universal Download
 6. Verifying the Install
 7. Starting DuckDB
 8. The DuckDB Prompt
@@ -154,10 +154,11 @@ a standalone program called `duckdb` that you run directly in
 # What You'll Need
 
 - The **Terminal** app (press `Cmd + Space`, type `Terminal`, press Enter)
-- 5–10 minutes to install the DuckDB CLI (next slides)
+- Time to install the DuckDB CLI (allow extra time for package-manager setup)
 - The sample file `data/students.csv` in this same tutorial folder
-- **macOS 11 (Big Sur) or newer** — the DuckDB CLI's Homebrew formula
-  does not support older versions
+- A Mac compatible with the chosen installer. Check the current
+  [Homebrew requirements](https://docs.brew.sh/Installation) for Option A;
+  Homebrew support and DuckDB binary compatibility are separate.
 
 That's it — no server, no account, no configuration file.
 
@@ -196,52 +197,54 @@ No Homebrew, or it's not letting you install right now? Get the binary
 directly:
 
 1. Go to **duckdb.org/install** and choose **macOS** + **CLI**
-2. Download the `.zip` for your Mac's chip (see next slide if you're
-   not sure which one)
+2. Download `duckdb_cli-osx-universal.zip` (Apple Silicon and Intel)
 3. Double-click the `.zip` in **Downloads** to unzip it — you get a
    single file named `duckdb`
-4. Move it into a folder already on your PATH and make it executable:
+4. Make it executable, create the destination folder if needed, and
+   move it there (the `sudo` commands require administrator access):
 
 ```bash
 chmod +x ~/Downloads/duckdb
+sudo mkdir -p /usr/local/bin
 sudo mv ~/Downloads/duckdb /usr/local/bin/duckdb
 ```
 
 ---
 
-# Apple Silicon vs. Intel — Why It Matters Here
+# Apple Silicon vs. Intel — Universal Download
 
-The manual download offers two different `.zip` files, and picking the
-wrong one gives a binary that won't run. Check which Mac you have:
+The official macOS CLI download is **`duckdb_cli-osx-universal.zip`**.
+It includes support for **Apple Silicon and Intel** — no separate
+chip-specific download is needed.
 
-```bash
-uname -m
-```
+Homebrew uses different default locations:
 
-| Output | Your Mac | Download labeled |
-|---|---|---|
-| `arm64` | Apple Silicon (M1/M2/M3/M4) | `osx_arm64` |
-| `x86_64` | Intel | `osx_amd64` |
+| Mac | Homebrew location |
+|---|---|
+| Apple Silicon | `/opt/homebrew` |
+| Intel | `/usr/local` |
 
-👉 **Homebrew (Option A) handles this automatically** — it is the main
-reason this course recommends Homebrew over the manual download.
+For the manual installation shown here, the binary goes in
+`/usr/local/bin` on either kind of Mac. Confirm that folder is on your
+PATH with `echo "$PATH"`.
 
 ---
 
 # "Apple could not verify..." — Gatekeeper Warning
 
-If you double-click the downloaded `duckdb` binary (or run it) and
-macOS refuses with a message about an **unidentified developer**, it's
-Gatekeeper — the manual download isn't notarized the way an App Store
-app is. Clear the warning from Terminal instead of clicking through
-dialogs:
+If macOS blocks the manually downloaded binary, first confirm it came
+from **duckdb.org/install**. Follow the macOS **Privacy & Security**
+“Open Anyway” flow if available and permitted by your device policy.
+
+For a trusted download, quarantine troubleshooting must target the
+binary's **current location**. After the move on the previous slide:
 
 ```bash
-xattr -d com.apple.quarantine ~/Downloads/duckdb
+sudo xattr -d com.apple.quarantine /usr/local/bin/duckdb
 ```
 
-Then retry the `chmod +x` / `mv` steps from the previous slide.
-Homebrew installs never trigger this warning.
+If it is still in Downloads, target `~/Downloads/duckdb` instead. “No such xattr” means that
+attribute is absent. Managed-device restrictions may require IT help.
 
 ---
 
@@ -254,10 +257,13 @@ then run:
 duckdb --version
 ```
 
-You should see something like:
+The examples below use **DuckDB 1.5.5**. Your installed version may
+differ; the installation commands are not pinned to 1.5.5.
+
+Example output:
 
 ```text
-v1.1.3 19864453f7
+v1.5.5 (Variegata) d8cdaa33fd
 ```
 
 Confirm **where** it's running from:
@@ -281,7 +287,7 @@ duckdb
 ```
 
 ```text
-v1.1.3 19864453f7
+v1.5.5 (Variegata) d8cdaa33fd
 Enter ".help" for usage hints.
 Connected to a transient in-memory database.
 Use ".open FILENAME" to reopen on a persistent database.
@@ -289,6 +295,7 @@ D
 ```
 
 The `D` is your **prompt** — DuckDB is waiting for a command.
+**Do not type or paste the `D` shown in examples.**
 
 ⚠️ "In-memory" means: when you close this window, **everything you
 created is gone**. Good for quick experiments.
@@ -409,7 +416,7 @@ it stays alive for the rest of your session.
 
 # .mode — Changing How Results Look
 
-The default look (`box`, shown so far) is nice to read, but not
+The default look (`duckbox`, shown so far) is nice to read, but not
 easy to paste elsewhere. Switch styles with `.mode`:
 
 ```text
@@ -422,7 +429,7 @@ id,name,gpa
 
 Other useful modes: `.mode markdown` (great for pasting into a
 README), `.mode json`, `.mode line`. Switch back anytime with
-`.mode box`.
+`.mode duckbox`.
 
 ---
 
@@ -435,6 +442,8 @@ Alice
 ```
 
 ```text
+D .mode box
+D .headers on
 D .timer on
 D SELECT COUNT(*) FROM students;
 ┌──────────────┐
@@ -456,7 +465,8 @@ This is DuckDB's superpower, and it works the same on the command
 line as it does in a notebook. No `CREATE TABLE`, no import wizard —
 the file **is** the table.
 
-First, get into this tutorial's folder — either `cd` there, or drag
+First, exit DuckDB with `.quit` if you see `D`. In Terminal,
+get into this tutorial's folder — either `cd` there, or drag
 the folder onto Terminal after typing `cd ` with a trailing space:
 
 ```bash
@@ -466,6 +476,9 @@ cd ~/Desktop/OMIS-105/tutorials/DuckDB_from_Command_Line
 (Adjust the path if you cloned or unzipped the course repo somewhere
 else. Confirm with `pwd` and `ls data/`.)
 
+Then run `duckdb` again. At `D`, run `.mode box` and `.headers on`
+to match the next slide's display.
+
 ---
 
 # Querying a CSV — Running the Query
@@ -474,7 +487,7 @@ else. Confirm with `pwd` and `ls data/`.)
 D SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
   FROM read_csv('data/students.csv')
   GROUP BY major
-  ORDER BY avg_gpa DESC;
+  ORDER BY avg_gpa DESC, major;
 ```
 
 ```text
@@ -483,8 +496,8 @@ D SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
 ├──────────────────────┼─────────┤
 │ Information Systems  │    3.83 │
 │ Accounting           │    3.50 │
-│ Marketing            │    3.35 │
 │ Finance              │    3.35 │
+│ Marketing            │    3.35 │
 └──────────────────────┴─────────┘
 ```
 
@@ -522,15 +535,14 @@ workflow.
 macOS Terminal's default shell is **zsh**. Two rules keep `-c` queries
 safe:
 
-- Wrap the **whole SQL statement** in **double quotes** (`"…"`), and
-  use **single quotes** for any string literal *inside* the SQL
-  (`'data/students.csv'`, `WHERE major = 'Finance'`). Mixing them the
-  other way around breaks the shell's parsing.
-- zsh treats `!` inside a **double-quoted** string as a history
-  trigger and may error with `zsh: event not found`. This won't come
-  up in this course's examples, but if you ever add `!=` inside a
-  `-c` string and hit that error, switch the outer quotes to single
-  quotes and escape the inner ones instead.
+- For the examples here, wrap the **whole SQL statement** in double
+  quotes and use single quotes for SQL strings:
+  `duckdb -c "SELECT 'Finance' AS major"`.
+- Double quotes still allow shell expansion, including `$variables`
+  and, in interactive zsh, history expansion with `!`.
+- Use SQL's `<>` operator for “not equal.” For complicated quoting,
+  put the SQL in a `.sql` file and run `duckdb -c ".read report.sql"`.
+  Simply swapping the outer quotes can break inner SQL string quotes.
 
 ---
 
@@ -602,11 +614,11 @@ disappears the moment you exit. Use a file
 ### `zsh: command not found: duckdb`
 
 1. Reopen Terminal completely (not just a new tab in some setups) —
-   PATH changes from Homebrew only take effect in a fresh shell.
+   a fresh shell reads the updated startup configuration.
 2. Confirm Homebrew's own PATH lines are in your shell profile:
    `grep brew ~/.zprofile` should show an `eval "$(/opt/homebrew/bin/brew shellenv)"`
    line (Apple Silicon) or `/usr/local/bin/brew shellenv` (Intel).
-   If missing, re-run the two lines `brew install`'s output showed you.
+   If missing, re-run the PATH setup instructions from the Homebrew installer.
 3. Still stuck? Run `brew list duckdb` to confirm it's actually
    installed, then `brew --prefix duckdb` to see exactly where.
 
@@ -616,10 +628,9 @@ disappears the moment you exit. Use a file
 
 ### "Apple could not verify this app is free of malware"
 
-You downloaded the binary manually instead of via Homebrew. Run
-`xattr -d com.apple.quarantine <path-to-duckdb>` (see the Gatekeeper
-slide earlier), or just switch to `brew install duckdb` — it never
-triggers this.
+See the Gatekeeper slide earlier. Verify the download source and use
+the binary's actual location when troubleshooting. Homebrew is another
+installation option, but managed-device policies can still apply.
 
 ### `duckdb: command not found` only inside VS Code's terminal
 
@@ -638,10 +649,6 @@ absolute path inside `read_csv(...)`.
 
 # More "What If...?" Scenarios
 
-- **`uname -m` says `x86_64` on an M1/M2/M3/M4 Mac?** → Terminal is
-  set to **"Open using Rosetta"** (Finder → Applications → Terminal →
-  **Get Info** → uncheck it → reopen Terminal). Homebrew installs the
-  right build either way, so this only matters for manual checks.
 - **`sudo mv ... /usr/local/bin/duckdb` says "Permission denied"?** →
   common on a school-managed Mac with no admin rights. Skip that
   folder: `mkdir -p ~/bin && mv ~/Downloads/duckdb ~/bin/`, then add
@@ -654,7 +661,7 @@ absolute path inside `read_csv(...)`.
 ---
 
 - **Folder name has spaces, like `~/Desktop/OMIS 105 Labs`?** → only
-  the **shell** cares — quote it: `cd "~/Desktop/OMIS 105 Labs"`. A
+  the **shell** cares — quote it: `cd "$HOME/Desktop/OMIS 105 Labs"`. A
   path written as a SQL string, like `'data/students.csv'`, is already
   inside quotes DuckDB understands and needs no extra escaping.
 - **Results table shows garbled characters or `?` boxes?** → rare on
@@ -683,7 +690,7 @@ instead of guessing.
 | `duckdb -c ".read file.sql"` | run a whole script file |
 | `.tables` | list tables |
 | `.schema [table]` | show table structure |
-| `.mode box \| csv \| markdown \| json` | change output style |
+| `.mode duckbox \| csv \| markdown \| json` | change output style |
 | `.headers on \| off` | show/hide column names |
 | `.timer on \| off` | show query run time |
 | `.quit` / `.exit` / **Ctrl+D** | leave DuckDB |
@@ -699,9 +706,9 @@ In Terminal, `cd` into this tutorial's folder, then:
 3. Run: `SELECT * FROM read_csv('data/students.csv');`
 4. Find the average GPA **per major**, highest first
 5. Switch to `.mode markdown` and rerun your query
-6. Save your query in a file called `my_query.sql`,
-   then run it with `duckdb -c ".read my_query.sql"`
-7. Exit with `.quit` or **Ctrl+D**
+6. Save your query in a file called `my_query.sql`, then exit DuckDB
+   with `.quit` (or **Ctrl+D** at an empty prompt)
+7. In Terminal, run `duckdb -c ".read my_query.sql"`
 
 👉 If you can do all seven steps, you can use DuckDB from the command
 line on your Mac with confidence.
@@ -717,7 +724,7 @@ The command line for quick answers and repeatable scripts.
 
 **Resources**
 
-duckdb.org/docs/api/cli — Official CLI documentation
+https://duckdb.org/docs/stable/clients/cli/overview — Official CLI documentation
 duckdb.org/install — Install DuckDB for macOS (Homebrew or manual)
 
 ---
