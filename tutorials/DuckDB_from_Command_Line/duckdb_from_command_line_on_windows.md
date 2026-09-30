@@ -110,8 +110,9 @@ style: |
 12. Leaving DuckDB
 13. Common Mistakes
 14. Troubleshooting
-15. Cheat Sheet
-16. Practice Exercise
+15. More "What If...?" Scenarios
+16. Cheat Sheet
+17. Practice Exercise
 
 ---
 
@@ -577,20 +578,32 @@ disappears the moment you exit. Use a file
   `C:/Users/maria/data.csv`. This is the same backslash issue that
   trips up Python paths in Marimo notebooks — DuckDB and Windows both
   quietly accept `/`, so standardize on it.
+
+---
+
+# Common Mistakes (continued)
+
 - **Using an in-memory session, then closing the window** →
   your table is gone. Use a `.db` file if you need it saved.
 - **Running `duckdb` from the wrong folder** →
   `read_csv('data/students.csv')` only works if your terminal is in
   this tutorial's folder. Check with plain `cd`.
-- **Installed with `winget`, but `'duckdb' is not recognized`** →
-  you're still in the terminal window that was open *before* the
-  install finished. Open a brand-new window.
+- **Installed with `winget`, but `'duckdb' is not recognized`**
+  (Command Prompt) **or `The term 'duckdb' is not recognized as the
+  name of a cmdlet...`** (PowerShell) → same cause either way: you're
+  still in the terminal window that was open *before* the install
+  finished. Open a brand-new window.
 
 ---
 
 # Troubleshooting
 
 ### `'duckdb' is not recognized as an internal or external command`
+
+Seeing this in **PowerShell** instead? Same problem, different
+wording: `The term 'duckdb' is not recognized as the name of a
+cmdlet, function, script file, or operable program.` The fix below
+is identical for both shells.
 
 1. Open a **brand-new** Command Prompt or PowerShell window — PATH
    changes never reach windows that were already open.
@@ -643,6 +656,56 @@ non-synced folder such as `C:\OMIS105-LABS\` instead.
 Store. On an older or locked-down Windows 10 install it may be
 missing — update **App Installer** from the Microsoft Store, or use
 Option B (manual download) instead.
+
+---
+
+# More "What If...?" Scenarios
+
+- **Results table shows garbled characters like `Γöî` instead of
+  clean lines?** → legacy Command Prompt's default codepage (437)
+  doesn't support the Unicode box-drawing characters DuckDB draws by
+  default. Don't reach for `chcp 65001` — it's been reported to make
+  DuckDB CLI queries hang instead of fixing the display. Use
+  `.mode table` instead: it prints a plain `+---+` table that doesn't
+  depend on the codepage at all.
+
+---
+
+- **Random/garbled characters appear and don't go away, specifically
+  when running as Administrator?** → a known, unresolved DuckDB CLI
+  bug on Windows 11 (Command Prompt and PowerShell both affected).
+  There's no fix yet — just close that window and open a normal
+  (non-Administrator) one. This course's steps never need Administrator
+  anyway.
+- **Opening a `.db` file says `IO Error: Could not set lock on
+  file...`?** → another terminal window — or a session you forgot to
+  `.quit` — already has that file open; the message even names the
+  PID holding it. Close that window, or run `.quit` there, then retry.
+
+---
+
+- **`winget install DuckDB.cli` finishes but `duckdb.exe` is just...
+  gone from Downloads?** → different from SmartScreen — some
+  school-managed endpoint tools quarantine or delete unsigned `.exe`
+  files after download. Prefer `winget`, which installs from a source
+  most device policies already trust, or ask IT for an exception.
+- **Folder name has spaces, like `C:\Users\maria\OMIS 105 Labs`?** →
+  only the **shell** cares — quote it:
+  `cd "C:\Users\maria\OMIS 105 Labs"`. A path written as a SQL string,
+  like `'data/students.csv'`, needs no extra escaping.
+
+---
+
+- **"Edit the system environment variables" greyed out or blocked by
+  school policy?** → you don't need admin rights for your **own**
+  PATH — these steps already edit the **User variables** `Path`, not
+  the System one. If even that's locked down, skip PATH for now: run
+  `set PATH=%PATH%;C:\duckdb` (Command Prompt) or
+  `$env:PATH += ";C:\duckdb"` (PowerShell) once per session, or just
+  type `C:\duckdb\duckdb.exe` in full each time.
+
+👉 None of these are common — but now you'll recognize them instantly
+instead of guessing.
 
 ---
 

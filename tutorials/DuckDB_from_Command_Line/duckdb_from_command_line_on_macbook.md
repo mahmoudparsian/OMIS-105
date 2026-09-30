@@ -111,8 +111,9 @@ style: |
 13. Leaving DuckDB
 14. Common Mistakes
 15. Troubleshooting
-16. Cheat Sheet
-17. Practice Exercise
+16. More "What If...?" Scenarios
+17. Cheat Sheet
+18. Practice Exercise
 
 ---
 
@@ -627,6 +628,38 @@ itself is fine.
 You're not standing in this tutorial's folder. Run `pwd`, then `cd` to
 the folder containing `data/students.csv`, or use the file's full
 absolute path inside `read_csv(...)`.
+
+---
+
+# More "What If...?" Scenarios
+
+- **`uname -m` says `x86_64` on an M1/M2/M3/M4 Mac?** → Terminal is
+  set to **"Open using Rosetta"** (Finder → Applications → Terminal →
+  **Get Info** → uncheck it → reopen Terminal). Homebrew installs the
+  right build either way, so this only matters for manual checks.
+- **`sudo mv ... /usr/local/bin/duckdb` says "Permission denied"?** →
+  common on a school-managed Mac with no admin rights. Skip that
+  folder: `mkdir -p ~/bin && mv ~/Downloads/duckdb ~/bin/`, then add
+  `export PATH="$HOME/bin:$PATH"` to `~/.zprofile` — no `sudo` needed.
+- **Opening a `.db` file says `IO Error: Could not set lock on
+  file...`?** → another Terminal window — or a session you forgot to
+  `.quit` — already has that file open; the message even names the
+  PID holding it. Close that window, or run `.quit` there, then retry.
+
+---
+
+- **Folder name has spaces, like `~/Desktop/OMIS 105 Labs`?** → only
+  the **shell** cares — quote it: `cd "~/Desktop/OMIS 105 Labs"`. A
+  path written as a SQL string, like `'data/students.csv'`, is already
+  inside quotes DuckDB understands and needs no extra escaping.
+- **Results table shows garbled characters or `?` boxes?** → rare on
+  macOS (UTF‑8 by default), but can happen over SSH into an older
+  system. Run `.mode table` for a plain `+---+` table that works
+  anywhere. (Not `.mode ascii` — despite the name, that one outputs
+  machine-readable control characters, not a plain-text table.)
+
+👉 None of these are common — but now you'll recognize them instantly
+instead of guessing.
 
 ---
 
