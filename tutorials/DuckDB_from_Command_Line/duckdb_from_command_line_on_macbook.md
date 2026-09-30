@@ -383,10 +383,15 @@ as **questions for your data**.
 Create a table, add some rows, then inspect it:
 
 ```sql
-D CREATE TABLE students (id INTEGER, name VARCHAR, gpa DOUBLE);
+D CREATE TABLE students (
+     id INTEGER, 
+     name VARCHAR, 
+     gpa DOUBLE);
+     
 D INSERT INTO students VALUES
-    (1, 'Alice', 3.8), (2, 'Bob', 3.5), (3, 'Charlie', 3.9),
-    (4, 'Diana', 3.2), (5, 'Ethan', 2.9), (6, 'Fiona', 3.7),
+    (1, 'Alice', 3.8), (2, 'Bob', 3.5), 
+    (3, 'Charlie', 3.9), (4, 'Diana', 3.2), 
+    (5, 'Ethan', 2.9), (6, 'Fiona', 3.7),
     (7, 'George', 3.1), (8, 'Hana', 3.95);
 D .tables
 students
@@ -474,12 +479,12 @@ D SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
 
 ```text
 ┌──────────────────────┬─────────┐
-│         major         │ avg_gpa │
+│         major        │ avg_gpa │
 ├──────────────────────┼─────────┤
-│ Information Systems   │    3.83 │
-│ Accounting             │    3.50 │
-│ Marketing              │    3.35 │
-│ Finance                │    3.35 │
+│ Information Systems  │    3.83 │
+│ Accounting           │    3.50 │
+│ Marketing            │    3.35 │
+│ Finance              │    3.35 │
 └──────────────────────┴─────────┘
 ```
 
