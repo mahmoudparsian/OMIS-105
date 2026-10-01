@@ -1,4 +1,4 @@
-# Introduction to Primary Keys and CRUD
+# Introduction to <br> Primary Keys and CRUD
 
 ## Our Example Table: `employees`
 
@@ -6,11 +6,11 @@ We will use one simple table for this whole lesson.
 
 | Column | Meaning |
 |--------|---------|
-| emp_id | A unique number for each employee |
-| emp_name | The employee's full name |
-| salary | The employee's yearly salary |
-| country | The country where the employee works |
-| department | The department the employee works in |
+| `emp_id` | A unique number for each employee |
+| `emp_name` | The employee's full name |
+| `salary` | The employee's yearly salary |
+| `country` | The country where the employee works |
+| `department` | The department the employee works in |
 
 Here are 6 sample rows:
 
@@ -275,10 +275,10 @@ employees in each country.
 
 | Operation | SQL Keyword | Changes row count? | Needs `WHERE emp_id = ...`? |
 |-----------|-------------|---------------------|-------------------------------|
-| Create | `INSERT` | Adds 1 row | No — the new PK goes in the row itself |
-| Read | `SELECT` | No | Only if you want one specific row |
-| Update | `UPDATE` | No (same rows) | Yes — almost always |
-| Delete | `DELETE` | Removes rows | Yes — almost always |
+| **Create** | `INSERT` | Adds 1 row | No — the new PK goes in the row itself |
+| **Read** | `SELECT` | No | Only if you want one specific row |
+| **Update** | `UPDATE` | No (same rows) | Yes — almost always |
+| **Delete** | `DELETE` | Removes rows | Yes — almost always |
 
 The primary key (`emp_id`) is what makes `UPDATE` and `DELETE` safe.
 Without it, we could not reliably target one single row.
