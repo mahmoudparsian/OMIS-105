@@ -21,6 +21,20 @@ style: |
 
 ## A clear DuckDB example
 
+	⏺  Explain in short sentence what 
+	is the difference of WHERE and 
+	HAVING in SQL DuckDb?
+
+	⏺ WHERE filters individual rows before grouping. 
+	HAVING filters groups after GROUP BY, so only 
+	HAVING can use aggregates like COUNT(*) or AVG(salary).
+
+		SELECT department, AVG(salary) AS avg_salary
+		FROM employees
+		WHERE country = 'USA'          -- row filter (before grouping)
+		GROUP BY department
+		HAVING avg_salary > 70000;    -- group filter (after grouping)
+
 ---
 
 # Learning Goal
