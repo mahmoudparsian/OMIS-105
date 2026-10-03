@@ -29,7 +29,7 @@ Reviewed October 2, 2026. Start here, then follow the slides in order.
 
 ---
 
-# What You Will Learn
+# 1. What You Will Learn
 
 1. Install the standalone DuckDB command-line program.
 2. Fix “command not found” or “not recognized.”
@@ -45,7 +45,7 @@ only when a step fails. You do not have to memorize troubleshooting.
 
 ---
 
-# Four Words Used in This Guide
+# 2. Four Words Used in This Guide
 
 | Word | Meaning here |
 |---|---|
@@ -59,7 +59,7 @@ After each command, wait for the result before typing the next one.
 
 ---
 
-# Two Prompts, Two Kinds of Commands
+# 3. Two Prompts, Two Kinds of Commands
 
 | Where you are | Examples to enter there |
 |---|---|
@@ -75,7 +75,7 @@ If you see `>>>`, you are in Python: enter `exit()` first.
 
 ---
 
-# Before Installing
+# 4. Before Installing
 
 The **CLI** is the DuckDB program you run in a terminal. Having DuckDB
 work in Python or Marimo does not mean this program is installed.
@@ -94,7 +94,7 @@ No Python environment, database server, or DuckDB account is needed.
 
 ---
 
-# macOS: Choose an Installation Route
+# 5. macOS: Choose an Installation Route
 
 Open **Terminal** with Spotlight: Cmd+Space, type Terminal, press Return.
 
@@ -108,7 +108,7 @@ Python package, or library download. Check OS compatibility there.
 
 ---
 
-# Mac Option A: Existing Homebrew
+# 6. Mac Option A: Existing Homebrew
 
 **In Terminal:**
 ```bash
@@ -125,7 +125,7 @@ Homebrew just to finish this lesson.
 
 ---
 
-# Mac Option B: Download and Extract
+# 7. Mac Option B: Download and Extract
 
 1. At [duckdb.org/install](https://duckdb.org/install/), choose **macOS / CLI / current stable**.
 2. Download **duckdb_cli-osx-universal.zip**. It supports Apple Silicon
@@ -139,7 +139,7 @@ extra folder, move the executable out of that folder.
 
 ---
 
-# Mac Manual Install: Test the Full Path
+# 8. Mac Manual Install: Test the Full Path
 
 **In Terminal:**
 ```bash
@@ -156,7 +156,7 @@ still says “command not found.” No `sudo` is needed for this folder.
 
 ---
 
-# Mac Manual Install: Add Your Folder to PATH
+# 9. Mac Manual Install: Add Your Folder to PATH
 
 PATH is the list of folders your shell searches for a command name.
 **For this Terminal session:**
@@ -174,7 +174,7 @@ Terminal window and run `duckdb --version` again.
 
 ---
 
-# Mac: Open the Tutorial Folder
+# 10. Mac: Open the Tutorial Folder
 
 Download or clone the **whole tutorial folder**, then unzip it if needed.
 Do not save a GitHub HTML page in place of `students.csv`.
@@ -191,7 +191,7 @@ Leave `$HOME` as shown; do not write `"~/Desktop/..."` instead.
 
 ---
 
-# Checkpoint: Does DuckDB Run?
+# 11. Checkpoint: Does DuckDB Run?
 
 **In your terminal:**
 ```text
@@ -208,7 +208,7 @@ It explains how to start DuckDB using the location of its program file.
 
 ---
 
-# Checkpoint: Can It Read the Sample?
+# 12. Checkpoint: Can It Read the Sample?
 
 **In your terminal, in the tutorial folder:**
 ```text
@@ -224,7 +224,7 @@ Once both checkpoints pass, proceed with the SQL lesson.
 
 ---
 
-# Start DuckDB and Type a Query
+# 13. Start DuckDB and Type a Query
 
 **In your terminal:**
 ```text
@@ -240,7 +240,7 @@ Writing a separate file is different; exported files remain on disk.
 
 ---
 
-# Finish or Cancel an Incomplete Command
+# 14. Finish or Cancel an Incomplete Command
 
 SQL statements finish with a **semicolon** (`;`). DuckDB may show a
 continuation prompt if a statement, quote, or parenthesis is incomplete.
@@ -255,7 +255,7 @@ A continuation prompt does not mean every problem is a missing `;`.
 
 ---
 
-# Query the CSV Directly
+# 15. Query the CSV Directly
 
 **At the DuckDB prompt**, run each block separately:
 ```sql
@@ -273,7 +273,7 @@ which you started the program.
 
 ---
 
-# Expected GPA Results
+# 16. Expected GPA Results
 
 | major | avg_gpa |
 |---|---:|
@@ -288,7 +288,7 @@ The default **duckbox** format may also show column types.
 
 ---
 
-# Create a Table for This Session
+# 17. Create a Table for This Session
 
 **At the DuckDB prompt:**
 ```sql
@@ -305,7 +305,7 @@ If `students` already exists, query it instead of running CREATE again.
 
 ---
 
-# Change How Results Look
+# 18. Change How Results Look
 
 **At the DuckDB prompt, one line at a time:**
 ```text
@@ -324,7 +324,7 @@ Use `.mode duckbox` to return to the default display.
 
 ---
 
-# Headers and Timing
+# 19. Headers and Timing
 
 **At the DuckDB prompt, one line at a time:**
 ```text
@@ -342,7 +342,7 @@ timing information. Timing values vary; these settings persist in the session.
 
 ---
 
-# Save a Database and Reopen It
+# 20. Save a Database and Reopen It
 
 First exit the in-memory session with `.quit`. **In your terminal:**
 ```text
@@ -359,7 +359,7 @@ If the table already exists, skip CREATE and query it.
 
 ---
 
-# Keep Track of Your Saved Database
+# 21. Keep Track of Your Saved Database
 
 - A filename such as `class_cli.db` refers to a file in the current folder. Starting
   from a different folder can create a different, empty database.
@@ -373,7 +373,7 @@ If the table already exists, skip CREATE and query it.
 
 ---
 
-# Create a Script File
+# 22. Create a Script File
 
 In a plain-text editor, save these lines as **report.sql** in the tutorial
 folder. Use VS Code, or choose **Format > Make Plain Text** in TextEdit.
@@ -389,7 +389,7 @@ ORDER BY avg_gpa DESC, major;
 
 ---
 
-# Run Your Script File
+# 23. Run Your Script File
 
 After saving **report.sql**, exit DuckDB with `.quit` first.
 **In the terminal, from this tutorial folder:**
@@ -405,7 +405,7 @@ find `data/students.csv`.
 
 ---
 
-# Optional Practice: Write Another SQL File
+# 24. Optional Practice: Write Another SQL File
 
 Use VS Code or TextEdit in plain-text mode.
 Save this as **my_query.sql** in the tutorial folder:
@@ -421,7 +421,7 @@ Check it is not `my_query.sql.txt` or rich text. In TextEdit, choose
 
 ---
 
-# Quotes, Spaces, and Copy/Paste
+# 25. Quotes, Spaces, and Copy/Paste
 
 For simple one-off SQL, double-quote the shell argument and single-quote
 SQL strings:
@@ -438,7 +438,7 @@ and copied prompt labels can alter a command. Enter one block at a time.
 
 ---
 
-# Practice: Seven Checks
+# 26. Practice: Seven Checks
 
 1. In the shell: run `duckdb --version` and the 42 checkpoint.
    Expect a version number and the answer **42**.
@@ -455,7 +455,7 @@ First get the program working, then check the location of your data.
 
 ---
 
-# Help Only If Needed
+# 27. Help Only If Needed
 
 If you completed all seven checks and saw the expected results, you have
 finished the lesson.
@@ -471,7 +471,7 @@ to send the instructor the details needed to help you.
 
 ---
 
-# Mac: “duckdb: command not found”
+# 28. Mac: “duckdb: command not found”
 
 This means the shell cannot find the executable by name.
 It does **not** necessarily mean DuckDB is broken.
@@ -486,7 +486,7 @@ Reopening Terminal alone cannot fix a missing executable or PATH entry.
 
 ---
 
-# Mac: Locate the Executable
+# 29. Mac: Locate the Executable
 
 **In Terminal**, try the path for your installation:
 ```bash
@@ -502,7 +502,7 @@ If you previously used DuckDB's installer script, also check
 
 ---
 
-# Mac: Repair Homebrew PATH
+# 30. Mac: Repair Homebrew PATH
 
 If `/opt/homebrew/bin/brew` exists, use:
 ```bash
@@ -519,7 +519,7 @@ A working full path lets you continue while resolving PATH.
 
 ---
 
-# Mac: Permission or Security Errors
+# 31. Mac: Permission or Security Errors
 
 - **Permission denied:** confirm you selected the executable, then use
   `chmod +x` on that file. Choose a folder you own.
@@ -535,7 +535,7 @@ See [Apple's instructions](https://support.apple.com/en-us/102445). Homebrew doe
 
 ---
 
-# Mac: Continue Without Fixing PATH First
+# 32. Mac: Continue Without Fixing PATH First
 
 If the manual-install program runs by full path, you can use it for SQL:
 ```bash
@@ -551,7 +551,7 @@ This avoids name-lookup problems; it does not bypass security restrictions.
 
 ---
 
-# Recovery: CSV or SQL File Not Found
+# 33. Recovery: CSV or SQL File Not Found
 
 1. If you are at D, press Ctrl+C only if input is unfinished; then enter `.quit`.
 2. In the shell, check the current folder and list the actual filename.
@@ -568,7 +568,7 @@ A `.csv` extension alone does not prove the file is valid CSV.
 
 ---
 
-# Recovery: Table, Lock, or Write Errors
+# 34. Recovery: Table, Lock, or Write Errors
 
 - **Table does not exist:** you may be in a new in-memory session or
   the wrong database. Query the CSV directly or reopen the right `.db`.
@@ -583,7 +583,7 @@ version incompatibility errors; do not overwrite the existing database.
 
 ---
 
-# Recovery: Display or Startup Problems
+# 35. Recovery: Display or Startup Problems
 
 - Garbled table borders? At D, try `.mode table` for ASCII borders.
   `.mode ascii` means a different machine-oriented format.
@@ -600,7 +600,7 @@ change query results.
 
 ---
 
-# Other File and Download Problems
+# 36. Other File and Download Problems
 
 - SQL files with spaces in their names need quotes. In the terminal:
   `duckdb -bail -f "my reports/report.sql"`.
@@ -613,7 +613,7 @@ change query results.
 
 ---
 
-# Still Stuck? Send Useful Details
+# 37. Still Stuck? Send Useful Details
 
 Send the instructor:
 
@@ -628,7 +628,7 @@ Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
 
 ---
 
-# Official References and Validation
+# 38. Official References and Validation
 
 - [DuckDB installation](https://duckdb.org/install/)
 - [DuckDB CLI overview](https://duckdb.org/docs/current/clients/cli/overview)

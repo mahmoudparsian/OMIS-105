@@ -29,7 +29,7 @@ Reviewed October 2, 2026. Start here, then follow the slides in order.
 
 ---
 
-# What You Will Learn
+# 1. What You Will Learn
 
 1. Install the standalone DuckDB command-line program.
 2. Fix “command not found” or “not recognized.”
@@ -45,7 +45,7 @@ only when a step fails. You do not have to memorize troubleshooting.
 
 ---
 
-# Four Words Used in This Guide
+# 2. Four Words Used in This Guide
 
 | Word | Meaning here |
 |---|---|
@@ -59,7 +59,7 @@ After each command, wait for the result before typing the next one.
 
 ---
 
-# Two Prompts, Two Kinds of Commands
+# 3. Two Prompts, Two Kinds of Commands
 
 | Where you are | Examples to enter there |
 |---|---|
@@ -75,7 +75,7 @@ If you see `>>>`, you are in Python: enter `exit()` first.
 
 ---
 
-# Before Installing
+# 4. Before Installing
 
 The **CLI** is the DuckDB program you run in a terminal. Having DuckDB
 work in Python or Marimo does not mean this program is installed.
@@ -94,7 +94,7 @@ No Python environment, database server, or DuckDB account is needed.
 
 ---
 
-# Windows: Choose Your Shell
+# 5. Windows: Choose Your Shell
 
 For a first attempt, use **Command Prompt**: press the Windows key,
 type `cmd`, and press Enter. If you already use PowerShell, follow the
@@ -109,7 +109,7 @@ route below. Windows requires the matching
 
 ---
 
-# Windows Option A: WinGet
+# 6. Windows Option A: WinGet
 
 **In either shell, one command at a time:**
 ```text
@@ -126,7 +126,7 @@ to **Windows: Open the Tutorial Folder**. Otherwise use the help section.
 
 ---
 
-# Windows Option B: Download and Extract
+# 7. Windows Option B: Download and Extract
 
 1. At [duckdb.org/install](https://duckdb.org/install/), select **Windows / CLI / current stable**.
 2. In **Settings > System > About**, check **System type**.
@@ -141,7 +141,7 @@ permission to create `C:\duckdb`.
 
 ---
 
-# Windows: Test Before Editing PATH
+# 8. Windows: Test Before Editing PATH
 
 **PowerShell:**
 ```powershell
@@ -159,7 +159,7 @@ PowerShell needs `&` to run a program whose path is in quotes.
 
 ---
 
-# Windows: Make duckdb Work by Name
+# 9. Windows: Make duckdb Work by Name
 
 For the **manual route**, add the folder containing `duckdb.exe` to PATH:
 
@@ -177,7 +177,7 @@ copy them exactly when shown in commands.
 
 ---
 
-# Windows: Open the Tutorial Folder
+# 10. Windows: Open the Tutorial Folder
 
 Extract the **whole tutorial folder**, including `data/students.csv`.
 In File Explorer, open that folder, type **cmd** in its address bar, and
@@ -193,7 +193,7 @@ It may include **OneDrive**; copy the real location from File Explorer.
 
 ---
 
-# Windows: Paths Differ Between Shells
+# 11. Windows: Paths Differ Between Shells
 
 To navigate manually, replace the example path with your real location:
 
@@ -211,7 +211,7 @@ folder in CMD but changes to the home folder in PowerShell.
 
 ---
 
-# Checkpoint: Does DuckDB Run?
+# 12. Checkpoint: Does DuckDB Run?
 
 **In your terminal:**
 ```text
@@ -228,7 +228,7 @@ It explains how to start DuckDB using the location of its program file.
 
 ---
 
-# Checkpoint: Can It Read the Sample?
+# 13. Checkpoint: Can It Read the Sample?
 
 **In your terminal, in the tutorial folder:**
 ```text
@@ -244,7 +244,7 @@ Once both checkpoints pass, proceed with the SQL lesson.
 
 ---
 
-# Start DuckDB and Type a Query
+# 14. Start DuckDB and Type a Query
 
 **In your terminal:**
 ```text
@@ -260,7 +260,7 @@ Writing a separate file is different; exported files remain on disk.
 
 ---
 
-# Finish or Cancel an Incomplete Command
+# 15. Finish or Cancel an Incomplete Command
 
 SQL statements finish with a **semicolon** (`;`). DuckDB may show a
 continuation prompt if a statement, quote, or parenthesis is incomplete.
@@ -275,7 +275,7 @@ A continuation prompt does not mean every problem is a missing `;`.
 
 ---
 
-# Query the CSV Directly
+# 16. Query the CSV Directly
 
 **At the DuckDB prompt**, run each block separately:
 ```sql
@@ -293,7 +293,7 @@ which you started the program.
 
 ---
 
-# Expected GPA Results
+# 17. Expected GPA Results
 
 | major | avg_gpa |
 |---|---:|
@@ -308,7 +308,7 @@ The default **duckbox** format may also show column types.
 
 ---
 
-# Create a Table for This Session
+# 18. Create a Table for This Session
 
 **At the DuckDB prompt:**
 ```sql
@@ -325,7 +325,7 @@ If `students` already exists, query it instead of running CREATE again.
 
 ---
 
-# Change How Results Look
+# 19. Change How Results Look
 
 **At the DuckDB prompt, one line at a time:**
 ```text
@@ -344,7 +344,7 @@ Use `.mode duckbox` to return to the default display.
 
 ---
 
-# Headers and Timing
+# 20. Headers and Timing
 
 **At the DuckDB prompt, one line at a time:**
 ```text
@@ -362,7 +362,7 @@ timing information. Timing values vary; these settings persist in the session.
 
 ---
 
-# Save a Database and Reopen It
+# 21. Save a Database and Reopen It
 
 First exit the in-memory session with `.quit`. **In your terminal:**
 ```text
@@ -379,7 +379,7 @@ If the table already exists, skip CREATE and query it.
 
 ---
 
-# Keep Track of Your Saved Database
+# 22. Keep Track of Your Saved Database
 
 - A filename such as `class_cli.db` refers to a file in the current folder. Starting
   from a different folder can create a different, empty database.
@@ -393,7 +393,7 @@ If the table already exists, skip CREATE and query it.
 
 ---
 
-# Create a Script File
+# 23. Create a Script File
 
 In a plain-text editor, save these lines as **report.sql** in the tutorial
 folder. Use VS Code or Notepad (Save as type: **All files**).
@@ -409,7 +409,7 @@ ORDER BY avg_gpa DESC, major;
 
 ---
 
-# Run Your Script File
+# 24. Run Your Script File
 
 After saving **report.sql**, exit DuckDB with `.quit` first.
 **In the terminal, from this tutorial folder:**
@@ -425,7 +425,7 @@ find `data/students.csv`.
 
 ---
 
-# Optional Practice: Write Another SQL File
+# 25. Optional Practice: Write Another SQL File
 
 Use VS Code or Notepad as your plain-text editor.
 Save this as **my_query.sql** in the tutorial folder:
@@ -441,7 +441,7 @@ Check it is not `my_query.sql.txt` or rich text. In Notepad, choose
 
 ---
 
-# Quotes, Spaces, and Copy/Paste
+# 26. Quotes, Spaces, and Copy/Paste
 
 For simple one-off SQL, double-quote the shell argument and single-quote
 SQL strings:
@@ -458,7 +458,7 @@ and copied prompt labels can alter a command. Enter one block at a time.
 
 ---
 
-# Practice: Seven Checks
+# 27. Practice: Seven Checks
 
 1. In the shell: run `duckdb --version` and the 42 checkpoint.
    Expect a version number and the answer **42**.
@@ -475,7 +475,7 @@ First get the program working, then check the location of your data.
 
 ---
 
-# Help Only If Needed
+# 28. Help Only If Needed
 
 If you completed all seven checks and saw the expected results, you have
 finished the lesson.
@@ -491,7 +491,7 @@ to send the instructor the details needed to help you.
 
 ---
 
-# Windows: “duckdb is not recognized”
+# 29. Windows: “duckdb is not recognized”
 
 In **either shell**:
 ```text
@@ -511,7 +511,7 @@ copies. Bare `where` is a PowerShell alias, so use **where.exe**.
 
 ---
 
-# Windows: Continue Without Permanent PATH
+# 30. Windows: Continue Without Permanent PATH
 
 For the manual installation, add the folder for **this session only**:
 
@@ -530,7 +530,7 @@ the shell closes; the full-path commands also work without changing PATH.
 
 ---
 
-# Windows: File Exists but Will Not Run
+# 31. Windows: File Exists but Will Not Run
 
 - **In its folder, PowerShell cannot find duckdb.exe:** use
   `.\duckdb.exe --version`; PowerShell does not search the current
@@ -544,7 +544,7 @@ the shell closes; the full-path commands also work without changing PATH.
 
 ---
 
-# Windows: SmartScreen and Managed PCs
+# 32. Windows: SmartScreen and Managed PCs
 
 If you see **Windows protected your PC**, confirm the executable came
 from DuckDB's official installation page.
@@ -558,7 +558,7 @@ cannot solve a blocked executable or missing runtime dependency.
 
 ---
 
-# Windows: Continue Without Fixing PATH First
+# 33. Windows: Continue Without Fixing PATH First
 
 Use the working manual-install path instead of the command name:
 
@@ -576,7 +576,7 @@ problems; it cannot fix a blocked program or missing Windows component.
 
 ---
 
-# Recovery: CSV or SQL File Not Found
+# 34. Recovery: CSV or SQL File Not Found
 
 1. If you are at D, press Ctrl+C only if input is unfinished; then enter `.quit`.
 2. In the shell, check the current folder and list the actual filename.
@@ -593,7 +593,7 @@ A `.csv` extension alone does not prove the file is valid CSV.
 
 ---
 
-# Recovery: Table, Lock, or Write Errors
+# 35. Recovery: Table, Lock, or Write Errors
 
 - **Table does not exist:** you may be in a new in-memory session or
   the wrong database. Query the CSV directly or reopen the right `.db`.
@@ -608,7 +608,7 @@ version incompatibility errors; do not overwrite the existing database.
 
 ---
 
-# Recovery: Display or Startup Problems
+# 36. Recovery: Display or Startup Problems
 
 - Garbled table borders? At D, try `.mode table` for ASCII borders.
   `.mode ascii` means a different machine-oriented format.
@@ -625,7 +625,7 @@ change query results.
 
 ---
 
-# Other File and Download Problems
+# 37. Other File and Download Problems
 
 - SQL files with spaces in their names need quotes. In the terminal:
   `duckdb -bail -f "my reports/report.sql"`.
@@ -638,7 +638,7 @@ change query results.
 
 ---
 
-# Still Stuck? Send Useful Details
+# 38. Still Stuck? Send Useful Details
 
 Send the instructor:
 
@@ -653,7 +653,7 @@ Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
 
 ---
 
-# Official References and Validation
+# 39. Official References and Validation
 
 - [DuckDB installation](https://duckdb.org/install/)
 - [DuckDB CLI overview](https://duckdb.org/docs/current/clients/cli/overview)
@@ -663,7 +663,7 @@ Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
 
 ---
 
-# Windows References and Validation
+# 40. Windows References and Validation
 
 - [Microsoft: WinGet and App Installer](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
 - [PowerShell: command resolution](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_command_precedence)
