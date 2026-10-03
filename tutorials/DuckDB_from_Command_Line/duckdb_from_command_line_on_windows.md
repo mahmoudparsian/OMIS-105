@@ -85,7 +85,8 @@ In your terminal, run:
 ```text
 duckdb --version
 ```
-If it prints a version, skip installation and go to **Open the Tutorial Folder**.
+If you see a version number such as `v1.5.5`, DuckDB is installed and
+your terminal can find it. Skip installation and go to **Open the Tutorial Folder**.
 If it fails, follow the installation steps next. Choose only one method.
 
 No Python environment, database server, or DuckDB account is needed.
@@ -186,6 +187,7 @@ dir data\students.csv
 If using PowerShell instead, use **Copy as path** on the folder and enter
 `Set-Location "the copied full folder path"`, then `Get-Location`.
 The quoted path is a placeholder: replace it with your actual folder.
+It may include **OneDrive**; copy the real location from File Explorer.
 
 ---
 
@@ -391,8 +393,7 @@ If the table already exists, skip CREATE and query it.
 # Create a Script File
 
 In a plain-text editor, save these lines as **report.sql** in the tutorial
-folder. Use VS Code, Notepad (Save as type: All files), or TextEdit in
-plain-text mode. Check the file is not `report.sql.txt`.
+folder. Use VS Code or Notepad (Save as type: **All files**). Check the file is not `report.sql.txt`.
 
 ```sql
 SELECT COUNT(*) AS students FROM read_csv('data/students.csv');
@@ -422,7 +423,7 @@ there, even if your SQL file is saved somewhere else.
 
 # Optional Practice: Write Another SQL File
 
-Use a plain-text editor (VS Code, Notepad, or TextEdit in plain-text mode).
+Use VS Code or Notepad as your plain-text editor.
 Save this as **my_query.sql** in the tutorial folder:
 ```sql
 SELECT major, COUNT(*) AS n
@@ -493,6 +494,8 @@ If not found: verify installation, restart the terminal application, and
 test the full executable path. Reopening alone cannot add a missing entry.
 
 For WinGet, inspect `winget list --id DuckDB.cli --exact`.
+If listed but still not found after restarting, ask the instructor to check
+the installation location, or use the manual route if permitted.
 For manual installation, verify the folder and User Path entry.
 
 In PowerShell, `Get-Command duckdb -All` also reveals aliases or multiple
@@ -547,6 +550,24 @@ cannot solve a blocked executable or missing runtime dependency.
 
 ---
 
+# Windows: Continue Without Fixing PATH First
+
+Use the working manual-install path instead of the command name:
+
+**PowerShell:**
+```powershell
+& "$env:USERPROFILE\duckdb-cli\duckdb.exe" -c "SELECT 42;"
+```
+**Command Prompt:**
+```bat
+"%USERPROFILE%\duckdb-cli\duckdb.exe" -c "SELECT 42;"
+```
+To open an interactive session, omit `-c "SELECT 42;"`.
+Use your actual installation folder if different. This avoids PATH lookup
+problems; it cannot fix a blocked program or missing Windows component.
+
+---
+
 # Recovery: CSV or SQL File Not Found
 
 1. If at D, cancel unfinished input with Ctrl+C, then enter `.quit`.
@@ -593,6 +614,19 @@ Do not delete personal startup files. Different colors/layouts do not change que
 
 ---
 
+# Other File and Download Problems
+
+- SQL files with spaces in their names need quotes. In the terminal:
+  `duckdb -bail -f "my reports/report.sql"`.
+- A failed download may be caused by a school network, proxy, or
+  certificate restriction. Ask IT; do not disable certificate checks.
+- If the computer or operating system is unsupported, ask the instructor
+  for an approved alternative computer.
+- If you have not created `report.sql` or `clean_start.sql`, follow the
+  earlier instructions before trying to run either file. They are not supplied.
+
+---
+
 # Still Stuck? Send Useful Details
 
 Send the instructor:
@@ -603,5 +637,22 @@ Send the instructor:
 - Your current folder and whether `data/students.csv` exists.
 - `duckdb --version`, if available; redact private path information.
 
-See **README.md** for copyable recovery commands and official references.
+Use the help pages in this guide and the official references below.
 Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
+
+
+---
+
+# Official References and Validation
+
+- [DuckDB installation](https://duckdb.org/install/)
+- [DuckDB CLI overview](https://duckdb.org/docs/current/clients/cli/overview)
+- [CLI arguments](https://duckdb.org/docs/current/clients/cli/arguments)
+- [Dot-commands](https://duckdb.org/docs/current/clients/cli/dot_commands)
+- [Output formats](https://duckdb.org/docs/current/clients/cli/output_formats)
+- [Microsoft: WinGet and App Installer](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
+- [PowerShell: command resolution](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_command_precedence)
+- [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
+
+Windows setup was checked against official documentation, not tested on a
+Windows PC. Shared SQL examples were tested with DuckDB 1.5.5 on macOS.
