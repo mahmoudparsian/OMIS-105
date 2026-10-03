@@ -40,7 +40,6 @@ Reviewed October 2, 2026. Start here, then follow the slides in order.
 Keep this guide and `data/students.csv` together. You will create
 `report.sql` during the lesson.
 
-
 Follow the main lesson first. Use **Help Only If Needed** at the end
 only when a step fails. You do not have to memorize troubleshooting.
 
@@ -50,7 +49,7 @@ only when a step fails. You do not have to memorize troubleshooting.
 
 | Word | Meaning here |
 |---|---|
-| Terminal / shell | The window where you type commands to your computer. |
+| Terminal / shell | The terminal is the window; the shell reads your commands. |
 | CLI | “Command-line interface”: the DuckDB program used in this lesson. |
 | Path | A file or folder's location on your computer. |
 | PATH | The list of folders searched when you type a program name. |
@@ -81,13 +80,15 @@ If you see `>>>`, you are in Python: enter `exit()` first.
 The **CLI** is the DuckDB program you run in a terminal. Having DuckDB
 work in Python or Marimo does not mean this program is installed.
 
-In your terminal, run:
+Open **Command Prompt**: press the Windows key, type `cmd`, and press
+Enter. If you already use PowerShell, that also works. Then run:
 ```text
 duckdb --version
 ```
 If you see a version number such as `v1.5.5`, DuckDB is installed and
 your terminal can find it. Skip installation and go to **Open the Tutorial Folder**.
-If it fails, follow the installation steps next. Choose only one method.
+If you see “command not found” or “not recognized,” follow the installation
+steps next. Choose only one method. For another error, use the help section.
 
 No Python environment, database server, or DuckDB account is needed.
 
@@ -120,8 +121,8 @@ WinGet is supplied through Microsoft's **App Installer**; it may be
 missing or restricted on managed PCs. Use the manual route if permitted.
 
 Close and reopen the entire terminal application, then try
-`duckdb --version`. If it works, skip Option B and go to **Windows: Open
-the Tutorial Folder**. Otherwise use the help section at the end.
+`duckdb --version`. If it prints a version number, skip Option B and go
+to **Windows: Open the Tutorial Folder**. Otherwise use the help section.
 
 ---
 
@@ -152,8 +153,9 @@ Test-Path "$env:USERPROFILE\duckdb-cli\duckdb.exe"
 dir "%USERPROFILE%\duckdb-cli\duckdb.exe"
 "%USERPROFILE%\duckdb-cli\duckdb.exe" --version
 ```
-If the file is absent, fix its location first. PowerShell needs `&` to
-execute a quoted path. A version number confirms the executable works.
+`Test-Path` should return **True**; `dir` should list **duckdb.exe**.
+If not, fix the file location first. The next command should print a version.
+PowerShell needs `&` to run a program whose path is in quotes.
 
 ---
 
@@ -216,7 +218,8 @@ folder in CMD but changes to the home folder in PowerShell.
 duckdb --version
 duckdb -c "SELECT 6 * 7 AS answer;"
 ```
-Expect a version and the answer **42**. An illustrative version is:
+The first command should print a version number; the second should return
+**42**. Example version output (do not type this):
 ```text
 v1.5.5 (Variegata) d8cdaa33fd
 ```
@@ -318,7 +321,7 @@ Then enter these **one line at a time**:
 .schema students
 ```
 `.tables` lists stored tables/views, not every CSV in the folder.
-If `students` already exists, reuse it; do not rerun CREATE blindly.
+If `students` already exists, query it instead of running CREATE again.
 
 ---
 
@@ -378,7 +381,7 @@ If the table already exists, skip CREATE and query it.
 
 # Keep Track of Your Saved Database
 
-- A relative `.db` filename is relative to the current folder. Starting
+- A filename such as `class_cli.db` refers to a file in the current folder. Starting
   from a different folder can create a different, empty database.
 - Use `.databases` at D to inspect the open database; use `.tables`
   to inspect its tables. Quote terminal paths containing spaces.
@@ -393,7 +396,8 @@ If the table already exists, skip CREATE and query it.
 # Create a Script File
 
 In a plain-text editor, save these lines as **report.sql** in the tutorial
-folder. Use VS Code or Notepad (Save as type: **All files**). Check the file is not `report.sql.txt`.
+folder. Use VS Code or Notepad (Save as type: **All files**).
+Check that the file is named `report.sql`, not `report.sql.txt`.
 
 ```sql
 SELECT COUNT(*) AS students FROM read_csv('data/students.csv');
@@ -415,9 +419,9 @@ duckdb -bail -f report.sql
 Expect the row count **8**, then the four GPA results shown earlier.
 `-bail` stops if an error occurs. `-f` runs the SQL file and exits.
 
-Alternatively, while already at D, enter `.read report.sql`.
-Run this command from the tutorial folder. DuckDB looks for `data/`
-there, even if your SQL file is saved somewhere else.
+Alternatively, if you have not exited DuckDB, enter `.read report.sql`
+at D. In either case, start DuckDB from the tutorial folder so it can
+find `data/students.csv`.
 
 ---
 
@@ -444,9 +448,10 @@ SQL strings:
 ```text
 duckdb -c "SELECT 'Finance' AS major;"
 ```
-SQL uses single quotes for values; double quotes identify columns.
-The terminal may treat some characters as special instructions. For SQL containing
-`$`, `!`, embedded quotes, or multiple lines, use a `.sql` file.
+SQL uses single quotes for text values; double quotes are for names,
+such as column names.
+The terminal may treat `$`, `!`, and some quotes as special instructions.
+For SQL containing these characters or multiple lines, use a `.sql` file.
 
 Copy commands from Markdown when possible. PDF line wraps, curly quotes,
 and copied prompt labels can alter a command. Enter one block at a time.
@@ -455,12 +460,14 @@ and copied prompt labels can alter a command. Enter one block at a time.
 
 # Practice: Seven Checks
 
-1. In the shell: `duckdb --version` and the 42 checkpoint.
+1. In the shell: run `duckdb --version` and the 42 checkpoint.
+   Expect a version number and the answer **42**.
 2. Confirm you are in this tutorial's folder.
-3. In the shell: run the eight-row CSV checkpoint.
+3. In the shell: run the CSV checkpoint and confirm the count is **8**.
 4. Run `duckdb`; at D, run the average-GPA query.
 5. Try `.mode markdown`, then rerun the query.
-6. Enter `.quit`; in the shell run `duckdb -bail -f report.sql`.
+6. Create `report.sql` as shown earlier. Enter `.quit`, then run
+   `duckdb -bail -f report.sql` in the shell.
 7. Create/reopen `class_cli.db` and verify its table persists.
 
 If typing `duckdb` fails, use **Help Only If Needed** below.
@@ -470,7 +477,8 @@ First get the program working, then check the location of your data.
 
 # Help Only If Needed
 
-If the practice worked, you have finished the lesson.
+If you completed all seven checks and saw the expected results, you have
+finished the lesson.
 Use the following pages only for the problem you are seeing:
 
 - `duckdb` is not found or not recognized.
@@ -570,11 +578,12 @@ problems; it cannot fix a blocked program or missing Windows component.
 
 # Recovery: CSV or SQL File Not Found
 
-1. If at D, cancel unfinished input with Ctrl+C, then enter `.quit`.
+1. If you are at D, press Ctrl+C only if input is unfinished; then enter `.quit`.
 2. In the shell, check the current folder and list the actual filename.
 3. Change into the folder containing **data/**. For scripts, also check
    that you created **report.sql** there as instructed.
-4. Retry the eight-row checkpoint, then `duckdb -bail -f report.sql`.
+4. Retry the eight-row checkpoint. If your problem was with the script,
+   also retry `duckdb -bail -f report.sql` after confirming the file exists.
 
 If using a synced folder (OneDrive/iCloud), download files locally first.
 A full path can avoid ambiguity; use single quotes for paths in SQL.
@@ -606,11 +615,13 @@ version incompatibility errors; do not overwrite the existing database.
 - Results look different? Check `.show`; reset with `.mode duckbox`
   and `.headers on`. A startup `.duckdbrc` can customize settings.
 - To bypass it, first save a plain-text **clean_start.sql** containing
-  only `-- No startup settings`. Then run in the shell:
+  only `-- No startup settings`. Save it in the tutorial folder, exit
+  DuckDB with `.quit`, and run this command from that folder:
 ```text
 duckdb -init clean_start.sql -c "SELECT 42 AS answer;"
 ```
-Do not delete personal startup files. Different colors/layouts do not change query results.
+Do not delete personal startup files. Different colors or layouts do not
+change query results.
 
 ---
 
@@ -631,7 +642,7 @@ Do not delete personal startup files. Different colors/layouts do not change que
 
 Send the instructor:
 
-- Your OS and shell (Terminal/zsh, PowerShell, or Command Prompt).
+- Your Windows version and shell (PowerShell or Command Prompt).
 - The exact command and complete error text.
 - Whether a full-path `--version` command works.
 - Your current folder and whether `data/students.csv` exists.
@@ -639,7 +650,6 @@ Send the instructor:
 
 Use the help pages in this guide and the official references below.
 Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
-
 
 ---
 
@@ -650,6 +660,11 @@ Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
 - [CLI arguments](https://duckdb.org/docs/current/clients/cli/arguments)
 - [Dot-commands](https://duckdb.org/docs/current/clients/cli/dot_commands)
 - [Output formats](https://duckdb.org/docs/current/clients/cli/output_formats)
+
+---
+
+# Windows References and Validation
+
 - [Microsoft: WinGet and App Installer](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
 - [PowerShell: command resolution](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_command_precedence)
 - [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
