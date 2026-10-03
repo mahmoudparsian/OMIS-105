@@ -4,729 +4,583 @@ theme: default
 paginate: true
 size: 16:9
 style: |
-  section {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #fff;
-    color: #333;
-  }
-  section.lead {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    color: #fff;
-    text-align: center;
-  }
-  section.lead h1 {
-    font-size: 2.4em;
-    color: #ffd700;
-  }
-  section.lead h2 {
-    color: #ccc;
-    font-weight: 300;
-  }
-  h1 {
-    color: #0f3460;
-    border-bottom: 3px solid #ffd700;
-    padding-bottom: 8px;
-  }
-  code {
-    background: #f0f4f8;
-    color: #0f3460;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.9em;
-  }
-  pre {
-    background: #1a1a2e;
-    border-radius: 8px;
-    padding: 10px 16px;
-    margin: 6px 0;
-    color-scheme: dark;
-  }
-  pre code {
-    background: transparent;
-    color: #f0f4f8;
-    padding: 0;
-    font-size: 0.72em;
-    line-height: 1.3;
-  }
-  table {
-    font-size: 0.85em;
-  }
-  th {
-    background: #0f3460;
-    color: #fff;
-  }
-  strong {
-    color: #0f3460;
-  }
-  blockquote {
-    border-left: 4px solid #ffd700;
-    background: #f9f9f0;
-    padding: 12px 20px;
-    font-style: italic;
-  }
-  section.closing {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    color: #fff;
-    text-align: center;
-  }
-  section.closing h1 {
-    color: #ffd700;
-    border: none;
-  }
-  section.lead strong,
-  section.closing strong {
-    color: #ffd700;
-  }
-  section.dense p {
-    margin: 0.3em 0;
-  }
-  section.dense pre {
-    margin: 4px 0;
-    padding: 8px 14px;
-  }
+  section { font-family: Arial, sans-serif; font-size: 27px; padding: 42px 54px; color: #243247; background: #fff; }
+  h1 { font-size: 39px; color: #123958; border-bottom: 3px solid #e6b422; padding-bottom: 9px; }
+  h2 { font-size: 30px; }
+  pre { background: #eef3f7; padding: 14px 18px; font-size: 22px; line-height: 1.35; }
+  code { font-family: Menlo, Consolas, monospace; }
+  table { font-size: 23px; }
+  a { color: #126597; }
+  section.lead { background: #123958; color: #fff; }
+  section.lead h1 { color: #ffd166; }
+  section.lead h2 { color: #fff; }
+  strong { color: #126597; }
+  section.lead strong { color: #ffd166; }
 ---
-
-<!-- _class: lead -->
-
 # DuckDB from the Command Line
 
-## A Second Way to Talk to Your Database — macOS
+<!-- _class: lead -->
+## macOS: install DuckDB and run your first queries
+OMIS 105 - Fall 2026
+
+Examples use **DuckDB 1.5.5**. Your installation may show a newer version.
+
+Reviewed October 2, 2026. Start here, then follow the slides in order.
 
 ---
 
-# Table of Contents
+# What You Will Learn
 
-1. Why Learn the Command Line?
-2. Two Different "DuckDBs"
-3. What You'll Need
-4. Installing the DuckDB CLI on macOS
-5. Apple Silicon vs. Intel — Universal Download
-6. Verifying the Install
-7. Starting DuckDB
-8. The DuckDB Prompt
-9. Dot-Commands — Your Toolbox
-10. Changing How Results Look
-11. Querying a CSV — No Loading Step
-12. One-Off Queries and Script Files
-13. Leaving DuckDB
-14. Common Mistakes
-15. Troubleshooting
-16. More "What If...?" Scenarios
-17. Cheat Sheet
-18. Practice Exercise
+1. Install the standalone DuckDB command-line program.
+2. Fix “command not found” or “not recognized.”
+3. Open the tutorial folder and query its CSV file.
+4. Save a database, change output format, and run a SQL file.
+5. Diagnose file, permission, and session errors.
+
+Keep this guide and `data/students.csv` together. You will create
+`report.sql` during the lesson.
+
+
+Follow the main lesson first. Use **Help Only If Needed** at the end
+only when a step fails. You do not have to memorize troubleshooting.
 
 ---
 
-# Why Learn the Command Line?
+# Four Words Used in This Guide
 
-So far, you've used DuckDB **inside Marimo notebooks**. That's great
-for building and sharing analysis.
-
-The **command line** is different — it's a fast, no-frills way to:
-
-- Quickly check a table without opening a notebook
-- Run a `.sql` file as part of a script or pipeline
-- Peek inside a `.csv` file in seconds
-- Practice SQL the way many working analysts actually do
-
-👉 Notebooks and the command line are **two tools for the same job**.
-Knowing both makes you more flexible.
-
----
-
-# Two Different "DuckDBs"
-
-You already have the **DuckDB Python package** installed
-(`pip install duckdb`). That's what powers `import duckdb` in Marimo.
-
-Today we install a **second, separate thing**: the **DuckDB CLI** —
-a standalone program called `duckdb` that you run directly in
-**Terminal**, with no Python involved at all.
-
-| | Python package | DuckDB CLI |
-|---|---|---|
-| How you use it | `import duckdb` in a script/notebook | Type `duckdb` in Terminal |
-| Needs Python? | Yes | No |
-| Best for | Notebooks, analysis with pandas | Quick checks, scripts, learning SQL |
-
----
-
-# What You'll Need
-
-- The **Terminal** app (press `Cmd + Space`, type `Terminal`, press Enter)
-- Time to install the DuckDB CLI (allow extra time for package-manager setup)
-- The sample file `data/students.csv` in this same tutorial folder
-- A Mac compatible with the chosen installer. Check the current
-  [Homebrew requirements](https://docs.brew.sh/Installation) for Option A;
-  Homebrew support and DuckDB binary compatibility are separate.
-
-That's it — no server, no account, no configuration file.
-
----
-
-# Installing the DuckDB CLI — Option A: Homebrew (recommended)
-
-[Homebrew](https://brew.sh) is the standard package manager for macOS.
-Check whether you already have it:
-
-```bash
-brew --version
-```
-
-**If that prints a version number**, install DuckDB with one command:
-
-```bash
-brew install duckdb
-```
-
-**If you see `zsh: command not found: brew`**, install Homebrew first:
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-Then follow the two `echo`/`eval` lines Homebrew prints at the end —
-they add `brew` itself to your PATH. Close and reopen Terminal, then
-run `brew install duckdb`.
-
----
-
-# Installing the DuckDB CLI — Option B: Manual Download
-
-No Homebrew, or it's not letting you install right now? Get the binary
-directly:
-
-1. Go to **duckdb.org/install** and choose **macOS** + **CLI**
-2. Download `duckdb_cli-osx-universal.zip` (Apple Silicon and Intel)
-3. Double-click the `.zip` in **Downloads** to unzip it — you get a
-   single file named `duckdb`
-4. Make it executable, create the destination folder if needed, and
-   move it there (the `sudo` commands require administrator access):
-
-```bash
-chmod +x ~/Downloads/duckdb
-sudo mkdir -p /usr/local/bin
-sudo mv ~/Downloads/duckdb /usr/local/bin/duckdb
-```
-
----
-
-# Apple Silicon vs. Intel — Universal Download
-
-The official macOS CLI download is **`duckdb_cli-osx-universal.zip`**.
-It includes support for **Apple Silicon and Intel** — no separate
-chip-specific download is needed.
-
-Homebrew uses different default locations:
-
-| Mac | Homebrew location |
+| Word | Meaning here |
 |---|---|
-| Apple Silicon | `/opt/homebrew` |
-| Intel | `/usr/local` |
+| Terminal / shell | The window where you type commands to your computer. |
+| CLI | “Command-line interface”: the DuckDB program used in this lesson. |
+| Path | A file or folder's location on your computer. |
+| PATH | The list of folders searched when you type a program name. |
 
-For the manual installation shown here, the binary goes in
-`/usr/local/bin` on either kind of Mac. Confirm that folder is on your
-PATH with `echo "$PATH"`.
-
----
-
-# "Apple could not verify..." — Gatekeeper Warning
-
-If macOS blocks the manually downloaded binary, first confirm it came
-from **duckdb.org/install**. Follow the macOS **Privacy & Security**
-“Open Anyway” flow if available and permitted by your device policy.
-
-For a trusted download, quarantine troubleshooting must target the
-binary's **current location**. After the move on the previous slide:
-
-```bash
-sudo xattr -d com.apple.quarantine /usr/local/bin/duckdb
-```
-
-If it is still in Downloads, target `~/Downloads/duckdb` instead. “No such xattr” means that
-attribute is absent. Managed-device restrictions may require IT help.
+**Enter** and **Return** mean the same key in these instructions.
+After each command, wait for the result before typing the next one.
 
 ---
 
-# Verifying the Install
+# Two Prompts, Two Kinds of Commands
 
-Close and reopen Terminal (so your shell picks up any PATH change),
-then run:
+| Where you are | Examples to enter there |
+|---|---|
+| Terminal shell | `duckdb --version`, `duckdb`, `cd` |
+| DuckDB prompt (`D`) | `SELECT 42;`, `.tables`, `.quit` |
 
-```bash
+The prompt is a label: **do not type `D`, `$`, `%`, or `PS>`**.
+Copy command blocks exactly. Blocks labeled “output” show results;
+do not type those results.
+
+If you see `D`, enter `.quit` before a terminal command.
+If you see `>>>`, you are in Python: enter `exit()` first.
+
+---
+
+# Before Installing
+
+The **CLI** is the DuckDB program you run in a terminal. Having DuckDB
+work in Python or Marimo does not mean this program is installed.
+
+In your terminal, run:
+```text
 duckdb --version
 ```
+If it prints a version, skip installation and go to **Open the Tutorial Folder**.
+If it fails, follow the installation steps next. Choose only one method.
 
-The examples below use **DuckDB 1.5.5**. Your installed version may
-differ; the installation commands are not pinned to 1.5.5.
-
-Example output:
-
-```text
-v1.5.5 (Variegata) d8cdaa33fd
-```
-
-Confirm **where** it's running from:
-
-```bash
-which duckdb
-```
-
-Homebrew on Apple Silicon prints `/opt/homebrew/bin/duckdb`; on an
-Intel Mac, `/usr/local/bin/duckdb`. Either is correct — they're just
-Homebrew's two different install locations.
+No Python environment, database server, or DuckDB account is needed.
 
 ---
 
-# Starting DuckDB — In-Memory
+# macOS: Choose an Installation Route
 
-Just type `duckdb` with nothing after it:
+Open **Terminal** with Spotlight: Cmd+Space, type Terminal, press Return.
 
+- Already use Homebrew? Choose Option A.
+- No Homebrew or no administrator access? Choose Option B: a manual
+  download in your own home folder.
+- A managed Mac may require instructor/IT approval for either route.
+
+Use the **current stable CLI** on [duckdb.org/install](https://duckdb.org/install/), not a preview,
+Python package, or library download. Check OS compatibility there.
+
+---
+
+# Mac Option A: Existing Homebrew
+
+**In Terminal:**
 ```bash
+brew --version
+brew install duckdb
+duckdb --version
+```
+Run each command separately. If you see a version number, skip Option B
+and go to **Mac: Open the Tutorial Folder**.
+
+If `brew` is missing, use **Option B**. You do not need to install
+Homebrew just to finish this lesson.
+
+---
+
+# Mac Option B: Download and Extract
+
+1. At [duckdb.org/install](https://duckdb.org/install/), choose **macOS / CLI / current stable**.
+2. Download **duckdb_cli-osx-universal.zip**. It supports Apple Silicon
+   and Intel; no chip-specific CLI zip is needed.
+3. Unzip it in Finder. Locate the actual file named **duckdb**.
+4. In Finder, open your Home folder (Shift+Cmd+H), create a folder
+   named **duckdb-cli**, and move the executable into it.
+
+The next slide expects `~/duckdb-cli/duckdb`. If extraction made an
+extra folder, move the executable out of that folder.
+
+---
+
+# Mac Manual Install: Test the Full Path
+
+**In Terminal:**
+```bash
+ls -l "$HOME/duckdb-cli/duckdb"
+chmod +x "$HOME/duckdb-cli/duckdb"
+"$HOME/duckdb-cli/duckdb" --version
+```
+If `ls` reports “No such file,” correct the location in Finder first.
+If macOS blocks the file, see **Mac: Permission or Security Errors**
+in the help section at the end.
+
+A version number means the executable works, even if bare `duckdb`
+still says “command not found.” No `sudo` is needed for this folder.
+
+---
+
+# Mac Manual Install: Add Your Folder to PATH
+
+PATH is the list of folders your shell searches for a command name.
+**For this Terminal session:**
+```bash
+export PATH="$HOME/duckdb-cli:$PATH"
+duckdb --version
+```
+**To keep this setting when you open Terminal again, run once (standard zsh):**
+```bash
+printf '\nexport PATH="$HOME/duckdb-cli:$PATH"\n' >> "$HOME/.zshrc"
+```
+Copy the whole line as shown; it saves this setting for future sessions.
+`$HOME` means your home folder: leave that text unchanged. Open a new
+Terminal window and run `duckdb --version` again.
+
+---
+
+# Mac: Open the Tutorial Folder
+
+Download or clone the **whole tutorial folder**, then unzip it if needed.
+Do not save a GitHub HTML page in place of `students.csv`.
+
+In Terminal, type `cd ` (including the space), drag the actual tutorial
+folder from Finder into Terminal, then press Return. Next run:
+```bash
+pwd
+ls data/students.csv
+```
+The CSV must exist. Use your actual folder location, not an assumed Desktop
+path. For spaces, use quotes: `cd "$HOME/Desktop/OMIS 105 Labs"`.
+
+---
+
+# Checkpoint: Does DuckDB Run?
+
+**In your terminal:**
+```text
+duckdb --version
+duckdb -c "SELECT 6 * 7 AS answer;"
+```
+Expect a version and the answer **42**. An illustrative version is:
+```text
+v1.5.5 (Variegata) d8cdaa33fd
+```
+If typing `duckdb` still fails, see **Help Only If Needed** at the end.
+It explains how to start DuckDB using the location of its program file.
+
+---
+
+# Checkpoint: Can It Read the Sample?
+
+**In your terminal, in the tutorial folder:**
+```text
+duckdb -c "SELECT COUNT(*) AS students FROM read_csv('data/students.csv');"
+```
+Expect **8**. If this fails but the 42 check worked, installation is OK:
+check your current folder and the CSV filename.
+
+The CSV should begin `id,name,major,gpa`. A file containing HTML is a
+saved web page, not the dataset. Download the actual file or whole repo.
+
+Once both checkpoints pass, proceed with the SQL lesson.
+
+---
+
+# Start DuckDB and Type a Query
+
+**In your terminal:**
+```text
 duckdb
 ```
+When you see **D**, enter this SQL and press Enter/Return:
+```sql
+SELECT 6 * 7 AS answer;
+```
+You should see **42**. Startup text and spacing vary by version.
+This session is **in-memory**: its database tables disappear on exit.
+Writing a separate file is different; exported files remain on disk.
 
+---
+
+# Finish or Cancel an Incomplete Command
+
+SQL statements finish with a **semicolon** (`;`). DuckDB may show a
+continuation prompt if a statement, quote, or parenthesis is incomplete.
+
+- For a missing semicolon, type `;` and press Enter.
+- If you pasted the wrong text or have unmatched quotes, press **Ctrl+C**
+  to cancel the pending input, then re-enter the complete command.
+- Dot-commands such as `.quit` must start on their own fresh line.
+  They have **no semicolon**.
+
+A continuation prompt does not mean every problem is a missing `;`.
+
+---
+
+# Query the CSV Directly
+
+**At the DuckDB prompt**, run each block separately:
+```sql
+SELECT * FROM read_csv('data/students.csv');
+```
+```sql
+SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
+FROM read_csv('data/students.csv')
+GROUP BY major
+ORDER BY avg_gpa DESC, major;
+```
+No import step is needed. This reads the CSV; it does not create a stored
+table named `students`. DuckDB looks for `data/` inside the folder from
+which you started the program.
+
+---
+
+# Expected GPA Results
+
+| major | avg_gpa |
+|---|---:|
+| Information Systems | 3.83 |
+| Accounting | 3.50 |
+| Finance | 3.35 |
+| Marketing | 3.35 |
+
+Finance and Marketing tie; sorting by `major` breaks the tie consistently.
+DuckDB may display `3.5` rather than `3.50`; they are the same number.
+The default **duckbox** format may also show column types.
+
+---
+
+# Create a Table for This Session
+
+**At the DuckDB prompt:**
+```sql
+CREATE TABLE students AS
+SELECT * FROM read_csv('data/students.csv');
+```
+Then enter these **one line at a time**:
 ```text
-v1.5.5 (Variegata) d8cdaa33fd
-Enter ".help" for usage hints.
-Connected to a transient in-memory database.
-Use ".open FILENAME" to reopen on a persistent database.
-D
+.tables
+.schema students
 ```
-
-The `D` is your **prompt** — DuckDB is waiting for a command.
-**Do not type or paste the `D` shown in examples.**
-
-⚠️ "In-memory" means: when you close this window, **everything you
-created is gone**. Good for quick experiments.
+`.tables` lists stored tables/views, not every CSV in the folder.
+If `students` already exists, reuse it; do not rerun CREATE blindly.
 
 ---
 
-# Starting DuckDB — Persistent File
+# Change How Results Look
 
-To **save** your work to disk, give `duckdb` a filename:
-
-```bash
-duckdb my_class.db
+**At the DuckDB prompt, one line at a time:**
+```text
+.mode csv
+.headers on
+SELECT id, name FROM students ORDER BY id LIMIT 2;
 ```
-
-- If `my_class.db` doesn't exist yet, DuckDB **creates** it.
-- If it already exists, DuckDB **reopens** it — your tables are
-  still there.
-
-👉 This is exactly like the difference between
-`duckdb.connect(':memory:')` and `duckdb.connect('my_class.db')`
-in your Marimo notebooks.
-
-An **absolute** Mac path always uses forward slashes and just works,
-as typed:
-
-```bash
-duckdb /Users/maria/Desktop/OMIS-105-LABS/my_class.db
+Expected CSV output:
+```text
+id,name
+1,Alice
+2,Bob
 ```
-
-(`maria` is a stand-in for your own username — on your Mac it reads
-`/Users/<your username>/...`.)
+Other modes: `.mode markdown`, `.mode json`, `.mode table`.
+Use `.mode duckbox` to return to the default display.
 
 ---
 
-# The DuckDB Prompt
+# Headers and Timing
 
-Once you see the `D` prompt, you can type SQL directly:
+**At the DuckDB prompt, one line at a time:**
+```text
+.mode csv
+.headers off
+SELECT COUNT(*) FROM students;
+.headers on
+.timer on
+SELECT COUNT(*) FROM students;
+.timer off
+.mode duckbox
+```
+The first count is **8** without a header. The second adds a header and
+timing information. Timing values vary; these settings persist in the session.
+
+---
+
+# Save a Database and Reopen It
+
+First exit the in-memory session with `.quit`. **In your terminal:**
+```text
+duckdb class_cli.db
+```
+**At D**, create the table once in this file database:
+```sql
+CREATE TABLE students AS
+SELECT * FROM read_csv('data/students.csv');
+```
+Enter `.quit`, then run `duckdb class_cli.db` again in the same folder.
+At D, `SELECT COUNT(*) FROM students;` should still return **8**.
+If the table already exists, skip CREATE and query it.
+
+---
+
+# Keep Track of Your Saved Database
+
+- A relative `.db` filename is relative to the current folder. Starting
+  from a different folder can create a different, empty database.
+- Use `.databases` at D to inspect the open database; use `.tables`
+  to inspect its tables. Quote terminal paths containing spaces.
+- A database's parent folder must already exist and be writable.
+- `.open file.db` switches databases; it does **not** save/copy your
+  previous in-memory tables into the file.
+- The statements in this lesson save automatically in a file database.
+  If your instructor has you use `BEGIN`, use `COMMIT` before exiting.
+
+---
+
+# Create a Script File
+
+In a plain-text editor, save these lines as **report.sql** in the tutorial
+folder. Use VS Code, Notepad (Save as type: All files), or TextEdit in
+plain-text mode. Check the file is not `report.sql.txt`.
 
 ```sql
-D SELECT 6 * 7 AS answer;
-┌────────┐
-│ answer │
-│ int32  │
-├────────┤
-│     42 │
-└────────┘
+SELECT COUNT(*) AS students FROM read_csv('data/students.csv');
+SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
+FROM read_csv('data/students.csv')
+GROUP BY major
+ORDER BY avg_gpa DESC, major;
 ```
-
-Press **Enter** after the `;` to run the statement.
 
 ---
 
-# Don't Forget the Semicolon
+# Run Your Script File
 
-If you forget the `;`, DuckDB just waits for more input:
-
+After saving **report.sql**, exit DuckDB with `.quit` first.
+**In the terminal, from this tutorial folder:**
 ```text
-D SELECT 6 * 7 AS answer
-   ...>
+duckdb -bail -f report.sql
 ```
+Expect the row count **8**, then the four GPA results shown earlier.
+`-bail` stops if an error occurs. `-f` runs the SQL file and exits.
 
-Type the `;` on the next line and press Enter to finish it.
-
-⚠️ This is the #1 "why isn't anything happening?" moment for
-beginners. When the prompt changes to `...>`, DuckDB is still
-listening — it just needs your semicolon.
+Alternatively, while already at D, enter `.read report.sql`.
+Run this command from the tutorial folder. DuckDB looks for `data/`
+there, even if your SQL file is saved somewhere else.
 
 ---
 
-# Dot-Commands — Your Toolbox
+# Optional Practice: Write Another SQL File
 
-Commands that start with a **dot (`.`)** are not SQL — they're
-DuckDB CLI shortcuts. No semicolon needed.
-
-```text
-.help       show all dot-commands
-.tables     list tables in the current database
-.schema     show CREATE TABLE statements
-.mode       change how results are displayed
-.headers    show/hide column names
-.timer      show how long each query took
-.quit       exit the CLI
-```
-
-👉 Think of dot-commands as **settings for your session**, and SQL
-as **questions for your data**.
-
----
-
-# .tables and .schema
-
-Create a table, add some rows, then inspect it:
-
-```sql
-D CREATE TABLE students (
-     id INTEGER, 
-     name VARCHAR, 
-     gpa DOUBLE);
-     
-D INSERT INTO students VALUES
-    (1, 'Alice', 3.8), (2, 'Bob', 3.5), 
-    (3, 'Charlie', 3.9), (4, 'Diana', 3.2), 
-    (5, 'Ethan', 2.9), (6, 'Fiona', 3.7),
-    (7, 'George', 3.1), (8, 'Hana', 3.95);
-D .tables
-students
-D .schema students
-CREATE TABLE students(id INTEGER, name VARCHAR, gpa DOUBLE);
-```
-
-`.tables` answers *"what tables exist?"*
-`.schema` answers *"what do they look like?"*
-
-👉 The next few slides keep querying this same `students` table —
-it stays alive for the rest of your session.
-
----
-
-# .mode — Changing How Results Look
-
-The default look (`duckbox`, shown so far) is nice to read, but not
-easy to paste elsewhere. Switch styles with `.mode`:
-
-```text
-D .mode csv
-D SELECT * FROM students LIMIT 2;
-id,name,gpa
-1,Alice,3.8
-2,Bob,3.5
-```
-
-Other useful modes: `.mode markdown` (great for pasting into a
-README), `.mode json`, `.mode line`. Switch back anytime with
-`.mode duckbox`.
-
----
-
-# .headers and .timer
-
-```text
-D .headers off
-D SELECT name FROM students LIMIT 1;
-Alice
-```
-
-```text
-D .mode box
-D .headers on
-D .timer on
-D SELECT COUNT(*) FROM students;
-┌──────────────┐
-│ count_star() │
-├──────────────┤
-│            8 │
-└──────────────┘
-Run Time (s): real 0.001 user 0.000539 sys 0.000315
-```
-
-`.timer on` is handy once your tables get big and you want to know
-if a query is fast or slow.
-
----
-
-# Querying a CSV — No Loading Step
-
-This is DuckDB's superpower, and it works the same on the command
-line as it does in a notebook. No `CREATE TABLE`, no import wizard —
-the file **is** the table.
-
-First, exit DuckDB with `.quit` if you see `D`. In Terminal,
-get into this tutorial's folder — either `cd` there, or drag
-the folder onto Terminal after typing `cd ` with a trailing space:
-
-```bash
-cd ~/Desktop/OMIS-105/tutorials/DuckDB_from_Command_Line
-```
-
-(Adjust the path if you cloned or unzipped the course repo somewhere
-else. Confirm with `pwd` and `ls data/`.)
-
-Then run `duckdb` again. At `D`, run `.mode box` and `.headers on`
-to match the next slide's display.
-
----
-
-# Querying a CSV — Running the Query
-
-```sql
-D SELECT major, ROUND(AVG(gpa), 2) AS avg_gpa
-  FROM read_csv('data/students.csv')
-  GROUP BY major
-  ORDER BY avg_gpa DESC, major;
-```
-
-```text
-┌──────────────────────┬─────────┐
-│         major        │ avg_gpa │
-├──────────────────────┼─────────┤
-│ Information Systems  │    3.83 │
-│ Accounting           │    3.50 │
-│ Finance              │    3.35 │
-│ Marketing            │    3.35 │
-└──────────────────────┴─────────┘
-```
-
-`'data/students.csv'` is a **relative path** — it only resolves
-correctly if Terminal is standing in this tutorial's folder (see the
-previous slide).
-
----
-
-# One-Off Queries with `-c`
-
-Sometimes you don't want to open the interactive prompt at all —
-you just want **one quick answer**. Run it straight from Terminal
-(not from inside `duckdb`) using `-c`:
-
-```bash
-duckdb -c "SELECT COUNT(*) FROM read_csv('data/students.csv')"
-```
-
-```text
-┌──────────────┐
-│ count_star() │
-├──────────────┤
-│            8 │
-└──────────────┘
-```
-
-👉 Great for quick checks without leaving your normal Terminal
-workflow.
-
----
-
-# Quoting on macOS — `zsh` Notes
-
-macOS Terminal's default shell is **zsh**. Two rules keep `-c` queries
-safe:
-
-- For the examples here, wrap the **whole SQL statement** in double
-  quotes and use single quotes for SQL strings:
-  `duckdb -c "SELECT 'Finance' AS major"`.
-- Double quotes still allow shell expansion, including `$variables`
-  and, in interactive zsh, history expansion with `!`.
-- Use SQL's `<>` operator for “not equal.” For complicated quoting,
-  put the SQL in a `.sql` file and run `duckdb -c ".read report.sql"`.
-  Simply swapping the outer quotes can break inner SQL string quotes.
-
----
-
-# Running a Script File
-
-**1. Create the file.** Open any plain-text editor (VS Code, TextEdit
-in **plain text mode** — not rich text/Word), type the SQL below, and
-save it as `report.sql` in this same folder:
-
+Use a plain-text editor (VS Code, Notepad, or TextEdit in plain-text mode).
+Save this as **my_query.sql** in the tutorial folder:
 ```sql
 SELECT major, COUNT(*) AS n
 FROM read_csv('data/students.csv')
-GROUP BY major;
+GROUP BY major
+ORDER BY major;
 ```
+Exit DuckDB first, then run `duckdb -bail -f my_query.sql` in the shell.
+Check it is not `my_query.sql.txt` or rich text. In Notepad, choose
+**All files**. Use straight quotes, not smart/curly quotes.
 
-**2. Run it.** Back in Terminal (not inside the `duckdb` prompt):
+---
 
+# Quotes, Spaces, and Copy/Paste
+
+For simple one-off SQL, double-quote the shell argument and single-quote
+SQL strings:
+```text
+duckdb -c "SELECT 'Finance' AS major;"
+```
+SQL uses single quotes for values; double quotes identify columns.
+The terminal may treat some characters as special instructions. For SQL containing
+`$`, `!`, embedded quotes, or multiple lines, use a `.sql` file.
+
+Copy commands from Markdown when possible. PDF line wraps, curly quotes,
+and copied prompt labels can alter a command. Enter one block at a time.
+
+---
+
+# Practice: Seven Checks
+
+1. In the shell: `duckdb --version` and the 42 checkpoint.
+2. Confirm you are in this tutorial's folder.
+3. In the shell: run the eight-row CSV checkpoint.
+4. Run `duckdb`; at D, run the average-GPA query.
+5. Try `.mode markdown`, then rerun the query.
+6. Enter `.quit`; in the shell run `duckdb -bail -f report.sql`.
+7. Create/reopen `class_cli.db` and verify its table persists.
+
+If typing `duckdb` fails, use **Help Only If Needed** below.
+First get the program working, then check the location of your data.
+
+---
+
+# Help Only If Needed
+
+If the practice worked, you have finished the lesson.
+Use the following pages only for the problem you are seeing:
+
+- `duckdb` is not found or not recognized.
+- The program exists but cannot open.
+- A CSV, SQL file, or saved table cannot be found.
+- The database is locked, or the display looks unexpected.
+
+Try the matching fix. If it does not help, use **Still Stuck?** at the end
+to send the instructor the details needed to help you.
+
+---
+
+# Mac: “duckdb: command not found”
+
+This means the shell cannot find the executable by name.
+It does **not** necessarily mean DuckDB is broken.
+
+1. If installation failed, resolve that error or use the manual route.
+2. Test the executable by full path (next slide).
+3. If that works, fix PATH for the route you installed.
+4. Restart Terminal; for VS Code, quit and reopen the whole application.
+5. Verify with `command -v duckdb` and `duckdb --version`.
+
+Reopening Terminal alone cannot fix a missing executable or PATH entry.
+
+---
+
+# Mac: Locate the Executable
+
+**In Terminal**, try the path for your installation:
 ```bash
-duckdb -c ".read report.sql"
+"$HOME/duckdb-cli/duckdb" --version
+/opt/homebrew/bin/duckdb --version
+/usr/local/bin/duckdb --version
 ```
+These are alternatives, not three required installations.
+The last two are usual Apple Silicon and Intel Homebrew locations.
 
-👉 `report.sql` is just text — DuckDB reads it and runs each
-statement in order. Save once, rerun anytime: that's **repeatable**
-SQL.
+If you previously used DuckDB's installer script, also check
+`"$HOME/.duckdb/cli/latest/duckdb" --version`.
 
 ---
 
-# Leaving DuckDB
+# Mac: Repair Homebrew PATH
 
-Any of these will exit the interactive prompt:
+If `/opt/homebrew/bin/brew` exists, use:
+```bash
+eval "$(/opt/homebrew/bin/brew shellenv)"
+brew list duckdb
+duckdb --version
+```
+For Intel Homebrew, substitute `/usr/local/bin/brew` in the first line.
+If DuckDB is not installed, run `brew install duckdb`.
 
+Follow Homebrew's printed startup-file instructions for a lasting fix.
+Use `type -a duckdb` to find multiple commands or aliases with that name.
+A working full path lets you continue while resolving PATH.
+
+---
+
+# Mac: Permission or Security Errors
+
+- **Permission denied:** confirm you selected the executable, then use
+  `chmod +x` on that file. Choose a folder you own.
+- **Apple cannot verify the developer:** verify the download source;
+  follow **System Settings > Privacy & Security > Open Anyway** if
+  macOS offers it and your device policy permits it.
+- **Damaged / malware warning / policy restriction:** do not disable
+  system protection. Ask the instructor or IT before proceeding.
+- **Bad CPU type / unsupported OS:** get the current macOS universal
+  CLI and check supported OS requirements; avoid Linux binaries.
+
+See [Apple's instructions](https://support.apple.com/en-us/102445). Homebrew does not bypass device policy.
+
+---
+
+# Recovery: CSV or SQL File Not Found
+
+1. If at D, cancel unfinished input with Ctrl+C, then enter `.quit`.
+2. In the shell, check the current folder and list the actual filename.
+3. Change into the folder containing **data/**. For scripts, also check
+   that you created **report.sql** there as instructed.
+4. Retry the eight-row checkpoint, then `duckdb -bail -f report.sql`.
+
+If using a synced folder (OneDrive/iCloud), download files locally first.
+A full path can avoid ambiguity; use single quotes for paths in SQL.
+If a path contains an apostrophe, double it inside the SQL string.
+
+A `.csv` extension alone does not prove the file is valid CSV.
+
+---
+
+# Recovery: Table, Lock, or Write Errors
+
+- **Table does not exist:** you may be in a new in-memory session or
+  the wrong database. Query the CSV directly or reopen the right `.db`.
+- **Table already exists:** reuse it; do not drop it just to clear the error.
+- **Could not set lock:** close other CLI sessions or Marimo/Python
+  connections using that file, then retry. Do not delete lock/WAL files.
+- **Read-only / cannot open:** check the parent folder, permissions,
+  disk space, and whether you opened with `-readonly`.
+
+Prefer a local writable folder for the database. Ask the instructor about
+version incompatibility errors; do not overwrite the existing database.
+
+---
+
+# Recovery: Display or Startup Problems
+
+- Garbled table borders? At D, try `.mode table` for ASCII borders.
+  `.mode ascii` means a different machine-oriented format.
+- Results look different? Check `.show`; reset with `.mode duckbox`
+  and `.headers on`. A startup `.duckdbrc` can customize settings.
+- To bypass it, first save a plain-text **clean_start.sql** containing
+  only `-- No startup settings`. Then run in the shell:
 ```text
-D .quit
+duckdb -init clean_start.sql -c "SELECT 42 AS answer;"
 ```
-
-```text
-D .exit
-```
-
-Or press **Ctrl+D** — the standard "end of input" shortcut on macOS
-and Linux terminals.
-
-⚠️ If you used an **in-memory** session, everything you built
-disappears the moment you exit. Use a file
-(`duckdb my_class.db`) if you want it to survive.
+Do not delete personal startup files. Different colors/layouts do not change query results.
 
 ---
 
-# Common Mistakes
+# Still Stuck? Send Useful Details
 
-- **Forgetting the `;`** → prompt hangs at `...>`. Type `;` + Enter.
-- **Typing a dot-command with a `;`** → dot-commands don't need one
-  (`.tables;` will error).
-- **Quoting strings incorrectly** → SQL text needs single quotes:
-  `WHERE major = 'Finance'`, not double quotes.
-- **Using an in-memory session, then closing Terminal** →
-  your table is gone. Use a `.db` file if you need it saved.
-- **Running `duckdb` from the wrong folder** →
-  `read_csv('data/students.csv')` only works if Terminal is in this
-  tutorial's folder. Check with `pwd`.
-- **`zsh: command not found: duckdb` right after installing** →
-  you didn't reopen Terminal, so your shell hasn't reloaded its PATH.
-  Close the window and open a new one.
+Send the instructor:
 
----
+- Your OS and shell (Terminal/zsh, PowerShell, or Command Prompt).
+- The exact command and complete error text.
+- Whether a full-path `--version` command works.
+- Your current folder and whether `data/students.csv` exists.
+- `duckdb --version`, if available; redact private path information.
 
-# Troubleshooting
-
-### `zsh: command not found: duckdb`
-
-1. Reopen Terminal completely (not just a new tab in some setups) —
-   a fresh shell reads the updated startup configuration.
-2. Confirm Homebrew's own PATH lines are in your shell profile:
-   `grep brew ~/.zprofile` should show an `eval "$(/opt/homebrew/bin/brew shellenv)"`
-   line (Apple Silicon) or `/usr/local/bin/brew shellenv` (Intel).
-   If missing, re-run the PATH setup instructions from the Homebrew installer.
-3. Still stuck? Run `brew list duckdb` to confirm it's actually
-   installed, then `brew --prefix duckdb` to see exactly where.
-
----
-
-# Troubleshooting (continued)
-
-### "Apple could not verify this app is free of malware"
-
-See the Gatekeeper slide earlier. Verify the download source and use
-the binary's actual location when troubleshooting. Homebrew is another
-installation option, but managed-device policies can still apply.
-
-### `duckdb: command not found` only inside VS Code's terminal
-
-VS Code's integrated terminal sometimes starts before your shell
-profile changes take effect. Close and reopen the VS Code terminal
-panel, or open a plain Terminal window instead to confirm the install
-itself is fine.
-
-### My CSV query says "No files found that match the pattern"
-
-You're not standing in this tutorial's folder. Run `pwd`, then `cd` to
-the folder containing `data/students.csv`, or use the file's full
-absolute path inside `read_csv(...)`.
-
----
-
-# More "What If...?" Scenarios
-
-- **`sudo mv ... /usr/local/bin/duckdb` says "Permission denied"?** →
-  common on a school-managed Mac with no admin rights. Skip that
-  folder: `mkdir -p ~/bin && mv ~/Downloads/duckdb ~/bin/`, then add
-  `export PATH="$HOME/bin:$PATH"` to `~/.zprofile` — no `sudo` needed.
-- **Opening a `.db` file says `IO Error: Could not set lock on
-  file...`?** → another Terminal window — or a session you forgot to
-  `.quit` — already has that file open; the message even names the
-  PID holding it. Close that window, or run `.quit` there, then retry.
-
----
-
-- **Folder name has spaces, like `~/Desktop/OMIS 105 Labs`?** → only
-  the **shell** cares — quote it: `cd "$HOME/Desktop/OMIS 105 Labs"`. A
-  path written as a SQL string, like `'data/students.csv'`, is already
-  inside quotes DuckDB understands and needs no extra escaping.
-- **Results table shows garbled characters or `?` boxes?** → rare on
-  macOS (UTF‑8 by default), but can happen over SSH into an older
-  system. Run `.mode table` for a plain `+---+` table that works
-  anywhere. (Not `.mode ascii` — despite the name, that one outputs
-  machine-readable control characters, not a plain-text table.)
-
-👉 None of these are common — but now you'll recognize them instantly
-instead of guessing.
-
----
-
-<!-- _class: dense -->
-
-# Cheat Sheet
-
-| Command | What it does |
-|---|---|
-| `brew install duckdb` | install the DuckDB CLI (recommended) |
-| `duckdb --version` | confirm the install worked |
-| `which duckdb` | show which copy of `duckdb` will run |
-| `duckdb` | start in-memory session |
-| `duckdb file.db` | start/reopen a persistent database |
-| `duckdb -c "SQL"` | run one query from Terminal, then exit |
-| `duckdb -c ".read file.sql"` | run a whole script file |
-| `.tables` | list tables |
-| `.schema [table]` | show table structure |
-| `.mode duckbox \| csv \| markdown \| json` | change output style |
-| `.headers on \| off` | show/hide column names |
-| `.timer on \| off` | show query run time |
-| `.quit` / `.exit` / **Ctrl+D** | leave DuckDB |
-
----
-
-# Practice Exercise
-
-In Terminal, `cd` into this tutorial's folder, then:
-
-1. Confirm the install: `duckdb --version` and `which duckdb`
-2. Start DuckDB: `duckdb`
-3. Run: `SELECT * FROM read_csv('data/students.csv');`
-4. Find the average GPA **per major**, highest first
-5. Switch to `.mode markdown` and rerun your query
-6. Save your query in a file called `my_query.sql`, then exit DuckDB
-   with `.quit` (or **Ctrl+D** at an empty prompt)
-7. In Terminal, run `duckdb -c ".read my_query.sql"`
-
-👉 If you can do all seven steps, you can use DuckDB from the command
-line on your Mac with confidence.
-
----
-
-<!-- _class: closing -->
-
-# You're Ready
-
-Notebooks for building analysis.
-The command line for quick answers and repeatable scripts.
-
-**Resources**
-
-https://duckdb.org/docs/stable/clients/cli/overview — Official CLI documentation
-duckdb.org/install — Install DuckDB for macOS (Homebrew or manual)
-
----
-
-*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
+See **README.md** for copyable help commands and official references.
+Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
