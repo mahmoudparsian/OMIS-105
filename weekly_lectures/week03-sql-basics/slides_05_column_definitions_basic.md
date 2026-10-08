@@ -27,10 +27,13 @@ Let's build three related tables: `authors`, `books`, and `orders`.
 
 ###  1. Authors Table
 ```sql
+CREATE SEQUENCE author_id_seq START 1;
+
 -- Demonstrates: PRIMARY KEY, AUTOINCREMENT, 
 --               NOT NULL, UNIQUE, DEFAULT
 CREATE TABLE authors (
-    author_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_id INTEGER PRIMARY KEY 
+       DEFAULT nextval('author_id_seq'),
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
     email VARCHAR UNIQUE, -- No two authors can have the same email
@@ -42,8 +45,11 @@ CREATE TABLE authors (
 ```sql
 -- Demonstrates: Foreign Keys, CHECK constraints, 
 --               DECIMAL types
+CREATE SEQUENCE book_id_seq START 1;
+
 CREATE TABLE books (
-    book_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_id INTEGER PRIMARY KEY        
+      DEFAULT nextval('book_id_seq'),
     title VARCHAR NOT NULL,
     author_id INTEGER NOT NULL,
     price DECIMAL(6, 2) NOT NULL CHECK (price > 0), -- Price must be positive
@@ -59,8 +65,12 @@ CREATE TABLE books (
 ```sql
 -- Demonstrates: BOOLEAN values, DEFAULT timestamps, 
 --               multi-table Foreign Keys
+
+CREATE SEQUENCE order_id_seq START 1;
+
 CREATE TABLE orders (
-    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER PRIMARY KEY 
+       DEFAULT nextval('order_id_seq'),
     book_id INTEGER NOT NULL REFERENCES books(book_id),
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     is_shipped BOOLEAN DEFAULT FALSE,
@@ -268,8 +278,12 @@ CREATE TYPE order_status
    AS ENUM ('pending', 'shipped', 'delivered', 'cancelled');
 
 -- Step 2: Create a table using the custom ENUM type
+
+CREATE SEQUENCE order_id_seq START 1;
+
 CREATE TABLE customer_orders (
-    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER PRIMARY KEY 
+       DEFAULT nextval('order_id_seq'),
     customer_name VARCHAR NOT NULL,
     status order_status DEFAULT 'pending'
 );
