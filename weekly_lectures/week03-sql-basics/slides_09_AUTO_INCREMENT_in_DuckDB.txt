@@ -1,32 +1,33 @@
 DuckDB does not support AUTO-INCREMENT
- in CREATE TABLE syntax.
+in CREATE TABLE syntax. MySQL has a 
+concept of AUTO-INCREMENT feature.
 
 DuckDB manages auto-incrementing fields 
 explicitly using Sequences.
 
-The Correct Way in DuckDB v1.5.5
+The Correct Way in DuckDB v1.5.5:
 
 You must explicitly create a SEQUENCE first, 
 and then pass nextval('your_sequence_name') as 
 the default value for the column.
 
--- 1. Create a sequence
+-- Step-1. Create a sequence
 CREATE SEQUENCE user_id_seq START 1;
 
--- 2. Create the table using nextval()
+-- Step-2. Create the table using nextval()
 CREATE TABLE users (
   user_id BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
   username VARCHAR NOT NULL,
   email VARCHAR
 );
 
- INSERT INTO users(username, email)
-         VALUES
+INSERT INTO users(username, email)
+VALUES
     ('maxp', 'maxp@yahoo.com'),
     ('janexd', 'janexd@gmail.com'), 
     ('alexp', 'alexp@yahoo.com');
  
- SELECT * FROM users;
+SELECT * FROM users;
 ┌─────────┬──────────┬──────────────────┐
 │ user_id │ username │      email       │
 │  int64  │ varchar  │     varchar      │
@@ -36,11 +37,11 @@ CREATE TABLE users (
 │       3 │ alexp    │ alexp@yahoo.com  │
 └─────────┴──────────┴──────────────────┘
  
- INSERT INTO users(user_id, username, email)
-    VALUES
-         (1000, 'dddmaxp', 'dddmaxp@yahoo.com'),
-         (1003, 'dddjanexd', 'ddjanexd@gmail.com'),
-         (1007, 'dddalexp', 'dddalexp@yahoo.com');
+INSERT INTO users(user_id, username, email)
+VALUES
+ (1000, 'dddmaxp', 'dddmaxp@yahoo.com'),
+ (1003, 'dddjanexd', 'ddjanexd@gmail.com'),
+ (1007, 'dddalexp', 'dddalexp@yahoo.com');
  
  SELECT * FROM users;
 ┌─────────┬───────────┬────────────────────┐
@@ -56,10 +57,10 @@ CREATE TABLE users (
 └─────────┴───────────┴────────────────────┘
  
 INSERT INTO users(username, email)
-         VALUES
-         ('maxppppp', 'maxpppp@yahoo.com'),
-         ('janexdppp', 'janexdppp@gmail.com'),
-         ('alexpppp', 'alexpppp@yahoo.com');
+VALUES
+    ('maxppppp', 'maxpppp@yahoo.com'),
+    ('janexdppp', 'janexdppp@gmail.com'),
+    ('alexpppp', 'alexpppp@yahoo.com');
  
 SELECT * FROM users;
 ┌─────────┬───────────┬─────────────────────┐
@@ -78,7 +79,7 @@ SELECT * FROM users;
 └─────────┴───────────┴─────────────────────┘
  
 
- CREATE TABLE test_users (
+CREATE TABLE test_users (
     user_id INT PRIMARY KEY DEFAULT nextval('user_id_seq'),
     username VARCHAR NOT NULL,
     email VARCHAR
@@ -155,9 +156,9 @@ memory D SELECT * FROM users;
 │       6 │ max      │ max@gmail.com    │
 └─────────┴──────────┴──────────────────┘
 memory D INSERT INTO users(user_id, username, email)
-                  VALUES
-                  (1000, 'tedx', 'tedx@yahoo.com'),
-                  (2000, 'austinp', 'austinp@gmail.com');
+        VALUES
+            (1000, 'tedx', 'tedx@yahoo.com'),
+            (2000, 'austinp', 'austinp@gmail.com');
 memory D
 memory D SELECT * FROM users;
 ┌─────────┬──────────┬───────────────────┐
@@ -173,10 +174,12 @@ memory D SELECT * FROM users;
 │    1000 │ tedx     │ tedx@yahoo.com    │
 │    2000 │ austinp  │ austinp@gmail.com │
 └─────────┴──────────┴───────────────────┘
+
 memory D INSERT INTO users(username, email)
-                  VALUES
-                  ( 'aaaatedx', 'tedx@yahoo.com'),
-                  ( 'aaaaustinp', 'austinp@gmail.com');
+         VALUES
+            ('aaaatedx', 'tedx@yahoo.com'),
+            ('aaaaustinp', 'austinp@gmail.com');
+
 memory D SELECT * FROM users;
 ┌─────────┬────────────┬───────────────────┐
 │ user_id │  username  │       email       │
@@ -194,11 +197,15 @@ memory D SELECT * FROM users;
 │       8 │ aaaaustinp │ austinp@gmail.com │
 └─────────┴────────────┴───────────────────┘
   10 rows                        3 columns
+
+
 memory D CREATE SEQUENCE testers_id_seq START 1000;
+
 memory D CREATE TABLE test_users (
-                    user_id BIGINT PRIMARY KEY DEFAULT nextval('testers_id_seq'),
-                    username VARCHAR NOT NULL
-                  );
+            user_id BIGINT PRIMARY KEY DEFAULT nextval('testers_id_seq'),
+            username VARCHAR NOT NULL
+         );
+         
 memory D DESC test_users;
 ┌─────────────────────────────────────────────────────────────┐
 │                         test_users                          │
@@ -206,11 +213,7 @@ memory D DESC test_users;
 │ user_id  bigint  not null default nextval('testers_id_seq') │
 │ username varchar not null                                   │
 └─────────────────────────────────────────────────────────────┘
-memory D INSERT INTO test_users
-         VALUES
-         ('alex'), ('bob'), ('jane'), ('ted');
-Binder Error:
-table test_users has 2 columns but 1 values were supplied
+
 memory D INSERT INTO test_users (username)
          VALUES
          ('alex'), ('bob'), ('jane'), ('ted');
@@ -247,7 +250,11 @@ memory D SELECT * FROM test_users;
 └─────────┴──────────┘
 memory D INSERT INTO test_users (user_id, username)
          VALUES
-         (2000, 'alex'), (3000, 'bob'), (4000, 'jane'), (5000, 'ted');
+         (2000, 'alex'), 
+         (3000, 'bob'), 
+         (4000, 'jane'), 
+         (5000, 'ted');
+         
 memory D SELECT * FROM test_users;
 ┌─────────┬──────────┐
 │ user_id │ username │
@@ -264,7 +271,11 @@ memory D SELECT * FROM test_users;
 └─────────┴──────────┘
 memory D INSERT INTO test_users (username)
          VALUES
-         ('alexp'), ('bobp'), ('janep'), ('tedp');
+         ('alexp'), 
+         ('bobp'), 
+         ('janep'), 
+         ('tedp');
+         
 memory D SELECT * FROM test_users;
 ┌─────────┬──────────┐
 │ user_id │ username │
