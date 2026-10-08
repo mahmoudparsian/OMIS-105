@@ -98,3 +98,191 @@ FROM  test_users;
 │       7 │ alex     │ a@yahoo.com │
 │       8 │ bob      │ b@yahoo.com │
 └─────────┴──────────┴─────────────┘
+
+
+# More Examples
+
+memory D CREATE SEQUENCE user_id_seq START 1;
+memory D
+memory D -- 2. Create the table using nextval()
+memory D CREATE TABLE users (
+           user_id BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
+           username VARCHAR NOT NULL,
+           email VARCHAR
+         );
+memory D
+memory D DESC users;
+┌──────────────────────────────────────────────────────────┐
+│                          users                           │
+│                                                          │
+│ user_id  bigint  not null default nextval('user_id_seq') │
+│ username varchar not null                                │
+│ email    varchar                                         │
+└──────────────────────────────────────────────────────────┘
+memory D INSERT INTO users(username, email)
+         VALUES
+         ('alexp', 'alexp@yahoo.com'),
+         ('janet', 'janet@gmail.com'),
+         ('mo', 'mo@gmail.com');
+memory D
+memory D SELECT * FROM users;
+┌─────────┬──────────┬─────────────────┐
+│ user_id │ username │      email      │
+│  int64  │ varchar  │     varchar     │
+├─────────┼──────────┼─────────────────┤
+│       1 │ alexp    │ alexp@yahoo.com │
+│       2 │ janet    │ janet@gmail.com │
+│       3 │ mo       │ mo@gmail.com    │
+└─────────┴──────────┴─────────────────┘
+memory D
+memory D
+memory D INSERT INTO users(username, email)
+         VALUES
+         ('ted', 'ted@yahoo.com'),
+         ('austin', 'austin@gmail.com'),
+         ('max', 'max@gmail.com');
+memory D
+memory D SELECT * FROM users;
+┌─────────┬──────────┬──────────────────┐
+│ user_id │ username │      email       │
+│  int64  │ varchar  │     varchar      │
+├─────────┼──────────┼──────────────────┤
+│       1 │ alexp    │ alexp@yahoo.com  │
+│       2 │ janet    │ janet@gmail.com  │
+│       3 │ mo       │ mo@gmail.com     │
+│       4 │ ted      │ ted@yahoo.com    │
+│       5 │ austin   │ austin@gmail.com │
+│       6 │ max      │ max@gmail.com    │
+└─────────┴──────────┴──────────────────┘
+memory D INSERT INTO users(user_id, username, email)
+                  VALUES
+                  (1000, 'tedx', 'tedx@yahoo.com'),
+                  (2000, 'austinp', 'austinp@gmail.com');
+memory D
+memory D SELECT * FROM users;
+┌─────────┬──────────┬───────────────────┐
+│ user_id │ username │       email       │
+│  int64  │ varchar  │      varchar      │
+├─────────┼──────────┼───────────────────┤
+│       1 │ alexp    │ alexp@yahoo.com   │
+│       2 │ janet    │ janet@gmail.com   │
+│       3 │ mo       │ mo@gmail.com      │
+│       4 │ ted      │ ted@yahoo.com     │
+│       5 │ austin   │ austin@gmail.com  │
+│       6 │ max      │ max@gmail.com     │
+│    1000 │ tedx     │ tedx@yahoo.com    │
+│    2000 │ austinp  │ austinp@gmail.com │
+└─────────┴──────────┴───────────────────┘
+memory D INSERT INTO users(username, email)
+                  VALUES
+                  ( 'aaaatedx', 'tedx@yahoo.com'),
+                  ( 'aaaaustinp', 'austinp@gmail.com');
+memory D SELECT * FROM users;
+┌─────────┬────────────┬───────────────────┐
+│ user_id │  username  │       email       │
+│  int64  │  varchar   │      varchar      │
+├─────────┼────────────┼───────────────────┤
+│       1 │ alexp      │ alexp@yahoo.com   │
+│       2 │ janet      │ janet@gmail.com   │
+│       3 │ mo         │ mo@gmail.com      │
+│       4 │ ted        │ ted@yahoo.com     │
+│       5 │ austin     │ austin@gmail.com  │
+│       6 │ max        │ max@gmail.com     │
+│    1000 │ tedx       │ tedx@yahoo.com    │
+│    2000 │ austinp    │ austinp@gmail.com │
+│       7 │ aaaatedx   │ tedx@yahoo.com    │
+│       8 │ aaaaustinp │ austinp@gmail.com │
+└─────────┴────────────┴───────────────────┘
+  10 rows                        3 columns
+memory D CREATE SEQUENCE testers_id_seq START 1000;
+memory D CREATE TABLE test_users (
+                    user_id BIGINT PRIMARY KEY DEFAULT nextval('testers_id_seq'),
+                    username VARCHAR NOT NULL
+                  );
+memory D DESC test_users;
+┌─────────────────────────────────────────────────────────────┐
+│                         test_users                          │
+│                                                             │
+│ user_id  bigint  not null default nextval('testers_id_seq') │
+│ username varchar not null                                   │
+└─────────────────────────────────────────────────────────────┘
+memory D INSERT INTO test_users
+         VALUES
+         ('alex'), ('bob'), ('jane'), ('ted');
+Binder Error:
+table test_users has 2 columns but 1 values were supplied
+memory D INSERT INTO test_users (username)
+         VALUES
+         ('alex'), ('bob'), ('jane'), ('ted');
+memory D
+memory D SELECT * FROM test_users;
+┌─────────┬──────────┐
+│ user_id │ username │
+│  int64  │ varchar  │
+├─────────┼──────────┤
+│    1000 │ alex     │
+│    1001 │ bob      │
+│    1002 │ jane     │
+│    1003 │ ted      │
+└─────────┴──────────┘
+memory D select  * FRom test_users;
+┌─────────┬──────────┐
+│ user_id │ username │
+│  int64  │ varchar  │
+├─────────┼──────────┤
+│    1000 │ alex     │
+│    1001 │ bob      │
+│    1002 │ jane     │
+│    1003 │ ted      │
+└─────────┴──────────┘
+memory D SELECT * FROM test_users;
+┌─────────┬──────────┐
+│ user_id │ username │
+│  int64  │ varchar  │
+├─────────┼──────────┤
+│    1000 │ alex     │
+│    1001 │ bob      │
+│    1002 │ jane     │
+│    1003 │ ted      │
+└─────────┴──────────┘
+memory D INSERT INTO test_users (user_id, username)
+         VALUES
+         (2000, 'alex'), (3000, 'bob'), (4000, 'jane'), (5000, 'ted');
+memory D SELECT * FROM test_users;
+┌─────────┬──────────┐
+│ user_id │ username │
+│  int64  │ varchar  │
+├─────────┼──────────┤
+│    1000 │ alex     │
+│    1001 │ bob      │
+│    1002 │ jane     │
+│    1003 │ ted      │
+│    2000 │ alex     │
+│    3000 │ bob      │
+│    4000 │ jane     │
+│    5000 │ ted      │
+└─────────┴──────────┘
+memory D INSERT INTO test_users (username)
+         VALUES
+         ('alexp'), ('bobp'), ('janep'), ('tedp');
+memory D SELECT * FROM test_users;
+┌─────────┬──────────┐
+│ user_id │ username │
+│  int64  │ varchar  │
+├─────────┼──────────┤
+│    1000 │ alex     │
+│    1001 │ bob      │
+│    1002 │ jane     │
+│    1003 │ ted      │
+│    2000 │ alex     │
+│    3000 │ bob      │
+│    4000 │ jane     │
+│    5000 │ ted      │
+│    1004 │ alexp    │
+│    1005 │ bobp     │
+│    1006 │ janep    │
+│    1007 │ tedp     │
+└─────────┴──────────┘
+  12 rows  2 columns
+memory D
+
