@@ -10,8 +10,8 @@
 | Component                                | Total Points |
 |------------------------------------------|-------------:|
 | ✅ `20` In-Class Labs <br> ✅ Each Lab = `30` points <br> ✅ `One Lab per class` <br> ✅ `20 * 30 = 600`   | `600`        |
-| ✏️ Midterm Exam <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `200`        |
-| ✏️ Final Exam <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `200`        |
+| ✏️ Midterm Exam <br> -- in-class, closed book <br> -- [LockDown Browser](https://download.respondus.com/lockdown/download.php?ID=597745928) is required                   | `200`        |
+| ✏️ Final Exam <br> -- in-class, closed book <br> -- [LockDown Browser](https://download.respondus.com/lockdown/download.php?ID=597745928) is required                   | `200`        |
 | **Total**                                | **`1000`**   |
 
 * **In-Class Lab**: 
@@ -24,8 +24,8 @@
 
 | In-Class-Exam                                | Date |
 |------------------------------------------|-------------|
-| ✏️ **Midterm Exam** <br> -- in-class, closed book <br> -- LockDown Browser is required                   | `Thursday, October 22, 2026`        |
-| ✏️ **Final Exam** <br> -- in-class, closed book <br> -- LockDown Browser is required                   | [Final-Exam-Schedule](https://www.scu.edu/media/offices/registrar/2026---2027-Final-Exam-Schedule-1.pdf)        |
+| ✏️ **Midterm Exam** <br> -- in-class, closed book <br> -- [LockDown Browser](https://download.respondus.com/lockdown/download.php?ID=597745928) is required                   | `Thursday, October 22, 2026`        |
+| ✏️ **Final Exam** <br> -- in-class, closed book <br> -- [LockDown Browser](https://download.respondus.com/lockdown/download.php?ID=597745928) is required                   | [Final-Exam-Schedule](https://www.scu.edu/media/offices/registrar/2026---2027-Final-Exam-Schedule-1.pdf)        |
 
 ---
 
