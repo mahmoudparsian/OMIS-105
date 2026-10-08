@@ -1,20 +1,29 @@
 # DuckDB ENUM Type Example
 
-An `ENUM` (Enumeration) is a custom data type that restricts column values to a specific set of allowed text options.
+An `ENUM` (Enumeration) is a custom data 
+type that restricts column values to a 
+specific set of allowed text options.
 
 ---
 
 ## 1. Create the ENUM Type and Table
 
-First, define the `ENUM` type with the valid choices, then use it in a table definition.
+First, define the `ENUM` type with the valid 
+choices, then use it in a table definition.
+
 
 ```sql
 -- Step 1: Create a custom ENUM type for order statuses
-CREATE TYPE order_status AS ENUM ('pending', 'shipped', 'delivered', 'cancelled');
+CREATE TYPE order_status AS 
+  ENUM ('pending', 'shipped', 'delivered', 'cancelled');
 
--- Step 2: Create a table using the custom ENUM type
+-- Step 2: Create a sequence
+CREATE SEQUENCE order_id_seq START 1;
+
+-- Step 3: Create a table using the custom ENUM type
 CREATE TABLE customer_orders (
-    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER PRIMARY KEY 
+        DEFAULT nextval('order_id_seq'),
     customer_name VARCHAR NOT NULL,
     status order_status DEFAULT 'pending'
 );
@@ -24,7 +33,8 @@ CREATE TABLE customer_orders (
 
 ## 2. Insert Valid Rows
 
-Insert rows using values defined in the `order_status` ENUM.
+Insert rows using values defined in the 
+`order_status` ENUM.
 
 ```sql
 -- Insert rows with allowed status values
@@ -51,7 +61,9 @@ SELECT * FROM customer_orders;
 
 ## 3. Triggering a Constraint Error
 
-If you try to insert a value that is **not** part of the `ENUM` list, DuckDB rejects it and throws an error.
+If you try to insert a value that is **not** 
+part of the `ENUM` list, DuckDB rejects it and 
+throws an error.
 
 ```sql
 -- Attempt to insert an invalid status value ('processing')

@@ -1,8 +1,14 @@
 # DuckDB Column Definitions & Constraints Guide
 
-This tutorial explores the rich set of column definitions, constraints, default values, and complex data types supported by **DuckDB**. 
+This tutorial explores the rich set of column 
+definitions, constraints, default values, and 
+complex data types supported by **DuckDB**. 
 
-To demonstrate these features, we will build a realistic **E-Commerce & Logistics Engine** schema spanning customer management, product catalogs, inventory tracking, order processing, and spatial delivery tracking.
+To demonstrate these features, we will build a 
+realistic **E-Commerce & Logistics Engine** schema 
+spanning customer management, product catalogs,
+inventory tracking, order processing, and spatial 
+delivery tracking.
 
 ---
 
@@ -50,9 +56,15 @@ CREATE TABLE customers (
 );
 
 -- 3. Warehouses Table
--- Demonstrates: AUTOINCREMENT primary key, GEOMETRY data type, STRUCT for addresses
+-- Demonstrates: AUTOINCREMENT primary key, 
+-- GEOMETRY data type, STRUCT for addresses
+
+-- 4. Create a sequence
+CREATE SEQUENCE warehouse_id_seq START 1;
+
+-- 5. Create Table
 CREATE TABLE warehouses (
-    warehouse_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    warehouse_id INTEGER PRIMARY KEY DEFAULT nextval('warehouse_id_seq'),
     warehouse_code VARCHAR(10) NOT NULL UNIQUE,
     location_name VARCHAR(100) NOT NULL,
     address STRUCT(
@@ -67,8 +79,11 @@ CREATE TABLE warehouses (
 
 -- 4. Products Table
 -- Demonstrates: Positive value CHECK constraints, LIST types, STRUCT dimensions
+
+CREATE SEQUENCE product_id_seq START 1;
+
 CREATE TABLE products (
-    product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER PRIMARY KEY DEFAULT nextval('product_id_seq'),
     sku VARCHAR(30) NOT NULL UNIQUE,
     name VARCHAR(150) NOT NULL,
     description TEXT,
@@ -108,8 +123,11 @@ CREATE TABLE orders (
 
 -- 7. Order Items Table
 -- Demonstrates: Foreign keys, Multi-column validation, CHECK constraints
+
+CREATE SEQUENCE item_id_seq START 1;
+
 CREATE TABLE order_items (
-    item_id BIGINT PRIMARY KEY AUTOINCREMENT,
+    item_id BIGINT PRIMARY KEY DEFAULT nextval('item_id_seq'),
     order_id UUID NOT NULL REFERENCES orders(order_id) ON DELETE CASCADE,
     product_id INTEGER NOT NULL REFERENCES products(product_id),
     unit_price DECIMAL(10, 2) NOT NULL CHECK (unit_price > 0.00),
@@ -122,7 +140,9 @@ CREATE TABLE order_items (
 
 ## 3. Inserting Sample Data
 
-Here we insert sample data that satisfies all check constraints, foreign keys, and structural definitions.
+Here we insert sample data that satisfies 
+all check constraints, foreign keys, and 
+structural definitions.
 
 ```sql
 -- Insert Customers
