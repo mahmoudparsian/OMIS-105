@@ -6,8 +6,8 @@ app = marimo.App(width="medium")
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    # OMIS 105 — Week 04: SQL Aggregation
-    ## Lab 5 — `WHERE`, `GROUP BY`, and `HAVING` (Coffee Shop) · Student
+    # OMIS 105 — Week 03: SQL Aggregation
+    ## Lab 2 — `WHERE`, `GROUP BY`, and `HAVING` (Coffee Shop) · Student
 
     Work with a single **coffee_orders** table (3 stores, one week of
     orders). Practice the three clauses that control aggregation:
