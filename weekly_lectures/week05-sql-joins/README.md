@@ -25,6 +25,8 @@ Start with that folder's [README](joins_with_users_roles_cities/README.md).
 |------|-----------|
 | `slides_1.md` | Marp slide deck, session 1 — JOIN deep dive |
 | `slides_2.md` | Marp slide deck, session 2 — window functions, CTEs, set operations, views |
+| `SQL_Joins_in_Action_with_DuckDB.md` | All five join types: symbols, math, and verified DuckDB examples |
+| `join_symbols.md` | Quick reference: relational-algebra symbols for each join (⋈ ⟕ ⟖ ⟗ ×) |
 | `demo1.py` | Live-demo Marimo notebook, session 1 |
 | `demo2.py` | Live-demo Marimo notebook, session 2 |
 | `lab05_student.md` | The week's lab, with blanks to fill in |
