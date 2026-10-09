@@ -619,8 +619,8 @@ duckdb ▸ SELECT COALESCE(A.key, B.key)     AS key,
 ## Key Takeaways
 
 * **⋈ Inner Join** keeps only matches — the overlap.
-* **⟕ Left Join** keeps all of the left table; **⟖ Right
-  Join** keeps all of the right table.
+* **⟕ Left Join** keeps all of the left table
+* **⟖ Right Join** keeps all of the right table.
 * **⟗ Full Join** keeps everything from both tables.
 * **× Cross Join** pairs every row with every row — no
   `ON` clause, and the result can be huge.
