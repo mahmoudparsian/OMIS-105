@@ -39,9 +39,11 @@ full**:
 * ⟗ — wings on **both** sides → keep all of both tables.
 * ⋈ — no wings → keep only the matches.
 
-> **Note:** `JOIN` and `INNER JOIN` mean the same thing.
-> `LEFT JOIN` = `LEFT OUTER JOIN`, `RIGHT JOIN` =
-> `RIGHT OUTER JOIN`, and `FULL JOIN` = `FULL OUTER JOIN`.
+> **Note:** <br>
+> `JOIN` and `INNER JOIN` mean the same thing. <br>
+> `LEFT JOIN` = `LEFT OUTER JOIN`, <br>
+> `RIGHT JOIN` = `RIGHT OUTER JOIN`, and <br>
+> `FULL JOIN` = `FULL OUTER JOIN`. <br>
 > The word `OUTER` is optional.
 
 ---
