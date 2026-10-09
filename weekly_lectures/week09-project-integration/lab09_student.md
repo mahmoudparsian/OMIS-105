@@ -118,7 +118,24 @@ You may also propose your own domain — clear it with the instructor first.
 
 ## Template
 
-Use the provided `week09_project_template.ipynb` as your starting point.
+Two Marimo notebooks in this folder help you:
+
+- [`lab09_student_marimo.py`](lab09_student_marimo.py) — **your starting
+  template.** It repeats this specification and gives you a blank,
+  step-by-step starter. Fill it in.
+- [`week09_project_example.py`](week09_project_example.py) — **a worked
+  example** (a small library database) that shows what each finished
+  section should look like. Use it as a model only — your design must
+  be your own.
+
+Open them from this folder:
+
+```bash
+cd weekly_lectures/week09-project-integration
+marimo edit lab09_student_marimo.py
+```
+
+Save your copy under a new name (for example, `capstone_<your_name>.py`).
 
 **Good luck and have fun!**
 

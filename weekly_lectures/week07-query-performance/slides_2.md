@@ -22,6 +22,20 @@ footer: "Week 7: Performance & Indexing"
 
 ---
 
+# Setup: Load This Week's Data
+
+Run this once (from the `week07-query-performance` folder):
+
+```sql
+CREATE OR REPLACE TABLE customers   AS SELECT * FROM read_csv('data/customers.csv');
+CREATE OR REPLACE TABLE orders      AS SELECT * FROM read_csv('data/orders.csv');
+CREATE OR REPLACE TABLE order_items AS SELECT * FROM read_csv('data/order_items.csv');
+CREATE OR REPLACE TABLE products    AS SELECT * FROM read_csv('data/products.csv');
+CREATE OR REPLACE TABLE categories  AS SELECT * FROM read_csv('data/categories.csv');
+```
+
+---
+
 # Session 1: How Queries Execute
 
 ---
@@ -33,7 +47,9 @@ SQL Query
     ↓
 Parser (syntax check)
     ↓
-Optimizer (find best execution plan)
+Binder (do the tables and columns exist?)
+    ↓
+Optimizer (find a good execution plan)
     ↓
 Execution Engine (run the plan)
     ↓
@@ -45,24 +61,25 @@ Results
 # Query Optimizer's Job
 
 Given a SQL query, the optimizer:
-1. Considers multiple **execution plans**
+1. Considers different **execution plans** (join order, join method, ...)
 2. Estimates the **cost** of each plan
-3. Chooses the **cheapest** plan
+3. Chooses the cheapest plan it finds
 
-Costs are based on: number of rows, disk I/O, memory usage, CPU operations.
+Costs are based on: estimated number of rows, disk I/O, memory, CPU work.
+The estimates can be wrong — the plan is a good guess, not a guarantee.
 
 ---
 
 # Full Table Scan
 
-Without indexes, every query reads **every row**:
+Without an index, the database reads **every row** and keeps the matches:
 
 ```sql
-SELECT * FROM products WHERE price > 100;
+SELECT * FROM products WHERE price > 100;   -- 28 of 64 products match
 ```
 
-Must scan all 64 rows to find matches.
-For 10 million rows? Very slow.
+It must check all 64 rows to find the 28 matches.
+For 10 million rows, a row-by-row scan takes much longer.
 
 ---
 
@@ -98,17 +115,24 @@ Table (unsorted data):          Index on price:
 
 # B-Tree Index (Most Common)
 
+Using the prices from the table above:
+
 ```
-                    [349]
+                     [79]
                    /      \
-             [29, 79]    [499, 899]
-            /   |    \    /    \
-        [5,12] [29] [79] [349] [499,899]
+          [12.99, 29]      [349]
+          /    |    \      /    \
+      [5.99] [12.99] [29, 49.99] [79] [349, 899]
+         ↓      ↓      ↓    ↓     ↓    ↓    ↓
+      row 7  row 4  row 2 row 6 row 3 row 5 row 1
 ```
 
-- Balanced tree structure
-- O(log n) lookups instead of O(n) scans
-- Great for: equality, range queries, sorting
+- A **balanced tree**: every lookup takes the same few steps
+- Search time grows like log(n), not n: about 20 steps for 1 million rows,
+  instead of checking all 1 million
+- In PostgreSQL and MySQL, great for: `=`, ranges (`>`, `BETWEEN`), and sorting
+
+DuckDB uses a different tree, the **ART** (Adaptive Radix Tree), and uses it mainly for `=` lookups.
 
 ---
 
@@ -118,8 +142,8 @@ Table (unsorted data):          Index on price:
 -- Index on a single column
 CREATE INDEX idx_products_price ON products(price);
 
--- Index on category for frequent filtering
-CREATE INDEX idx_products_category ON products(category);
+-- Index on category_id for frequent filtering
+CREATE INDEX idx_products_category ON products(category_id);
 
 -- Composite index (multiple columns)
 CREATE INDEX idx_orders_cust_date
@@ -129,27 +153,61 @@ ON orders(customer_id, order_date);
 CREATE UNIQUE INDEX idx_customers_email ON customers(email);
 ```
 
+A `PRIMARY KEY` or `UNIQUE` constraint creates an index automatically.
+
+The unique index now rejects duplicates:
+
+```sql
+INSERT INTO customers (customer_id, email) VALUES (99, 'alice.smith@email.com');
+-- Constraint Error: Duplicate key "email: alice.smith@email.com"
+-- violates unique constraint.
+```
+
 ---
 
-# When Indexes Help
+# When Indexes Help (in Row-Based Databases)
+
+In PostgreSQL, MySQL, Oracle, and SQL Server:
 
 | Query Pattern | Index Type | Example |
 |--------------|-----------|---------|
-| WHERE col = value | Single column | `WHERE category = 'Books'` |
-| WHERE col > value | Single column | `WHERE price > 100` |
-| WHERE a = x AND b = y | Composite | `WHERE cust_id = 5 AND date > '2024-01'` |
-| ORDER BY col | Single column | `ORDER BY price DESC` |
+| WHERE col = value | Single column | `WHERE email = 'alice.smith@email.com'` |
+| WHERE col > value | Single column | `WHERE price > 400` |
+| WHERE a = x AND b > y | Composite | `WHERE customer_id = 5 AND order_date > DATE '2024-06-01'` |
+| ORDER BY col | Single column | `ORDER BY price DESC LIMIT 10` |
 | JOIN ON col | Single column | `ON o.customer_id = c.customer_id` |
+
+---
+
+# When Indexes Help in DuckDB
+
+DuckDB uses an index **only** when a filter matches **very few rows**
+(by default, at most 2,048 rows or 0.1% of the table).
+
+Tested on a 5-million-row table with an index on `cust`:
+
+| Query | Index used? |
+|-------|-------------|
+| `WHERE cust = 42` (about 50 rows) | ✅ Yes |
+| `WHERE cust > 99990` (few rows) | ✅ Yes |
+| `WHERE cust BETWEEN 10 AND 20` | ❌ No — scan |
+| `WHERE cust IN (1, 2, 3)` | ❌ No — scan |
+| `ORDER BY cust DESC LIMIT 10` | ❌ No — uses a fast "top N" sort |
+
+For everything else, DuckDB's columnar scan is already fast.
+Indexes in DuckDB matter most for **`PRIMARY KEY` and `UNIQUE` checks**.
 
 ---
 
 # When Indexes Do NOT Help
 
 - **Small tables** (full scan is fast enough)
-- **Low-selectivity** columns (e.g., boolean: TRUE/FALSE)
-- **Expressions** not matching the index (e.g., `WHERE UPPER(name) = 'LAPTOP'`)
+- **Low-selectivity** columns — few different values (e.g., TRUE/FALSE, or `status`)
+- **Expressions** that do not match the index (e.g., `WHERE UPPER(name) = 'LAPTOP'`
+  cannot use an index on `name`)
 - **Heavy writes** (indexes slow down INSERT/UPDATE/DELETE)
-- **Selecting most rows** (optimizer ignores index when >15-20% of rows match)
+- **Selecting many rows** — then a scan is cheaper. (A common rule of thumb in
+  row-based databases is "more than about 5–20% of the rows"; DuckDB's limit is far lower.)
 
 ---
 
@@ -158,9 +216,12 @@ CREATE UNIQUE INDEX idx_customers_email ON customers(email);
 | Benefit | Cost |
 |---------|------|
 | Faster reads (SELECT) | Slower writes (INSERT/UPDATE/DELETE) |
-| Faster sorts (ORDER BY) | Extra storage space |
+| Faster sorts (ORDER BY) — in row-based databases | Extra storage space |
 | Faster joins | Maintenance overhead |
 | Faster lookups | Must choose wisely |
+
+Measured in DuckDB: inserting 500,000 rows took **0.16 s** with an index,
+and **0.01 s** without one — about 12 times slower.
 
 ---
 
@@ -170,11 +231,13 @@ CREATE UNIQUE INDEX idx_customers_email ON customers(email);
 EXPLAIN SELECT * FROM products WHERE price > 100;
 ```
 
-Shows you exactly how DuckDB will execute the query:
-- What scans it uses (sequential vs. index)
-- Join algorithms
-- Sort methods
-- Estimated costs
+Shows the **plan** DuckDB will use, as a tree of operators:
+- How each table is read (`SEQ_SCAN`, with the filters it applies)
+- How tables are joined (`HASH_JOIN`, ...)
+- Sorting, grouping, and `LIMIT` steps
+- The **estimated** number of rows at each step (e.g., `~12 rows`)
+
+`EXPLAIN ANALYZE` actually **runs** the query and shows the real row counts and time.
 
 ---
 
@@ -187,11 +250,22 @@ INNER JOIN categories cat ON p.category_id = cat.category_id
 WHERE p.price > 100;
 ```
 
+DuckDB's plan (read it from the **bottom up**):
+
+```
+HASH_JOIN  (Join Type: INNER, category_id = category_id)  ~10 rows
+├── SEQ_SCAN products    Filters: price>100.0             ~12 rows
+└── SEQ_SCAN categories                                    ~8 rows
+```
+
 Look for:
-- **Seq Scan** (full table scan — potentially slow)
-- **Index Scan** (using an index — fast)
-- **Hash Join** vs **Nested Loop** vs **Merge Join**
-- **Filter** (WHERE clause applied)
+- **SEQ_SCAN** — reads the table (DuckDB's normal, fast columnar scan)
+- **Filters:** — the `WHERE` condition, applied *during* the scan
+- **HASH_JOIN** — DuckDB's usual join method
+- **~N rows** — an *estimate*: really 28 products cost more than 100, not ~12
+
+Note: plain `EXPLAIN` always shows "Sequential Scan". DuckDB decides to use an
+index at run time, so only `EXPLAIN ANALYZE` shows "Index Scan".
 
 ---
 
@@ -215,16 +289,19 @@ Look for:
 # Optimization Tip 1: Filter Early
 
 ```sql
--- BAD: Join everything, then filter
+```sql
 SELECT c.first_name, o.total_amount
 FROM customers c
 INNER JOIN orders o ON c.customer_id = o.customer_id
 WHERE o.status = 'completed' AND o.total_amount > 500;
-
--- BETTER: Optimizer usually handles this, but be explicit
--- Use indexed columns in WHERE
--- Put selective filters on indexed columns
 ```
+
+Written this way, it *looks* like "join everything, then filter".
+But the optimizer **pushes the filter down**: it filters `orders`
+**before** the join (check with `EXPLAIN`: the filter appears inside the `SEQ_SCAN` of `orders`).
+
+Your job: write the filters you need in `WHERE`. Filters on large tables
+that remove many rows help the most.
 
 ---
 
@@ -239,36 +316,48 @@ SELECT order_id, order_date, total_amount FROM orders;
 ```
 
 Less data transferred, less memory used.
+In a **columnar** database like DuckDB, this matters even more:
+columns you do not select are not read at all.
 
 ---
 
-# Optimization Tip 3: Use EXISTS Instead of IN
+# Optimization Tip 3: EXISTS vs. IN
 
 ```sql
--- Slower (for large subqueries)
+-- IN with a subquery
 SELECT * FROM customers
 WHERE customer_id IN (SELECT customer_id FROM orders);
 
--- Faster (stops at first match)
+-- EXISTS (can stop at the first match)
 SELECT * FROM customers c
 WHERE EXISTS (
     SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id
 );
 ```
 
+In older databases, `EXISTS` was often faster. Modern optimizers —
+including DuckDB's — turn **both** into the same plan (a *semi join*).
+Check with `EXPLAIN`: you will see `HASH_JOIN` with a `SEMI` join type in both.
+
+Choose the one that is easier to read. (But remember from Week 5:
+`NOT IN` behaves badly when the subquery returns `NULL`; `NOT EXISTS` does not.)
+
 ---
 
 # Optimization Tip 4: Avoid Functions on Indexed Columns
 
 ```sql
--- BAD: Index on order_date won't be used
+-- BAD: the function hides the column; an index on order_date can't be used
 SELECT * FROM orders
 WHERE EXTRACT(YEAR FROM order_date) = 2024;
 
--- BETTER: Rewrite to use the column directly
+-- BETTER: compare the column directly
 SELECT * FROM orders
-WHERE order_date >= '2024-01-01' AND order_date < '2025-01-01';
+WHERE order_date >= DATE '2024-01-01' AND order_date < DATE '2025-01-01';
 ```
+
+Both return the same 182 orders. In DuckDB, the direct comparison also lets
+the scan **skip whole blocks** of rows using their stored min/max dates.
 
 ---
 
@@ -276,40 +365,50 @@ WHERE order_date >= '2024-01-01' AND order_date < '2025-01-01';
 
 ```sql
 -- If you don't need unmatched rows, use INNER JOIN
--- LEFT JOIN is more expensive if you don't need NULLs
+-- (LEFT JOIN must keep extra rows, and gives the optimizer fewer choices)
 
--- For existence checks, use EXISTS instead of LEFT JOIN + IS NULL
+-- To find rows with NO match, NOT EXISTS states the goal directly
 SELECT * FROM customers c
 WHERE NOT EXISTS (
     SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id
 );
 ```
 
+DuckDB runs this as an **anti join** (`Join Type: ANTI`).
+LEFT JOIN + `IS NULL` gives the same answer; both are fine.
+In our data, every customer has orders, so this returns 0 rows.
+
 ---
 
 # Optimization Tip 6: LIMIT with ORDER BY
 
 ```sql
--- Without index, must sort ALL rows then take top 10
-SELECT * FROM orders ORDER BY total_amount DESC LIMIT 10;
-
--- With index on total_amount, can stop after 10 rows
-CREATE INDEX idx_orders_total ON orders(total_amount);
 SELECT * FROM orders ORDER BY total_amount DESC LIMIT 10;
 ```
+
+A smart database does **not** sort all rows here. It keeps only the
+**top 10 seen so far** while it reads (DuckDB's `TOP_N` operator).
+Much less work than a full sort.
+
+- In PostgreSQL/MySQL, an index on `total_amount` can make this even faster:
+  read the first 10 index entries and stop.
+- DuckDB does **not** use an index for `ORDER BY`; `TOP_N` is already fast.
+
+Always use `ORDER BY` with `LIMIT` — without it, the "top 10" is random.
 
 ---
 
 # DuckDB-Specific Optimizations
 
 DuckDB uses **columnar storage**:
-- Only reads columns you SELECT (not entire rows)
-- Vectorized execution (processes batches of values)
-- Automatic parallelism
+- Only reads the columns the query uses (not entire rows)
+- Stores min/max values per block of rows, and **skips** blocks that cannot match
+- **Vectorized** execution: processes batches of about 2,048 values at a time
+- Automatic **parallelism**: uses all CPU cores
 
 ```sql
--- DuckDB automatically parallelizes this
-SELECT category, SUM(price) FROM products GROUP BY category;
+-- DuckDB automatically parallelizes this (on large tables)
+SELECT category_id, SUM(price) FROM products GROUP BY category_id;
 ```
 
 ---
@@ -326,23 +425,33 @@ name:  ["Laptop", "Mouse", "Keyboard", ...]
 price: [899, 29, 79, ...]
 ```
 
-Column storage excels at analytics (aggregating one column across many rows).
+- **Column storage** excels at analytics: aggregating a few columns over many rows (OLAP).
+- **Row storage** excels at transactions: reading or changing one whole row at a time (OLTP).
 
 ---
 
 # Monitoring Query Performance
 
-```sql
--- DuckDB: time a query
-.timer on
-SELECT ... ;
+In the DuckDB command-line tool:
 
--- Or in Python
-import time
-start = time.time()
-result = con.sql("SELECT ...").fetchall()
-print(f"Query took {time.time() - start:.3f}s")
 ```
+.timer on
+SELECT COUNT(*) FROM orders;
+-- Run Time (s): real 0.001 ...
+```
+
+In Python (for example, in a Marimo notebook):
+
+```python
+import time
+start = time.perf_counter()
+result = con.execute("SELECT COUNT(*) FROM orders").fetchall()
+print(f"Query took {time.perf_counter() - start:.3f} s")
+```
+
+`EXPLAIN ANALYZE SELECT ...` also shows the time spent in each step.
+
+Run a query a few times: the first run is often slower (data loading, caches).
 
 ---
 
@@ -355,32 +464,35 @@ SELECT * FROM duckdb_indexes();
 -- Drop an index
 DROP INDEX IF EXISTS idx_products_price;
 
--- Rebuild (after many inserts/updates)
--- DuckDB handles this automatically
+-- Rebuild: not needed — DuckDB keeps indexes up to date automatically
 ```
+
+`duckdb_indexes()` lists the indexes you created with `CREATE INDEX`.
+(Indexes created by `PRIMARY KEY` and `UNIQUE` are not listed there.)
 
 ---
 
 # Best Practices Summary
 
-1. **Index** columns used in WHERE, JOIN, ORDER BY
-2. **Don't over-index** — each index slows writes
-3. Use **EXPLAIN** to verify your optimizations
-4. **Filter early**, select only needed columns
-5. Avoid **functions on indexed columns** in WHERE
-6. Use **EXISTS** over IN for large subqueries
-7. Consider **composite indexes** for multi-column queries
-8. **Profile first**, optimize second — don't guess
+1. **Write a correct query first**
+2. **Index** columns used in selective `WHERE` lookups (and, in row-based databases, in JOIN and ORDER BY)
+3. **Don't over-index** — each index slows writes
+4. Use **EXPLAIN / EXPLAIN ANALYZE** to see what really happens
+5. Select only the columns you need
+6. Avoid **functions on filtered columns** in `WHERE`
+7. Consider **composite indexes** for multi-column lookups
+8. **Measure first**, optimize second — don't guess
 
 ---
 
 # Summary
 
 - Queries go through: parse → optimize → execute
-- **Indexes** trade write speed for read speed (B-Tree is most common)
-- **EXPLAIN** reveals the query execution plan
-- Optimization: filter early, select needed columns, proper JOINs
-- DuckDB's columnar storage provides automatic optimizations
+- **Indexes** trade write speed for read speed (B-tree in most databases; ART in DuckDB)
+- DuckDB uses an index only for very selective lookups
+- **EXPLAIN** shows the plan; **EXPLAIN ANALYZE** runs it and shows real numbers
+- The optimizer already pushes filters down and rewrites `IN`/`EXISTS`
+- DuckDB's columnar storage gives fast scans without indexes
 - Always **measure** before and after optimization
 
 ---
@@ -388,10 +500,10 @@ DROP INDEX IF EXISTS idx_products_price;
 # What Is Next?
 
 **Week 8: Transactions & ACID**
+- `BEGIN`, `COMMIT`, `ROLLBACK`
 - ACID properties
-- Concurrency control
-- Isolation levels
-- Data integrity under concurrent access
+- Constraints: `CHECK`, `NOT NULL`
+- Data integrity when many users work at once
 
 ---
 
@@ -399,3 +511,6 @@ DROP INDEX IF EXISTS idx_products_price;
 
 Thank you!
 
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

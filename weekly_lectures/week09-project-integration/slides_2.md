@@ -1,12 +1,8 @@
 ---
 marp: true
-
 theme: default
-
 paginate: true
-
 header: "OMIS 105 – Database Management Systems"
-
 footer: "Week 9: Capstone Project"
 ---
 
@@ -61,8 +57,8 @@ This project integrates everything from Weeks 1–8:
 
 | Session | Activity |
 |---------|----------|
-| Session 1 (Today) | Topic selection, requirements, ER design |
-| Session 2 (Today) | Schema creation, data loading, queries |
+| Week 9, Session 1 | Topic selection, requirements, ER design |
+| Week 9, Session 2 | Schema creation, data loading, queries |
 | Week 10 Session 1 | Presentations (Group A) |
 | Week 10 Session 2 | Presentations (Group B) |
 
@@ -93,6 +89,9 @@ Your database must include:
 - At least one **M:M** relationship (with junction table)
 - At least **20 rows** of sample data per main table
 - **Meaningful data** (not random gibberish)
+- Schema in **3NF**, with PK, FK, NOT NULL, CHECK, UNIQUE, and DEFAULT where they fit
+
+(Full details: `lab09_student.md`, the capstone specification.)
 
 ---
 
@@ -128,6 +127,9 @@ For each entity, identify:
 
 Draw the ER diagram using Crow's Foot notation.
 
+A **M:M** relationship (e.g., members ↔ classes) becomes a **junction table**
+(`bookings`) with two foreign keys.
+
 ---
 
 # ER Diagram Checklist
@@ -154,9 +156,20 @@ CREATE TABLE members (
     email        VARCHAR UNIQUE NOT NULL,
     phone        VARCHAR,
     join_date    DATE DEFAULT CURRENT_DATE,
-    status       VARCHAR CHECK (status IN ('active','inactive','suspended'))
+    status       VARCHAR NOT NULL DEFAULT 'active'
+                 CHECK (status IN ('active', 'inactive', 'suspended'))
+);
+
+CREATE TABLE bookings (               -- junction table: members ↔ classes
+    booking_id   INTEGER PRIMARY KEY,
+    member_id    INTEGER NOT NULL REFERENCES members(member_id),
+    class_id     INTEGER NOT NULL REFERENCES classes(class_id),
+    UNIQUE (member_id, class_id)      -- a member books a class only once
 );
 ```
+
+Create tables in order: a table must exist before another table can reference it
+(`classes` before `bookings`).
 
 ---
 
@@ -194,10 +207,13 @@ Create realistic data for each table:
 
 ```sql
 INSERT INTO members VALUES
-(1, 'Alice', 'Johnson', 'alice@email.com', '555-0101', '2023-06-15', 'active'),
-(2, 'Bob', 'Smith', 'bob@email.com', '555-0102', '2023-08-20', 'active'),
+(1, 'Alice', 'Johnson', 'alice@email.com', '555-0101', DATE '2023-06-15', 'active'),
+(2, 'Bob',   'Smith',   'bob@email.com',   '555-0102', DATE '2023-08-20', 'active'),
 ...
 ```
+
+Or load a CSV file into an existing table (so the constraints are checked):
+`INSERT INTO members SELECT * FROM read_csv('data/members.csv');`
 
 ---
 
@@ -215,7 +231,9 @@ Your queries should demonstrate mastery:
 | JOINs (multi-table) | 3 | INNER, LEFT, 3+ table joins |
 | Aggregation (GROUP BY) | 2 | With HAVING, CASE |
 | Advanced (Window/CTE) | 2 | Window functions, CTEs |
-| Transaction | 1 | Multi-step with error handling |
+| Transaction | 1 | Multi-step with error handling (Python) |
+
+Each query needs: a comment with its **business purpose**, the **SQL**, and the **output**.
 
 ---
 
@@ -226,7 +244,7 @@ Your queries should demonstrate mastery:
 SELECT first_name, last_name, join_date
 FROM members
 WHERE status = 'active'
-  AND EXTRACT(YEAR FROM join_date) = 2024
+  AND join_date >= DATE_TRUNC('year', CURRENT_DATE)
 ORDER BY join_date;
 
 -- Q2: Revenue by class type this month
@@ -237,7 +255,7 @@ WITH class_revenue AS (
     JOIN classes c ON b.class_id = c.class_id
     JOIN class_types ct ON c.type_id = ct.type_id
     JOIN payments p ON b.booking_id = p.booking_id
-    WHERE EXTRACT(MONTH FROM p.payment_date) = EXTRACT(MONTH FROM CURRENT_DATE)
+    WHERE p.payment_date >= DATE_TRUNC('month', CURRENT_DATE)
     GROUP BY ct.type_name
 )
 SELECT type_name, revenue,
@@ -245,6 +263,10 @@ SELECT type_name, revenue,
 FROM class_revenue
 ORDER BY revenue DESC;
 ```
+
+Careful with "this month": `EXTRACT(MONTH FROM d) = EXTRACT(MONTH FROM CURRENT_DATE)`
+also matches the same month in **every other year**. `DATE_TRUNC('month', CURRENT_DATE)`
+is the first day of the current month, so the filter keeps only this month.
 
 ---
 
@@ -264,9 +286,11 @@ LEFT JOIN bookings b ON m.member_id = b.member_id
 LEFT JOIN classes c ON b.class_id = c.class_id
 GROUP BY m.member_id, m.first_name, m.last_name, m.status;
 
--- View 2: Class utilization
-CREATE VIEW class_utilization AS ...
+-- View 2: Class utilization (write your own)
+-- CREATE VIEW class_utilization AS SELECT ... ;
 ```
+
+`COUNT(b.booking_id)` (not `COUNT(*)`) gives 0 for members with no bookings.
 
 ---
 
@@ -275,18 +299,22 @@ CREATE VIEW class_utilization AS ...
 Create at least **3 indexes** with justification:
 
 ```sql
--- Index on frequently filtered column
-CREATE INDEX idx_members_status ON members(status);
--- Justification: Front desk frequently filters by active/inactive
-
--- Composite index for date-range queries
-CREATE INDEX idx_classes_date ON classes(class_date, type_id);
--- Justification: Schedule lookups filter by date and type
-
--- Index for JOIN performance
+-- Lookups for ONE member
 CREATE INDEX idx_bookings_member ON bookings(member_id);
--- Justification: Member history queries join on this column
+-- Justification: "Show my bookings" looks up one member_id at a time
+
+-- Composite index for schedule lookups
+CREATE INDEX idx_classes_date ON classes(class_date, type_id);
+-- Justification: "Yoga classes on 2026-10-12" filters by date and type
+
+-- Lookups for ONE booking
+CREATE INDEX idx_payments_booking ON payments(booking_id);
+-- Justification: Finding the payment for a booking
 ```
+
+Remember Week 7: an index on a column with few values (like `status`)
+rarely helps, and DuckDB uses indexes only for very selective lookups.
+`PRIMARY KEY` and `UNIQUE` columns already have an index.
 
 ---
 
@@ -295,19 +323,48 @@ CREATE INDEX idx_bookings_member ON bookings(member_id);
 Demonstrate a meaningful transaction:
 
 ```python
-def book_class(con, member_id, class_id):
+# Assumes classes(class_id, type_id, class_date, capacity, enrolled)
+# and payments(payment_id, booking_id, amount, payment_date)
+def book_class(con, member_id, class_id, booking_id, amount):
     try:
         con.execute("BEGIN")
-        # Check member is active
-        # Check class has capacity
-        # Create booking
-        # Create payment
-        # Update class enrollment count
+        status = con.execute("SELECT status FROM members WHERE member_id = ?",
+                             [member_id]).fetchone()
+        if status is None or status[0] != 'active':
+            raise ValueError("member is not active")
+        cap, enrolled = con.execute(
+            "SELECT capacity, enrolled FROM classes WHERE class_id = ?",
+            [class_id]).fetchone()
+        if enrolled >= cap:
+            raise ValueError("class is full")
+        con.execute("INSERT INTO bookings VALUES (?, ?, ?)",
+                    [booking_id, member_id, class_id])
+        con.execute("INSERT INTO payments VALUES (?, ?, ?, CURRENT_DATE)",
+                    [booking_id, booking_id, amount])
+        con.execute("UPDATE classes SET enrolled = enrolled + 1 WHERE class_id = ?",
+                    [class_id])
         con.execute("COMMIT")
+        print(f"Booking {booking_id} confirmed")
     except Exception as e:
         con.execute("ROLLBACK")
         print(f"Booking failed: {e}")
 ```
+
+---
+
+# Transaction Demo: Show Both Cases
+
+```python
+book_class(con, member_id=3, class_id=2, booking_id=10, amount=25)
+# Booking 10 confirmed
+
+book_class(con, member_id=1, class_id=2, booking_id=11, amount=25)
+# Booking failed: class is full      ← nothing was saved
+```
+
+- `?` placeholders pass values safely (never build SQL by joining strings)
+- `raise` stops the work when a business rule fails → `except` runs `ROLLBACK`
+- A constraint error (e.g., a duplicate `booking_id`) also jumps to `ROLLBACK`
 
 ---
 
@@ -319,7 +376,7 @@ def book_class(con, member_id, class_id):
 2. **ER Diagram** — show your design
 3. **Schema** — highlight key tables and constraints
 4. **Demo** — run 3–4 of your best queries live
-5. **Transaction** — demonstrate your transaction
+5. **Transaction** — show a success **and** a failure case
 6. **Lessons learned** — what was challenging?
 
 ---
@@ -359,7 +416,9 @@ def book_class(con, member_id, class_id):
 
 # Getting Help
 
-- Office hours: [your schedule]
+- Office hours: see `course_information/QUESTIONS_and_OFFICE_HOURS.md`
+- Start from the template: `lab09_student_marimo.py`
+- See a finished example: `week09_project_example.py` (a small library database)
 - Use the ShopSmart project as a **reference** for structure
 - Start with the ER diagram — everything flows from good design
 - Don't wait until the last minute!
@@ -368,13 +427,13 @@ def book_class(con, member_id, class_id):
 
 # Suggested Approach: Today's Sessions
 
-**Session 1** (2 hours):
+**Week 9, Session 1** (2 hours):
 - Choose domain (15 min)
 - Requirements analysis (15 min)
 - ER diagram (45 min)
 - CREATE TABLE statements (45 min)
 
-**Session 2** (2 hours):
+**Week 9, Session 2** (2 hours):
 - Load sample data (30 min)
 - Write 10 queries (60 min)
 - Create views, indexes, transaction (30 min)
@@ -404,3 +463,6 @@ Good luck, and have fun with your projects!
 
 Thank you!
 
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

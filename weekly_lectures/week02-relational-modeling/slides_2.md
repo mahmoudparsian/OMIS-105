@@ -42,7 +42,7 @@ footer: "Week 2: Relational Thinking"
 
 - Proposed by **Edgar F. Codd** in 1970 at IBM
 - Revolutionary idea: store data in **relations** (tables)
-- Based on mathematical set theory
+- Based on mathematics: set theory and logic
 - Still the dominant data model 50+ years later
 
 ---
@@ -57,6 +57,8 @@ footer: "Week 2: Relational Thinking"
 | Domain | Data Type | Allowed values |
 | Cardinality | Row count | Number of tuples |
 | Degree | Column count | Number of attributes |
+
+(Careful: later, "cardinality" also describes **relationships** — 1:1, 1:M, M:M.)
 
 ---
 
@@ -144,7 +146,8 @@ CREATE TABLE customers (
 - Auto-generated integer (1, 2, 3, ...)
 - No business meaning, never changes
 
-**Best practice**: Use surrogate keys (like `customer_id`) as primary keys.
+**Best practice**: Use surrogate keys (like `customer_id`) as primary keys,
+and keep natural keys (like `email`) as `UNIQUE` columns.
 
 ---
 
@@ -156,7 +159,8 @@ In our `customers` table:
 - `customer_id` → candidate key (chosen as PK)
 - `email` → candidate key (unique per customer)
 
-The one you choose becomes the **primary key**; the rest remain candidate keys.
+The one you choose becomes the **primary key**; the others are called
+**alternate keys**. Declare them `UNIQUE` so the database still enforces them.
 
 ---
 
@@ -175,6 +179,8 @@ CREATE TABLE order_items (
 
 Neither `order_id` nor `product_id` is unique alone, but **together** they uniquely identify each line item.
 
+(Our ShopSmart CSV gives `order_items` its own surrogate key, `item_id`, instead — both designs are common.)
+
 ---
 
 # Foreign Key (FK)
@@ -192,6 +198,10 @@ CREATE TABLE orders (
 
 `customer_id` in `orders` → Foreign Key
 `customer_id` in `customers` → Primary Key
+
+A foreign key column **can** be `NULL` (an order with no customer).
+Add `NOT NULL` if every order must have a customer:
+`customer_id INTEGER NOT NULL REFERENCES customers(customer_id)`
 
 ---
 
@@ -216,13 +226,23 @@ The FK enforces **referential integrity**: you cannot have an order for a custom
 **Rules enforced by foreign keys**:
 
 1. Cannot INSERT an order with a `customer_id` that does not exist in `customers`
-2. Cannot DELETE a customer who has existing orders (unless cascading)
-3. Cannot UPDATE a `customer_id` in `customers` if it is referenced
+2. Cannot DELETE a customer who still has orders
+3. Cannot UPDATE a `customer_id` in `customers` while orders refer to it
 
 ```sql
--- This would FAIL if customer 999 doesn't exist:
-INSERT INTO orders VALUES (100, 999, '2024-01-01', 50.00);
+-- FAILS: customer 999 doesn't exist
+INSERT INTO orders (order_id, customer_id, order_date, total_amount)
+VALUES (100, 999, DATE '2024-01-01', 50.00);
+-- Constraint Error: Violates foreign key constraint because key
+-- "customer_id: 999" does not exist in the referenced table
 ```
+
+Some databases (PostgreSQL, MySQL) can **cascade** a delete to the child rows
+(`ON DELETE CASCADE`). DuckDB does not support cascading: delete the orders first.
+
+DuckDB limitation: while orders refer to a customer, you also cannot change
+that customer's `UNIQUE` columns (like `email`). Ordinary columns (like `city`)
+can be updated normally.
 
 ---
 
@@ -259,7 +279,7 @@ The FK goes in the "many" side table.
 
 Each entity on both sides has exactly one counterpart.
 
-**Example**: Each customer has exactly one loyalty profile.
+**Example**: Each customer has at most one loyalty profile.
 
 ```sql
 CREATE TABLE loyalty_profiles (
@@ -270,7 +290,10 @@ CREATE TABLE loyalty_profiles (
 );
 ```
 
-The `UNIQUE` constraint on the FK enforces 1:1.
+The `UNIQUE` constraint on the FK means a customer can appear **at most once**
+in `loyalty_profiles` — so each customer has zero or one profile.
+(A second profile for the same customer fails: `Duplicate key "customer_id: 1"
+violates unique constraint.`)
 
 ---
 
@@ -279,7 +302,8 @@ The `UNIQUE` constraint on the FK enforces 1:1.
 A product can have **many** suppliers.
 A supplier can supply **many** products.
 
-**Cannot be represented directly** — needs a **junction table** (also called bridge/associative table).
+**Cannot be represented directly** — a single FK column can hold only one value.
+It needs a **junction table** (also called a bridge or associative table).
 
 ---
 
@@ -295,8 +319,11 @@ CREATE TABLE product_suppliers (
 ```
 
 ```
-products (M) ── product_suppliers ── (M) suppliers
+products (1) ──< product_suppliers >── (1) suppliers
 ```
+
+The M:M becomes **two 1:M** relationships. The junction table can also store
+facts about the pair itself — here, the `cost_price` each supplier charges.
 
 ---
 
@@ -322,51 +349,62 @@ A **visual blueprint** of your database design showing:
 | Crow's Foot | \|\| | ──<  (fork) |
 | Min-Max | (1,1) | (0,*) |
 
-We will use **Crow's Foot** notation — the industry standard.
+We will use **Crow's Foot** notation — the most widely used style in industry.
 
 ---
 
 # Crow's Foot Symbols
 
+Each end of a line has two marks. The mark **next to the table** is the
+maximum (one or many); the other is the minimum (zero or one):
+
 ```
-──||──     Exactly one (mandatory)
-──|O──     Zero or one (optional)
-──<──      Many (one or more)
-──<O──     Zero or many (optional many)
+──||   Exactly one        (min 1, max 1)
+──o|   Zero or one        (min 0, max 1)
+──|<   One or many        (min 1, max many)
+──o<   Zero or many       (min 0, max many)
 ```
+
+Example: `customers ||──o< orders` — each order has exactly one customer;
+a customer has zero or many orders.
 
 ---
 
 # ShopSmart ER Diagram (Simplified)
 
 ```
-┌────────────┐         ┌────────────┐
-│ categories │         │ customers  │
-│────────────│         │────────────│
-│ PK cat_id  │──┐      │ PK cust_id │──┐
-│ cat_name   │  │      │ first_name │  │
-│ description│  │      │ last_name  │  │
-└────────────┘  │      │ email      │  │
-                │      └────────────┘  │
-           ┌────┴───┐            ┌─────┴────┐
-           │products│            │  orders   │
-           │────────│            │──────────│
-           │PK p_id │──┐         │PK ord_id │
-           │name    │  │         │FK cust_id│
-           │FK cat  │  │         │date      │
-           │price   │  │         │status    │
-           │stock   │  │         │total     │
-           └────────┘  │         └──────────┘
-                       │
-                  ┌────┴──────┐
-                  │order_items│
-                  │───────────│
-                  │FK ord_id  │
-                  │FK p_id    │
-                  │quantity   │
-                  │unit_price │
-                  └───────────┘
+┌──────────────┐                    ┌──────────────┐
+│ categories   │                    │ customers    │
+│──────────────│                    │──────────────│
+│PK category_id│                    │PK customer_id│
+│ category_name│                    │ first_name   │
+│ description  │                    │ last_name    │
+└──────┬───────┘                    │ email        │
+       │ 1                          └──────┬───────┘
+       │                                   │ 1
+       │ M                                 │ M
+┌──────┴───────┐                    ┌──────┴───────┐
+│ products     │                    │ orders       │
+│──────────────│                    │──────────────│
+│PK product_id │                    │PK order_id   │
+│ product_name │                    │FK customer_id│
+│FK category_id│                    │ order_date   │
+│ price        │                    │ status       │
+│ stock_qty    │                    │ total_amount │
+└──────┬───────┘                    └──────┬───────┘
+       │ 1                                 │ 1
+       │          ┌──────────────┐         │
+       └─────── M │ order_items  │ M ──────┘
+                  │──────────────│
+                  │PK item_id    │
+                  │FK order_id   │
+                  │FK product_id │
+                  │ quantity     │
+                  │ unit_price   │
+                  └──────────────┘
 ```
+
+`order_items` is the junction table for the M:M between orders and products.
 
 ---
 
@@ -386,11 +424,13 @@ CREATE TABLE categories (
 CREATE TABLE products (
     product_id     INTEGER PRIMARY KEY,
     product_name   VARCHAR NOT NULL,
-    category_id    INTEGER REFERENCES categories(category_id),
-    price          DECIMAL(10,2) CHECK (price > 0),
-    stock_quantity INTEGER DEFAULT 0
+    category_id    INTEGER NOT NULL REFERENCES categories(category_id),
+    price          DECIMAL(10,2) NOT NULL CHECK (price > 0),
+    stock_quantity INTEGER DEFAULT 0 CHECK (stock_quantity >= 0)
 );
 ```
+
+Create tables in order: **parents first** (`categories` before `products`).
 
 ---
 
@@ -403,17 +443,25 @@ CREATE TABLE customers (
     last_name   VARCHAR NOT NULL,
     email       VARCHAR UNIQUE NOT NULL,
     city        VARCHAR,
-    state       VARCHAR(2),
+    state       VARCHAR(2),    -- DuckDB treats this as VARCHAR (no length check)
     join_date   DATE
 );
 
 CREATE TABLE orders (
     order_id     INTEGER PRIMARY KEY,
-    customer_id  INTEGER REFERENCES customers(customer_id),
+    customer_id  INTEGER NOT NULL REFERENCES customers(customer_id),
     order_date   DATE NOT NULL,
     status       VARCHAR CHECK (status IN
         ('processing','shipped','completed','cancelled')),
     total_amount DECIMAL(10,2)
+);
+
+CREATE TABLE order_items (
+    item_id    INTEGER PRIMARY KEY,
+    order_id   INTEGER NOT NULL REFERENCES orders(order_id),
+    product_id INTEGER NOT NULL REFERENCES products(product_id),
+    quantity   INTEGER NOT NULL CHECK (quantity > 0),
+    unit_price DECIMAL(10,2) NOT NULL
 );
 ```
 
@@ -421,53 +469,70 @@ CREATE TABLE orders (
 
 # Loading Data from CSV
 
+This week's `data/` folder has three files: `categories.csv`, `customers.csv`,
+and `products.csv`. (Orders arrive in Week 4.)
+
+The tables already exist (with their keys and rules), so we **insert** into them.
+DuckDB checks every PK, FK, and `CHECK` rule as the rows load.
+
 ```python
 import duckdb
 con = duckdb.connect()
+# ... run the CREATE TABLE statements first ...
 
-# Load each CSV into a table
-for table, file in [
-    ('categories', 'categories.csv'),
-    ('products',   'products.csv'),
-    ('customers',  'customers.csv'),
-    ('orders',     'orders.csv')]:
-    con.sql(f"""
-        CREATE TABLE {table} AS
-        SELECT * FROM read_csv_auto('{file}')
-    """)
-    count = con.sql(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+# Parents first: categories before products
+for table in ['categories', 'customers', 'products']:
+    con.execute(f"INSERT INTO {table} SELECT * FROM read_csv('data/{table}.csv')")
+    count = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
     print(f"Loaded {table}: {count} rows")
+
+# Loaded categories: 8 rows
+# Loaded customers: 40 rows
+# Loaded products: 64 rows
 ```
+
+`CREATE TABLE ... AS SELECT * FROM read_csv(...)` also works, but makes a new
+table **without** any keys or rules.
 
 ---
 
 # Verifying Relationships
 
 ```sql
--- Do all orders reference valid customers?
-SELECT o.order_id, o.customer_id
-FROM orders o
-WHERE o.customer_id NOT IN (
-    SELECT customer_id FROM customers
+-- Do all products reference valid categories?
+SELECT p.product_id, p.category_id
+FROM products p
+WHERE p.category_id NOT IN (
+    SELECT category_id FROM categories
 );
--- Should return 0 rows if data integrity holds
+-- 0 rows: every product points to a real category
 ```
+
+With a foreign key, DuckDB already guarantees this. The check is useful when
+data was loaded **without** constraints (e.g., with `CREATE TABLE ... AS`).
 
 ---
 
 # Preview: Joining Tables
 
 ```sql
--- Combine customer info with their orders
-SELECT c.first_name, c.last_name,
-       o.order_id, o.order_date, o.total_amount
-FROM customers c, orders o
-WHERE c.customer_id = o.customer_id
-ORDER BY o.order_date DESC
-LIMIT 10;
+-- Show each product with its category name
+SELECT p.product_name, c.category_name, p.price
+FROM products p, categories c
+WHERE p.category_id = c.category_id
+ORDER BY p.price DESC
+LIMIT 5;
 ```
 
-This is an implicit join — we will learn proper JOIN syntax in Week 3!
+| product_name | category_name | price |
+|---|---|---|
+| Tablet Air | Electronics | 446.63 |
+| Laptop Pro 15 | Electronics | 372.07 |
+| Smartphone X12 | Electronics | 321.52 |
+| Bluetooth Speaker | Electronics | 297.29 |
+| Green Tea Box | Food & Grocery | 149.61 |
+
+This is an implicit join — we will learn the proper `JOIN` syntax in Weeks 4–5!
 
 ---
 
@@ -479,6 +544,7 @@ This is an implicit join — we will learn proper JOIN syntax in Week 3!
 | products | product_id | category_id → categories |
 | customers | customer_id | — |
 | orders | order_id | customer_id → customers |
+| order_items | item_id | order_id → orders, product_id → products |
 
 ---
 
@@ -525,9 +591,10 @@ Entities to consider:
 - Loans
 
 What are the relationships?
-- A book can have many authors (M:M)
-- A member can borrow many books (1:M with loans)
-- A loan links one member to one book
+- A book can have many authors, and an author can write many books (M:M → `book_authors`)
+- Members and books are also M:M: a member borrows many books over time,
+  and a book is borrowed by many members
+- The `loans` table resolves it: each loan links **one** member to **one** book
 
 ---
 
@@ -565,8 +632,8 @@ What are the relationships?
 |---------------|-------------|---------|
 | Entity | Primary Key | Each product has unique ID |
 | Referential | Foreign Key | Orders reference valid customers |
-| Domain | Data Types, CHECK | Price must be > 0 |
-| User-defined | Business rules | Status must be in allowed list |
+| Domain | Data types, NOT NULL, CHECK | Price must be > 0 |
+| User-defined | Business rules (often CHECK) | Status must be in the allowed list |
 
 ---
 
@@ -583,10 +650,11 @@ What are the relationships?
 
 # What Is Next?
 
-**Week 3: SQL Mastery — Part 1**
-- SELECT with JOINs (combining tables!)
+**Week 3: SQL Basics**
+- SELECT, WHERE, ORDER BY in depth
+- Functions, CASE, and computed columns
 - GROUP BY and HAVING
-- More powerful queries
+- Keys, CRUD, and auto-increment IDs
 
 ---
 
@@ -594,3 +662,6 @@ What are the relationships?
 
 Thank you!
 
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

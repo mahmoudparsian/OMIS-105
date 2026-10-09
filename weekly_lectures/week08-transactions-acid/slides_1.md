@@ -1,6 +1,6 @@
 ---
-title: OMIS 105 - Week 8 (Flagship Expanded)
-author: Instructor
+title: OMIS 105 - Week 8 (Transactions & ACID)
+author: Dr. Mahmoud Parsian
 marp: true
 theme: default
 paginate: true
@@ -20,116 +20,145 @@ style: |
 
 - What is a transaction?
 - Why transactions matter
-- ACID properties (intuitive)
+- ACID properties (the intuition)
+- Constraints: `NOT NULL` and `CHECK`
+- SQL commands: `BEGIN`, `COMMIT`, `ROLLBACK`
 - Failure scenarios
 - Concurrency basics (light)
-- SQL commands (BEGIN/COMMIT/ROLLBACK)
-- Hands-on thinking
+- Hands-on practice
 
 ---
 
 # Recap
 
 - Week 7: Performance & indexing  
+
 👉 Today: Make data **correct and reliable**
 
 ---
 
 # What is a Transaction?
 
-A transaction is:
+A **transaction** is:
 
-👉 A group of operations executed as a unit
+👉 A group of SQL statements that the database treats as **one unit**
 
 Either:
-- All succeed ✅  
-- Or none happen ❌  
+- **All** of them succeed ✅  
+- Or **none** of them take effect ❌  
 
 ---
 
 # Real Example (Bank Transfer)
 
-Transfer $100 from A → B:
+Transfer $100 from Alice → Bob:
 
-1. Deduct from A  
-2. Add to B  
+1. Subtract $100 from Alice  
+2. Add $100 to Bob  
 
-👉 Both must happen together
+👉 Both must happen — or neither
 
 ---
 
 # Problem Without Transactions
 
-If system crashes:
+If the system crashes after step 1:
 
-- Money deducted ❌  
-- Money not added ❌  
+- Alice lost $100 ❌  
+- Bob never received it ❌  
 
-👉 Data becomes inconsistent
+👉 $100 has disappeared. The data is now **inconsistent**.
 
 ---
 
 # ACID Properties
 
-Transactions guarantee:
+Transactions guarantee four properties:
 
-- A → Atomicity  
-- C → Consistency  
-- I → Isolation  
-- D → Durability  
+- **A** → Atomicity  
+- **C** → Consistency  
+- **I** → Isolation  
+- **D** → Durability  
 
 ---
 
 # Atomicity (All or Nothing)
 
-👉 Either everything happens or nothing
+👉 Either every statement in the transaction happens, or none does
 
 Example:
-- Deduct + Add must both complete
+- Subtract from Alice **and** add to Bob — never only one of them
 
 ---
 
 # Consistency (Valid State)
 
-Before and after transaction:
+Before and after every transaction:
 
-👉 Data follows rules
+👉 The data follows **all the rules** (constraints)
 
 Example:
-- No negative balance (if rule exists)
+- No negative balance — if the table has a `CHECK (balance >= 0)` rule
+- A transaction that would break a rule is rejected
 
 ---
 
 # Isolation (No Interference)
 
-Multiple users:
+Many users work at the same time:
 
-👉 Transactions don’t interfere
+👉 Each transaction behaves **as if it were alone**
 
 Example:
-- Two users updating same account
+- Two people withdraw from the same account at the same moment
+- The database must not "lose" one of the withdrawals
 
 ---
 
 # Durability (Permanent)
 
-After COMMIT:
+After `COMMIT`:
 
-👉 Data is saved permanently
+👉 The change is saved **permanently**
 
 Even if:
-- crash occurs  
-- power failure  
+- the program crashes  
+- the power fails  
+
+(This needs a database **file**. An in-memory DuckDB database
+disappears when the program ends.)
+
+---
+
+# Try It: An Accounts Table with Rules
+
+```sql
+CREATE OR REPLACE TABLE accounts (
+    id      INTEGER PRIMARY KEY,
+    owner   VARCHAR NOT NULL,                              -- must have a value
+    balance DECIMAL(10, 2) NOT NULL CHECK (balance >= 0)   -- never negative
+);
+
+INSERT INTO accounts VALUES (1, 'Alice', 500.00), (2, 'Bob', 200.00);
+```
+
+- `NOT NULL`: the column must always have a value
+- `CHECK (condition)`: every row must make the condition true
+
+These rules are how the database enforces **consistency**.
 
 ---
 
 # SQL Commands
 
 ```sql
-BEGIN;
-COMMIT;
-ROLLBACK;
+BEGIN;      -- start a transaction
+COMMIT;     -- save all changes since BEGIN
+ROLLBACK;   -- undo all changes since BEGIN
 ```
+
+Without `BEGIN`, each statement is its **own** transaction and is saved
+immediately (this is called **auto-commit**).
 
 ---
 
@@ -140,60 +169,89 @@ BEGIN;
 
 UPDATE accounts
 SET balance = balance - 100
-WHERE id = 1;
+WHERE id = 1;          -- Alice: 500 → 400
 
 UPDATE accounts
 SET balance = balance + 100
-WHERE id = 2;
+WHERE id = 2;          -- Bob: 200 → 300
 
 COMMIT;
 ```
 
+Both changes are saved together. Total money: still $700.
+
 ---
 
-# What if Something Fails?
-
-If error occurs:
+# What if You Change Your Mind?
 
 ```sql
+BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;  -- Alice: 400 → 300
+SELECT * FROM accounts;                                    -- you see 300 here
+ROLLBACK;
+SELECT * FROM accounts;                                    -- Alice is back to 400
+```
+
+👉 `ROLLBACK` undoes **everything** since `BEGIN`
+
+---
+
+# What if a Statement Fails?
+
+Alice now has $400. Try to move $600:
+
+```sql
+BEGIN;
+UPDATE accounts SET balance = balance + 600 WHERE id = 2;  -- Bob: OK so far
+UPDATE accounts SET balance = balance - 600 WHERE id = 1;  -- Alice: -200!
+-- Constraint Error: CHECK constraint failed on table accounts
+-- with expression CHECK((balance >= 0))
 ROLLBACK;
 ```
 
-👉 Undo everything
+After the error, DuckDB marks the transaction as **aborted**:
+any further query says *"Current transaction is aborted (please ROLLBACK)"*.
+
+Bob's +600 is **not** saved. Atomicity protects us.
 
 ---
 
 # Failure Scenario (Important)
 
-Ask:
+👉 “What if the system crashes after the first UPDATE?”
 
-👉 “What if crash happens after first UPDATE?”
+Without a transaction:
+- the first change is already saved → inconsistent data ❌  
 
-Without transaction:
-- inconsistent data ❌  
-
-With transaction:
-- rollback restores state ✅  
+With a transaction:
+- nothing was committed → the database returns to the state before `BEGIN` ✅  
 
 ---
 
 # Concurrency (Light Intro)
 
-Many users at same time:
+Many users at the same time can cause problems:
 
-Problems:
-- Dirty reads  
-- Lost updates  
+- **Dirty read:** reading a change that is later undone
+- **Lost update:** two users change the same row, and one change is lost
 
-👉 Transactions help control this
+👉 **Isolation** prevents these problems
 
 ---
 
 # Isolation Levels (Concept Only)
 
+The SQL standard defines four levels, from weakest to strongest:
+
 - Read Uncommitted  
 - Read Committed  
 - Repeatable Read  
+- Serializable  
+
+Stronger = safer, but less work can happen at the same time.
+
+DuckDB uses one level for everything: **snapshot isolation**
+(each transaction sees the data as it was when it started).
 
 👉 Just awareness (no deep dive)
 
@@ -207,37 +265,43 @@ Ask:
 
 Examples:
 - money transfers  
-- orders  
-- inventory  
+- orders and payments  
+- inventory (stock counts)  
+
+These operations belong inside transactions.
 
 ---
 
 # In-Class Exercise
 
-Ask:
+Design a safe transaction for **placing an order**:
 
-👉 “Design a safe transaction for:
-placing an order”
+- create the order  
+- add the order items  
+- reduce the stock for each product  
 
-Steps:
-- reduce inventory  
-- create order  
-- confirm payment  
+Questions:
+- Which statements go between `BEGIN` and `COMMIT`?
+- Which constraint stops the stock from going below 0?
+- What should happen if one product is out of stock?
 
 ---
 
 # Common Mistakes
 
-- Forgetting COMMIT ❌  
-- Ignoring failures ❌  
-- Thinking queries always succeed ❌  
+- Forgetting `COMMIT` ❌ (the changes are lost when the connection closes)  
+- Running `COMMIT` after an error, and thinking the work was saved ❌
+  (in DuckDB, the aborted transaction is rolled back instead)  
+- Thinking every statement always succeeds ❌  
+- Keeping a transaction open for a long time ❌  
 
 ---
 
 # Mental Model
 
 Transaction = safety layer  
-ACID = guarantees  
+ACID = the guarantees  
+Constraints = the rules  
 
 👉 Database = reliable system
 
@@ -245,18 +309,19 @@ ACID = guarantees
 
 # Hands-On Lab Idea
 
-- Create accounts table  
-- Simulate transfer  
-- Add failure scenario  
-- Use ROLLBACK  
+- Create the `accounts` table (with `CHECK`)
+- Do a transfer with `BEGIN` ... `COMMIT`
+- Try a transfer that breaks the `CHECK` rule
+- Use `ROLLBACK` and confirm nothing changed
 
 ---
 
 # Summary
 
-- Transactions ensure correctness  
-- ACID guarantees reliability  
-- BEGIN/COMMIT/ROLLBACK control execution  
+- A transaction = all or nothing  
+- ACID: Atomicity, Consistency, Isolation, Durability  
+- `NOT NULL` and `CHECK` keep the data valid  
+- `BEGIN` / `COMMIT` / `ROLLBACK` control transactions  
 
 👉 Databases protect data integrity
 
@@ -264,8 +329,10 @@ ACID = guarantees
 
 # What’s Next?
 
-Week 9:
-- Project (integration of all concepts)
+Week 9: Project Integration
+- CTEs and subqueries, `EXISTS`
+- `LAG`, `LEAD`, `NTILE`, `FIRST_VALUE`
+- Putting all the concepts together
 
 ---
 
@@ -279,3 +346,7 @@ Correct systems are essential.
 ---
 
 # Let’s Build Safe Systems 🚀
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

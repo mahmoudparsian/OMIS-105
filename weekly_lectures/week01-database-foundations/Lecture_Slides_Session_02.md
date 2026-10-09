@@ -1,20 +1,13 @@
 ---
-
 marp: true
-
 theme: default
-
 paginate: true
-
 header: "OMIS 105 – Database Management Systems"
-
 footer: "Week 1: Foundations"
-
 ---
 
-# OMIS 105: Database Management Systems
+# OMIS 105: Introduction to Database Management Systems
 
-## Database Management Systems  
 ## Week 1 — Foundations
 ## Instructor: Dr. Parsian
 
@@ -22,10 +15,10 @@ footer: "Week 1: Foundations"
 
 # Course Overview
 
-- **Course**: OMIS 105 — Database Management Systems
-- **Prerequisite**: OMIS 30 (Intro to Programming)
-- **Duration**: 10 weeks, 2 sessions × 2 hours/week
-- **Tools**: DuckDB, SQL, Jupyter Notebooks
+- **Course**: OMIS 105 — Introduction to Database Management Systems
+- **Prerequisite**: OMIS 30 (Introduction to Programming)
+- **Duration**: 10 weeks, 2 sessions × 2 hours per week
+- **Tools**: DuckDB, SQL, Marimo notebooks, qStudio
 - **Domain**: E-commerce database (ShopSmart Inc.)
 
 ---
@@ -45,14 +38,16 @@ footer: "Week 1: Foundations"
 
 | Week | Topic |
 |------|-------|
-| 1 | Foundations |
-| 2 | Relational Thinking |
-| 3–5 | SQL Mastery |
-| 6 | Normalization |
-| 7 | Performance |
-| 8 | Transactions (ACID) |
-| 9 | Capstone Project |
-| 10 | Synthesis & Review |
+| 1 | Database Foundations |
+| 2 | Relational Modeling (keys, relationships) |
+| 3 | SQL Basics (functions, CASE, GROUP BY) |
+| 4 | Aggregation and first JOINs |
+| 5 | SQL Joins |
+| 6 | Database Design & Normalization |
+| 7 | Query Performance (indexes, EXPLAIN) |
+| 8 | Transactions & ACID |
+| 9 | Project Integration (capstone) |
+| 10 | Review & Modern Data |
 
 ---
 
@@ -65,8 +60,8 @@ footer: "Week 1: Foundations"
 Imagine you run **ShopSmart**, an online store:
 
 - 64 products across 8 categories
-- 40 customers placing orders daily
-- Hundreds of orders with thousands of line items
+- 40 customers
+- 200 orders with about 600 line items (order lines)
 
 **How do you store and manage all this data?**
 
@@ -75,11 +70,13 @@ Imagine you run **ShopSmart**, an online store:
 # Option 1: Flat Files (Spreadsheets)
 
 ```
-product_id, name, category, price, stock
-1, Smartphone X12, Electronics, 299.99, 150
-2, Laptop Pro 15, Electronics, 899.99, 45
+product_id,product_name,category,price,stock_quantity
+1,Smartphone X12,Electronics,321.52,12
+2,Laptop Pro 15,Electronics,372.07,125
 ...
 ```
+
+(These are the first lines of this week's `data/products.csv`.)
 
 Seems simple enough... right?
 
@@ -91,7 +88,7 @@ Seems simple enough... right?
 - **Inconsistency**: What if someone types "Electronicss"?
 - **No concurrent access**: Two employees editing the same file?
 - **No security**: Everyone sees everything
-- **Scale**: Try searching 10 million rows in Excel
+- **Scale**: Excel stops at about 1 million rows (1,048,576) per sheet
 
 ---
 
@@ -136,14 +133,14 @@ A DBMS provides:
 | MySQL | Open-source Relational | Web applications |
 | SQL Server | Enterprise Relational | Microsoft ecosystem |
 | MongoDB | Document (NoSQL) | Flexible schemas |
-| **DuckDB** | Analytical Relational | Analytics, education |
+| **DuckDB** | Analytical Relational (embedded) | Data analysis, education |
 
 ---
 
 # Why DuckDB for This Course?
 
-- **Zero setup**: No server needed — runs in-process
-- **Standard SQL**: Full SQL support
+- **Zero setup**: No server needed — runs inside your program (in-process)
+- **Standard SQL**: Standard SQL, plus some friendly extras
 - **CSV-friendly**: Load data from CSV files directly
 - **Fast**: Columnar storage, vectorized execution
 - **Python integration**: Works great in Marimo/Jupyter notebooks
@@ -179,11 +176,11 @@ A **table** is a collection of **related data** organized in rows and columns.
 
 | `product_id` | `product_name` | `category` | `price` |
 |-----------|-------------|----------|-------|
-| 1 | Smartphone X12 | Electronics | 299.99 |
-| 2 | Laptop Pro 15 | Electronics | 899.99 |
-| 3 | Wireless Earbuds | Electronics | 49.99 |
+| 1 | Smartphone X12 | Electronics | 321.52 |
+| 2 | Laptop Pro 15 | Electronics | 372.07 |
+| 3 | Wireless Earbuds | Electronics | 115.49 |
 
-The `products` table has 3 rows
+This shows the first 3 rows. The full `products` table has 64 rows.
 
 ---
 
@@ -194,7 +191,7 @@ The `products` table has 3 rows
 - **Column** (field/attribute): A single property
   - Example: All product prices
 - **Cell**: The intersection of a row and column
-  - Example: The price of Smartphone X12 = 299.99
+  - Example: The price of Smartphone X12 = 321.52
 
 ---
 
@@ -226,9 +223,11 @@ CREATE TABLE products (
 | **INTEGER** | Whole numbers | `42` |
 | **DECIMAL(p,s)** | Exact decimals | `29.99` |
 | **VARCHAR** | Variable-length text | `'Laptop Pro'` |
-| **DATE** | Calendar date | `'2024-06-15'` |
+| **DATE** | Calendar date | `DATE '2024-06-15'` |
 | **BOOLEAN** | True/False | `TRUE` |
-| **TIMESTAMP** | Date and time | `'2024-06-15 14:30:00'` |
+| **TIMESTAMP** | Date and time | `TIMESTAMP '2024-06-15 14:30:00'` |
+
+`DECIMAL(10,2)` = up to 10 digits in total, 2 of them after the decimal point.
 
 ---
 
@@ -239,7 +238,7 @@ Rules that enforce data integrity:
 | Constraint | Purpose |
 |-----------|---------|
 | PRIMARY KEY (PK) | Uniquely identifies each row |
-| NOT NULL | Column cannot be empty |
+| NOT NULL | Column must have a value (cannot be `NULL`) |
 | UNIQUE | No duplicate values allowed |
 | CHECK | Custom validation rule |
 | DEFAULT | Auto-fill value if none given |
@@ -254,12 +253,12 @@ CREATE TABLE products (
     product_id     INTEGER PRIMARY KEY,
     product_name   VARCHAR NOT NULL,
     category       VARCHAR NOT NULL,
-    price          DECIMAL(10,2) 
-    CHECK (price > 0),
-    stock_quantity INTEGER DEFAULT 0
-    CHECK (stock_quantity >= 0)
+    price          DECIMAL(10,2) CHECK (price > 0),
+    stock_quantity INTEGER DEFAULT 0 CHECK (stock_quantity >= 0)
 );
 ```
+
+Now DuckDB rejects a product with a negative price, or with no name.
 
 ---
 
@@ -272,8 +271,10 @@ CREATE TABLE products (
 **Python (pip)**:
 
 ```bash
-pip install duckdb
+pip install duckdb marimo
 ```
+
+(Full steps for Mac and Windows: the `software_installation/` folder.)
 
 **In a Marimo/Jupyter Notebook**:
 
@@ -316,15 +317,18 @@ Output:
 import duckdb
 con = duckdb.connect()
 
-# Load products.csv directly
+# Load products.csv directly (run from the week01 folder)
 con.sql("""
-    CREATE TABLE products AS
-    SELECT * FROM read_csv_auto('./data/products.csv')
+    CREATE OR REPLACE TABLE products AS
+    SELECT * FROM read_csv('./data/products.csv')
 """)
 
 # See what we loaded
 con.sql("SELECT * FROM products LIMIT 5").show()
 ```
+
+`read_csv` detects the column names and data types for you.
+`CREATE OR REPLACE` lets you run the cell again without an error.
 
 ---
 
@@ -338,8 +342,8 @@ SHOW TABLES;
 DESCRIBE products;
 
 -- Count rows
-SELECT COUNT(*) AS total_products 
-FROM products;
+SELECT COUNT(*) AS total_products
+FROM products;                      -- 64
 ```
 
 ---
@@ -358,7 +362,7 @@ FROM products;
 -- With a condition
 SELECT product_name, price
 FROM products
-WHERE price > 100;
+WHERE price > 100;                  -- 28 products
 ```
 
 ---
@@ -373,7 +377,8 @@ ORDER BY column1              -- Sort results
 LIMIT    10;                  -- How many rows
 ```
 
-Each clause has a purpose. We will master these in Weeks 3–5.
+Each clause has a purpose, and they must appear in this order.
+We will practice them in depth in Week 3.
 
 ---
 
@@ -384,12 +389,14 @@ Each clause has a purpose. We will master these in Weeks 3–5.
 SELECT * FROM products WHERE category = 'Electronics';
 
 -- Numeric comparison
-SELECT * FROM products WHERE price < 50;
+SELECT * FROM products WHERE price < 50;          -- 18 products
 
 -- Combining conditions
 SELECT * FROM products
-WHERE category = 'Books' AND price < 30;
+WHERE category = 'Books' AND price < 30;          -- Python Crash Course (8.85)
 ```
+
+Text values use **single** quotes, and are case-sensitive: `'books'` ≠ `'Books'`.
 
 ---
 
@@ -423,12 +430,14 @@ FROM products
 ORDER BY price DESC
 LIMIT 5;
 
--- Skip first 10, then get 5
+-- Skip first 10, then get 5 (rows 11–15)
 SELECT product_name, price
 FROM products
 ORDER BY price DESC
 LIMIT 5 OFFSET 10;
 ```
+
+Always use `ORDER BY` with `LIMIT` — otherwise "the top 5" can be any 5 rows.
 
 ---
 
@@ -440,9 +449,9 @@ SELECT product_name AS name,
        price AS unit_price
 FROM products;
 
--- Computed column with alias
+-- Computed column with alias (8.75% sales tax)
 SELECT product_name,
-       price * 1.0875 AS price_with_tax
+       ROUND(price * 1.0875, 2) AS price_with_tax
 FROM products;
 ```
 
@@ -457,7 +466,7 @@ FROM products;
 
 -- Count of unique categories
 SELECT COUNT(DISTINCT category) AS num_categories
-FROM products;
+FROM products;                      -- 8
 ```
 
 ---
@@ -477,9 +486,11 @@ SELECT *
 FROM products 
 WHERE stock_quantity IS NOT NULL;
 
--- CAUTION: X X X This does NOT work! X X X 
+-- CAUTION: this does NOT work — it always returns 0 rows
 -- SELECT * FROM products WHERE stock_quantity = NULL;
 ```
+
+In our `products.csv`, every product has a stock quantity, so `IS NULL` returns 0 rows.
 
 ---
 
@@ -494,12 +505,17 @@ SELECT * FROM products WHERE product_name LIKE 'S%';
 -- Contains 'Pro'
 SELECT * FROM products WHERE product_name LIKE '%Pro%';
 
--- Exactly 3 characters
-SELECT * FROM products WHERE category LIKE '___';
+-- Starts with 'B' and is exactly 5 characters long
+SELECT DISTINCT category FROM products WHERE category LIKE 'B____';
 ```
 
-`%` = any sequence of characters
+`%` = any sequence of characters (including none)
 `_` = exactly one character
+
+- `'S%'` → Smartphone X12, SQL Cookbook, Silk Scarf, Shower Curtain, Stuffed Bear, Science Set
+- `'%Pro%'` → Laptop Pro 15, Blender Pro, **Pro**tein Bars (it matches inside words, too!)
+- `'B____'` → Books (Beauty has 6 letters)
+- `LIKE` is case-sensitive; DuckDB's `ILIKE` ignores case
 
 ---
 
@@ -522,10 +538,10 @@ WHERE category = 'Electronics'
 # BETWEEN Operator
 
 ```sql
--- Price range (inclusive)
+-- Price range (inclusive: 20 and 100 are included)
 SELECT product_name, price
 FROM products
-WHERE price BETWEEN 20 AND 100;
+WHERE price BETWEEN 20 AND 100;     -- 30 products
 
 -- Equivalent to:
 SELECT product_name, price
@@ -554,6 +570,8 @@ SELECT SUM(stock_quantity) AS total_stock
 FROM products;
 ```
 
+An aggregate turns **many rows into one value**.
+
 ---
 
 # Combining Aggregates
@@ -568,19 +586,28 @@ SELECT
 FROM products;
 ```
 
+| total_products | avg_price | min_price | max_price | total_inventory |
+|---|---|---|---|---|
+| 64 | 98.27 | 8.85 | 446.63 | 13037 |
+
 ---
 
 # DuckDB Special Features
 
 ```sql
 -- Read CSV without creating a table
-SELECT * FROM read_csv_auto('./data/products.csv') LIMIT 5;
+SELECT * FROM read_csv('./data/products.csv') LIMIT 5;
 
 -- Export query results to CSV
-COPY (SELECT * FROM products WHERE price > 100)
-TO './data/expensive_products.csv' (HEADER, DELIMITER ',');
+-- (this is how data/expensive_products.csv was made: 28 rows)
+COPY (
+    SELECT product_name, category, price
+    FROM products
+    WHERE price > 100
+    ORDER BY price DESC
+) TO './data/expensive_products.csv' (HEADER, DELIMITER ',');
 
--- Get column statistics
+-- Get column statistics (min, max, average, NULL count, ...)
 SUMMARIZE products;
 ```
 
@@ -591,14 +618,15 @@ SUMMARIZE products;
 DuckDB can query files directly:
 
 ```sql
--- Query CSV file as if it were a table
+-- Query a CSV file as if it were a table
 SELECT category, COUNT(*) AS cnt
-FROM read_csv_auto('./data/products.csv')
+FROM read_csv('./data/products.csv')
 GROUP BY category
 ORDER BY cnt DESC;
 ```
 
-No `CREATE TABLE` needed!
+No `CREATE TABLE` needed! (Each category has 8 products.
+`GROUP BY` is a preview — it comes in Week 3.)
 
 ---
 
@@ -613,6 +641,8 @@ con = duckdb.connect('shopsmart.duckdb')
 
 # Now all tables persist between sessions
 ```
+
+A `.duckdb` file holds the whole database: every table, in one file.
 
 ---
 
@@ -661,7 +691,7 @@ Aggregate functions: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
 - Complete **Lab 1** (loading data, basic queries)
 - Explore the `./data/products.csv` dataset
 - Try writing your own queries
-- Install DuckDB and experiment!
+- Install DuckDB and Marimo, and experiment!
 
 ---
 
@@ -669,3 +699,6 @@ Aggregate functions: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
 
 Thank you!
 
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

@@ -1,6 +1,6 @@
 ---
-title: OMIS 105 - Week 7 (Flagship Expanded)
-author: Instructor
+title: OMIS 105 - Week 7 (Indexing & Query Performance)
+author: Dr. Mahmoud Parsian
 marp: true
 theme: default
 paginate: true
@@ -19,11 +19,11 @@ style: |
 # Agenda
 
 - Why performance matters
-- How databases execute queries
+- How a database finds rows
 - What is an index?
-- When to use indexes
+- When to use indexes (and when not to)
 - Trade-offs
-- Real-world intuition
+- How DuckDB is different
 - Hands-on ideas
 
 ---
@@ -31,6 +31,7 @@ style: |
 # Recap
 
 - Week 6: Design clean databases  
+
 👉 Today: Make queries **fast**
 
 ---
@@ -41,8 +42,8 @@ Small data:
 - Everything feels fast
 
 Large data (millions of rows):
-- Queries become slow ❌  
-- Systems can fail ❌  
+- Queries can become slow ❌  
+- Many users wait at the same time ❌  
 
 👉 Performance becomes critical
 
@@ -53,83 +54,95 @@ Large data (millions of rows):
 When you run:
 
 ```sql
-SELECT * FROM sales WHERE price = 800;
+SELECT * FROM orders WHERE customer_id = 42;
 ```
 
-Database may:
-👉 Scan EVERY row
+Without help, the database must:
+👉 Read **every** row and check the condition
 
-This is called:
+This is called a:
 
-👉 Full Table Scan
+👉 **Full table scan** (or *sequential scan*)
 
 ---
 
-# Full Table Scan (Slow)
+# Full Table Scan
 
-| id | price |
-|----|-------|
-| 1  | 1000  |
-| 2  | 800   |
-| 3  | 500   |
-|... | ...   |
+| order_id | customer_id | amount |
+|----|-----|-------|
+| 1  | 17  | 120.00 |
+| 2  | 42  | 75.50  |
+| 3  | 8   | 300.00 |
+| ...| ... | ...   |
 
-👉 Database checks row by row
+👉 The database checks the rows **one by one**
+
+1,000 rows: instant. 1 billion rows: much slower.
 
 ---
 
 # What is an Index?
 
-An index is:
-
-👉 A data structure that speeds up lookup
+An **index** is an extra data structure that helps the database
+**find rows quickly**, without reading the whole table.
 
 Analogy:
-📖 Book index → jump to page directly
+📖 The index at the back of a book → go straight to the right page
 
 ---
 
-# With Index (Fast)
+# With an Index
 
-Instead of scanning all rows:
+Instead of scanning every row:
 
-👉 Database jumps directly to matching data
+👉 The database looks up the value in the index  
+👉 The index points to the matching rows  
+👉 Only those rows are read
 
 ---
 
-# Create Index
+# Create an Index
 
 ```sql
-CREATE INDEX idx_price
-ON sales(price);
+CREATE INDEX idx_orders_customer
+ON orders(customer_id);
 ```
+
+- `idx_orders_customer` is the index **name** (your choice)
+- `orders(customer_id)` = the table and the column to index
+
+A `PRIMARY KEY` or `UNIQUE` column gets an index **automatically**.
 
 ---
 
-# Query with Index
+# Query with an Index
 
 ```sql
-SELECT * FROM sales
-WHERE price = 800;
+SELECT * FROM orders
+WHERE customer_id = 42;
 ```
 
-👉 Much faster on large data
+The query does **not** change.  
+The database decides **by itself** whether to use the index.
+
+👉 Can be much faster on large tables
 
 ---
 
-# When to Use Index
+# When to Use an Index
 
-- Frequently searched columns  
-- Columns in WHERE  
-- Columns used in JOIN  
+- Columns you **search** by often (`WHERE customer_id = ...`)
+- Searches that return **few rows** (one customer, one email)
+- Columns used to **JOIN** tables (in row-based databases)
 
 ---
 
-# When NOT to Use Index
+# When NOT to Use an Index
 
-- Very small tables  
-- Columns with frequent updates  
-- Columns with many duplicate values  
+- Very small tables (a scan is already fast)
+- Tables with very frequent inserts and updates
+- Columns with few different values (e.g., `status` with 4 values,
+  or TRUE/FALSE) — each value matches too many rows
 
 ---
 
@@ -139,15 +152,17 @@ Indexes are NOT free:
 
 | Benefit | Cost |
 |--------|------|
-| Faster SELECT | Slower INSERT |
-| Faster WHERE  | More storage |
+| Faster lookups (`WHERE`) | Slower `INSERT`, `UPDATE`, `DELETE` |
+| Faster searches for a few rows | More storage / memory |
+
+Every time a row changes, **every index** on that table must be updated too.
 
 ---
 
 # Important Insight
 
-👉 Index = speed for reading  
-👉 But cost for writing  
+👉 An index = faster **reading**  
+👉 But a cost for **writing**  
 
 ---
 
@@ -155,89 +170,137 @@ Indexes are NOT free:
 
 Ask:
 
-👉 “Will this query run often?”
+👉 “Will this query run **often**?”
 
-👉 “Is this table large?”
+👉 “Is this table **large**?”
+
+👉 “Does the query return **few** rows?”
+
+Three "yes" answers → an index is worth trying.
 
 ---
 
 # Example Scenario
 
-E-commerce system:
+An online store:
 
 - millions of orders  
-- searching by customer_id  
+- the website shows *"My Orders"* for one customer, thousands of times per minute  
 
-👉 index on customer_id = huge win
+👉 An index on `orders(customer_id)` = huge win
 
 ---
 
-# Why Students Don’t See Speed Difference
+# How DuckDB Is Different
+
+DuckDB is built for **analytics** (summarizing many rows), not for
+looking up one row at a time. It is fast **without** indexes because it:
+
+- stores data **by column** — reads only the columns you ask for
+- keeps the **min/max** of each block of rows, and skips blocks that cannot match
+- uses **all** CPU cores at once
+
+DuckDB uses an index only when a filter matches **very few rows**
+(for example, `WHERE customer_id = 42`). For most queries, it scans.
+
+---
+
+# Try It: An Index in DuckDB
+
+```sql
+-- A table with 10 million rows
+CREATE OR REPLACE TABLE big_orders AS
+SELECT range AS order_id,
+       (random() * 100000)::INTEGER AS customer_id,
+       round(random() * 1000, 2) AS amount
+FROM range(10000000);
+
+.timer on
+SELECT COUNT(*) FROM big_orders WHERE customer_id = 4242;   -- no index
+CREATE INDEX idx_big_cust ON big_orders(customer_id);       -- build index
+SELECT COUNT(*) FROM big_orders WHERE customer_id = 4242;   -- with index
+```
+
+On a laptop: about **2 ms** without the index, about **1 ms** with it,
+and about **1 second** to build the index.
+
+(`.timer on` works in the DuckDB command-line tool, not inside a notebook.)
+
+---
+
+# Why You Won't See a Big Difference in Class
 
 In class:
-- small datasets  
+- small datasets (our `orders` table has 200 rows)  
+- DuckDB scans very quickly
 
-👉 Index effect is invisible
+👉 The index effect is almost invisible
 
-But in real world:
-👉 HUGE impact
+In large row-based systems (PostgreSQL, MySQL, Oracle) that serve many users:
+👉 Indexes can turn seconds into milliseconds
 
 ---
 
 # Advanced Idea (Light)
 
-Database uses:
-- trees (B-tree)
+Indexes are stored as **trees**, so a lookup takes a few steps
+instead of reading every row.
 
-👉 Not needed in depth, just awareness
+- Most databases (PostgreSQL, MySQL, Oracle): **B-tree** indexes
+- DuckDB: **ART** (Adaptive Radix Tree) indexes
+
+👉 Not needed in depth — just awareness
 
 ---
 
 # In-Class Exercise
 
-Ask:
+Which column would you index? Why?
 
-👉 “Which column would you index?”
+- *"Show all orders for customer 42"* → `customer_id`?
+- *"Show all orders with status 'completed'"* → `status`?
+- *"Find the customer with this email"* → `email`?
 
-Example:
-- search by price?
-- search by product?
+Hint: think about how many rows each search returns.
 
 ---
 
 # Common Mistakes
 
-- Index everything ❌  
-- Forget index exists ❌  
-- Expect instant speed on small data ❌  
+- Indexing every column ❌ (slows every write)  
+- Indexing columns with only a few values ❌  
+- Expecting a big speed-up on small data ❌  
+- Expecting the index to help every query ❌  
 
 ---
 
 # Mental Model
 
-Without index:
-👉 scan everything  
+Without an index:
+👉 read everything, keep what matches  
 
-With index:
-👉 jump directly  
+With an index:
+👉 look up the value, jump to the matching rows  
 
 ---
 
 # Hands-On Lab Idea
 
-- Run query  
-- Add index  
-- Run query again  
+- Create a large table (like `big_orders`)
+- Time a query that looks up one customer
+- Add an index
+- Time the query again — and time how long the index took to build
 
-Discuss difference conceptually
+Discuss: was it worth it?
 
 ---
 
 # Summary
 
 - Performance matters at scale  
-- Index = faster queries  
-- Trade-offs exist  
+- An index speeds up searches that return **few** rows  
+- Indexes cost time on writes and extra space  
+- DuckDB is fast even without indexes (columnar storage)  
 - Think before indexing  
 
 ---
@@ -245,8 +308,9 @@ Discuss difference conceptually
 # What’s Next?
 
 Week 8:
-- Transactions
+- Transactions (`BEGIN`, `COMMIT`, `ROLLBACK`)
 - ACID properties
+- Constraints (`CHECK`, `NOT NULL`)
 
 ---
 
@@ -259,3 +323,7 @@ Correct SQL is not enough.
 ---
 
 # Let’s Optimize 🚀
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

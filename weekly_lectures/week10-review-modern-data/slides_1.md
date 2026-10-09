@@ -1,6 +1,6 @@
 ---
-title: OMIS 105 - Week 10 (Flagship Expanded)
-author: Instructor
+title: OMIS 105 - Week 10 (Review & Synthesis)
+author: Dr. Mahmoud Parsian
 marp: true
 theme: default
 paginate: true
@@ -32,13 +32,14 @@ style: |
 
 Over 10 weeks:
 
-- SQL querying
-- Data modeling
-- Database design
-- Performance thinking
-- Transactions & reliability
+- SQL querying (SELECT, JOINs, GROUP BY, CTEs, window functions)
+- Data modeling (keys and relationships)
+- Database design (normalization)
+- Performance thinking (indexes, EXPLAIN)
+- Transactions & reliability (ACID, constraints)
+- Modern data (JSON, lists, PIVOT)
 
-👉 This is a COMPLETE foundation
+👉 This is a solid foundation
 
 ---
 
@@ -72,27 +73,34 @@ You can:
 
 Core concepts:
 
-- SELECT → retrieve data  
-- WHERE → filter  
+- SELECT → choose columns  
+- WHERE → filter rows  
 - ORDER BY → sort  
 - GROUP BY → aggregate  
 - HAVING → filter groups  
 - JOIN → connect tables  
+- WITH (CTE) → name a step of a query  
+- OVER (window function) → compute across rows without collapsing them  
 
 ---
 
 # Example Full Query
 
 ```sql
-SELECT c.name, SUM(o.amount) AS total
+SELECT c.customer_id, c.first_name, c.last_name,
+       ROUND(SUM(o.total_amount), 2) AS total
 FROM customers c
-JOIN orders o ON c.id = o.customer_id
-GROUP BY c.name
-HAVING total > 1000
-ORDER BY total DESC;
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.status <> 'cancelled'
+GROUP BY c.customer_id, c.first_name, c.last_name
+HAVING SUM(o.total_amount) > 1000
+ORDER BY total DESC
+LIMIT 5;
 ```
 
-👉 Combines everything
+👉 Combines JOIN, WHERE, GROUP BY, HAVING, ORDER BY, and LIMIT
+
+(Group by the key, `customer_id`, not only by the name — two customers can share a name.)
 
 ---
 
@@ -100,10 +108,10 @@ ORDER BY total DESC;
 
 You learned:
 
-- Primary keys  
-- Foreign keys  
-- Normalization  
-- Clean schema design  
+- Primary keys (one unique ID per row)  
+- Foreign keys (links between tables)  
+- Normalization (1NF, 2NF, 3NF)  
+- Constraints (`NOT NULL`, `CHECK`, `UNIQUE`)  
 
 ---
 
@@ -117,8 +125,9 @@ You learned:
 
 # Performance Review
 
-- Index = faster queries  
-- Trade-offs exist  
+- An index speeds up searches that return **few** rows  
+- Indexes slow down writes and use extra space  
+- DuckDB is fast even without indexes (columnar storage)  
 - Think about scale  
 
 ---
@@ -126,7 +135,8 @@ You learned:
 # Transactions Review
 
 - BEGIN / COMMIT / ROLLBACK  
-- ACID properties  
+- ACID: Atomicity, Consistency, Isolation, Durability  
+- After an error, the transaction must be rolled back  
 - Reliability matters  
 
 ---
@@ -135,8 +145,10 @@ You learned:
 
 - Missing JOIN condition ❌  
 - Confusing WHERE vs HAVING ❌  
+- Selecting a column that is neither grouped nor aggregated ❌  
+- Using `= NULL` instead of `IS NULL` ❌  
+- `COUNT(*)` after a LEFT JOIN ❌  
 - Poor schema design ❌  
-- Ignoring NULL values ❌  
 
 ---
 
@@ -157,9 +169,9 @@ Think:
 SQL is used in:
 
 - Data analytics  
-- Business intelligence  
-- Backend systems  
-- Data engineering  
+- Business intelligence (dashboards and reports)  
+- Backend systems (websites and apps)  
+- Data engineering (moving and cleaning data)  
 
 ---
 
@@ -174,7 +186,9 @@ SQL is used in:
 
 # Simple Data Architecture
 
-Data → Database → Queries → Insights → Decisions
+Data sources → Database → Queries → Insights → Decisions
+
+(apps, files, APIs) → (tables) → (SQL) → (reports, dashboards) → (business actions)
 
 ---
 
@@ -191,9 +205,11 @@ Ask yourself:
 # Final Tips
 
 - Practice SQL regularly  
-- Work on real datasets  
+- Work on real datasets (public CSV files are a great start)  
 - Build small projects  
 - Stay curious  
+
+For the final exam (closed book): practice writing queries **by hand**.
 
 ---
 
@@ -214,8 +230,8 @@ If you can:
 After this course:
 
 - Practice more SQL  
-- Learn advanced topics  
-- Explore data tools  
+- Learn advanced topics (window functions, query tuning)  
+- Explore data tools (Python + pandas, BI tools, cloud databases)  
 
 ---
 
@@ -230,3 +246,7 @@ You didn’t just learn SQL.
 # Thank You 🙌
 
 You are now ready to use databases in the real world.
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

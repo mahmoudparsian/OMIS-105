@@ -1,6 +1,6 @@
 ---
-title: OMIS 105 - Week 9 (Flagship Expanded)
-author: Instructor
+title: OMIS 105 - Week 9 (Project & Integration)
+author: Dr. Mahmoud Parsian
 marp: true
 theme: default
 paginate: true
@@ -20,7 +20,7 @@ style: |
 
 - Why projects matter
 - What you are building
-- Project structure
+- Project requirements
 - Step-by-step guide
 - Example project
 - Common mistakes
@@ -31,10 +31,10 @@ style: |
 # Recap
 
 - You learned:
-  - SQL (SELECT, WHERE, JOIN, GROUP BY)
+  - SQL (SELECT, WHERE, JOIN, GROUP BY, CTEs, window functions)
   - Design (normalization)
   - Performance (indexing)
-  - Reliability (transactions)
+  - Reliability (transactions and constraints)
 
 👉 Today: Put EVERYTHING together
 
@@ -58,39 +58,45 @@ A **mini database system**:
 - Relationships (keys)
 - Data (realistic)
 - Queries (analysis)
+- A transaction (reliability)
 
 ---
 
 # Project Requirements
 
-Minimum (see the full capstone spec for details):
+Minimum (full details: `lab09_student.md`, the capstone specification):
 
-- 5 tables
-- Primary keys
-- Foreign keys
-- 20+ rows per table
-- 10 meaningful queries
+- **5 tables**, in 3NF
+- Primary keys and foreign keys
+- At least one **many-to-many** relationship (with a junction table)
+- **20+ rows** per main table
+- **10** meaningful queries
+- 2 views and 3 indexes
+- 1 transaction demo
 
 ---
 
-# Required Queries
+# Required Queries (10 in total)
 
-1. Basic SELECT (WHERE, ORDER BY)
-2. JOINs (including a 3+ table JOIN)
-3. GROUP BY (with HAVING or CASE)
-4. Window functions or CTEs
-5. A transaction (with error handling)
+| Category | How many |
+|----------|----------|
+| Basic SELECT (WHERE, ORDER BY) | 2 |
+| JOINs (including a 3+ table JOIN) | 3 |
+| GROUP BY (with HAVING or CASE) | 2 |
+| Window functions or CTEs | 2 |
+| Transaction (with error handling) | 1 |
 
 ---
 
 # Choose a Domain
 
-Pick something simple:
+Pick something you understand:
 
 - E-commerce
 - Bookstore
 - Food delivery
 - Movie database
+- Fitness gym
 
 👉 Keep it manageable
 
@@ -98,19 +104,26 @@ Pick something simple:
 
 # Example: E-commerce
 
-Tables:
+Tables (this is our ShopSmart data):
 
 - customers
-- orders
+- categories
 - products
+- orders
+- order_items
 
 ---
 
 # Example Schema
 
-Customers(id, name)  
-Orders(id, customer_id, product_id, amount)  
-Products(id, name, price)
+customers(**customer_id**, first_name, last_name, email)  
+categories(**category_id**, category_name)  
+products(**product_id**, product_name, category_id → categories, price)  
+orders(**order_id**, customer_id → customers, order_date, status)  
+order_items(**item_id**, order_id → orders, product_id → products, quantity, unit_price)
+
+👉 `order_items` is the **junction table**: one order has many products,
+and one product appears in many orders (many-to-many).
 
 ---
 
@@ -118,23 +131,25 @@ Products(id, name, price)
 
 Ask:
 
-👉 “What are the main entities?”
+👉 “What are the main entities (things)?”
 
-👉 “How are they connected?”
+👉 “How are they connected?” (one-to-many? many-to-many?)
 
 ---
 
 # Step 2: Define Keys
 
-- Primary keys (id)
-- Foreign keys (relationships)
+- Primary keys (one per table)
+- Foreign keys (one for each relationship)
+- A junction table for each many-to-many relationship
 
 ---
 
 # Step 3: Insert Data
 
-- At least 10 rows per table
-- Make it realistic
+- At least **20 rows** per main table
+- Make it realistic (real-sounding names, valid dates)
+- Include some edge cases (a customer with no orders, a NULL where allowed)
 
 ---
 
@@ -143,10 +158,10 @@ Ask:
 Start simple:
 
 ```sql
-SELECT * FROM customers;
+SELECT * FROM customers LIMIT 10;
 ```
 
-Then build complexity
+Then build complexity: filters, JOINs, GROUP BY, CTEs, window functions.
 
 ---
 
@@ -155,20 +170,27 @@ Then build complexity
 Examples:
 
 👉 “Who is the top customer?”  
-👉 “What product generates most revenue?”  
-👉 “Total sales per product?”
+👉 “Which product generates the most revenue?”  
+👉 “What are the total sales per product?”
 
 ---
 
 # Example Query
 
+👉 “Who are the top 3 customers by revenue?”
+
 ```sql
-SELECT c.name, SUM(o.amount) AS total
+SELECT c.customer_id, c.first_name, c.last_name,
+       ROUND(SUM(oi.quantity * oi.unit_price), 2) AS total
 FROM customers c
-JOIN orders o ON c.id = o.customer_id
-GROUP BY c.name
-ORDER BY total DESC;
+JOIN orders o       ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id    = oi.order_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+ORDER BY total DESC
+LIMIT 3;
 ```
+
+On the Week 9 data: Derek Mitchell (7,429.85), Eva Garcia (7,117.39), Aria Baker (6,108.70)
 
 ---
 
@@ -179,34 +201,40 @@ Don’t just run queries.
 👉 Explain what they mean
 
 Example:
-“Customer Alice generated the highest revenue”
+“Derek Mitchell is our top customer, with $7,429.85 in purchases.”
 
 ---
 
 # Deliverables
 
-You will submit:
+You will submit (details in `lab09_student.md`):
 
-- SQL file
-- Query results
-- 1-page explanation
+- Your **Marimo notebook** (.py) with all SQL code and outputs
+- Your **CSV data files** (if you used any)
+- Your **ER diagram** (an image, or inside the notebook)
+- A **5–8 minute presentation** in Week 10
 
 ---
 
-# Grading Criteria (Suggested)
+# Grading Weights
 
-- Correct schema (30%)
-- Correct queries (30%)
-- Insights (20%)
-- Clarity (20%)
+| Deliverable | Weight |
+|-------------|--------|
+| ER diagram | 15% |
+| Normalized schema (DDL) | 15% |
+| Sample data | 10% |
+| 10 SQL queries | 25% |
+| Transaction demo | 10% |
+| Views and indexes | 10% |
+| Presentation / write-up | 15% |
 
 ---
 
 # Common Mistakes
 
-- Too many tables ❌  
-- Too few relationships ❌  
-- Weak queries ❌  
+- Too many tables — more than you can finish ❌  
+- Too few relationships (no many-to-many) ❌  
+- Weak queries (only `SELECT *`) ❌  
 - No clear insights ❌  
 
 ---
@@ -215,22 +243,24 @@ You will submit:
 
 Start with:
 
-👉 3 tables → make them correct  
+👉 your 3 core tables → make them correct  
 
-Then expand if needed
+Then grow to the required **5 tables** (at least one junction table).
+
+Better to do 5 tables well than 15 badly.
 
 ---
 
 # In-Class Exercise
 
-Ask:
-
 👉 “What tables would you create for a food delivery app?”
 
-Guide students to:
-- users
-- orders
+Hints:
+- customers
 - restaurants
+- menu_items (each belongs to one restaurant)
+- orders
+- order_items (junction: orders ↔ menu_items)
 
 ---
 
@@ -253,7 +283,7 @@ Database project =
 # Summary
 
 - This is your capstone
-- Apply everything learned
+- Apply everything you learned
 - Focus on clarity and correctness
 
 ---
@@ -261,9 +291,9 @@ Database project =
 # What’s Next?
 
 Week 10:
-- Review
-- Big picture
-- Real-world context
+- Project presentations
+- Review and the big picture
+- Modern data: JSON, PIVOT, LIST, UNNEST
 
 ---
 
@@ -276,3 +306,7 @@ This is where you prove your skills.
 ---
 
 # Let’s Build 🚀
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

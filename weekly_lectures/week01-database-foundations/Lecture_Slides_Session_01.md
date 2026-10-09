@@ -1,27 +1,21 @@
 ---
-
-title: OMIS 105 - Week 1 (Flagship Expanded)
-
-author: Instructor
-
+title: OMIS 105 - Week 1 (Database Foundations)
+author: Dr. Mahmoud Parsian
 marp: true
-
 theme: default
-
 paginate: true
-
 class: lead
 style: |
   section {
     justify-content: flex-start;
   }
-
 ---
 
 # OMIS 105  
-## Database Management Systems  
+## Introduction to Database Management Systems  
 ## Week 1 — Foundations
 ## Instructor: Dr. Parsian
+
 ---
 
 # Agenda (Today)
@@ -62,7 +56,7 @@ Imagine Amazon without a database:
 
 # What is Data?
 
-Data = raw facts
+Data = raw facts, before anyone has organized or analyzed them
 
 Examples:
 
@@ -74,25 +68,24 @@ Examples:
 
 ### What is Metadata?
 
-Metadata in database tables is "**data about data**"
-—the underlying blueprint that defines how a table 
-is structured, organized, and governed rather than 
-the actual records stored inside it. 
+Metadata is "**data about data**": the blueprint that
+describes a table — its name, its columns, and their
+data types — not the records stored inside it.
 
 ```sql
--- metadata
+-- metadata: the structure of the table
 CREATE TABLE employees (
-  name  VARCHAR,
-  age   int,
-  salary int
+  name   VARCHAR,
+  age    INTEGER,
+  salary INTEGER
 );
 ```
 
 ```sql
--- data
-INSERT INTO employees 
+-- data: the actual records
+INSERT INTO employees
 VALUES
-('alex', 25, 78000);
+('Alex', 25, 78000);
 ```
 
 ---
@@ -103,13 +96,15 @@ Data → processed → Information
 
 Example:
 
-- **Raw Data**: sales transactions
+- **Raw data:** thousands of sales transactions
 
-- **Insight:** “Top-selling products in CA”
+- **Information:** “Top-selling products in CA”
 
-- **Insight:** “Top-5 Customers in NY”
+- **Information:** “Top-5 customers in NY”
 
-- **Insight:** “Total sales of iPhone 16 in December 2025”
+- **Information:** “Total sales of iPhone 16 in December 2025”
+
+Information helps people make **decisions**.
 
 
 ---
@@ -120,20 +115,21 @@ A structured collection of data
 
 Key properties:
 
-- Organized
+- Organized (stored in a known structure)
 
-- Persistent
+- Persistent (still there after you close the program)
 
-- Queryable
+- Queryable (you can ask it questions)
 
 ---
 
 # File System vs Database
 
-## File System (Excel / CSV)
-- No relationships
+## Files (Excel / CSV)
+- No relationships between files
 - Hard to maintain
 - Data duplication
+- No rules: anyone can type anything
 
 ## Database
 - Structured
@@ -144,15 +140,15 @@ Key properties:
 
 # Problem: Data Duplication
 
-| customer | order  | price |
-|----------|--------|-------|
+| customer | product | price |
+|----------|---------|-------|
 | Alice    | Laptop | 1800  |
 | Alice    | Phone  | 1200  |
 | Alice    | Phone  | 1100  |
 | Jane     | Laptop | 1900  |
 | Jane     | Phone  | 1400  |
 
-👉 What if name changes?
+👉 What if Alice changes her name? We must update **3** rows — and miss none.
 
 ---
 
@@ -178,19 +174,22 @@ Database Management System
 
 - Retrieve data
 
-- Ensure consistency
+- Ensure consistency (enforce rules)
 
-- Handle multiple users
+- Handle multiple users at the same time
+
+- Protect data (security, backups)
 
 ---
 
 # Examples of DBMS
 
-- **DuckDB**
+- **DuckDB** (our course tool)
 - MySQL
 - PostgreSQL
-- Snowflake
 - Oracle
+- SQL Server
+- Snowflake (in the cloud)
 
 ---
 
@@ -219,11 +218,11 @@ Data stored in tables:
 
 # Key Terms
 
-- Table
+- **Table:** all the records of one kind (e.g., products)
 
-- Row (record)
+- **Row** (record): one item (one product)
 
-- Column (attribute)
+- **Column** (attribute): one fact about every item (e.g., price)
 
 ---
 
@@ -233,13 +232,15 @@ Data stored in tables:
 
 Used to:
 
-- Create table
-
-- Query data
+- Create tables
 
 - Insert data
 
-- Update data
+- Query data
+
+- Update and delete data
+
+SQL is **declarative**: you say *what* you want, and the database decides *how* to get it.
 
 ---
 
@@ -247,6 +248,7 @@ Used to:
 
 ```sql
 SELECT 1;
+SELECT 2 + 3 AS answer;     -- 5
 ```
 
 👉 SQL can act like a calculator
@@ -257,11 +259,13 @@ SELECT 1;
 
 ```sql
 CREATE TABLE products (
-    product_id INTEGER,
+    product_id   INTEGER,
     product_name VARCHAR,
-    price INTEGER
+    price        INTEGER
 );
 ```
+
+Each column has a **name** and a **data type** (INTEGER = whole number, VARCHAR = text).
 
 ---
 
@@ -282,35 +286,44 @@ VALUES
 (23, 'Phone-11', 700),
 (35, 'Tablet-2', 500);
 ```
+
+The second form lists the columns. It is safer: the values go to the named columns.
+
 ---
 
 # Query Data
 
 ```sql
-SELECT * 
+SELECT *
 FROM products;
 ```
+
+`*` means "all columns". This returns all 6 rows we inserted.
 
 ---
 
 # Filter Data
 
 ```sql
-SELECT * 
+SELECT *
 FROM products
 WHERE price > 700;
 ```
+
+Returns: Laptop (1000), Phone-12 (800), Laptop-X (1200)
 
 ---
 
 # Compute Values
 
 ```sql
-SELECT name, 
+SELECT product_name,
        price,
        price * 0.9 AS discounted_price
 FROM products;
 ```
+
+`AS` gives the new column a name. The table itself does not change.
 
 ---
 
@@ -338,19 +351,23 @@ Think:
 
 # In-Class Exercise
 
-Ask students:
+Write the query:
 
-👉 “Find all products above $800”
+👉 “Find all products that cost more than $800.”
+
+(Answer: Laptop and Laptop-X)
 
 ---
 
 # Common Beginner Mistakes
 
-- Forgetting quotes
+- Forgetting quotes around text: `'Laptop'`
 
-- Confusing columns vs rows
+- Confusing columns and rows
 
-- Thinking SQL = programming
+- Forgetting the `;` at the end of a statement
+
+- Expecting SQL to work step by step like Python — you describe the result instead
 
 ---
 
@@ -409,3 +426,7 @@ You are not learning syntax.
 ---
 
 # Let’s Practice 🚀
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
