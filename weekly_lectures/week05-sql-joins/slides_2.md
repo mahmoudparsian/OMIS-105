@@ -10,6 +10,8 @@ footer: "Week 5: SQL Mastery — Part 3 (Advanced)"
 ## Week 5 — SQL Mastery (Part 3)
 ### Window Functions, CTEs, Set Ops, and Views
 
+> **Note:** This lecture is a preview. Its topics are **not included in the midterm exam**.
+
 ---
 
 # This Week's Goals
@@ -19,6 +21,25 @@ footer: "Week 5: SQL Mastery — Part 3 (Advanced)"
 3. Set operations (UNION, INTERSECT, EXCEPT)
 4. Creating and using Views
 5. Building analytical dashboards in SQL
+
+---
+
+# Setup: Load This Week's Data
+
+Run this once (from the `week05-sql-joins` folder):
+
+```sql
+CREATE OR REPLACE TABLE customers  AS SELECT * FROM read_csv('data/customers.csv');
+CREATE OR REPLACE TABLE orders     AS SELECT * FROM read_csv('data/orders.csv');
+CREATE OR REPLACE TABLE reviews    AS SELECT * FROM read_csv('data/reviews.csv');
+CREATE OR REPLACE TABLE categories AS SELECT * FROM read_csv('data/categories.csv');
+
+-- products.csv has only category_id; add the category name as "category"
+CREATE OR REPLACE TABLE products AS
+    SELECT p.*, c.category_name AS category
+    FROM read_csv('data/products.csv') AS p
+    JOIN categories AS c USING (category_id);
+```
 
 ---
 
@@ -34,12 +55,12 @@ SELECT category, AVG(price) FROM products GROUP BY category;
 -- One row per category
 ```
 
-Window functions compute across rows **without collapsing**:
+Window functions compute across a set of related rows **without collapsing** them:
 ```sql
 SELECT product_name, category, price,
        AVG(price) OVER (PARTITION BY category) AS cat_avg
 FROM products;
--- Every row retained, with the category average alongside
+-- Every row is kept, with its category's average next to it
 ```
 
 ---
@@ -54,6 +75,9 @@ function_name(...) OVER (
 )
 ```
 
+All three parts are optional. `OVER ()` with nothing inside means
+"the whole result is one window".
+
 ---
 
 # ROW_NUMBER — Numbering Rows
@@ -67,7 +91,8 @@ SELECT product_name, category, price,
 FROM products;
 ```
 
-Gives a sequential number — no ties.
+Gives a sequential number: 1, 2, 3, ... Every row gets a **different**
+number, even when two prices tie (the tie is broken arbitrarily).
 
 ---
 
@@ -81,11 +106,15 @@ FROM products
 LIMIT 10;
 ```
 
-| Price | RANK | DENSE_RANK |
-|-------|------|------------|
-| 500 | 1 | 1 |
-| 500 | 1 | 1 |
-| 450 | 3 | 2 |   ← RANK skips, DENSE_RANK doesn't
+How they handle **ties** (a small example — no two products in our data share a price, so you will not see ties there):
+
+| Price | ROW_NUMBER | RANK | DENSE_RANK |
+|-------|------------|------|------------|
+| 500 | 1 | 1 | 1 |
+| 500 | 2 | 1 | 1 |
+| 450 | 3 | 3 | 2 |
+
+← RANK skips 2 after a tie; DENSE_RANK does not skip
 
 ---
 
@@ -106,6 +135,10 @@ ORDER BY category, rn;
 
 Very common pattern in interviews and reports!
 
+The window function must go in a subquery (or CTE), because
+`WHERE` runs before window functions are computed.
+(DuckDB also offers a shortcut: `QUALIFY rn <= 3`.)
+
 ---
 
 # Running Aggregates
@@ -115,12 +148,16 @@ SELECT product_name, category, price,
        SUM(price) OVER (
            PARTITION BY category ORDER BY price
        ) AS running_total,
-       AVG(price) OVER (
+       ROUND(AVG(price) OVER (
            PARTITION BY category ORDER BY price
            ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
-       ) AS moving_avg
-FROM products;
+       ), 2) AS moving_avg
+FROM products
+ORDER BY category, price;
 ```
+
+- `running_total`: adds up prices from the cheapest product to the current one
+- `moving_avg`: averages the previous, current, and next row (3 rows)
 
 ---
 
@@ -130,14 +167,19 @@ Look at previous/next row values:
 
 ```sql
 SELECT order_id, order_date, total_amount,
-       LAG(total_amount)  OVER (ORDER BY order_date) AS prev_amount,
-       LEAD(total_amount) OVER (ORDER BY order_date) AS next_amount,
-       total_amount - LAG(total_amount) OVER (ORDER BY order_date)
+       LAG(total_amount)  OVER (ORDER BY order_date, order_id) AS prev_amount,
+       LEAD(total_amount) OVER (ORDER BY order_date, order_id) AS next_amount,
+       ROUND(total_amount
+             - LAG(total_amount) OVER (ORDER BY order_date, order_id), 2)
            AS change_from_prev
 FROM orders
-ORDER BY order_date
+ORDER BY order_date, order_id
 LIMIT 15;
 ```
+
+The first row has no previous row, so `LAG` returns `NULL`.
+We add `order_id` to `ORDER BY` because some days have two orders —
+this makes the order of rows exact.
 
 ---
 
@@ -152,6 +194,7 @@ ORDER BY price;
 ```
 
 Quartile 1 = cheapest 25%, Quartile 4 = most expensive 25%.
+(64 products ÷ 4 = 16 products per quartile.)
 
 ---
 
@@ -161,11 +204,11 @@ All regular aggregates work as window functions:
 
 ```sql
 SELECT product_name, category, price,
-       AVG(price) OVER (PARTITION BY category) AS cat_avg,
+       ROUND(AVG(price) OVER (PARTITION BY category), 2) AS cat_avg,
        MIN(price) OVER (PARTITION BY category) AS cat_min,
        MAX(price) OVER (PARTITION BY category) AS cat_max,
        COUNT(*)   OVER (PARTITION BY category) AS cat_count,
-       price - AVG(price) OVER (PARTITION BY category) AS diff_from_avg
+       ROUND(price - AVG(price) OVER (PARTITION BY category), 2) AS diff_from_avg
 FROM products
 ORDER BY category, price DESC;
 ```
@@ -183,17 +226,23 @@ FROM products
 ORDER BY category, price DESC;
 ```
 
+`SUM(price) OVER ()` is the total of **all** rows;
+`OVER (PARTITION BY category)` is the total of that row's category.
+
 ---
 
 # Cumulative Distribution
 
 ```sql
 SELECT product_name, price,
-       CUME_DIST() OVER (ORDER BY price) AS cumulative_pct,
-       PERCENT_RANK() OVER (ORDER BY price) AS pct_rank
+       ROUND(CUME_DIST() OVER (ORDER BY price), 3)    AS cumulative_pct,
+       ROUND(PERCENT_RANK() OVER (ORDER BY price), 3) AS pct_rank
 FROM products
 ORDER BY price;
 ```
+
+- `CUME_DIST`: share of rows with a price **≤** this one (0 to 1; the cheapest is 1/64 ≈ 0.016)
+- `PERCENT_RANK`: (rank − 1) / (rows − 1) — the cheapest is 0, the most expensive is 1
 
 ---
 
@@ -203,13 +252,14 @@ ORDER BY price;
 
 # Common Table Expressions (WITH)
 
-A CTE is a named temporary result set:
+A CTE (Common Table Expression) is a named, temporary result
+that exists only while this one query runs:
 
 ```sql
 WITH customer_totals AS (
     SELECT customer_id,
            COUNT(*) AS num_orders,
-           SUM(total_amount) AS total_spent
+           ROUND(SUM(total_amount), 2) AS total_spent
     FROM orders
     GROUP BY customer_id
 )
@@ -225,9 +275,9 @@ ORDER BY ct.total_spent DESC;
 # Why CTEs?
 
 - **Readability**: Name each logical step
-- **Reuse**: Reference the same CTE multiple times
-- **Decompose**: Break complex queries into parts
-- **Replace**: subqueries in FROM become named steps
+- **Reuse**: Refer to the same CTE more than once in the query
+- **Decompose**: Break a complex query into small parts
+- **Replace**: A subquery in `FROM` becomes a named step
 
 ---
 
@@ -238,7 +288,7 @@ WITH
   order_stats AS (
       SELECT customer_id,
              COUNT(*) AS num_orders,
-             SUM(total_amount) AS total_spent
+             ROUND(SUM(total_amount), 2) AS total_spent
       FROM orders GROUP BY customer_id
   ),
   top_customers AS (
@@ -252,6 +302,8 @@ WHERE c.customer_id IN (SELECT customer_id FROM top_customers)
 ORDER BY os.total_spent DESC;
 ```
 
+Each CTE can use the CTEs defined before it (`top_customers` reads `order_stats`).
+
 ---
 
 # CTEs vs Subqueries
@@ -261,13 +313,13 @@ ORDER BY os.total_spent DESC;
 SELECT c.first_name, sub.total
 FROM customers c
 INNER JOIN (
-    SELECT customer_id, SUM(total_amount) AS total
+    SELECT customer_id, ROUND(SUM(total_amount), 2) AS total
     FROM orders GROUP BY customer_id
 ) sub ON c.customer_id = sub.customer_id;
 
 -- CTE version (easier to read)
 WITH order_totals AS (
-    SELECT customer_id, SUM(total_amount) AS total
+    SELECT customer_id, ROUND(SUM(total_amount), 2) AS total
     FROM orders GROUP BY customer_id
 )
 SELECT c.first_name, ot.total
@@ -305,7 +357,11 @@ FROM customers WHERE state = 'NY'
 ORDER BY state, last_name;
 ```
 
-Both queries must have the same number of columns with compatible types.
+- Both queries must have the same number of columns, in the same order, with compatible types.
+- `ORDER BY` at the end sorts the **combined** result.
+- Result: 10 customers (7 in CA, 3 in NY). This one could also be
+  written as `WHERE state IN ('CA', 'NY')`; UNION is needed when the
+  rows come from **different** tables or queries.
 
 ---
 
@@ -323,11 +379,20 @@ EXCEPT
 SELECT customer_id FROM reviews;
 ```
 
+Like `UNION`, `INTERSECT` and `EXCEPT` remove duplicates.
+
+In our data, all 40 customers have ordered **and** reviewed,
+so `INTERSECT` returns 40 rows and `EXCEPT` returns **0 rows**.
+Try `SELECT product_id FROM products EXCEPT SELECT product_id FROM reviews;`
+— it returns the 8 products that have never been reviewed.
+
 ---
 
 # Views — Virtual Tables
 
-A **view** is a saved query that acts like a table:
+A **view** is a saved query that acts like a table.
+It stores the **query**, not the data — every time you use it,
+the query runs again on the current data.
 
 ```sql
 CREATE VIEW product_summary AS
@@ -348,7 +413,7 @@ INNER JOIN categories cat ON p.category_id = cat.category_id;
 ```sql
 -- Now query it like a regular table
 SELECT * FROM product_summary
-WHERE availability = 'Low Stock'
+WHERE availability = 'Low Stock'          -- 4 products in our data
 ORDER BY price DESC;
 
 -- Aggregate over the view
@@ -363,7 +428,7 @@ GROUP BY category_name;
 # Why Use Views?
 
 1. **Simplify** complex queries — write once, reuse
-2. **Security** — expose limited columns to users
+2. **Security** — in multi-user databases, let users see a view but not the full table
 3. **Abstraction** — change underlying tables without breaking apps
 4. **Consistency** — ensure everyone uses the same logic
 
@@ -396,6 +461,10 @@ FROM customers c
 LEFT JOIN order_stats os ON c.customer_id = os.customer_id;
 ```
 
+This view combines a CTE, a LEFT JOIN, `COALESCE`, and `CASE`.
+The LEFT JOIN keeps customers with no (non-cancelled) orders;
+`COALESCE` shows 0 for them, and `CASE` labels them `'Inactive'`.
+
 ---
 
 # Analytical Query: Revenue Trends
@@ -419,15 +488,21 @@ FROM monthly_revenue
 ORDER BY month;
 ```
 
+`DATE_TRUNC('month', order_date)` turns every date into the first day
+of its month (2024-03-17 → 2024-03-01), so all orders in a month group together.
+
 ---
 
 # Analytical Query: Customer RFM
 
 ```sql
 -- Recency, Frequency, Monetary analysis
+-- Recency is measured from the last date in the data (not today),
+-- because our sample orders end in February 2025.
 WITH rfm AS (
     SELECT customer_id,
-           DATEDIFF('day', MAX(order_date), CURRENT_DATE) AS recency,
+           DATEDIFF('day', MAX(order_date),
+                    (SELECT MAX(order_date) FROM orders)) AS recency,
            COUNT(*) AS frequency,
            ROUND(SUM(total_amount), 2) AS monetary
     FROM orders
@@ -443,6 +518,13 @@ FROM rfm r
 INNER JOIN customers c ON r.customer_id = c.customer_id
 ORDER BY r.monetary DESC;
 ```
+
+- **R**ecency: days since the last order (smaller is better)
+- **F**requency: number of orders (bigger is better)
+- **M**onetary: total spent (bigger is better)
+
+Each score is 1–4, and **4 is best**. That is why recency is sorted
+`DESC`: the customers who ordered most recently land in group 4.
 
 ---
 
@@ -465,9 +547,9 @@ SELECT product_name, price FROM products;
   - ROW_NUMBER, RANK, DENSE_RANK, NTILE
   - LAG, LEAD
   - Running SUM, AVG, etc.
-- **CTEs** (WITH): Named temporary result sets for readability
+- **CTEs** (WITH): Named, temporary results that make queries readable
 - **Set operations**: UNION, INTERSECT, EXCEPT
-- **Views**: Saved queries that act like virtual tables
+- **Views**: Saved queries that act like tables (they store the query, not the data)
 
 ---
 
@@ -497,3 +579,6 @@ You now have a comprehensive SQL toolkit!
 
 Thank you!
 
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
