@@ -1,5 +1,11 @@
 # SQL Joins in Action
 
+$$
+\newcommand{\Leftbowtie}{\mathbin{\bowtie \kern-0.4em \lhd}}
+\newcommand{\Rightbowtie}{\mathbin{\rhd \kern-0.4em \bowtie}}
+$$
+
+
 DuckDB supports a robust set of join operations, 
 ranging from standard relational SQL joins to highly 
 optimized, advanced extensions designed specifically 
