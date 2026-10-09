@@ -148,6 +148,21 @@ def _(con):
     return
 
 
+@app.cell
+def _(con):
+    # What is line_price? Compare it with unit_price and quantity * unit_price
+    con.sql("""
+        SELECT
+            COUNT(*) AS total_rows,
+            COUNT(*) FILTER (WHERE line_price = unit_price) AS equals_unit_price,
+            COUNT(*) FILTER (WHERE line_price = ROUND(quantity * unit_price, 2)) AS equals_qty_x_price
+        FROM orders_denorm;
+    """).show()
+    print("line_price is always a copy of unit_price (not quantity * unit_price).")
+    print("So it depends on product_id alone: a partial dependency. We drop it.")
+    return
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -213,13 +228,15 @@ def _(con):
 @app.cell
 def _(con):
     # Remaining: order_items (full dependency on composite key)
+    # unit_price is kept here on purpose: it records the price AT THE TIME OF
+    # THE ORDER (a product's price can change later). line_price is dropped.
     con.sql("""
         CREATE OR REPLACE TABLE order_items_2nf AS
         SELECT DISTINCT
             order_id,
             product_id,
             quantity,
-            line_price
+            unit_price
         FROM orders_denorm;
     """)
     con.sql("""
@@ -286,7 +303,10 @@ def _(mo):
     - **categories_3nf**(category_name) — or with a surrogate category_id
     - **products_3nf**(product_id, product_name, category_name, unit_price)
     - **orders_3nf**(order_id, order_date, status, customer_id)
-    - **order_items_3nf**(order_id, product_id, quantity, line_price)
+    - **order_items_3nf**(order_id, product_id, quantity, unit_price)
+
+    `line_price` is dropped: it was only a copy of `unit_price`.
+    A line total is computed when needed: `quantity * unit_price`.
 
     This matches our ShopSmart schema!
     """)

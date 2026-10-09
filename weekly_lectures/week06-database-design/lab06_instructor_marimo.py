@@ -84,9 +84,13 @@ def _(mo):
     ```
     order_id → order_date, status, customer_id
     customer_id → customer_name, customer_email, customer_city
-    product_id → product_name, category_name, unit_price
-    (order_id, product_id) → quantity, line_price
+    product_id → product_name, category_name, unit_price, line_price
+    (order_id, product_id) → quantity
     ```
+
+    Note: in this CSV, `line_price` is always equal to `unit_price` —
+    it is **not** quantity × unit_price (see the check below). So it
+    depends on `product_id` alone, and is dropped during normalization.
 
     Verify: `customer_id → customer_name`.
     """)
@@ -145,6 +149,21 @@ def _(con):
     return
 
 
+@app.cell
+def _(con):
+    con.execute(
+        """
+        -- What is line_price? All 100 rows equal unit_price;
+        -- only the 23 rows with quantity = 1 equal quantity * unit_price
+        SELECT COUNT(*) AS total_rows,
+               COUNT(*) FILTER (WHERE line_price = unit_price) AS equals_unit_price,
+               COUNT(*) FILTER (WHERE line_price = ROUND(quantity * unit_price, 2)) AS equals_qty_x_price
+        FROM orders_denorm
+        """
+    ).fetchdf()
+    return
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -181,10 +200,10 @@ def _(mo):
     **Q3.** (5 pts) Classify each FD as full, partial, or transitive with
     respect to the candidate key `(order_id, product_id)`:
 
-    - **Full**: `(order_id, product_id) → quantity, line_price`
+    - **Full**: `(order_id, product_id) → quantity`
     - **Partial**: `order_id → order_date, status, customer_id`
       (depends on only part of the key)
-    - **Partial**: `product_id → product_name, category_name, unit_price`
+    - **Partial**: `product_id → product_name, category_name, unit_price, line_price`
       (depends on only part of the key)
     - **Transitive**: `order_id → customer_id → customer_name,
       customer_email, customer_city`
@@ -278,7 +297,7 @@ def _(con):
     con.execute(
         """
         CREATE OR REPLACE TABLE order_items_2nf AS
-        SELECT DISTINCT order_id, product_id, quantity, line_price
+        SELECT DISTINCT order_id, product_id, quantity, unit_price
         FROM orders_denorm
         """
     )
@@ -336,7 +355,7 @@ def _(con):
     con.execute(
         """
         CREATE OR REPLACE TABLE order_items_3nf AS
-        SELECT DISTINCT order_id, product_id, quantity, line_price
+        SELECT DISTINCT order_id, product_id, quantity, unit_price
         FROM orders_denorm
         """
     )
@@ -471,7 +490,8 @@ def _(con):
                c.customer_id, c.first_name || ' ' || c.last_name AS customer_name,
                c.email AS customer_email, c.city AS customer_city,
                p.product_id, p.product_name, cat.category_name, oi.unit_price,
-               oi.quantity, ROUND(oi.quantity * oi.unit_price, 2) AS line_price
+               oi.quantity,
+               oi.unit_price AS line_price   -- the CSV's line_price is a copy of unit_price
         FROM orders o
         JOIN customers c ON o.customer_id = c.customer_id
         JOIN order_items oi ON o.order_id = oi.order_id
@@ -485,6 +505,23 @@ def _(con):
 @app.cell
 def _(con):
     con.execute("SELECT * FROM orders_denorm_view ORDER BY order_id LIMIT 10").fetchdf()
+    return
+
+
+@app.cell
+def _(con):
+    con.execute(
+        """
+        -- Proof that the view returns the same data: every original row is in it
+        -- (0 missing rows; the view has 607 rows, the CSV is a 100-row sample)
+        SELECT COUNT(*) AS missing_rows
+        FROM (
+            SELECT * FROM orders_denorm
+            EXCEPT
+            SELECT * FROM orders_denorm_view
+        )
+        """
+    ).fetchdf()
     return
 
 
