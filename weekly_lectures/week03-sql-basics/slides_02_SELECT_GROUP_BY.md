@@ -33,6 +33,24 @@ footer: "Week 3: SQL Mastery — Part 1 (Basics)"
 
 ---
 
+# Setup: Load This Week's Data
+
+Run this once (from the `week03-sql-basics` folder) before the examples:
+
+```sql
+CREATE OR REPLACE TABLE customers AS SELECT * FROM read_csv('data/customers.csv');
+CREATE OR REPLACE TABLE orders    AS SELECT * FROM read_csv('data/orders.csv');
+
+-- products.csv stores only a category_id. This adds the category name.
+-- (The JOIN keyword is explained in Week 4.)
+CREATE OR REPLACE TABLE products AS
+    SELECT p.*, c.category_name AS category
+    FROM read_csv('data/products.csv')   AS p
+    JOIN read_csv('data/categories.csv') AS c USING (category_id);
+```
+
+---
+
 # Session 1: Functions and Expressions
 
 ---
@@ -84,7 +102,7 @@ LIMIT 10;
 -- LIKE is case-sensitive
 SELECT * FROM products WHERE product_name LIKE '%pro%';  -- might miss 'Pro'
 
--- ILIKE is case-insensitive (DuckDB extension)
+-- ILIKE is case-insensitive (not standard SQL; DuckDB and PostgreSQL have it)
 SELECT * FROM products WHERE product_name ILIKE '%pro%'; -- finds 'Pro' too
 
 -- Multiple patterns
@@ -128,15 +146,18 @@ ORDER BY price DESC;
 
 # Date Functions
 
+⚠️ Write dates as `DATE '2024-01-01'`. A plain string
+like `'2024-01-01'` is text, and `DATEDIFF` gives an error.
+
 ```sql
 SELECT
     CURRENT_DATE                          AS today,
     CURRENT_TIMESTAMP                     AS now,
     EXTRACT(YEAR FROM DATE '2024-06-15')  AS yr,     -- 2024
     EXTRACT(MONTH FROM DATE '2024-06-15') AS mo,     -- 6
-    EXTRACT(DOW FROM DATE '2024-06-15')   AS dow,    -- day of week
-    DATE '2024-06-15' + INTERVAL 30 DAY   AS plus30,
-    DATEDIFF('day', '2024-01-01', '2024-06-15') AS diff  -- 166
+    EXTRACT(DOW FROM DATE '2024-06-15')   AS dow,    -- 6 (Saturday; Sunday = 0)
+    DATE '2024-06-15' + INTERVAL 30 DAY   AS plus30, -- 2024-07-15
+    DATEDIFF('day', DATE '2024-01-01', DATE '2024-06-15') AS diff  -- 166
 ;
 ```
 
@@ -152,7 +173,8 @@ WHERE EXTRACT(YEAR FROM order_date) = 2024
 ORDER BY order_date
 LIMIT 10;
 
--- Orders in the last 90 days
+-- Orders in the last 90 days (counted back from today)
+-- Our sample data ends in February 2025, so today this returns 0 rows.
 SELECT *
 FROM orders
 WHERE order_date >= CURRENT_DATE - INTERVAL 90 DAY;
@@ -162,7 +184,8 @@ WHERE order_date >= CURRENT_DATE - INTERVAL 90 DAY;
 
 # CASE Expressions
 
-Conditional logic inside SQL (like if/else):
+Conditional logic inside SQL (like if/else).
+DuckDB checks the `WHEN` lines **in order** and uses the first one that is true:
 
 ```sql
 SELECT product_name, price,
@@ -194,6 +217,10 @@ GROUP BY price_tier
 ORDER BY avg_price;
 ```
 
+Note: `GROUP BY price_tier` uses the alias from `SELECT`.
+DuckDB allows this. Many other databases do not —
+there you would repeat the whole `CASE` expression.
+
 ---
 
 # Type Conversion: CAST
@@ -204,13 +231,16 @@ SELECT
     CAST(42 AS VARCHAR)            AS num_to_text,
     CAST('2024-06-15' AS DATE)     AS text_to_date,
     CAST('99.95' AS DECIMAL(10,2)) AS text_to_num,
-    CAST(price AS INTEGER)         AS truncated_price
+    CAST(price AS INTEGER)         AS rounded_price  -- 321.52 → 322
 FROM products
 LIMIT 5;
 
--- DuckDB shorthand
+-- Shorthand (DuckDB and PostgreSQL)
 SELECT price::INTEGER FROM products LIMIT 5;
 ```
+
+⚠️ `CAST(... AS INTEGER)` **rounds** (9.99 → 10).
+Use `FLOOR()` or `TRUNC()` to drop the decimals instead.
 
 ---
 
@@ -245,8 +275,8 @@ FROM products
 GROUP BY category;
 ```
 
-Without GROUP BY: one result row for the entire table.
-With GROUP BY: one result row **per group**.
+Without GROUP BY: an aggregate gives one result row for the entire table.
+With GROUP BY: one result row **per group** (here, per category).
 
 ---
 
@@ -262,7 +292,12 @@ With GROUP BY: one result row **per group**.
 7. LIMIT    → restrict output
 ```
 
-This order matters! You cannot use aliases from SELECT in WHERE.
+This is the order in which the database **thinks** about a query —
+not the order in which you write it.
+
+In standard SQL, `WHERE` cannot use an alias from `SELECT`,
+because `WHERE` happens first. (DuckDB is more relaxed and
+often allows it, but other databases give an error.)
 
 ---
 
@@ -291,7 +326,7 @@ ORDER BY avg_price DESC;
 # GROUP BY with Multiple Columns
 
 ```sql
--- Orders by status and month
+-- Orders by year, month, and status
 SELECT
     EXTRACT(YEAR FROM order_date) AS yr,
     EXTRACT(MONTH FROM order_date) AS mo,
@@ -317,7 +352,12 @@ SELECT category, AVG(price) FROM products GROUP BY category;
 
 -- WRONG — product_name is neither grouped nor aggregated
 -- SELECT category, product_name, AVG(price) FROM products GROUP BY category;
+-- Binder Error: column "product_name" must appear in the GROUP BY clause
+-- or must be part of an aggregate function.
 ```
+
+Why? One category has many product names.
+SQL does not know which one to show.
 
 ---
 
@@ -358,7 +398,8 @@ Use HAVING for aggregate conditions.
 # Counting with Conditions
 
 ```sql
--- Count products in stock vs out of stock per category
+-- Conditional counting: COUNT ignores NULL, and CASE gives NULL
+-- when no WHEN matches, so only matching rows are counted
 SELECT category,
     COUNT(*) AS total,
     COUNT(CASE WHEN stock_quantity > 0 THEN 1 END) AS in_stock,
@@ -382,7 +423,7 @@ WHERE price > (SELECT AVG(price) FROM products)
 ORDER BY price DESC;
 ```
 
-The inner query runs first, returns a single value, then the outer query uses it.
+Think of it this way: the inner query runs first and returns a single value (the average price). Then the outer query uses that value.
 
 ---
 
@@ -404,6 +445,10 @@ WHERE customer_id NOT IN (
 );
 ```
 
+⚠️ If the subquery returns even one `NULL`,
+`NOT IN` returns **no rows at all**. Add
+`WHERE customer_id IS NOT NULL` inside the subquery to be safe.
+
 ---
 
 # Scalar Subqueries
@@ -412,7 +457,7 @@ Return a **single value** — can be used in SELECT:
 
 ```sql
 SELECT product_name, price,
-       price - (SELECT AVG(price) FROM products) AS diff_from_avg,
+       ROUND(price - (SELECT AVG(price) FROM products), 2) AS diff_from_avg,
        ROUND(price / (SELECT MAX(price) FROM products) * 100, 1)
            AS pct_of_max
 FROM products
@@ -483,7 +528,7 @@ GROUP BY category;
 
 ---
 
-# Conditional Aggregation
+# Aggregating by Status
 
 ```sql
 -- Revenue by order status
@@ -522,6 +567,7 @@ ORDER BY pct DESC;
 | Math | ROUND, CEIL, FLOOR, ABS, POWER, SQRT, MOD |
 | Date | EXTRACT, DATEDIFF, CURRENT_DATE, + INTERVAL |
 | Conditional | CASE WHEN, COALESCE, NULLIF |
+| Conversion | CAST, `::` |
 | Aggregate | COUNT, SUM, AVG, MIN, MAX, STRING_AGG |
 
 ---
@@ -538,14 +584,13 @@ ORDER BY pct DESC;
 
 # What Is Next?
 
-**Week 4: SQL Mastery — Part 2 (JOINs)**
-- INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN
+**Week 4: Aggregation and JOINs**
+- More practice with COUNT, SUM, AVG, MIN, MAX
+- INNER JOIN and LEFT JOIN
 - Combining multiple tables in one query
-- Complex multi-table reports
 
 ---
 
 # Questions?
 
 Thank you!
-

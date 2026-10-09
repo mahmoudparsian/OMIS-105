@@ -1,6 +1,6 @@
 ---
-title: OMIS 105 - Week 3 (Flagship Expanded)
-author: Instructor
+title: OMIS 105 - Week 3 (SELECT, WHERE, ORDER BY)
+author: Dr. Mahmoud Parsian
 marp: true
 theme: default
 paginate: true
@@ -21,7 +21,8 @@ style: |
 - SELECT basics
 - Filtering with WHERE
 - Sorting with ORDER BY
-- Multiple conditions
+- Multiple conditions (AND, OR)
+- LIMIT and computed columns
 - Thinking in questions
 - Hands-on practice
 
@@ -38,9 +39,12 @@ style: |
 
 # SQL Mindset (Important)
 
-SQL is NOT programming.
+SQL is a **declarative** language.
 
-👉 SQL = asking questions to data
+You describe **what** you want.
+The database decides **how** to get it.
+
+👉 SQL = asking questions of your data
 
 ---
 
@@ -70,7 +74,7 @@ SELECT * FROM sales;
 SELECT product, price FROM sales;
 ```
 
-👉 Only what you need
+👉 Ask only for the columns you need
 
 ---
 
@@ -81,24 +85,29 @@ SELECT * FROM sales
 WHERE price > 700;
 ```
 
-👉 Only rows that match condition
+👉 Keeps only the rows that match the condition
 
 ---
 
 # Comparison Operators
 
-- = (equal)
-- > (greater than)
-- < (less than)
-- >=, <=
+| Operator | Meaning |
+| :--- | :--- |
+| `=` | equal to |
+| `<>` or `!=` | not equal to |
+| `>` | greater than |
+| `<` | less than |
+| `>=` | greater than or equal to |
+| `<=` | less than or equal to |
 
 ---
 
 # Example Conditions
 
 ```sql
-WHERE price = 1000
-WHERE quantity >= 2
+SELECT * FROM sales WHERE price = 1000;     -- Laptop
+SELECT * FROM sales WHERE quantity >= 2;    -- Phone, Tablet
+SELECT * FROM sales WHERE product <> 'Phone'; -- Laptop, Tablet
 ```
 
 ---
@@ -110,7 +119,8 @@ SELECT * FROM sales
 WHERE product = 'Laptop';
 ```
 
-⚠️ Text needs quotes
+⚠️ Text values need **single** quotes: `'Laptop'`
+(numbers do not)
 
 ---
 
@@ -121,7 +131,7 @@ SELECT * FROM sales
 WHERE price > 700 AND quantity >= 2;
 ```
 
-👉 BOTH must be true
+👉 BOTH conditions must be true (result: Phone)
 
 ---
 
@@ -132,7 +142,9 @@ SELECT * FROM sales
 WHERE product = 'Laptop' OR product = 'Phone';
 ```
 
-👉 Either condition
+👉 At least ONE condition must be true (result: Laptop, Phone)
+
+Shorter form: `WHERE product IN ('Laptop', 'Phone')`
 
 ---
 
@@ -142,6 +154,8 @@ WHERE product = 'Laptop' OR product = 'Phone';
 SELECT * FROM sales
 ORDER BY price ASC;
 ```
+
+👉 Lowest first. `ASC` (ascending) is the default, so it can be left out.
 
 ---
 
@@ -158,7 +172,7 @@ ORDER BY price DESC;
 
 # Real Question
 
-👉 “What is the most expensive product?”
+👉 “Which product has the highest price?”
 
 ```sql
 SELECT * FROM sales
@@ -176,7 +190,10 @@ ORDER BY price DESC
 LIMIT 3;
 ```
 
-👉 Top 3 results
+👉 The top 3 rows
+
+⚠️ Without `ORDER BY`, `LIMIT` returns *any* 3 rows.
+The order is not guaranteed.
 
 ---
 
@@ -187,41 +204,52 @@ SELECT product, price * quantity AS revenue
 FROM sales;
 ```
 
-👉 SQL can calculate
+👉 SQL can calculate new values. `AS` gives the new column a name.
+
+| product | revenue |
+|---|---|
+| Laptop | 1000 |
+| Phone | 1600 |
+| Tablet | 1500 |
 
 ---
 
 # Business Questions
 
-- Which products are expensive?
-- Which products sell more?
-- What is total revenue per row?
+- Which products are expensive? → `WHERE`
+- Which products sell the most units? → `ORDER BY quantity DESC`
+- What is the revenue for each row? → `price * quantity`
 
 ---
 
 # In-Class Exercise
 
-Ask students:
+Write a query for each question:
 
-👉 “Find products with price > 700”
+👉 “Find products with a price greater than 700.”
 
-👉 “Find top 2 expensive products”
+👉 “Find the 2 most expensive products.”
+
+👉 “Find the product with the highest revenue.”
 
 ---
 
 # Common Mistakes
 
-- Forgetting quotes for text
-- Using = instead of >
-- Not understanding AND vs OR
+- Forgetting quotes around text: `WHERE product = Laptop` ❌
+- Using double quotes for text: `"Laptop"` means a *column name* ❌
+- Mixing up `AND` and `OR`
+- Using `LIMIT` without `ORDER BY`
 
 ---
 
 # Mental Model
 
-SELECT → what to show  
-WHERE → which rows  
+SELECT → which columns to show  
+FROM → which table  
+WHERE → which rows to keep  
 ORDER BY → how to sort  
+LIMIT → how many rows to return  
 
 ---
 
@@ -237,8 +265,9 @@ ORDER BY → how to sort
 
 # Summary
 
-- SQL = asking questions
-- WHERE filters data
+- SQL = asking questions of data
+- SELECT chooses columns
+- WHERE filters rows
 - ORDER BY sorts data
 - LIMIT gives top results
 
@@ -246,10 +275,10 @@ ORDER BY → how to sort
 
 # What’s Next?
 
-Week 4:
-- Aggregation (SUM, COUNT)
-- GROUP BY
-- HAVING
+Next lecture (`slides_02`):
+- String, math, and date functions
+- CASE expressions
+- GROUP BY and HAVING
 
 ---
 
@@ -257,8 +286,12 @@ Week 4:
 
 The more questions you ask, the better you get.
 
-👉 Practice = mastery
+👉 Practice leads to mastery
 
 ---
 
 # Let’s Practice 🚀
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

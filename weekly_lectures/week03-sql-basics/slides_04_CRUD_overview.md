@@ -14,12 +14,14 @@ A **Primary Key** is a column (or combination of columns) that uniquely identifi
 
 * **Unique:** No two rows can have the same primary key value.
 * **NOT NULL:** A primary key column can never contain `NULL`.
+* **One per table:** A table has at most one primary key (it may use several columns together).
 
 ---
 
 ## Example Schema: `products`
 
 We will use a simple store inventory table called `products`.
+Here we choose each `product_id` ourselves.
 
 ```sql
 CREATE TABLE products (
@@ -47,14 +49,36 @@ INSERT INTO products (product_id, name, category, price) VALUES
 ```
 
 #### Primary Key Constraint in Action
-If you try to insert a duplicate `product_id`, DuckDB will raise a Primary Key violation error:
+If you try to insert a duplicate `product_id`, DuckDB rejects the row with a primary key error:
 
 ```sql
 -- This will cause an error!
 INSERT INTO products (product_id, name, category, price) 
 VALUES (1, 'Smartphone', 'Electronics', 699.99);
--- Error: Constraint Error: PRIMARY KEY constraint failed
+-- Constraint Error: Duplicate key "product_id: 1" violates primary key constraint.
 ```
+
+#### Tip: Let DuckDB Choose the IDs (Auto-Increment)
+Choosing every ID by hand is easy to get wrong. A
+**sequence** can number new rows for you
+(1, 2, 3, ...). Then the `INSERT` leaves out `product_id`:
+
+```sql
+CREATE SEQUENCE product_id_seq START 1;
+
+CREATE TABLE products_auto (
+    product_id INTEGER PRIMARY KEY DEFAULT nextval('product_id_seq'),
+    name VARCHAR,
+    category VARCHAR,
+    price DECIMAL(10, 2)
+);
+
+INSERT INTO products_auto (name, category, price)
+VALUES ('Laptop', 'Electronics', 999.99);   -- product_id = 1
+```
+
+DuckDB has no `AUTO_INCREMENT` keyword; this is
+how DuckDB does it. Details: `slides_09_AUTO_INCREMENT_in_DuckDB.md`.
 
 ---
 
@@ -97,7 +121,7 @@ WHERE category = 'Electronics';
 
 ### 3. **U**pdate (Modify Data)
 
-The **Update** operation modifies existing records using the `UPDATE` statement. Always use the Primary Key in the `WHERE` clause to target specific records safely.
+The **Update** operation changes existing rows using the `UPDATE` statement. The `WHERE` clause chooses **which** rows change. Using the primary key in `WHERE` is the safest way to change exactly one row.
 
 ```sql
 -- Apply a discount to the Desk Chair (product_id = 3)
@@ -106,7 +130,7 @@ SET price = 129.99
 WHERE product_id = 3;
 ```
 
-#### Check Updated State
+#### Check the Updated Row
 ```sql
 SELECT * FROM products WHERE product_id = 3;
 ```
@@ -121,7 +145,7 @@ SELECT * FROM products WHERE product_id = 3;
 
 ### 4. **D**elete (Remove Data)
 
-The **Delete** operation removes rows using the `DELETE FROM` statement. Like `UPDATE`, target rows by their Primary Key to avoid accidentally removing unwanted data.
+The **Delete** operation removes rows using the `DELETE FROM` statement. Like `UPDATE`, use the primary key in `WHERE` so you remove only the row you mean.
 
 ```sql
 -- Remove Wireless Mouse (product_id = 2)
@@ -129,7 +153,7 @@ DELETE FROM products
 WHERE product_id = 2;
 ```
 
-#### Check Final Table State
+#### Check the Final Table
 ```sql
 SELECT * FROM products;
 ```
@@ -154,7 +178,28 @@ SELECT * FROM products;
 
 ---
 
-## Summary Key Points
+## Warning: `UPDATE` and `DELETE` Without `WHERE`
 
-1. **Primary Keys** enforce data integrity by guaranteeing each row is uniquely addressable.
-2. Always specify a **`WHERE` clause referencing the Primary Key** when executing `UPDATE` or `DELETE` queries to prevent updating or deleting the entire table by accident.
+```sql
+-- ⚠️ Do NOT run these. They show what can go wrong.
+UPDATE products SET price = 0;   -- changes EVERY row!
+DELETE FROM products;            -- removes EVERY row!
+```
+
+There is no "undo". **Safe habit:** first run a
+`SELECT` with the same `WHERE` clause. Check that it
+returns only the rows you want. Then run the
+`UPDATE` or `DELETE`.
+
+---
+
+## Key Points
+
+1. A **primary key** gives every row a unique, non-`NULL` identifier.
+2. An **auto-increment** key (a `SEQUENCE` in DuckDB) lets the database choose new IDs for you.
+3. **CRUD** = `INSERT` (Create), `SELECT` (Read), `UPDATE` (Update), `DELETE` (Delete).
+4. Always write a **`WHERE` clause** for `UPDATE` and `DELETE`. Without it, every row is changed or removed.
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

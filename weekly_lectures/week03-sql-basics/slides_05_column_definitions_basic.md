@@ -17,11 +17,11 @@ common SQL column definitions using DuckDB.
 | :--- | :--- | :--- |
 | **Data Types** | Category | Defines the type of data stored: `INTEGER` (whole numbers), `VARCHAR` (text), `DECIMAL` (numbers with decimals), `DATE` (dates), and `BOOLEAN` (true/false). |
 | **`PRIMARY KEY`** | Constraint | Uniquely identifies each row in a table. |
-| **`SEQUENCE`** | Property | Automatically assigns sequential numbers (1, 2, 3...) to new rows. |
-| **`NOT NULL`** | Constraint | Ensures a column cannot be left empty. |
+| **`SEQUENCE`** | Database object | A number counter. Used with `DEFAULT nextval(...)`, it gives new rows the numbers 1, 2, 3, ... (DuckDB's way to make an **auto-increment** column — see `slides_09`). |
+| **`NOT NULL`** | Constraint | Ensures a column always has a value (it cannot be `NULL`). |
 | **`UNIQUE`** | Constraint | Prevents duplicate values in a column. |
 | **`CHECK`** | Constraint | Enforces specific rules on column values (e.g., price must be greater than zero). |
-| **`DEFAULT`** | Property | Automatically fills in a default value if none is provided. |
+| **`DEFAULT`** | Column option | Fills in a value automatically when the `INSERT` does not provide one. |
 | **`FOREIGN KEY`** | Constraint | Links rows in one table to matching rows in another table. |
 
 ---
@@ -32,10 +32,10 @@ Let's build three related tables: `authors`, `books`, and `orders`.
 
 ###  1. Authors Table
 ```sql
+-- Demonstrates: PRIMARY KEY, SEQUENCE (auto-increment),
+--               NOT NULL, UNIQUE, DEFAULT
 CREATE SEQUENCE author_id_seq START 1;
 
--- Demonstrates: PRIMARY KEY, SEQUENCE, 
---               NOT NULL, UNIQUE, DEFAULT
 CREATE TABLE authors (
     author_id INTEGER PRIMARY KEY 
        DEFAULT nextval('author_id_seq'),
@@ -48,8 +48,8 @@ CREATE TABLE authors (
 
 ### 2. Books Table
 ```sql
--- Demonstrates: Foreign Keys, CHECK constraints, 
---               DECIMAL types
+-- Demonstrates: FOREIGN KEY, CHECK constraints,
+--               DECIMAL type
 CREATE SEQUENCE book_id_seq START 1;
 
 CREATE TABLE books (
@@ -61,15 +61,15 @@ CREATE TABLE books (
     stock_quantity INTEGER DEFAULT 0 CHECK (stock_quantity >= 0), -- Stock cannot be negative
     published_date DATE,
     
-    -- Foreign Key link: connects book_id to the author who wrote it
+    -- Foreign Key: author_id must match an author_id in authors
     FOREIGN KEY (author_id) REFERENCES authors(author_id)
 );
 ```
 
 ### 3. Orders Table
 ```sql
--- Demonstrates: BOOLEAN values, DEFAULT timestamps, 
---               multi-table Foreign Keys
+-- Demonstrates: BOOLEAN values, DEFAULT dates,
+--               a short-form (inline) Foreign Key
 
 CREATE SEQUENCE order_id_seq START 1;
 
@@ -88,6 +88,9 @@ CREATE TABLE orders (
 ## 3. Adding Sample Data
 
 Now let's insert some data into our tables.
+Notice that we **never** give `author_id`,
+`book_id`, or `order_id`. The sequences fill them
+in for us.
 
 ```sql
 -- Insert Authors
@@ -115,7 +118,8 @@ VALUES
 
 ## 4. Viewing the Data
 
-Here is what our tables look like after inserting rows:
+Here is what our tables look like after inserting rows.
+The ID columns were filled in by the sequences.
 
 ### `authors` Table
 
@@ -155,11 +159,15 @@ FROM orders;
 | `1` | `1` | `2` | `false` | `2026-10-07` |
 | `2` | `2` | `1` | `false` | `2026-10-07` |
 
+`is_shipped` and `order_date` came from their
+`DEFAULT` values. (`order_date` will show the day
+*you* run the query.)
+
 ---
 
 ## 5. What Happens When Rules Are Broken?
 
-DuckDB checks your rules (constraints) every time you insert or update data. If a rule is broken, DuckDB cancels the query and shows an error message.
+DuckDB checks your rules (constraints) every time you insert or update data. If a rule is broken, DuckDB cancels the statement, no row is saved, and you see an error message.
 
 ### Example 1: `CHECK` Constraint Error
 Trying to add a book with a negative price:
@@ -169,7 +177,7 @@ INSERT INTO books (title, author_id, price)
 VALUES ('Broken Book', 1, -5.00);
 ```
 **DuckDB Error Output:**
-> `Constraint Error: CHECK constraint failed: (price > 0)`
+> `Constraint Error: CHECK constraint failed on table books with expression CHECK((price > 0))`
 
 ---
 
@@ -181,7 +189,7 @@ INSERT INTO authors (first_name, last_name, email)
 VALUES ('Jane', 'Doe', 'jk@example.com');
 ```
 **DuckDB Error Output:**
-> `Constraint Error: Duplicate key "jk@example.com" violates unique constraint`
+> `Constraint Error: Duplicate key "email: jk@example.com" violates unique constraint.`
 
 ---
 
@@ -193,43 +201,39 @@ INSERT INTO orders (book_id, quantity)
 VALUES (999, 1);
 ```
 **DuckDB Error Output:**
-> `Constraint Error: Violates foreign key constraint`
-
-* View Table 
-
-```sql
-memory D SELECT * FROM orders;
-┌──────────┬───────────────┬──────────────────────────────────────────────────┬────────────┐
-│ order_id │    amount     │                      status                      │ created_at │
-│  int32   │ decimal(10,2) │ enum('valid', 'cancelled', 'pending', 'unknown') │    date    │
-├──────────┼───────────────┼──────────────────────────────────────────────────┼────────────┤
-│       10 │        234.56 │ valid                                            │ 2026-03-23 │
-│       20 │        500.55 │ pending                                          │ 2026-03-29 │
-└──────────┴───────────────┴──────────────────────────────────────────────────┴────────────┘
-```
----
-
-# 6. DuckDB ENUM Type Example
-
-An `ENUM` (Enumeration) is a custom data type that restricts column values to a specific set of allowed text options.
+> `Constraint Error: Violates foreign key constraint because key "book_id: 999" does not exist in the referenced table`
 
 ---
 
-### 6.0 Simple Example with ENUM
+## 6. The `ENUM` Data Type
 
-* Create a Table with an ENUM column:
+An `ENUM` (short for *enumeration*) is a data type
+that allows **only** the values in a fixed list,
+for example `'pending'`, `'shipped'`, `'delivered'`.
+
+There are two ways to use it:
+
+* **6.1** — write the list directly in the column definition.
+* **6.2** — create a **named** `ENUM` type once, then reuse it.
+
+---
+
+### 6.1 Simple Example: an Inline ENUM Column
+
+We use a new table name, `simple_orders`, because
+`orders` already exists from Section 2.
 
 ```sql
-memory D CREATE TABLE orders (
-      order_id INT NOT NULL,
-      amount DECIMAL(10, 2) NOT NULL,
-      status ENUM('valid', 'cancelled', 'pending', 'unknown'),
-      created_at DATE NOT NULL
-);
+memory D CREATE TABLE simple_orders (
+             order_id INTEGER NOT NULL,
+             amount DECIMAL(10, 2) NOT NULL,
+             status ENUM('valid', 'cancelled', 'pending', 'unknown'),
+             created_at DATE NOT NULL
+         );
 
-memory D DESC orders;
+memory D DESCRIBE simple_orders;
 ┌──────────────────────────────────────────────────────────────────────┐
-│                                orders                                │
+│                            simple_orders                             │
 │                                                                      │
 │ order_id   integer                                          not null │
 │ amount     decimal                                          not null │
@@ -238,28 +242,30 @@ memory D DESC orders;
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-* Populate table
+Insert two valid rows and one invalid row:
 
 ```sql
-memory D INSERT INTO orders
-  VALUES (10, 234.56, 'valid', '2026-03-23');
+memory D INSERT INTO simple_orders
+         VALUES (10, 234.56, 'valid', '2026-03-23');
 
-memory D INSERT INTO orders
-  VALUES (20, 500.55, 'pending', '2026-03-29');
+memory D INSERT INTO simple_orders
+         VALUES (20, 500.55, 'pending', '2026-03-29');
 
-memory D INSERT INTO orders
-  VALUES (30, 100.22, 'pendinggg', '2026-03-29');
+memory D INSERT INTO simple_orders
+         VALUES (30, 100.22, 'pendinggg', '2026-03-29');
 Conversion Error:
 Could not convert string 'pendinggg' to UINT8
-
-LINE 3: (30, 100.22, 'pendinggg', '2026-03-29');
-                     ^
 ```
 
-* View Table
+The message is not very friendly. It means:
+*"`'pendinggg'` is not in the ENUM list."*
+(DuckDB stores each ENUM value as a small number,
+`UINT8`, behind the scenes.)
+
+Only the two valid rows were saved:
 
 ```sql
-memory D SELECT * FROM orders;
+memory D SELECT * FROM simple_orders;
 ┌──────────┬───────────────┬──────────────────────────────────────────────────┬────────────┐
 │ order_id │    amount     │                      status                      │ created_at │
 │  int32   │ decimal(10,2) │ enum('valid', 'cancelled', 'pending', 'unknown') │    date    │
@@ -267,28 +273,29 @@ memory D SELECT * FROM orders;
 │       10 │        234.56 │ valid                                            │ 2026-03-23 │
 │       20 │        500.55 │ pending                                          │ 2026-03-29 │
 └──────────┴───────────────┴──────────────────────────────────────────────────┴────────────┘
-memory D
 ```
 
 ---
 
-### 6.1. Create Custom ENUM Type and Table
+### 6.2 Create a Named ENUM Type, Then Use It
 
-First, define the `ENUM` type with the valid choices, 
-then use it in a table definition.
+First, define the `ENUM` type with the valid
+choices. Then use it in a table definition, just
+like `INTEGER` or `VARCHAR`.
 
 ```sql
--- Step 1: Create a custom ENUM type for order statuses
-CREATE TYPE order_status 
+-- Step 1: Create a named ENUM type for order statuses
+CREATE TYPE order_status
    AS ENUM ('pending', 'shipped', 'delivered', 'cancelled');
 
--- Step 2: Create a table using the custom ENUM type
+-- Step 2: Create a sequence for the auto-increment ID
+--         (a new name: order_id_seq is already used by orders)
+CREATE SEQUENCE customer_order_id_seq START 1;
 
-CREATE SEQUENCE order_id_seq START 1;
-
+-- Step 3: Create a table that uses the ENUM type
 CREATE TABLE customer_orders (
-    order_id INTEGER PRIMARY KEY 
-       DEFAULT nextval('order_id_seq'),
+    order_id INTEGER PRIMARY KEY
+       DEFAULT nextval('customer_order_id_seq'),
     customer_name VARCHAR NOT NULL,
     status order_status DEFAULT 'pending'
 );
@@ -296,22 +303,18 @@ CREATE TABLE customer_orders (
 
 ---
 
-### 6.2. Insert Valid Rows
+### 6.3 Insert Valid Rows
 
-Insert rows using values defined in the `order_status` ENUM.
+Insert rows using values from the `order_status` list.
 
 ```sql
 -- Insert rows with allowed status values
-INSERT INTO customer_orders (customer_name, status) 
-VALUES 
+INSERT INTO customer_orders (customer_name, status)
+VALUES
     ('Alice Smith', 'pending'),
     ('Bob Jones', 'shipped'),
     ('Charlie Brown', 'delivered');
-```
 
-### 6.3 Table Contents
-
-```sql
 SELECT * FROM customer_orders;
 ```
 
@@ -323,36 +326,42 @@ SELECT * FROM customer_orders;
 
 ---
 
-### 6.4 Triggering a Constraint Error
+### 6.4 Inserting a Value That Is Not in the List
 
-If you try to insert a value that is **not** part of the `ENUM` list, DuckDB rejects it and throws an error.
+If you insert a value that is **not** in the
+`ENUM` list, DuckDB rejects the row.
 
 ```sql
--- Attempt to insert an invalid status value ('processing')
-INSERT INTO customer_orders (customer_name, status) 
+-- 'processing' is not in the order_status list
+INSERT INTO customer_orders (customer_name, status)
 VALUES ('Diana Prince', 'processing');
 ```
 
-### 6.5 DuckDB Error Output
-
-> `Conversion Error: Could not convert string 'processing' to ENUM type 'order_status'`
+**DuckDB Error Output:**
+> `Conversion Error: Could not convert string 'processing' to UINT8`
 
 ---
 
-### 6.6 Key Benefits of ENUMs for Students
+### 6.5 Why Use ENUMs?
 
-1. **Data Integrity**: Stops spelling errors (e.g., `'shiped'` vs `'shipped'`).
-2. **Storage Efficiency**: DuckDB optimizes memory and disk storage by storing small integer keys under the hood while allowing you to query readable text strings.
+1. **Data integrity:** stops spelling mistakes, such as `'shiped'` instead of `'shipped'`.
+2. **Storage efficiency:** DuckDB stores each value as a small number behind the scenes, but you still read and write normal text.
 
 ---
 
 ## 7. Summary Checklist for Beginners
 
-| Constraint / Property | Purpose | Example |
+| Constraint / Option | Purpose | Example |
 | :--- | :--- | :--- |
-| `PRIMARY KEY` | Uniquely identifies each record | `id INTEGER PRIMARY KEY` |
-| `NOT NULL` | Requires a value (cannot be blank) | `name VARCHAR NOT NULL` |
+| `PRIMARY KEY` | Uniquely identifies each row | `id INTEGER PRIMARY KEY` |
+| `SEQUENCE` + `DEFAULT nextval(...)` | Auto-increment: numbers new rows 1, 2, 3, ... | `id INTEGER PRIMARY KEY DEFAULT nextval('id_seq')` |
+| `NOT NULL` | Requires a value (cannot be `NULL`) | `name VARCHAR NOT NULL` |
 | `UNIQUE` | Stops duplicate values | `email VARCHAR UNIQUE` |
-| `DEFAULT` | Fills in a default value if missing | `country VARCHAR DEFAULT 'USA'` |
-| `CHECK` | Verifies a condition is met | `CHECK (age >= 18)` |
-| `FOREIGN KEY` | Connects to a primary key in another table | `FOREIGN KEY (author_id) REFERENCES authors(author_id)` |
+| `DEFAULT` | Fills in a value when none is given | `country VARCHAR DEFAULT 'USA'` |
+| `CHECK` | Requires a condition to be true | `CHECK (age >= 18)` |
+| `FOREIGN KEY` | Must match a key in another table | `FOREIGN KEY (author_id) REFERENCES authors(author_id)` |
+| `ENUM` | Allows only values from a fixed list | `status ENUM('pending', 'shipped')` |
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

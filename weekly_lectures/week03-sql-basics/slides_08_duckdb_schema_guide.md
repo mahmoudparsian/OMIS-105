@@ -18,11 +18,12 @@ At the foundational level, table creation involves selecting core data types (`I
 ### Step 1.1: Simple Schema (`students` & `courses`)
 
 ```sql
--- Step-1. Create a sequence
+-- 1. Create a sequence (a number counter)
 CREATE SEQUENCE student_id_seq START 1;
 
--- Step-2: Create Students Table
--- student_id is an AUTO-INCREMENT
+-- 2. Create the students table.
+--    student_id is an auto-increment column:
+--    the sequence fills it in with 1, 2, 3, ...
 CREATE TABLE students (
     student_id INTEGER PRIMARY KEY DEFAULT nextval('student_id_seq'),
     first_name VARCHAR NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE students (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- 2. Create Courses Table
+-- 3. Create the courses table (a text primary key, no sequence needed)
 CREATE TABLE courses (
     course_code VARCHAR(10) PRIMARY KEY,
     course_name VARCHAR NOT NULL,
@@ -41,6 +42,10 @@ CREATE TABLE courses (
 ```
 
 ### Step 1.2: Insert Valid Rows
+
+We do **not** give `student_id`, `enrollment_date`,
+or `is_active`. DuckDB fills them in from their
+`DEFAULT` values.
 
 ```sql
 -- Insert into students
@@ -84,7 +89,7 @@ SELECT * FROM courses;
 INSERT INTO students (first_name, email)
 VALUES ('Charlie', 'charlie@example.edu');
 ```
-> **DuckDB Error:** `NOT NULL constraint failed: students.last_name`
+> **DuckDB Error:** `Constraint Error: NOT NULL constraint failed: students.last_name`
 
 #### Error 2: UNIQUE Violation
 ```sql
@@ -92,7 +97,7 @@ VALUES ('Charlie', 'charlie@example.edu');
 INSERT INTO students (first_name, last_name, email)
 VALUES ('Eve', 'Smith', 'alice@example.edu');
 ```
-> **DuckDB Error:** `Constraint Error: Duplicate key "alice@example.edu" violates unique constraint`
+> **DuckDB Error:** `Constraint Error: Duplicate key "email: alice@example.edu" violates unique constraint.`
 
 ---
 
@@ -145,7 +150,7 @@ SELECT * FROM enrollments;
 
 ### Step 2.3: Reading CSV Files & Creating Tables directly
 
-DuckDB makes loading external data easy. You can query CSV files directly or create persistent tables from them.
+DuckDB makes loading external data easy. You can query a CSV file directly, or create a table from it.
 
 Suppose you have a file named `professors.csv` with these contents:
 
@@ -161,7 +166,7 @@ prof_id,first_name,last_name,department,salary
 SELECT * FROM read_csv_auto('professors.csv');
 ```
 
-#### Option B: Create a persistent table directly from the CSV
+#### Option B: Create a table directly from the CSV
 ```sql
 -- DuckDB infers data types automatically
 CREATE TABLE professors AS 
@@ -178,10 +183,19 @@ CREATE TABLE strict_professors (
     salary DECIMAL(10,2) CHECK (salary > 0)
 );
 
--- Populate table from CSV
-INSERT INTO strict_professors 
+-- Populate the table from the CSV.
+-- The CSV columns must be in the same order as the table columns.
+INSERT INTO strict_professors
 SELECT * FROM read_csv_auto('professors.csv');
 ```
+
+Option C is the safest: every row is checked
+against the `PRIMARY KEY`, `NOT NULL`, and `CHECK`
+rules as it is loaded.
+
+> `read_csv_auto()` and `read_csv()` do the same
+> thing in current DuckDB versions. Both detect the
+> column names and types for you.
 
 ```sql
 SELECT * FROM strict_professors;
@@ -201,7 +215,7 @@ SELECT * FROM strict_professors;
 INSERT INTO enrollments (student_id, course_code, final_grade, score)
 VALUES (999, 'CS101', 'A', 90.00);
 ```
-> **DuckDB Error:** `Constraint Error: Violates foreign key constraint`
+> **DuckDB Error:** `Constraint Error: Violates foreign key constraint because key "student_id: 999" does not exist in the referenced table`
 
 #### Error 2: ENUM Type Violation
 ```sql
@@ -209,7 +223,9 @@ VALUES (999, 'CS101', 'A', 90.00);
 INSERT INTO enrollments (student_id, course_code, final_grade, score)
 VALUES (1, 'CS101', 'E', 80.00);
 ```
-> **DuckDB Error:** `Conversion Error: Could not convert string 'E' to ENUM type 'grade_letter'`
+> **DuckDB Error:** `Conversion Error: Could not convert string 'E' to UINT8`
+>
+> (This means *"`'E'` is not in the ENUM list."* DuckDB stores ENUM values as small numbers, `UINT8`, behind the scenes.)
 
 #### Error 3: CHECK Constraint Range Violation
 ```sql
@@ -217,18 +233,19 @@ VALUES (1, 'CS101', 'E', 80.00);
 INSERT INTO enrollments (student_id, course_code, final_grade, score)
 VALUES (2, 'DATA201', 'A', 105.00);
 ```
-> **DuckDB Error:** `Constraint Error: CHECK constraint failed: ((score >= 0.00) AND (score <= 100.00))`
+> **DuckDB Error:** `Constraint Error: CHECK constraint failed on table enrollments with expression CHECK(((score >= 0.00) AND (score <= 100.00)))`
 
 ---
 
 ## Level 3: Advanced Column Definitions & Data Structures
 
-DuckDB supports nested data structures, such as **LIST** (arrays), **STRUCT** (objects), and **MAP** (key-value pairs), as well as multi-column composite primary keys and generated columns.
+DuckDB supports nested data types: **LIST** (an ordered list of values), **STRUCT** (a record with named fields), and **MAP** (key-value pairs). It can also generate random **UUID** keys.
 
-### Step 3.1: Advanced Schema (`assignments_audit`)
+### Step 3.1: Advanced Schema (`assignment_submissions`)
 
 ```sql
 CREATE TABLE assignment_submissions (
+    -- UUID key: a random, unique ID (not 1, 2, 3, ...)
     submission_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     student_id INTEGER NOT NULL REFERENCES students(student_id),
     course_code VARCHAR(10) NOT NULL REFERENCES courses(course_code),
@@ -236,14 +253,14 @@ CREATE TABLE assignment_submissions (
     -- LIST column: ordered list of submission file names
     submitted_files VARCHAR[],
     
-    -- STRUCT column: nested key-value metadata object
+    -- STRUCT column: a nested record with fixed field names
     metadata STRUCT(
         submission_time TIMESTAMP, 
         ip_address VARCHAR, 
         file_size_mb DECIMAL(4,2)
     ),
     
-    -- MAP column: dynamic key-value pairs for test rubric scores
+    -- MAP column: flexible key-value pairs for rubric scores
     rubric_scores MAP(VARCHAR, DECIMAL(4,1))
 );
 ```
@@ -275,13 +292,19 @@ SELECT
     submitted_files[1] AS primary_file,
     metadata.submission_time AS submitted_at,
     metadata.file_size_mb AS size_mb,
-    element_at(rubric_scores, 'Code Quality') AS code_quality_score
+    rubric_scores['Code Quality'] AS code_quality_score
 FROM assignment_submissions;
 ```
 
 | submission_id | primary_file | submitted_at | size_mb | code_quality_score |
 | :--- | :--- | :--- | :--- | :--- |
 | `d8b2e1f4-...` | `main.py` | `2026-10-07 14:30:00` | `2.45` | `9.5` |
+
+Your `submission_id` will be different: it is random.
+Note that list positions in DuckDB start at **1**,
+so `submitted_files[1]` is the first file.
+For a MAP, `rubric_scores['Code Quality']` looks up
+the value stored under that key.
 
 ---
 
@@ -291,7 +314,8 @@ FROM assignment_submissions;
 | :--- | :--- | :--- | :--- |
 | **Basic Types** | `INTEGER`, `VARCHAR`, `DECIMAL(p,s)`, `DATE`, `BOOLEAN` | Core standard SQL data types. | `price DECIMAL(8,2)` |
 | **Identity** | `PRIMARY KEY` | Uniquely identifies rows; cannot be null. | `id INTEGER PRIMARY KEY` |
-| **Identity** | `AUTOINCREMENT` | Automatically assigns 1, 2, 3... to new rows. | `id INTEGER PRIMARY KEY AUTOINCREMENT` |
+| **Identity** | `SEQUENCE` + `DEFAULT nextval()` | Auto-increment: assigns 1, 2, 3, ... to new rows. (DuckDB has no `AUTOINCREMENT` keyword.) | `CREATE SEQUENCE id_seq START 1;` then `id INTEGER PRIMARY KEY DEFAULT nextval('id_seq')` |
+| **Identity** | `UUID DEFAULT gen_random_uuid()` | Assigns a random, unique ID to new rows. | `id UUID PRIMARY KEY DEFAULT gen_random_uuid()` |
 | **Integrity** | `NOT NULL` | Disallows `NULL` values. | `name VARCHAR NOT NULL` |
 | **Integrity** | `UNIQUE` | Enforces distinct values across all rows. | `email VARCHAR UNIQUE` |
 | **Integrity** | `CHECK (condition)` | Validates logic expression on column value. | `CHECK (age >= 18)` |
@@ -301,3 +325,8 @@ FROM assignment_submissions;
 | **Advanced** | `LIST` (`TYPE[]`) | Dynamic array of elements. | `tags VARCHAR[]` |
 | **Advanced** | `STRUCT(...)` | Nested record with fixed field names. | `user STRUCT(name VARCHAR, age INT)` |
 | **Advanced** | `MAP(key, value)` | Dynamic map of key-value pairs. | `attributes MAP(VARCHAR, VARCHAR)` |
+| **Advanced** | `MAP(key, value)` | Flexible key-value pairs. | `scores MAP(VARCHAR, DECIMAL(4,1))` |
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

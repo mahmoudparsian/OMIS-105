@@ -1,48 +1,72 @@
-# AUTO-INCREMENT Column in DuckDB
+# AUTO-INCREMENT Columns in DuckDB
 
-1. DuckDB does not directly support 
-   AUTO-INCREMENT in `CREATE TABLE` syntax. 
-   DuckDB implements and manages 
-   auto-incrementing fields/columns 
-   explicitly using `SEQUENCE`s.
+* An **auto-increment** column is a column that the
+  database fills in **for you**, with the next
+  number in a series: 1, 2, 3, ...
 
-2. MySQL has a concept of AUTO-INCREMENT 
-   feature, demonstrated below.
+* It is most often used for a **primary key**
+  (`customer_id`, `order_id`, ...). You never have
+  to invent a new ID yourself.
 
+* **DuckDB has no `AUTO_INCREMENT` keyword.**
+  Instead, you build the same behavior from two
+  pieces: a **`SEQUENCE`** (a number counter) and a
+  **`DEFAULT nextval(...)`** on the column.
 
-## 1. AUTO-INCREMENT in MySQL
+*All DuckDB examples were tested with DuckDB v1.5.5.*
 
-In MySQL, the `AUTO_INCREMENT` attribute automatically 
-generates a unique, sequential number for a column 
-(typically a `PRIMARY KEY`) whenever a new row is 
-added. By default, it starts at `1` and increases 
-by `1` with each new record.
+---
+
+## 1. Why Use an Auto-Increment Key?
+
+| Without auto-increment | With auto-increment |
+| :--- | :--- |
+| You must choose a new ID for every row. | The database chooses the ID. |
+| Two people may pick the same ID. | Every new ID is different. |
+| `INSERT` must list the ID. | `INSERT` can leave the ID out. |
+
+An auto-increment ID is a **surrogate key**: a
+number with no business meaning. Its only job is
+to identify one row.
+
+---
+
+## 2. Auto-Increment in Other Databases
+
+Every database system offers this feature, but the
+**syntax is different** in each one:
+
+| Database | How to declare it |
+| :--- | :--- |
+| MySQL | `id INT AUTO_INCREMENT PRIMARY KEY` |
+| PostgreSQL | `id SERIAL PRIMARY KEY` or `id INT GENERATED ALWAYS AS IDENTITY` |
+| SQLite | `id INTEGER PRIMARY KEY AUTOINCREMENT` |
+| SQL Server | `id INT IDENTITY(1,1) PRIMARY KEY` |
+| **DuckDB** | `CREATE SEQUENCE ...` + `id INTEGER PRIMARY KEY DEFAULT nextval('...')` |
+
+None of the first four forms work in DuckDB:
 
 ```sql
-% mysql -u root -p
-Enter password:
-Welcome to the MySQL monitor.  
-Commands end with ; or \g.
-Your MySQL connection id is 9
-Server version: 26.7.0 MySQL Community Server - GPL
+CREATE TABLE t (id INTEGER PRIMARY KEY AUTOINCREMENT);
+-- Parser Error: syntax error at or near "AUTOINCREMENT"
 
-mysql> show databases;
-+--------------------+
-| Database           |
-+--------------------+
-| db11               |
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-+--------------------+
-5 rows in set (0.005 sec)
+CREATE TABLE t (id SERIAL PRIMARY KEY);
+-- Catalog Error: Type with name SERIAL does not exist!
 
-mysql> use db11;
-Database changed
-mysql> show tables;
-Empty set (0.002 sec)
+CREATE TABLE t (id INTEGER GENERATED ALWAYS AS IDENTITY);
+-- Not implemented Error: Constraint not implemented!
+```
 
+---
+
+## 3. Example: AUTO_INCREMENT in MySQL
+
+In MySQL, the `AUTO_INCREMENT` attribute generates
+a unique, sequential number whenever a new row is
+added. By default, it starts at `1` and goes up by
+`1` for each new row.
+
+```sql
 mysql> CREATE TABLE users (
     ->     id INT AUTO_INCREMENT PRIMARY KEY,
     ->     username VARCHAR(50) NOT NULL,
@@ -60,13 +84,14 @@ mysql> DESC users;
 +----------+--------------+------+-----+---------+----------------+
 3 rows in set (0.006 sec)
 
-mysql> INSERT INTO users (username, email) 
-VALUES 
-('alice_dev', 'alice@example.com'),
-('bob_codes', 'bob@example.com'),
-('charlie_ux', 'charlie@example.com');
+mysql> INSERT INTO users (username, email)
+    -> VALUES
+    -> ('alice_dev', 'alice@example.com'),
+    -> ('bob_codes', 'bob@example.com'),
+    -> ('charlie_ux', 'charlie@example.com');
+Query OK, 3 rows affected (0.004 sec)
 
-mysql> SELECT * from users;
+mysql> SELECT * FROM users;
 +----+------------+---------------------+
 | id | username   | email               |
 +----+------------+---------------------+
@@ -77,311 +102,321 @@ mysql> SELECT * from users;
 3 rows in set (0.001 sec)
 ```
 
-## 2. AUTO-INCREMENT in DuckDB
+Notice: the `INSERT` never mentions `id`.
+MySQL fills it in.
 
-The Correct way in DuckDB v1.5.5:
+---
 
-You must explicitly create a `SEQUENCE` first, 
-and then pass `nextval('your_sequence_name')` 
-as the default value for the column.
-
-The following examples are in DuckDB:
+## 4. Auto-Increment in DuckDB: Three Steps
 
 ```sql
--- Step-1. Create a sequence
+-- Step 1. Create a sequence (a counter that starts at 1)
 CREATE SEQUENCE user_id_seq START 1;
 
--- Step-2. Create the table using nextval()
+-- Step 2. Use the sequence as the column's DEFAULT value
 CREATE TABLE users (
-  user_id BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
-  username VARCHAR NOT NULL,
-  email VARCHAR
-);
-
-INSERT INTO users(username, email)
-VALUES
-    ('maxp', 'maxp@yahoo.com'),
-    ('janexd', 'janexd@gmail.com'), 
-    ('alexp', 'alexp@yahoo.com');
- 
-SELECT * FROM users;
-┌─────────┬──────────┬──────────────────┐
-│ user_id │ username │      email       │
-│  int64  │ varchar  │     varchar      │
-├─────────┼──────────┼──────────────────┤
-│       1 │ maxp     │ maxp@yahoo.com   │
-│       2 │ janexd   │ janexd@gmail.com │
-│       3 │ alexp    │ alexp@yahoo.com  │
-└─────────┴──────────┴──────────────────┘
- 
-INSERT INTO users(user_id, username, email)
-VALUES
- (1000, 'dddmaxp', 'dddmaxp@yahoo.com'),
- (1003, 'dddjanexd', 'ddjanexd@gmail.com'),
- (1007, 'dddalexp', 'dddalexp@yahoo.com');
- 
- SELECT * FROM users;
-┌─────────┬───────────┬────────────────────┐
-│ user_id │ username  │       email        │
-│  int64  │  varchar  │      varchar       │
-├─────────┼───────────┼────────────────────┤
-│       1 │ maxp      │ maxp@yahoo.com     │
-│       2 │ janexd    │ janexd@gmail.com   │
-│       3 │ alexp     │ alexp@yahoo.com    │
-│    1000 │ dddmaxp   │ dddmaxp@yahoo.com  │
-│    1003 │ dddjanexd │ ddjanexd@gmail.com │
-│    1007 │ dddalexp  │ dddalexp@yahoo.com │
-└─────────┴───────────┴────────────────────┘
- 
-INSERT INTO users(username, email)
-VALUES
-    ('maxppppp', 'maxpppp@yahoo.com'),
-    ('janexdppp', 'janexdppp@gmail.com'),
-    ('alexpppp', 'alexpppp@yahoo.com');
- 
-SELECT * FROM users;
-┌─────────┬───────────┬─────────────────────┐
-│ user_id │ username  │        email        │
-│  int64  │  varchar  │       varchar       │
-├─────────┼───────────┼─────────────────────┤
-│       1 │ maxp      │ maxp@yahoo.com      │
-│       2 │ janexd    │ janexd@gmail.com    │
-│       3 │ alexp     │ alexp@yahoo.com     │
-│    1000 │ dddmaxp   │ dddmaxp@yahoo.com   │
-│    1003 │ dddjanexd │ ddjanexd@gmail.com  │
-│    1007 │ dddalexp  │ dddalexp@yahoo.com  │
-│       4 │ maxppppp  │ maxpppp@yahoo.com   │
-│       5 │ janexdppp │ janexdppp@gmail.com │
-│       6 │ alexpppp  │ alexpppp@yahoo.com  │
-└─────────┴───────────┴─────────────────────┘
- 
-
-CREATE TABLE test_users (
-    user_id INT PRIMARY KEY DEFAULT nextval('user_id_seq'),
+    user_id  BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
     username VARCHAR NOT NULL,
-    email VARCHAR
+    email    VARCHAR
 );
- 
-INSERT INTO test_users (username, email)
-VALUES 
-('alex', 'a@yahoo.com'),
-('bob', 'b@yahoo.com');
- 
-SELECT * 
-FROM  test_users;
-┌─────────┬──────────┬─────────────┐
-│ user_id │ username │    email    │
-│  int32  │ varchar  │   varchar   │
-├─────────┼──────────┼─────────────┤
-│       7 │ alex     │ a@yahoo.com │
-│       8 │ bob      │ b@yahoo.com │
-└─────────┴──────────┴─────────────┘
+
+-- Step 3. Insert rows WITHOUT the user_id column
+INSERT INTO users (username, email)
+VALUES
+    ('alex',  'alex@example.com'),
+    ('janet', 'janet@example.com'),
+    ('mo',    'mo@example.com');
+
+SELECT * FROM users;
 ```
 
-## 3. More Examples in DuckDB
-
-```sql
-memory D CREATE SEQUENCE user_id_seq START 1;
-
-memory D -- 2. Create the table using nextval()
-memory D CREATE TABLE users (
-           user_id BIGINT PRIMARY KEY 
-              DEFAULT nextval('user_id_seq'),
-           username VARCHAR NOT NULL,
-           email VARCHAR
-         );
-
-memory D DESC users;
-┌──────────────────────────────────────────────────────────┐
-│                          users                           │
-│                                                          │
-│ user_id  bigint  not null default nextval('user_id_seq') │
-│ username varchar not null                                │
-│ email    varchar                                         │
-└──────────────────────────────────────────────────────────┘
-
-memory D INSERT INTO users(username, email)
-         VALUES
-         ('alexp', 'alexp@yahoo.com'),
-         ('janet', 'janet@gmail.com'),
-         ('mo', 'mo@gmail.com');
-
-memory D SELECT * FROM users;
-┌─────────┬──────────┬─────────────────┐
-│ user_id │ username │      email      │
-│  int64  │ varchar  │     varchar     │
-├─────────┼──────────┼─────────────────┤
-│       1 │ alexp    │ alexp@yahoo.com │
-│       2 │ janet    │ janet@gmail.com │
-│       3 │ mo       │ mo@gmail.com    │
-└─────────┴──────────┴─────────────────┘
-memory D
-memory D INSERT INTO users(username, email)
-         VALUES
-         ('ted', 'ted@yahoo.com'),
-         ('austin', 'austin@gmail.com'),
-         ('max', 'max@gmail.com');
-
-memory D SELECT * FROM users;
-┌─────────┬──────────┬──────────────────┐
-│ user_id │ username │      email       │
-│  int64  │ varchar  │     varchar      │
-├─────────┼──────────┼──────────────────┤
-│       1 │ alexp    │ alexp@yahoo.com  │
-│       2 │ janet    │ janet@gmail.com  │
-│       3 │ mo       │ mo@gmail.com     │
-│       4 │ ted      │ ted@yahoo.com    │
-│       5 │ austin   │ austin@gmail.com │
-│       6 │ max      │ max@gmail.com    │
-└─────────┴──────────┴──────────────────┘
-memory D INSERT INTO users(user_id, username, email)
-        VALUES
-         (1000, 'tedx', 'tedx@yahoo.com'),
-         (2000, 'austinp', 'austinp@gmail.com');
-
-memory D SELECT * FROM users;
+```
 ┌─────────┬──────────┬───────────────────┐
 │ user_id │ username │       email       │
 │  int64  │ varchar  │      varchar      │
 ├─────────┼──────────┼───────────────────┤
-│       1 │ alexp    │ alexp@yahoo.com   │
-│       2 │ janet    │ janet@gmail.com   │
-│       3 │ mo       │ mo@gmail.com      │
-│       4 │ ted      │ ted@yahoo.com     │
-│       5 │ austin   │ austin@gmail.com  │
-│       6 │ max      │ max@gmail.com     │
-│    1000 │ tedx     │ tedx@yahoo.com    │
-│    2000 │ austinp  │ austinp@gmail.com │
+│       1 │ alex     │ alex@example.com  │
+│       2 │ janet    │ janet@example.com │
+│       3 │ mo       │ mo@example.com    │
 └─────────┴──────────┴───────────────────┘
-
-memory D INSERT INTO users(username, email)
-         VALUES
-            ('aaaatedx', 'tedx@yahoo.com'),
-            ('aaaaustinp', 'austinp@gmail.com');
-
-memory D SELECT * FROM users;
-┌─────────┬────────────┬───────────────────┐
-│ user_id │  username  │       email       │
-│  int64  │  varchar   │      varchar      │
-├─────────┼────────────┼───────────────────┤
-│       1 │ alexp      │ alexp@yahoo.com   │
-│       2 │ janet      │ janet@gmail.com   │
-│       3 │ mo         │ mo@gmail.com      │
-│       4 │ ted        │ ted@yahoo.com     │
-│       5 │ austin     │ austin@gmail.com  │
-│       6 │ max        │ max@gmail.com     │
-│    1000 │ tedx       │ tedx@yahoo.com    │
-│    2000 │ austinp    │ austinp@gmail.com │
-│       7 │ aaaatedx   │ tedx@yahoo.com    │
-│       8 │ aaaaustinp │ austinp@gmail.com │
-└─────────┴────────────┴───────────────────┘
-  10 rows                        3 columns
-
-
-memory D CREATE SEQUENCE testers_id_seq START 1000;
-
-memory D CREATE TABLE test_users (
-     user_id BIGINT PRIMARY KEY DEFAULT nextval('testers_id_seq'),
-     username VARCHAR NOT NULL
-  );
-         
-memory D DESC test_users;
-┌─────────────────────────────────────────────────────────────┐
-│                         test_users                          │
-│                                                             │
-│ user_id  bigint  not null default nextval('testers_id_seq') │
-│ username varchar not null                                   │
-└─────────────────────────────────────────────────────────────┘
-
-memory D INSERT INTO test_users (username)
-         VALUES
-         ('alex'), ('bob'), ('jane'), ('ted');
-
-memory D SELECT * FROM test_users;
-┌─────────┬──────────┐
-│ user_id │ username │
-│  int64  │ varchar  │
-├─────────┼──────────┤
-│    1000 │ alex     │
-│    1001 │ bob      │
-│    1002 │ jane     │
-│    1003 │ ted      │
-└─────────┴──────────┘
-
-memory D select  * FRom test_users;
-┌─────────┬──────────┐
-│ user_id │ username │
-│  int64  │ varchar  │
-├─────────┼──────────┤
-│    1000 │ alex     │
-│    1001 │ bob      │
-│    1002 │ jane     │
-│    1003 │ ted      │
-└─────────┴──────────┘
-
-memory D SELECT * FROM test_users;
-┌─────────┬──────────┐
-│ user_id │ username │
-│  int64  │ varchar  │
-├─────────┼──────────┤
-│    1000 │ alex     │
-│    1001 │ bob      │
-│    1002 │ jane     │
-│    1003 │ ted      │
-└─────────┴──────────┘
-
-memory D INSERT INTO test_users (user_id, username)
-         VALUES
-         (2000, 'alex'), 
-         (3000, 'bob'), 
-         (4000, 'jane'), 
-         (5000, 'ted');
-         
-memory D SELECT * FROM test_users;
-┌─────────┬──────────┐
-│ user_id │ username │
-│  int64  │ varchar  │
-├─────────┼──────────┤
-│    1000 │ alex     │
-│    1001 │ bob      │
-│    1002 │ jane     │
-│    1003 │ ted      │
-│    2000 │ alex     │
-│    3000 │ bob      │
-│    4000 │ jane     │
-│    5000 │ ted      │
-└─────────┴──────────┘
-memory D INSERT INTO test_users (username)
-         VALUES
-         ('alexp'), 
-         ('bobp'), 
-         ('janep'), 
-         ('tedp');
-         
-memory D SELECT * FROM test_users;
-┌─────────┬──────────┐
-│ user_id │ username │
-│  int64  │ varchar  │
-├─────────┼──────────┤
-│    1000 │ alex     │
-│    1001 │ bob      │
-│    1002 │ jane     │
-│    1003 │ ted      │
-│    2000 │ alex     │
-│    3000 │ bob      │
-│    4000 │ jane     │
-│    5000 │ ted      │
-│    1004 │ alexp    │
-│    1005 │ bobp     │
-│    1006 │ janep    │
-│    1007 │ tedp     │
-└─────────┴──────────┘
-  12 rows  2 columns
-
 ```
 
-## 4. References
+`DESCRIBE users;` shows the rule on the column:
 
-[1. CREATE SEQUENCE Statement in DuckDB](https://duckdb.org/docs/lts/sql/statements/create_sequence)
+```
+│ user_id  bigint  not null default nextval('user_id_seq') │
+```
 
-[2. Using AUTO_INCREMENT in MySQL](https://dev.mysql.com/doc/refman/9.7/en/example-auto-increment.html)
+---
+
+## 5. How a Sequence Works
+
+A **sequence** is a separate database object (not
+part of any table). It remembers the last number it
+gave out.
+
+| Function | What it does |
+| :--- | :--- |
+| `nextval('seq')` | Moves the counter forward and returns the new number |
+| `currval('seq')` | Returns the last number given out (does not move the counter) |
+
+`DEFAULT nextval('user_id_seq')` means: *"If the
+`INSERT` does not give a `user_id`, call
+`nextval()` and use that number."*
+
+```sql
+SELECT currval('user_id_seq') AS last_value_used;   -- 3
+```
+
+**Tip:** `RETURNING` shows the ID that was just
+created:
+
+```sql
+INSERT INTO users (username, email)
+VALUES ('ted', 'ted@example.com')
+RETURNING user_id;                                   -- 4
+```
+
+---
+
+## 6. Choosing the Start Value and Step Size
+
+A sequence does not have to start at 1:
+
+```sql
+CREATE SEQUENCE tester_id_seq START 1000;
+
+CREATE TABLE test_users (
+    user_id  BIGINT PRIMARY KEY DEFAULT nextval('tester_id_seq'),
+    username VARCHAR NOT NULL
+);
+
+INSERT INTO test_users (username)
+VALUES ('alex'), ('bob'), ('jane'), ('ted');
+
+SELECT * FROM test_users;
+```
+
+```
+┌─────────┬──────────┐
+│ user_id │ username │
+│  int64  │ varchar  │
+├─────────┼──────────┤
+│    1000 │ alex     │
+│    1001 │ bob      │
+│    1002 │ jane     │
+│    1003 │ ted      │
+└─────────┴──────────┘
+```
+
+It can also count by a different step:
+
+```sql
+CREATE SEQUENCE ticket_seq START 100 INCREMENT BY 10;
+SELECT nextval('ticket_seq') AS a, nextval('ticket_seq') AS b;
+-- a = 100, b = 110
+```
+
+---
+
+## 7. Rule 1: You Can Still Supply Your Own ID
+
+`DEFAULT` is used **only when the column is left
+out** of the `INSERT`. If you give a value, DuckDB
+uses your value and **does not touch the
+sequence**.
+
+```sql
+-- user_id is given explicitly: the sequence is NOT used
+INSERT INTO users (user_id, username, email)
+VALUES (6, 'austin', 'austin@example.com');
+
+SELECT * FROM users;
+```
+
+```
+┌─────────┬──────────┬────────────────────┐
+│ user_id │ username │       email        │
+│  int64  │ varchar  │      varchar       │
+├─────────┼──────────┼────────────────────┤
+│       1 │ alex     │ alex@example.com   │
+│       2 │ janet    │ janet@example.com  │
+│       3 │ mo       │ mo@example.com     │
+│       4 │ ted      │ ted@example.com    │
+│       6 │ austin   │ austin@example.com │
+└─────────┴──────────┴────────────────────┘
+```
+
+The sequence still remembers `4`. It does **not**
+know that `6` is now taken.
+
+---
+
+## 8. Rule 2 (Warning): Mixing Your Own IDs Can Cause Errors
+
+Continue the example. Insert three rows **without**
+an ID:
+
+```sql
+INSERT INTO users (username, email) VALUES ('max', 'max@example.com');
+-- OK: the sequence gives 5
+
+INSERT INTO users (username, email) VALUES ('max', 'max@example.com');
+-- The sequence gives 6, but 6 is already used by 'austin':
+-- Constraint Error: Duplicate key "user_id: 6" violates primary key constraint.
+
+INSERT INTO users (username, email) VALUES ('max', 'max@example.com');
+-- OK: the sequence gives 7
+```
+
+```
+┌─────────┬──────────┬────────────────────┐
+│ user_id │ username │       email        │
+├─────────┼──────────┼────────────────────┤
+│       1 │ alex     │ alex@example.com   │
+│       2 │ janet    │ janet@example.com  │
+│       3 │ mo       │ mo@example.com     │
+│       4 │ ted      │ ted@example.com    │
+│       6 │ austin   │ austin@example.com │
+│       5 │ max      │ max@example.com    │
+│       7 │ max      │ max@example.com    │
+└─────────┴──────────┴────────────────────┘
+```
+
+**Lesson:** for an auto-increment column, let the
+sequence choose **every** ID. If you insert
+`user_id = 1000` by hand, the error waits silently
+until the sequence reaches `1000`.
+
+(Also notice: rows are **not** stored in ID order.
+Use `ORDER BY user_id` when order matters.)
+
+---
+
+## 9. Rule 3: IDs Are Unique, Not Gap-Free
+
+A sequence **never goes backward** and **never
+reuses** a number. Gaps appear when:
+
+* an `INSERT` **fails** — the number was already taken from the sequence;
+* a row is **deleted** — its number is not given out again.
+
+```sql
+CREATE SEQUENCE item_id_seq START 1;
+CREATE TABLE items (
+    item_id BIGINT PRIMARY KEY DEFAULT nextval('item_id_seq'),
+    name    VARCHAR NOT NULL
+);
+
+INSERT INTO items (name) VALUES ('pen'), ('book');  -- 1, 2
+INSERT INTO items (name) VALUES (NULL);             -- uses 3, then FAILS (NOT NULL)
+INSERT INTO items (name) VALUES ('lamp');           -- 4
+DELETE FROM items WHERE item_id = 4;                -- 4 is gone for good
+INSERT INTO items (name) VALUES ('desk');           -- 5
+
+SELECT * FROM items;
+```
+
+```
+┌─────────┬─────────┐
+│ item_id │  name   │
+├─────────┼─────────┤
+│       1 │ pen     │
+│       2 │ book    │
+│       5 │ desk    │
+└─────────┴─────────┘
+```
+
+**Lesson:** never use the largest ID to count rows.
+Use `SELECT COUNT(*) FROM items;` instead.
+
+---
+
+## 10. Rule 4: Use One Sequence per Table
+
+A sequence is not tied to a table. If two tables
+share one sequence, they **share one counter**:
+
+```sql
+CREATE SEQUENCE shared_seq START 1;
+CREATE TABLE customers (id BIGINT PRIMARY KEY DEFAULT nextval('shared_seq'), name VARCHAR);
+CREATE TABLE vendors   (id BIGINT PRIMARY KEY DEFAULT nextval('shared_seq'), name VARCHAR);
+
+INSERT INTO customers (name) VALUES ('Alice'), ('Bob');   -- 1, 2
+INSERT INTO vendors   (name) VALUES ('Acme'), ('Globex'); -- 3, 4
+INSERT INTO customers (name) VALUES ('Carol');            -- 5
+```
+
+```
+customers: 1 Alice, 2 Bob, 5 Carol
+vendors:   3 Acme,  4 Globex
+```
+
+This is legal, but confusing. Give each table its
+own sequence, named after the column:
+`customer_id_seq`, `vendor_id_seq`, ...
+
+---
+
+## 11. Re-Running Your Script
+
+A sequence is a named object, just like a table.
+Creating it twice is an error:
+
+```sql
+CREATE SEQUENCE item_id_seq START 1;
+-- Catalog Error: Sequence with name "item_id_seq" already exists!
+```
+
+A sequence also cannot be dropped while a table
+still uses it:
+
+```sql
+DROP SEQUENCE item_id_seq;
+-- Dependency Error: Cannot drop entry "item_id_seq"
+-- because there are entries that depend on it.
+```
+
+To make a script safe to run again, **drop the
+table first, then the sequence**, and then create
+both again:
+
+```sql
+DROP TABLE IF EXISTS items;
+DROP SEQUENCE IF EXISTS item_id_seq;
+
+CREATE SEQUENCE item_id_seq START 1;
+CREATE TABLE items (
+    item_id BIGINT PRIMARY KEY DEFAULT nextval('item_id_seq'),
+    name    VARCHAR NOT NULL
+);
+```
+
+---
+
+## 12. Summary
+
+* DuckDB has **no** `AUTO_INCREMENT`, `AUTOINCREMENT`,
+  `SERIAL`, or `IDENTITY` keyword.
+* Auto-increment in DuckDB = **`CREATE SEQUENCE`** +
+  **`DEFAULT nextval('seq_name')`**.
+* Leave the ID column **out** of your `INSERT`;
+  the sequence fills it in.
+* If you insert your own IDs, the sequence does not
+  know — later inserts may fail with a duplicate
+  key error.
+* IDs are **unique** but may have **gaps**.
+* Use **one sequence per table**.
+* To re-run a script: drop the table, then the
+  sequence, then create both again.
+
+---
+
+## 13. References
+
+1. [CREATE SEQUENCE Statement — DuckDB documentation](https://duckdb.org/docs/stable/sql/statements/create_sequence)
+2. [Using AUTO_INCREMENT — MySQL Reference Manual](https://dev.mysql.com/doc/refman/9.7/en/example-auto-increment.html)
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
