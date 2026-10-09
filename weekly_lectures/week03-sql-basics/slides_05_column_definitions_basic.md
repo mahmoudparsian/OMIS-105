@@ -1,8 +1,13 @@
 # Introduction to Column Definitions <br> in DuckDB
 
-When you create a table in SQL, you define **columns**. Each column has a **data type** (what kind of data it holds) and optional **constraints** (rules the data must follow).
+When you create a table in SQL, you define 
+**columns**. Each column has a **data type** 
+(what kind of data it holds) and optional 
+**constraints** (rules the data must follow).
 
-In this tutorial, we will build a simple **Bookstore Database** to learn the most common SQL column definitions using DuckDB.
+In this tutorial, we will build a simple 
+**Bookstore Database** to learn the most 
+common SQL column definitions using DuckDB.
 
 ---
 
@@ -12,7 +17,7 @@ In this tutorial, we will build a simple **Bookstore Database** to learn the mos
 | :--- | :--- | :--- |
 | **Data Types** | Category | Defines the type of data stored: `INTEGER` (whole numbers), `VARCHAR` (text), `DECIMAL` (numbers with decimals), `DATE` (dates), and `BOOLEAN` (true/false). |
 | **`PRIMARY KEY`** | Constraint | Uniquely identifies each row in a table. |
-| **`AUTOINCREMENT`** | Property | Automatically assigns sequential numbers (1, 2, 3...) to new rows. |
+| **`SEQUENCE`** | Property | Automatically assigns sequential numbers (1, 2, 3...) to new rows. |
 | **`NOT NULL`** | Constraint | Ensures a column cannot be left empty. |
 | **`UNIQUE`** | Constraint | Prevents duplicate values in a column. |
 | **`CHECK`** | Constraint | Enforces specific rules on column values (e.g., price must be greater than zero). |
@@ -29,7 +34,7 @@ Let's build three related tables: `authors`, `books`, and `orders`.
 ```sql
 CREATE SEQUENCE author_id_seq START 1;
 
--- Demonstrates: PRIMARY KEY, AUTOINCREMENT, 
+-- Demonstrates: PRIMARY KEY, SEQUENCE, 
 --               NOT NULL, UNIQUE, DEFAULT
 CREATE TABLE authors (
     author_id INTEGER PRIMARY KEY 
