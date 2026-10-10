@@ -19,6 +19,24 @@ answers. It includes:
 
 Start with that folder's [README](joins_with_users_roles_cities/README.md).
 
+## Join Practice: Authors / Books / Orders
+
+**[`joins_with_authors_books_orders/`](joins_with_authors_books_orders/)**
+— a small online bookstore: `authors` → `books` → `orders`. Two
+authors have no books, and four books were never ordered, so
+`INNER JOIN`, `LEFT JOIN`, and `RIGHT JOIN` give different answers.
+It includes:
+
+- [`create_duckdb_database.sh`](joins_with_authors_books_orders/create_duckdb_database.sh)
+  — builds `authors_books_orders.duckdb` from `db_schema.sql` and
+  `db_records.sql`. Run it first.
+- [`notebook.py`](joins_with_authors_books_orders/notebook.py) — a
+  Marimo notebook with 26 queries and 5 charts. It opens the database read-only
+  and goes from a little aggregation to `INNER`, `LEFT`, and `RIGHT`
+  joins, then to "find what is missing"
+
+Start with that folder's [README](joins_with_authors_books_orders/README.md).
+
 ## Files in This Folder
 
 | File | What It Is |

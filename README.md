@@ -278,9 +278,15 @@ con.execute("SELECT ...").fetchdf()         # a query cell ends with .fetchdf()
 - Markdown cells: `mo.md("""...""")` with `hide_code=True`.
 - No Python comments (`#`) inside SQL — use `--`, so Marimo renders the
   cell as native SQL.
-- All of `weekly_lectures/` and `weekly_reviews/` follows this pattern. A
-  few older notebooks in `data_stories/`, `tutorials/`, and `resources/`
-  still use `mo.sql()`; convert one if you happen to edit it.
+- All of `weekly_lectures/` and `weekly_reviews/` follows this pattern,
+  with one deliberate exception (below). A few older notebooks in
+  `data_stories/`, `tutorials/`, and `resources/` still use `mo.sql()`;
+  convert one if you happen to edit it.
+- **Exception:** `weekly_lectures/week05-sql-joins/joins_with_authors_books_orders/notebook.py`
+  uses native SQL cells on purpose —
+  `_df = mo.sql(f"""...""", engine=con)` against a read-only connection
+  to a built `.duckdb` file — so students see only the SQL. Do not
+  convert it to `con.execute()`.
 
 ## Verifying a Notebook
 
