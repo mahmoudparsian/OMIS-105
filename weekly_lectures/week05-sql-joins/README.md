@@ -37,6 +37,25 @@ It includes:
 
 Start with that folder's [README](joins_with_authors_books_orders/README.md).
 
+## Join Practice: Students / Courses / Grades
+
+**[`joins_with_students_and_courses/`](joins_with_students_and_courses/)**
+— a university database: `students` ──< `grades` >── `courses`. It is
+bigger than the bookstore: 500 students, 50 courses, and 8,000
+grades. Five students have never taken a course, and three courses
+were never taken, so `INNER JOIN`, `LEFT JOIN`, and `RIGHT JOIN` give
+different answers. It includes:
+
+- [`create_duckdb_database.sh`](joins_with_students_and_courses/create_duckdb_database.sh)
+  — builds `students_courses_grades.duckdb` from `db_schema.sql` and
+  `db_records.sql`. Run it first.
+- [`notebook.py`](joins_with_students_and_courses/notebook.py) — a
+  Marimo notebook with 16 queries and 6 charts. It opens the database
+  read-only and goes from simple `SELECT`s and aggregation to
+  `INNER`, `LEFT`, and `RIGHT` joins, including a GPA by department
+
+Start with that folder's [README](joins_with_students_and_courses/README.md).
+
 ## Files in This Folder
 
 | File | What It Is |
@@ -47,9 +66,10 @@ Start with that folder's [README](joins_with_authors_books_orders/README.md).
 | `join_symbols.md` | Quick reference: relational-algebra symbols for each join (⋈ ⟕ ⟖ ⟗ ×) |
 | `demo1.py` | Live-demo Marimo notebook, session 1 |
 | `demo2.py` | Live-demo Marimo notebook, session 2 |
-| `lab05_student.md` | The week's lab, with blanks to fill in |
-| `lab05_student_marimo.py` | The same lab as a Marimo notebook |
-| `lab05_instructor_marimo.py` | The lab notebook with answers |
+| `sample_lab_01_student.md` | Sample lab (window functions, CTEs, set operations, views), with blanks to fill in |
+| `sample_lab_01_instructor.md` | The same sample lab, with answers |
+| `notebook_student.py` | The sample lab as a Marimo notebook |
+| `notebook_instructor.py` | The sample lab notebook, with answers |
 | `quiz.md` | Short quiz questions for the week |
 | `data/` | CSV files the demos and lab read |
 | `lab.md`, `notes.md`, `solution.sql` | Brief scratch notes and sample SQL |
