@@ -48,8 +48,8 @@ CREATE TABLE students (
 -- grades
 CREATE TABLE grades (
    grade_id INT PRIMARY KEY,
-   student_id INT NOT NULL,
-   course_id VARCHAR NOT NULL,
+   student_id INT NOT NULL,     -- REFERENCES students(student_id)
+   course_id VARCHAR NOT NULL,  -- REFERENCES courses(course_id)
    year INT NOT NULL, -- 'YYYY'
    grade grade_type NOT NULL,
    
