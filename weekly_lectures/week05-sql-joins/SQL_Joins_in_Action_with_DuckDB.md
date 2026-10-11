@@ -81,6 +81,26 @@ that row is dropped.
 
 Think of it as the **overlap** of the two tables.
 
+**INNER JOIN in SQL** <br>
+
+		INNER JOIN  in  SQL  selects  rows that  have 
+		matching  values in both tables,  effectively 
+		focusing on the intersection of the datasets. 
+		If  a row in  the first table  doesn't have a
+		matching  counterpart  in  the  second table, 
+		it  is  filtered  out  of the  final  result. 
+		INNER JOIN  goes  between the  two tables you 
+		want to merge, and the `ON` keyword specifies 
+		the exact column comparison used to link them.
+
+```sql
+    -- join table A and table B on common_column
+    SELECT columns
+    FROM A
+    INNER JOIN B
+    ON A.common_column = B.common_column;
+```
+
 ### Mathematical Definition
 
 $$A ⋈ B = \{ (k, v_1, v_2) \mid (k, v_1) \in A \ \text{ and } \ (k, v_2) \in B \}$$
@@ -109,6 +129,21 @@ left table).
   still kept, but $v_2$ is filled with `NULL`.
 
 No row of **A** is ever lost.
+
+**SQL LEFT JOIN** <br>
+
+		A  SQL LEFT JOIN  (or LEFT OUTER JOIN) returns 
+		all rows from the left table and  the matching 
+		rows from the right table, putting NULL values 
+		where there is no match.
+		
+```sql
+    -- left join table A and table B on common_column
+    SELECT columns
+    FROM A
+    LEFT JOIN B
+    ON A.column_name = B.column_name;
+```
 
 ### Mathematical Definition
 
