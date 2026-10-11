@@ -3,6 +3,21 @@
 Lecture materials for Week 5 of **OMIS 105**. This week is about
 combining tables with `JOIN`.
 
+## Start Here: Employees / Departments
+
+**[`joins_with_emps_depts/`](joins_with_emps_depts/)** — the first
+joins demo: just 4 departments and 6 employees, small enough to
+check every answer by eye. Two departments have no employees, and
+two employees have no department, so every join type gives a
+different row count. It includes:
+
+- [`notebook.py`](joins_with_emps_depts/notebook.py) — a Marimo
+  notebook with 21 SQL queries. It opens `emps_depts_db.duckdb`
+  read-only and covers aggregation, `INNER`, `LEFT`, `RIGHT`,
+  `FULL OUTER`, and `CROSS` joins, then "find what is missing"
+
+Start with that folder's [README](joins_with_emps_depts/README.md).
+
 ## Join Practice: Users / Roles / Cities
 
 **[`joins_with_users_roles_cities/`](joins_with_users_roles_cities/)**
