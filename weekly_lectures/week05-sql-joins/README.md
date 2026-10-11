@@ -73,16 +73,16 @@ Start with that folder's [README](joins_with_students_and_courses/README.md).
 
 | File | What It Is |
 |------|-----------|
-| `slides_1.md` | Marp slide deck, session 1 — JOIN deep dive |
-| `slides_2.md` | Marp slide deck, session 2 — window functions, CTEs, set operations, views |
+| `lecture_slides_01.md` | Marp slide deck, session 1 — JOIN deep dive |
+| `lecture_slides_02.md` | Marp slide deck, session 2 — window functions, CTEs, set operations, views |
 | `SQL_Joins_in_Action_with_DuckDB.md` | All five join types: symbols, math, and verified DuckDB examples |
 | `join_symbols.md` | Quick reference: relational-algebra symbols for each join (⋈ ⟕ ⟖ ⟗ ×) |
-| `demo1.py` | Live-demo Marimo notebook, session 1 |
-| `demo2.py` | Live-demo Marimo notebook, session 2 |
+| `notebook_01_join_basics.py` | Live-demo Marimo notebook, session 1 |
+| `notebook_02_join_basics.py` | Live-demo Marimo notebook, session 2 |
 | `sample_lab_01_student.md` | Sample lab (window functions, CTEs, set operations, views), with blanks to fill in |
 | `sample_lab_01_instructor.md` | The same sample lab, with answers |
-| `notebook_student.py` | The sample lab as a Marimo notebook |
-| `notebook_instructor.py` | The sample lab notebook, with answers |
+| `notebook_03_student.py` | The sample lab as a Marimo notebook |
+| `notebook_03_instructor.py` | The sample lab notebook, with answers |
 | `quiz.md` | Short quiz questions for the week |
 | `data/` | CSV files the demos and lab read |
 | `lab.md`, `notes.md`, `solution.sql` | Brief scratch notes and sample SQL |
@@ -91,7 +91,7 @@ Run the notebooks from inside this folder, so the `data/` paths work:
 
 ```bash
 cd weekly_lectures/week05-sql-joins
-marimo edit demo1.py
+marimo edit notebook_01_join_basics.py
 ```
 
 ---
