@@ -1,8 +1,11 @@
 # Week 4 — SQL Aggregation
 
-Lecture materials for Week 4 of **OMIS 105**. This week is about
-summarizing data: aggregate functions (`COUNT`, `SUM`, `AVG`, `MIN`,
-`MAX`), `GROUP BY`, `HAVING`, and a first look at joins.
+
+* Lecture materials for Week 4 of **OMIS 105**. 
+
+* This week is about summarizing data: aggregate 
+functions (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`), 
+`GROUP BY`, `HAVING`, and a first look at joins.
 
 ## Start Here: Learning `GROUP BY`
 
@@ -23,15 +26,17 @@ Start with that folder's [README](group_by_with_emps_depts/README.md).
 
 ## Files in This Folder
 
+
 | File | What It Is |
 |------|-----------|
 | `slides_1.md` | Marp slide deck, session 1 — aggregation, `GROUP BY`, `HAVING` |
 | `slides_2.md` | Marp slide deck, session 2 — joins and multi-table queries |
-| `demo1.py` | Live-demo Marimo notebook, session 1 — aggregation and `GROUP BY` |
-| `demo2.py` | Live-demo Marimo notebook, session 2 — joins and multi-table queries |
-| `lab04_student.md` | The week's lab (joins and multi-table queries), with blanks to fill in |
-| `lab04_student_marimo.py` | The lab as a Marimo notebook |
-| `lab04_instructor_marimo.py` | The lab notebook, with answers |
+| `notebook_01_Aggregation_GROUP_BY.py` | Live-demo Marimo notebook, session 1 — aggregation and `GROUP BY` |
+| `notebook_02_Joins_GROUP_BY.py` | Live-demo Marimo notebook, session 2 — joins and multi-table queries |
+| `sample_lab_01_student.md` | The week's lab (joins and multi-table queries), with blanks to fill in |
+| `sample_lab_01_instructor.md` | Solution to `sample_lab_01_student.md` |
+| `notebook_03_student.py` | The lab as a Marimo notebook |
+| `notebook_03_instructor.py` | The lab notebook, with answers |
 | `quiz.md` | Short quiz questions for the week |
 | `data/` | CSV files the demos and lab read |
 | `lab.md`, `notes.md`, `solution.sql` | Brief scratch notes and sample SQL |
@@ -41,7 +46,7 @@ work:
 
 ```bash
 cd weekly_lectures/week04-sql-aggregation
-marimo edit demo1.py
+marimo edit notebook_01_Aggregation_GROUP_BY.py.py
 ```
 
 ## Next Week
