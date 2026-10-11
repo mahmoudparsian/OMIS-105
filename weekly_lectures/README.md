@@ -56,6 +56,19 @@ Three folders differ:
   (a worked example project) for the capstone, and `week10_notebook_marimo.py`, `week10_review_marimo.py`,
   and `week10_capstone_review.md` for the final review.
 
+### Tutorial subfolders
+
+Some weeks also have self-contained tutorial folders. Each one has
+its own small DuckDB database, a notebook, and a README:
+
+| Week | Folder | What it teaches |
+|------|--------|-----------------|
+| 4 | [`group_by_with_emps_depts/`](week04-sql-aggregation/group_by_with_emps_depts/) | **The `GROUP BY` tutorial:** 18 queries and 11 charts, from basic counts to `HAVING` and pivot tables |
+| 5 | [`joins_with_emps_depts/`](week05-sql-joins/joins_with_emps_depts/) | First joins demo: every join type on 4 departments and 6 employees |
+| 5 | [`joins_with_users_roles_cities/`](week05-sql-joins/joins_with_users_roles_cities/), [`joins_with_authors_books_orders/`](week05-sql-joins/joins_with_authors_books_orders/), [`joins_with_students_and_courses/`](week05-sql-joins/joins_with_students_and_courses/) | More join practice on larger databases |
+
+The week folders for 4 and 5 each have a README that describes them.
+
 ### A caveat on `lab.md`, `notes.md`, and `solution.sql`
 
 These three are **short scratch stubs**, typically 4–8 lines: a rough lab
@@ -92,8 +105,10 @@ from; answer keys are held separately by the instructor.
 - **Slides:** Marp (Markdown → PDF)
 - **Language:** Python 3 + SQL
 
-Every notebook in this folder runs SQL through `con.execute()` against an
-in-memory DuckDB connection.
+The week notebooks run SQL through `con.execute()` against an in-memory
+DuckDB connection. The tutorial subfolders above use native SQL cells
+(`mo.sql()`) against a read-only `.duckdb` file instead, so you see
+only the SQL.
 
 ## Related Folders
 

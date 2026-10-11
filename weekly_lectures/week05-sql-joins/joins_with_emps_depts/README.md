@@ -135,6 +135,11 @@ the first adds Diana and Jane, the second adds Sales and Finance.
 
 ## Next Steps
 
+To review `GROUP BY` in depth, see the Week 4 tutorial
+[`group_by_with_emps_depts/`](../../week04-sql-aggregation/group_by_with_emps_depts/).
+It uses a larger employees/departments database (5 departments,
+13 employees).
+
 When these joins feel easy, try the larger databases in this week's
 folder:
 [`joins_with_authors_books_orders/`](../joins_with_authors_books_orders/)

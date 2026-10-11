@@ -251,6 +251,17 @@ Graded work is 20 in-class labs (30 points each), a midterm, and a final
 — see [`course_information/ASSIGNMENTS_and_GRADING.md`](./course_information/ASSIGNMENTS_and_GRADING.md)
 for the full breakdown.
 
+## Start-Here Tutorials
+
+Two small, self-contained notebooks teach the two biggest ideas in
+SQL analytics. Each has a tiny database you can check by eye, many
+charts, and a README.
+
+| Week | Tutorial | What you learn |
+|------|----------|----------------|
+| 4 | [Learning `GROUP BY`](./weekly_lectures/week04-sql-aggregation/group_by_with_emps_depts) | 18 queries and 11 charts: aggregate functions, `GROUP BY` (basic → advanced), `WHERE` vs. `HAVING`, pivot tables, `GROUP_CONCAT`, and joins with `GROUP BY` |
+| 5 | [Your first joins](./weekly_lectures/week05-sql-joins/joins_with_emps_depts) | `INNER`, `LEFT`, `RIGHT`, `FULL OUTER`, and `CROSS` joins, and how to find what is missing |
+
 ## Career-Readiness Practice
 
 Three optional practice sets prepare you for real data jobs. They use
@@ -297,6 +308,7 @@ con.execute("SELECT ...").fetchdf()         # a query cell ends with .fetchdf()
   `data_stories/`, `tutorials/`, and `resources/` still use `mo.sql()`;
   convert one if you happen to edit it.
 - **Exception:** the notebooks in
+  `weekly_lectures/week04-sql-aggregation/group_by_with_emps_depts/`,
   `weekly_lectures/week05-sql-joins/joins_with_authors_books_orders/`,
   `weekly_lectures/week05-sql-joins/joins_with_emps_depts/`,
   and `weekly_lectures/week05-sql-joins/joins_with_students_and_courses/`
