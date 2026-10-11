@@ -58,6 +58,10 @@ def _fmt(v, decimals):
     return f"{v:,.{decimals}f}" if decimals else f"{v:,.0f}"
 
 
+def _millions(v, decimals=2):
+    return f"${v / 1e6:,.{decimals}f}M"
+
+
 def _new_figure(figsize):
     fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("white")
@@ -79,10 +83,11 @@ def _style(ax, title, grid_axis="y"):
 
 # -- Horizontal bar chart ---------------------------------------------
 def plot_hbar(df, labels, values, title, xlabel="", note=None, decimals=0,
-              xmax=None, color=BLUE, figsize=(8, 4.5)):
+              xmax=None, money=False, color=BLUE, figsize=(8, 4.5)):
     """Bars are drawn top-to-bottom in the DataFrame's row order.
     `note` (optional) is a column whose value is printed after each bar.
-    `xmax` (optional) fixes the right end of the axis, e.g. 4.0 for GPA."""
+    `xmax` (optional) fixes the right end of the axis, e.g. 4.0 for GPA.
+    `money=True` shows values in millions of dollars, e.g. $2.40M."""
     names = [str(n) for n in _col(df, labels)]
     nums = _nums(df, values)
     notes = _col(df, note) if note else None
@@ -92,7 +97,7 @@ def plot_hbar(df, labels, values, title, xlabel="", note=None, decimals=0,
     bars = ax.barh(names, nums, color=color, height=0.6)
     ax.invert_yaxis()
     for i, bar in enumerate(bars):
-        text = _fmt(nums[i], decimals)
+        text = _millions(nums[i]) if money else _fmt(nums[i], decimals)
         if notes:
             text += f"   ({notes[i]})"
         ax.text(bar.get_width() + right * 0.01,
@@ -100,6 +105,8 @@ def plot_hbar(df, labels, values, title, xlabel="", note=None, decimals=0,
                 va="center", fontsize=10, color=TEXT)
     ax.set_xlim(0, right * (1.15 if xmax else 1))
     ax.set_xlabel(xlabel, fontsize=11, color=TEXT)
+    if money:
+        ax.xaxis.set_major_formatter(lambda v, _pos: _millions(v, 1))
     _style(ax, title, grid_axis="x")
     fig.tight_layout()
     return fig
@@ -205,7 +212,7 @@ def plot_stacked_bar(df, labels, parts, part_names, title, ylabel="",
                         fontsize=11, fontweight="bold")
         bottom = [b + v for b, v in zip(bottom, values)]
     for i, total in enumerate(bottom):
-        ax.text(i, total + max(bottom) * 0.02, f"{total} total",
+        ax.text(i, total + max(bottom) * 0.02, f"{total:,} total",
                 ha="center", fontsize=10, color=TEXT)
     ax.set_ylim(0, max(bottom) * 1.18)
     ax.set_ylabel(ylabel, fontsize=11, color=TEXT)

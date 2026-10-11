@@ -15,11 +15,12 @@ def _():
 def _(mo):
     import duckdb
 
-    # Open the database built by ./create_duckdb_database.sh, read-only.
-    db_path = mo.notebook_dir() / "students_courses_grades.duckdb"
+    # Open the clean database in the parent folder, read-only.
+    # Build it first with ../create_duckdb_database.sh
+    db_path = mo.notebook_dir().parent / "students_courses_grades.duckdb"
     if not db_path.exists():
         raise FileNotFoundError(
-            f"{db_path} not found. Build it first:  ./create_duckdb_database.sh"
+            f"{db_path} not found. Build it first:  ../create_duckdb_database.sh"
         )
     con = duckdb.connect(database=str(db_path), read_only=True)
     return (con,)
@@ -58,7 +59,7 @@ def _(mo):
 
     **Course:** OMIS 105 — Introduction to Database Management Systems
     **Author:** Dr. Mahmoud Parsian
-    **Database:** `students_courses_grades.duckdb` (read-only)
+    **Database:** `../students_courses_grades.duckdb` (read-only)
 
     ---
 

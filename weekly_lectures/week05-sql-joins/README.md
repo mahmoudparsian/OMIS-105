@@ -53,11 +53,14 @@ different answers. It includes:
   Marimo notebook with 16 queries and 6 charts. It opens the database
   read-only and goes from simple `SELECT`s and aggregation to
   `INNER`, `LEFT`, and `RIGHT` joins, including a GPA by department
-- [`interview_practice.py`](joins_with_students_and_courses/interview_practice.py)
-  — 12 timed SQL interview questions, from warm-up to hard, with an
-  automatic row-count check under each one, and
-  [answers](joins_with_students_and_courses/interview_practice_answers.py)
-  that explain the common mistakes
+- [`interview_practice/`](joins_with_students_and_courses/interview_practice/)
+  — optional: 12 timed SQL interview questions, from warm-up to hard,
+  with an automatic row-count check under each one, and answers that
+  explain the common mistakes
+- [`manager_questions/`](joins_with_students_and_courses/manager_questions/)
+  — optional: 8 vague requests from managers (the Dean, the CFO, …).
+  You define what to measure, write the query, and write the answer
+  you would send, then compare with model answers and 5 charts
 - [`data_quality/`](joins_with_students_and_courses/data_quality/)
   — optional, advanced: a data-quality round on a messy copy of the
   database. 14 checks for duplicates, bad spellings, `NULL`s, and
