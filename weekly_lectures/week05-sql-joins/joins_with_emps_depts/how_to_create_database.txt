@@ -1,0 +1,61 @@
+% duckdb emps_depts_db.duckdb < db_schema_and_records.sql
+-- Loading resources from /Users/max/.duckdbrc
+Run Time (s): real 0.000 user 0.000237 sys 0.000260
+changes:   0   total_changes: 0
+Run Time (s): real 0.001 user 0.000564 sys 0.000229
+changes:   4   total_changes: 4
+Run Time (s): real 0.000 user 0.000185 sys 0.000048
+changes:   4   total_changes: 4
+Run Time (s): real 0.001 user 0.000449 sys 0.000205
+changes:   6   total_changes: 10
+
+% duckdb emps_depts_db.duckdb
+-- Loading resources from /Users/max/.duckdbrc
+DuckDB v1.5.5 (Variegata)
+
+duckdb ▸ .schema
+CREATE TABLE departments(
+  dept_id INTEGER PRIMARY KEY, 
+  dept_name VARCHAR
+);
+
+CREATE TABLE employees(
+  emp_id INTEGER PRIMARY KEY, 
+  emp_name VARCHAR, 
+  salary INTEGER, 
+  dept_id INTEGER, 
+  FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+);
+
+
+duckdb ▸ SELECT * FROM departments;
+┌─────────┬─────────────┐
+│ dept_id │  dept_name  │
+│  int32  │   varchar   │
+├─────────┼─────────────┤
+│      10 │ Engineering │
+│      20 │ Marketing   │
+│      30 │ Sales       │
+│      40 │ Finance     │
+└─────────┴─────────────┘
+Run Time (s): real 0.001 user 0.001108 sys 0.000414
+changes:   0   total_changes: 0
+
+
+duckdb ▸ SELECT * FROM employees;
+┌────────┬──────────┬────────┬─────────┐
+│ emp_id │ emp_name │ salary │ dept_id │
+│ int32  │ varchar  │ int32  │  int32  │
+├────────┼──────────┼────────┼─────────┤
+│      1 │ Alice    │  65000 │      10 │
+│      2 │ Bob      │  78000 │      20 │
+│      3 │ Rafa     │  82000 │      20 │
+│      4 │ Charlie  │  75000 │      10 │
+│      5 │ Diana    │  70000 │    NULL │
+│      6 │ Jane     │  80000 │    NULL │
+└────────┴──────────┴────────┴─────────┘
+Run Time (s): real 0.001 user 0.001128 sys 0.000368
+changes:   0   total_changes: 0
+
+duckdb ▸ .exit
+%

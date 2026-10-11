@@ -297,7 +297,8 @@ con.execute("SELECT ...").fetchdf()         # a query cell ends with .fetchdf()
   `data_stories/`, `tutorials/`, and `resources/` still use `mo.sql()`;
   convert one if you happen to edit it.
 - **Exception:** the notebooks in
-  `weekly_lectures/week05-sql-joins/joins_with_authors_books_orders/`
+  `weekly_lectures/week05-sql-joins/joins_with_authors_books_orders/`,
+  `weekly_lectures/week05-sql-joins/joins_with_emps_depts/`,
   and `weekly_lectures/week05-sql-joins/joins_with_students_and_courses/`
   (including its `interview_practice/`, `manager_questions/`, and
   `data_quality/` subfolders) use native SQL cells on purpose —
