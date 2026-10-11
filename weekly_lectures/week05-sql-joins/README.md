@@ -58,6 +58,11 @@ different answers. It includes:
   automatic row-count check under each one, and
   [answers](joins_with_students_and_courses/interview_practice_answers.py)
   that explain the common mistakes
+- [`data_quality/`](joins_with_students_and_courses/data_quality/)
+  — optional, advanced: a data-quality round on a messy copy of the
+  database. 14 checks for duplicates, bad spellings, `NULL`s, and
+  orphan rows, with answers that show which database rules would
+  have stopped each problem
 
 Start with that folder's [README](joins_with_students_and_courses/README.md).
 
