@@ -251,6 +251,20 @@ Graded work is 20 in-class labs (30 points each), a midterm, and a final
 — see [`course_information/ASSIGNMENTS_and_GRADING.md`](./course_information/ASSIGNMENTS_and_GRADING.md)
 for the full breakdown.
 
+## Career-Readiness Practice
+
+Three optional practice sets prepare you for real data jobs. They use
+the Week 5 [students / courses / grades](./weekly_lectures/week05-sql-joins/joins_with_students_and_courses) database (500 students,
+50 courses, 8,000 grades). Start after the Week 5 joins notebook.
+
+| Folder | What you practice |
+|--------|-------------------|
+| [`interview_practice/`](./weekly_lectures/week05-sql-joins/joins_with_students_and_courses/interview_practice) | 12 timed, interview-style SQL questions, from warm-up to hard, with an automatic check under each one |
+| [`manager_questions/`](./weekly_lectures/week05-sql-joins/joins_with_students_and_courses/manager_questions) | 8 vague requests from managers ("Has grading gotten easier?"): decide what to measure, write the query, and write the answer you would send |
+| [`data_quality/`](./weekly_lectures/week05-sql-joins/joins_with_students_and_courses/data_quality) | Advanced: find duplicates, bad spellings, `NULL`s, and orphan rows in a messy copy of the data, then see which database rules would have stopped each problem |
+
+Each folder has a README, a notebook to try, and an answers notebook.
+
 ---
 
 # 19. 🛠️ Working in This Repository
@@ -279,14 +293,17 @@ con.execute("SELECT ...").fetchdf()         # a query cell ends with .fetchdf()
 - No Python comments (`#`) inside SQL — use `--`, so Marimo renders the
   cell as native SQL.
 - All of `weekly_lectures/` and `weekly_reviews/` follows this pattern,
-  with one deliberate exception (below). A few older notebooks in
+  with deliberate exceptions (below). A few older notebooks in
   `data_stories/`, `tutorials/`, and `resources/` still use `mo.sql()`;
   convert one if you happen to edit it.
-- **Exception:** `weekly_lectures/week05-sql-joins/joins_with_authors_books_orders/notebook.py`
-  uses native SQL cells on purpose —
+- **Exception:** the notebooks in
+  `weekly_lectures/week05-sql-joins/joins_with_authors_books_orders/`
+  and `weekly_lectures/week05-sql-joins/joins_with_students_and_courses/`
+  (including its `interview_practice/`, `manager_questions/`, and
+  `data_quality/` subfolders) use native SQL cells on purpose —
   `_df = mo.sql(f"""...""", engine=con)` against a read-only connection
   to a built `.duckdb` file — so students see only the SQL. Do not
-  convert it to `con.execute()`.
+  convert them to `con.execute()`.
 
 ## Verifying a Notebook
 
