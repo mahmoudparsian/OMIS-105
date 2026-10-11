@@ -26,7 +26,8 @@ joins_with_emps_depts/
 ├── db_schema_and_records.sql    # CREATE TABLE + INSERT (departments, employees)
 ├── how_to_create_database.txt   # a sample DuckDB CLI session: build the file, then look at it
 ├── emps_depts_db.duckdb         # the built database (committed, ready to use)
-└── notebook.py                  # Marimo notebook: 21 SQL queries
+├── notebook.py                  # Marimo notebook: 21 SQL queries + 6 charts
+└── plot_helpers.py              # matplotlib helpers used by notebook.py
 ```
 
 ## Tables
@@ -81,7 +82,8 @@ missing, the notebook stops and tells you how to build it.
 duckdb -readonly emps_depts_db.duckdb    # then paste any query
 ```
 
-`notebook.py` needs `marimo`, `duckdb`, and `polars` (or `pandas`).
+`notebook.py` needs `marimo`, `duckdb`, `polars` (or `pandas`), and
+`matplotlib`.
 See the
 [software installation guide](../../../software_installation/README.md).
 
@@ -101,6 +103,20 @@ See the
 
 The notebook ends with a cheat sheet and five "Try It Yourself"
 exercises.
+
+### The 6 charts
+
+The plotting code lives in `plot_helpers.py`, so the notebook cells
+stay pure SQL.
+
+| Query | Chart | What it shows |
+|-------|-------|----------------|
+| A2 | pie | Employees per `dept_id`; the orange `NULL` slice shows that one third of the company has no department |
+| A3 | bar + threshold line | Average salary per `dept_id`; the dashed line is the `HAVING` test, so you see which groups are kept and which are dropped |
+| J6 | bar | Employees per department; Sales and Finance show as dashed "0 — none" bars, kept by the `LEFT JOIN` |
+| J8 | horizontal bar | Every employee's salary, colored by department; Diana and Jane stand out as "(no department)" |
+| J9 | join map | The `FULL OUTER JOIN` as a picture: a line for each match, unmatched employees and departments in orange |
+| S1 | horizontal bar | Row count of each join type, side by side |
 
 ### Row counts to watch
 

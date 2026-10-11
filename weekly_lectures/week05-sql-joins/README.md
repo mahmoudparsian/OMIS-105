@@ -12,7 +12,7 @@ two employees have no department, so every join type gives a
 different row count. It includes:
 
 - [`notebook.py`](joins_with_emps_depts/notebook.py) — a Marimo
-  notebook with 21 SQL queries. It opens `emps_depts_db.duckdb`
+  notebook with 21 SQL queries and 6 charts. It opens `emps_depts_db.duckdb`
   read-only and covers aggregation, `INNER`, `LEFT`, `RIGHT`,
   `FULL OUTER`, and `CROSS` joins, then "find what is missing"
 

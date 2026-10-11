@@ -12,6 +12,27 @@ def _():
 
 
 @app.cell
+def _():
+    from plot_helpers import (
+        plot_bar,
+        plot_hbar,
+        plot_hbar_groups,
+        plot_join_map,
+        plot_pie,
+        plot_threshold_bars,
+    )
+
+    return (
+        plot_bar,
+        plot_hbar,
+        plot_hbar_groups,
+        plot_join_map,
+        plot_pie,
+        plot_threshold_bars,
+    )
+
+
+@app.cell
 def _(mo):
     import duckdb
 
@@ -80,6 +101,10 @@ def _(mo):
     | 7. CROSS JOIN | J10 | Every row paired with every row |
     | 8. Finding the gaps | X1–X3 | Departments with no employees, employees with no department |
     | 9. Summary | S1 | Row counts of every join, side by side |
+
+    Six queries (A2, A3, J6, J8, J9, S1) are followed by a chart. The
+    plotting code lives in `plot_helpers.py`, so you can focus on
+    the SQL.
 
     Every query cell is a **pure SQL cell**. The notebook opens
     `emps_depts_db.duckdb` in **read-only** mode, so you cannot break
@@ -193,7 +218,7 @@ def _(mo):
 
 @app.cell
 def _(con, mo):
-    _df = mo.sql(
+    df_headcount_by_id = mo.sql(
         f"""
         SELECT
             dept_id,
@@ -205,6 +230,25 @@ def _(con, mo):
         """,
         engine=con
     )
+    return (df_headcount_by_id,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    The pie shows how the 6 employees split across the 3 groups.
+    The slices are equal: 2 employees each. The orange slice is the
+    `NULL` group — **one third of the company has no department**.
+    That is easy to miss in a table, and impossible to miss here.
+    """)
+    return
+
+
+@app.cell
+def _(df_headcount_by_id, plot_pie):
+    plot_pie(df_headcount_by_id, labels="dept_id", values="num_employees",
+             label_prefix="dept ", highlight="(NULL)",
+             title="Employees per dept_id")
     return
 
 
@@ -227,7 +271,7 @@ def _(mo):
 
 @app.cell
 def _(con, mo):
-    _df = mo.sql(
+    df_avg_salary = mo.sql(
         f"""
         SELECT
             dept_id,
@@ -241,6 +285,26 @@ def _(con, mo):
         """,
         engine=con
     )
+    return (df_avg_salary,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    The chart shows the Step 1 result. The red dashed line is the
+    test we add in Step 2: `HAVING AVG(salary) > 72000`. Groups
+    above the line will be **kept**; groups below it will be
+    **dropped**.
+    """)
+    return
+
+
+@app.cell
+def _(df_avg_salary, plot_threshold_bars):
+    plot_threshold_bars(df_avg_salary, labels="dept_id", values="avg_salary",
+                        threshold=72000,
+                        title="Average salary per dept_id — which groups pass HAVING?",
+                        ylabel="average salary")
     return
 
 
@@ -499,7 +563,7 @@ def _(mo):
 
 @app.cell
 def _(con, mo):
-    _df = mo.sql(
+    df_headcount = mo.sql(
         f"""
         SELECT
             d.dept_name,
@@ -513,6 +577,24 @@ def _(con, mo):
         """,
         engine=con
     )
+    return (df_headcount,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    The `LEFT JOIN` keeps Sales and Finance, so they appear on the
+    chart as dashed **0** bars. With an `INNER JOIN` (J3), these two
+    bars would be missing — and a missing bar is easy to overlook.
+    """)
+    return
+
+
+@app.cell
+def _(df_headcount, plot_bar):
+    plot_bar(df_headcount, labels="dept_name", values="num_employees",
+             title="Employees per department (LEFT JOIN keeps all 4)",
+             ylabel="number of employees")
     return
 
 
@@ -568,7 +650,7 @@ def _(mo):
 
 @app.cell
 def _(con, mo):
-    _df = mo.sql(
+    df_emp_salaries = mo.sql(
         f"""
         SELECT
             e.emp_id,
@@ -582,6 +664,26 @@ def _(con, mo):
         """,
         engine=con
     )
+    return (df_emp_salaries,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    Every employee is on the chart, colored by department. Diana and
+    Jane are in orange: the `RIGHT JOIN` kept them, and `COALESCE`
+    gave them a label. Jane is the second-highest earner — an
+    `INNER JOIN` would have hidden her.
+    """)
+    return
+
+
+@app.cell
+def _(df_emp_salaries, plot_hbar_groups):
+    plot_hbar_groups(df_emp_salaries, labels="emp_name", values="salary",
+                     groups="dept_name", highlight="(no department)",
+                     title="Salary of every employee, by department",
+                     xlabel="salary")
     return
 
 
@@ -605,7 +707,7 @@ def _(mo):
 
 @app.cell
 def _(con, mo):
-    _df = mo.sql(
+    df_full_join = mo.sql(
         f"""
         SELECT
             e.emp_id,
@@ -620,6 +722,31 @@ def _(con, mo):
         """,
         engine=con
     )
+    return (df_full_join,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    The same 8 rows as a picture. Each **blue line** is one matched
+    row (4 lines). Each **orange name** is a row with `NULL` on the
+    other side: 2 employees on the left, 2 departments on the right.
+
+    This one picture shows all the joins:
+
+    - `INNER JOIN` = only the lines
+    - `employees LEFT JOIN departments` = the lines + the orange employees
+    - `departments LEFT JOIN employees` = the lines + the orange departments
+    - `FULL OUTER JOIN` = everything
+    """)
+    return
+
+
+@app.cell
+def _(df_full_join, plot_join_map):
+    plot_join_map(df_full_join, left="emp_name", right="dept_name",
+                  left_title="employees", right_title="departments",
+                  title="FULL OUTER JOIN: who matches whom")
     return
 
 
@@ -790,7 +917,7 @@ def _(mo):
 
 @app.cell
 def _(con, mo):
-    _df = mo.sql(
+    df_join_counts = mo.sql(
         f"""
         SELECT 'INNER JOIN' AS join_type, COUNT(*) AS row_count
         FROM employees AS e INNER JOIN departments AS d ON e.dept_id = d.dept_id
@@ -812,6 +939,14 @@ def _(con, mo):
         """,
         engine=con
     )
+    return (df_join_counts,)
+
+
+@app.cell
+def _(df_join_counts, plot_hbar):
+    plot_hbar(df_join_counts, labels="join_type", values="row_count",
+              title="Same two tables, different joins: how many rows?",
+              xlabel="number of rows")
     return
 
 
