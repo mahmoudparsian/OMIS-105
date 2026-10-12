@@ -34,7 +34,8 @@ with no "see the other OS's version" cross-references — plus a folder
 | [`DuckDB_GROUP_BY_Insurance_Dataset/`](DuckDB_GROUP_BY_Insurance_Dataset/) | `GROUP BY` aggregation on a real insurance dataset, with charts | Week 2 — Relational Modeling (also good aggregation practice for Week 4) |
 | [`Table_Relationships_1_M_MM/`](Table_Relationships_1_M_MM/) | One-to-one, one-to-many, and many-to-many relationships explained with examples | Week 2 — Relational Modeling (revisit for Week 6 — Database Design) |
 | [`DuckDB_Extensions/`](DuckDB_Extensions/) | `INSTALL`/`LOAD`/autoloading, plus hands-on `httpfs`, `json`, and `excel` extensions ([slides PDF](DuckDB_Extensions/duckdb_extensions.pdf)) | Week 4 — SQL Aggregation (reading external/CSV/Excel sources) |
-| [`Join_Operations/`](Join_Operations/) | `INNER`/`LEFT`/`RIGHT`/`FULL` joins across employees, departments, countries | Week 5 — SQL Joins |
+| [`Join_Operations_by_Examples/`](Join_Operations_by_Examples/) | `INNER`/`LEFT`/`RIGHT`/`FULL` joins across employees, departments, countries | Week 5 — SQL Joins |
+| [`Join_Operations_in_Action/`](Join_Operations_in_Action/) | `INNER`/`LEFT`/`RIGHT`/`FULL` joins across 2 tables: `t1` and `t2` | Week 5 — SQL Joins |
 | [`LIMIT_vs_RANK/`](LIMIT_vs_RANK/) | Why `RANK()` beats `LIMIT` for top-N-per-group queries, incl. ties | Week 7 — Query Performance |
 | [`Ranking_Functions/`](Ranking_Functions/) | `ROW_NUMBER`, `RANK`, `DENSE_RANK`, and `NTILE` window functions | Week 7 — Query Performance (advanced notebook's `NTILE`/`LAG`/`LEAD` also fits Week 9) |
 | [`deduplication/`](deduplication/) | Deleting duplicate rows with `ROW_NUMBER() OVER (PARTITION BY ...)`, plus extensions: composite keys, normalized-value dedup, upsert prevention, merge-before-delete, and whole-row dedup | Week 7 — Query Performance (window functions; upsert variant also touches Week 8 constraints) |

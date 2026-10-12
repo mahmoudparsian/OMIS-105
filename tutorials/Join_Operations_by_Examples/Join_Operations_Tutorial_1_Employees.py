@@ -1,12 +1,13 @@
 import marimo
 
-__generated_with = "0.23.9"
+__generated_with = "0.23.10"
 app = marimo.App(width="medium", sql_output="pandas")
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
@@ -33,7 +34,7 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ---
-    # Setup: load DuckDB and helper modules 
+    # Setup: load DuckDB and helper modules
     """)
     return
 
@@ -52,7 +53,23 @@ def _():
     from plots import (plot_hbar, plot_bar, plot_donut, plot_heatmap,
                        plot_boxplot, plot_stacked_bar, plot_scatter,
                        plot_join_venn, plot_line, plot_grouped_bar)
-    return (duckdb, plot_bar, plot_donut, plot_grouped_bar, plot_hbar, plot_heatmap, plot_join_venn, plot_line, plot_scatter, plot_stacked_bar, render_section_header, render_sql, render_summary_card, render_table)
+
+    return (
+        duckdb,
+        plot_bar,
+        plot_donut,
+        plot_grouped_bar,
+        plot_hbar,
+        plot_heatmap,
+        plot_join_venn,
+        plot_line,
+        plot_scatter,
+        plot_stacked_bar,
+        render_section_header,
+        render_sql,
+        render_summary_card,
+        render_table,
+    )
 
 
 @app.cell(hide_code=True)
@@ -93,7 +110,14 @@ def _(duckdb):
 
 
 @app.cell
-def _(con, plot_donut, render_section_header, render_sql, render_summary_card, render_table):
+def _(
+    con,
+    plot_donut,
+    render_section_header,
+    render_sql,
+    render_summary_card,
+    render_table,
+):
     render_section_header(1, "Dataset Overview", "A quick look at all three tables", "")
 
     from IPython.display import display, HTML
@@ -196,12 +220,20 @@ def _(con, plot_donut, render_section_header, render_sql, render_summary_card, r
     plot_donut(df_edu, "education", "cnt",
                title=f"Education Distribution across {n_emp:,} Employees",
                caption=f"Only {n_phd} PhD holders and {n_law} LAW graduates")
-
-    return (HTML, display)
+    return HTML, display
 
 
 @app.cell
-def _(HTML, con, display, plot_hbar, plot_join_venn, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_hbar,
+    plot_join_venn,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(2, "INNER JOIN: Employees ↔ Departments", "Only employees whose dept_id exists in the departments table", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -260,12 +292,19 @@ def _(HTML, con, display, plot_hbar, plot_join_venn, render_section_header, rend
     """).fetchone()[0]
     plot_join_venn("INNER", _n_emp, 7, _n_inner,
                    title="INNER JOIN: only rows that match in BOTH tables")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_join_venn, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_join_venn,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(3, "LEFT JOIN: Find Orphan Employees", "Detect employees whose dept_id has no matching department", "LEFT JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -326,12 +365,20 @@ def _(HTML, con, display, plot_join_venn, render_section_header, render_sql, ren
         JOIN departments d ON e.dept_id = d.dept_id;
     """).fetchone()[0]
     plot_join_venn("LEFT", _n_emp, 7, _n_matched)
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_hbar, plot_join_venn, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_hbar,
+    plot_join_venn,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(4, "RIGHT JOIN: Find Unused Departments", "Which departments exist in the dept table but have zero employees?", "RIGHT JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -384,12 +431,19 @@ def _(HTML, con, display, plot_hbar, plot_join_venn, render_section_header, rend
         FROM employees;
     """).fetchone()[0]
     plot_join_venn("RIGHT", _n_emp, 7, 5)
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_bar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(5, "INNER JOIN: Employees ↔ Countries", "Headcount and average salary per country", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -437,12 +491,19 @@ def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_ta
              xlabel="Country", ylabel="Employees",
              caption="USA (500), India (400), China (300) dominate the headcount",
              color="#00bbf9", rotate=30)
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_heatmap, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_heatmap,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(6, "3-Table INNER JOIN", "Joining employees, departments, AND countries in one query", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -492,12 +553,19 @@ def _(HTML, con, display, plot_heatmap, render_section_header, render_sql, rende
     plot_heatmap(df_3t, "dept_name", "country_name", "cnt",
                  title="Employees per Dept × Country (3-Table INNER JOIN)",
                  caption="Chaining two INNER JOINs lets us cross-analyse three tables at once")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_hbar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(7, "LEFT JOIN: Salary Stats per Department", "Drive from departments table so ALL 7 depts appear, even empty ones", "LEFT JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -545,12 +613,19 @@ def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_t
               title="Average Salary per Department (LEFT JOIN from departments)",
               xlabel="Average Salary ($)", ylabel="Department",
               caption="AI and IT show NULL avg salary — they have no employees")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_bar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(8, "Anti-Join: Departments With NO Employees", "LEFT JOIN + WHERE right.key IS NULL = Anti-Join pattern", "LEFT JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -596,12 +671,19 @@ def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_ta
              xlabel="Department", ylabel="Count",
              caption="WHERE e.emp_id IS NULL turns a LEFT JOIN into an anti-join",
              color="#9b5de5", rotate=30)
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_hbar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(9, "Salary Analysis by Education × Department", "How does education level affect pay across departments?", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -650,12 +732,19 @@ def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_t
               xlabel="Average Salary ($)", ylabel="Education",
               caption="PHD and LAW holders command the highest salaries",
               color="#26c485")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_stacked_bar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_stacked_bar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(10, "Gender Distribution Across Departments", "Window function + INNER JOIN to compute % within each department", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -701,12 +790,19 @@ def _(HTML, con, display, plot_stacked_bar, render_section_header, render_sql, r
                      title="Gender Distribution per Department (Stacked)",
                      xlabel="Department", ylabel="Headcount",
                      caption="INNER JOIN + GROUP BY + window function for percentages")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_bar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(11, "Self-Join: PHD Colleagues in the Same Department", "Joining a table to ITSELF to find pairs of employees sharing education + dept", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -760,12 +856,19 @@ def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_ta
              xlabel="Department", ylabel="PHD Pairs",
              caption="A self-join joins a table to itself — great for peer / hierarchy analysis",
              color="#f5a623", rotate=30)
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_scatter, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_scatter,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(12, "LEFT JOIN: Country Population vs Employee Count", "All 10 countries appear; compare representation to actual population", "LEFT JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -811,12 +914,20 @@ def _(HTML, con, display, plot_scatter, render_section_header, render_sql, rende
                  title="Population vs Employee Count per Country (LEFT JOIN)",
                  xlabel="Country Population", ylabel="Employees in Dataset",
                  caption="India is highly over-represented; Japan and Australia under-represented")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_donut, plot_join_venn, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_donut,
+    plot_join_venn,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(13, "FULL OUTER JOIN: See ALL Unmatched Rows", "Captures orphan employees AND empty departments in one query", "FULL JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -880,12 +991,19 @@ def _(HTML, con, display, plot_donut, plot_join_venn, render_section_header, ren
         JOIN departments d ON e.dept_id = d.dept_id;
     """).fetchone()[0]
     plot_join_venn("FULL OUTER", _n_emp, 7, _n_matched)
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_bar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(14, "INNER JOIN + HAVING: Filter After Aggregation", "Which departments have an average salary above $75,000?", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -936,12 +1054,19 @@ def _(HTML, con, display, plot_bar, render_section_header, render_sql, render_ta
              xlabel="Department", ylabel="Average Salary ($)",
              caption="HAVING filters AFTER GROUP BY; WHERE filters BEFORE aggregation",
              color="#26c485", rotate=30)
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_hbar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(15, "JOIN + Subquery: Above-Average Earners per Department", "Join the main table to a pre-aggregated subquery", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -1005,12 +1130,19 @@ def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_t
               xlabel="Mean $ above dept average", ylabel="Department",
               caption="Joining to a subquery is a powerful pattern for relative comparisons",
               color="#f5a623")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_hbar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(16, "CTE + JOIN: Employee Tenure Analysis", "Using WITH (Common Table Expressions) to organise a multi-step JOIN", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -1077,12 +1209,19 @@ def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_t
               xlabel="Average Years at Company", ylabel="Department",
               caption="CTEs (WITH clause) make complex JOINs readable and reusable",
               color="#00bbf9")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_stacked_bar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_stacked_bar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(17, "JOIN + CASE: Salary Band Classification by Country", "Create computed salary bands and cross-tabulate with country", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -1129,12 +1268,19 @@ def _(HTML, con, display, plot_stacked_bar, render_section_header, render_sql, r
                      title="Salary Band Distribution by Country (JOIN + CASE)",
                      xlabel="Country", ylabel="Headcount",
                      caption="CASE WHEN inside a JOIN query creates computed classification columns")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_grouped_bar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_grouped_bar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(18, "LEFT JOIN: PHD & LAW Graduates — Full Enrichment", "Enrich elite employees with department AND country info; preserve TOP-SECRET", "LEFT JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -1189,12 +1335,19 @@ def _(HTML, con, display, plot_grouped_bar, render_section_header, render_sql, r
                      title="PHD & LAW Graduates per Department (LEFT JOIN)",
                      xlabel="Department", ylabel="Headcount",
                      caption="LEFT JOIN preserves TOP-SECRET employees (dept_name shows NULL)")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_line, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_line,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(19, "INNER JOIN + Date Functions: Hiring Trend Over Time", "Analyse annual hiring patterns and starting salaries by department", "INNER JOIN")
 
     # ── Plain English ─────────────────────────────────────────────────────────────
@@ -1240,12 +1393,19 @@ def _(HTML, con, display, plot_line, render_section_header, render_sql, render_t
               title="Annual New Hires Trend (INNER JOIN + Date Extraction)",
               xlabel="Year", ylabel="New Hires",
               caption="EXTRACT() on dates enables time-series analysis in JOIN queries")
-
     return
 
 
 @app.cell
-def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_table):
+def _(
+    HTML,
+    con,
+    display,
+    plot_hbar,
+    render_section_header,
+    render_sql,
+    render_table,
+):
     render_section_header(20, "JOIN Summary Dashboard", 
                           "Complete overview combining all three tables with all JOIN types", "")
 
@@ -1413,7 +1573,6 @@ def _(HTML, con, display, plot_hbar, render_section_header, render_sql, render_t
       </table>
     </div>
     """))
-
     return
 
 
