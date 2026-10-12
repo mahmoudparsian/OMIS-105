@@ -28,7 +28,7 @@ def _(mo):
 
     ## Prerequisites
 
-    You only need **Python 3** and the **duckdb** package. Let's install it and get started.
+    You only need **Python 3**, **marimo**, and the **duckdb** package (`pip install marimo duckdb`).
     """)
     return
 
@@ -57,20 +57,13 @@ def _(mo):
     ### To run this notebook:
 
     ```
-    To run it, just open it in Jupyter and 
-    make sure you have `duckdb` installed 
-    (`pip install duckdb`). 
-
-    Every cell runs top-to-bottom with no 
-    external dependencies.
+    marimo edit transactions_in_action.py
     ```
+
+    Every cell runs top-to-bottom with no
+    external dependencies (the database is
+    created in memory).
     """)
-    return
-
-
-@app.cell
-def _():
-    # Install duckdb if you don't have it yet
     return
 
 
