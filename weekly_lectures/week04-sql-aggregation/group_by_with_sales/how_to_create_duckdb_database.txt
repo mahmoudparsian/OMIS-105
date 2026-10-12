@@ -1,0 +1,48 @@
+Step-1: Create DuckDB Database from db_schema_and_records.sql
+
+% duckdb sales_db.duckdb <  db_schema_and_records.sql
+-- Loading resources from /Users/max/.duckdbrc
+Run Time (s): real 0.000 user 0.000327 sys 0.000278
+changes:   0   total_changes: 0
+Run Time (s): real 0.002 user 0.000670 sys 0.000477
+changes:  10   total_changes: 10
+
+
+Step-2: View/Inspect the Database
+
+% duckdb sales_db.duckdb
+-- Loading resources from /Users/max/.duckdbrc
+DuckDB v1.5.5 (Variegata)
+Enter ".help" for usage hints.
+
+duckdb ▸ .schema
+CREATE TABLE sales(
+   id INTEGER, 
+   item VARCHAR, 
+   category VARCHAR, 
+   price DECIMAL(5,2), 
+   quantity INTEGER
+);
+
+duckdb ▸ SELECT * FROM sales;
+┌───────┬────────────┬──────────┬──────────────┬──────────┐
+│  id   │    item    │ category │    price     │ quantity │
+│ int32 │  varchar   │ varchar  │ decimal(5,2) │  int32   │
+├───────┼────────────┼──────────┼──────────────┼──────────┤
+│     1 │ Latte      │ Beverage │         4.50 │        2 │
+│     2 │ Croissant  │ Bakery   │         3.00 │        1 │
+│     3 │ Cappuccino │ Beverage │         4.00 │        3 │
+│     4 │ Muffin     │ Bakery   │         2.50 │        4 │
+│     5 │ Espresso   │ Beverage │         2.50 │        1 │
+│     6 │ Croissant  │ Bakery   │         3.00 │        2 │
+│     7 │ Latte      │ Beverage │         4.50 │        1 │
+│     8 │ Bagel      │ Bakery   │         3.50 │        3 │
+│     9 │ Tea        │ Beverage │         3.00 │        2 │
+│    10 │ Muffin     │ Bakery   │         2.50 │        1 │
+└───────┴────────────┴──────────┴──────────────┴──────────┘
+  10 rows                                       5 columns
+Run Time (s): real 0.002 user 0.001018 sys 0.000577
+changes:   0   total_changes: 0
+
+duckdb ▸ .exit
+%
