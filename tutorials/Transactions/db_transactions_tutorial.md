@@ -218,6 +218,24 @@ style: |
 
 ---
 
+# 🦆 Running These Demos in DuckDB?
+
+This tutorial uses **MySQL** syntax. In class we use **DuckDB**, which
+supports the core commands but not everything shown here
+(checked with DuckDB 1.5.5):
+
+| Command | DuckDB |
+|---|---|
+| `START TRANSACTION` / `BEGIN` / `BEGIN TRANSACTION` | ✅ Works |
+| `COMMIT`, `ROLLBACK` | ✅ Works |
+| `SAVEPOINT`, `ROLLBACK TO SAVEPOINT`, `RELEASE SAVEPOINT` | ❌ Parser error |
+| `SET autocommit = 0`, `SELECT @@autocommit` | ❌ Not supported (DuckDB always auto-commits outside `BEGIN`) |
+| `SET TRANSACTION ISOLATION LEVEL ...` | ❌ Parser error (DuckDB always uses **snapshot isolation**) |
+
+> **In DuckDB, a transaction is all-or-nothing.** To undo only part of the work, split it into separate transactions: `COMMIT` the part you want to keep, then `ROLLBACK` a new transaction for the rest.
+
+---
+
 <!-- _class: divider -->
 
 # Part 1
@@ -710,6 +728,8 @@ ROLLBACK TO SAVEPOINT name;      -- undo back to checkpoint
 RELEASE SAVEPOINT name;          -- delete the checkpoint (optional cleanup)
 ```
 
+> **DuckDB note:** savepoints work in MySQL, PostgreSQL, Oracle, and SQL Server, but **not in DuckDB** — all three commands raise a parser error. In DuckDB, use separate transactions: `COMMIT` the steps you want to keep, then put the risky step in its own transaction that you can `ROLLBACK`.
+
 ```sql
 -- ── Demo: Multi-step order with a savepoint ────────────────────────────
 
@@ -992,7 +1012,8 @@ SELECT COUNT(*) AS laptop_orders FROM orders WHERE product = 'Laptop Pro 15';
 
 # 🔖 Demo 3: Savepoints in a Multi-Step Workflow
 
-A payroll scenario showing how savepoints enable partial rollbacks.
+A payroll scenario showing how savepoints enable partial rollbacks
+(MySQL only — see the DuckDB note under Command 4).
 
 ```sql
 -- ── Monthly payroll for 3 employees ───────────────────────────────────
@@ -1450,6 +1471,8 @@ Try these on your own using the `txn_demo` database:
 > 3. Charges the account — but then **simulate a payment failure**
 > 4. Roll back to the second savepoint (keep inventory and order)
 > 5. Commit the partial result
+>
+> *DuckDB version (no savepoints):* commit the order and inventory steps in one transaction, then run the charge in a second transaction and `ROLLBACK` it to simulate the payment failure. Verify the order and inventory change are kept and the account balance is unchanged.
 
 **Exercise 4 — Deadlock Simulation**
 > In two separate MySQL sessions, create a deadlock scenario with the accounts table. Observe MySQL's error message and identify which transaction was killed.

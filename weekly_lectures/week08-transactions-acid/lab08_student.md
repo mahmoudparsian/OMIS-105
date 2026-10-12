@@ -57,17 +57,18 @@ d) After a successful checkout, the order disappears from the database.
 -- Your transaction here
 ```
 
-**Q5.** Using a SAVEPOINT, write a transaction that:
-1. Adds a new account for "Dave" with $300
-2. Creates a savepoint
-3. Adds a new account for "Eve" with $400
-4. Rolls back to the savepoint (undoing Eve)
-5. Commits (keeping Dave)
+**Q5.** Add a new account for "Dave" with $300, then add a new account for "Eve" with $400, then undo only the Eve insert while keeping Dave.
+
+> Note: DuckDB does not implement `SAVEPOINT` / `ROLLBACK TO SAVEPOINT` — running them raises a parser error. Use two separate transactions instead: commit the Dave insert, then begin a second transaction for Eve and roll that one back.
 
 Verify that Dave exists but Eve does not.
 
 ```sql
--- Your transaction here
+-- Transaction 1: insert Dave and commit
+```
+
+```sql
+-- Transaction 2: insert Eve and roll back
 ```
 
 ---

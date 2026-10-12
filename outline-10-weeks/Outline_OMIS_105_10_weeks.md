@@ -555,7 +555,7 @@ Performance tuning is not about making things "a little faster." It is about the
 ### What You Will Learn
 - What transactions are and why they exist
 - ACID properties: Atomicity, Consistency, Isolation, Durability
-- BEGIN, COMMIT, ROLLBACK, and SAVEPOINT
+- BEGIN, COMMIT, ROLLBACK, and SAVEPOINT (SAVEPOINT as a concept — DuckDB does not support it)
 - Concurrency problems: dirty reads, lost updates, phantom reads
 - Isolation levels: READ UNCOMMITTED through SERIALIZABLE
 - Locking mechanisms and deadlock prevention
