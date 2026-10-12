@@ -244,6 +244,61 @@ HAVING
 
 ---
 
+## 5. Find Total Sales per Item
+
+```sql
+duckdb ▸ SELECT
+             item,
+             SUM(price * quantity) AS total_sales,
+             LIST(price) AS prices_used,
+             LIST(quantity) AS quantities_used
+         FROM sales
+         GROUP BY item;
+```
+
+```
+┌────────────┬───────────────┬────────────────┬─────────────────┐
+│    item    │  total_sales  │  prices_used   │ quantities_used │
+│  varchar   │ decimal(38,2) │ decimal(5,2)[] │     int32[]     │
+├────────────┼───────────────┼────────────────┼─────────────────┤
+│ Cappuccino │         12.00 │ [4.00]         │ [3]             │ <- 12.00 = 4.0 * 3
+│ Muffin     │         12.50 │ [2.50, 2.50]   │ [4, 1]          │ <- 12.50 = (2.5 * 4) + (2.5 * 1)
+│ Latte      │         13.50 │ [4.50, 4.50]   │ [2, 1]          │
+│ Croissant  │          9.00 │ [3.00, 3.00]   │ [1, 2]          │
+│ Espresso   │          2.50 │ [2.50]         │ [1]             │
+│ Bagel      │         10.50 │ [3.50]         │ [3]             │
+│ Tea        │          6.00 │ [3.00]         │ [2]             │
+└────────────┴───────────────┴────────────────┴─────────────────┘
+```
+
+
+## 6. Find Total Quantity per Item
+
+```sql
+SELECT
+      item,
+      SUM(quantity) AS total_quantity,
+      LIST(quantity) AS quantities_used
+FROM sales
+GROUP BY item;
+```
+
+```
+┌────────────┬────────────────┬─────────────────┐
+│    item    │ total_quantity │ quantities_used │
+│  varchar   │     int128     │     int32[]     │
+├────────────┼────────────────┼─────────────────┤
+│ Cappuccino │              3 │ [3]             │
+│ Bagel      │              3 │ [3]             │
+│ Espresso   │              1 │ [1]             │
+│ Muffin     │              5 │ [4, 1]          │
+│ Tea        │              2 │ [2]             │
+│ Latte      │              3 │ [2, 1]          │
+│ Croissant  │              3 │ [1, 2]          │
+└────────────┴────────────────┴─────────────────┘
+```
+---
+
 ## Summary Cheat Sheet for DuckDB
 
 | Clause | When does it filter/process? | Can it use aggregate functions (`SUM`, `COUNT`)? |
