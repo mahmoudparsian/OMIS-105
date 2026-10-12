@@ -22,7 +22,7 @@ def _(mo):
     3. How transactions keep your data consistent (the classic bank-transfer example)
     4. What happens when things go wrong mid-transaction
     5. Autocommit vs. explicit transactions
-    6. Savepoints — partial rollbacks inside a transaction
+    6. Why DuckDB has no savepoints (partial rollbacks) and what to do instead
 
     ---
 
@@ -669,6 +669,14 @@ def _(mo):
     | Start  | `BEGIN TRANSACTION;` or `BEGIN;` or `START TRANSACTION;` |
     | Save   | `COMMIT;` or `COMMIT TRANSACTION;` |
     | Undo   | `ROLLBACK;` or `ROLLBACK TRANSACTION;` or `ABORT;` |
+    | Partial undo | ❌ Not supported: `SAVEPOINT`, `ROLLBACK TO SAVEPOINT`, `RELEASE SAVEPOINT` |
+
+    > **DuckDB note:** MySQL, PostgreSQL, Oracle, and SQL Server let you
+    roll back to a **savepoint** inside a transaction, but DuckDB does not —
+    the `SAVEPOINT` commands raise a parser error. A DuckDB transaction is
+    all-or-nothing. To keep part of the work, split it into separate
+    transactions: `COMMIT` the part you want to keep, then put the rest in
+    a new transaction that you can `ROLLBACK`.
 
     Let's verify that the short forms work too:
     """)
