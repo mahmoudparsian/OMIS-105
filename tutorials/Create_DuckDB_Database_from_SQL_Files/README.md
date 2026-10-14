@@ -1,7 +1,10 @@
 # Create a DuckDB Database from SQL Files
 
-Build a saved DuckDB database file (`my_database.duckdb`) from two SQL
-files: `db_schema.sql` (the tables) and `db_records.sql` (the rows).
+Build a saved/persistent DuckDB database file (`my_database.duckdb`) from two SQL
+files: 
+
+* `db_schema.sql` (the tables) and
+* `db_records.sql` (the records/rows).
 
 **Choose the guide for your computer:**
 
