@@ -1,7 +1,8 @@
 import marimo
 
-__generated_with = "0.23.9"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium")
+
 
 @app.cell(hide_code=True)
 def _(mo):
@@ -16,16 +17,18 @@ def _(mo):
     """)
     return
 
+
 @app.cell
 def _():
     import marimo as mo
 
     return (mo,)
 
+
 @app.cell
 def _(mo):
     regions = mo.sql(
-        """
+        f"""
         CREATE OR REPLACE TABLE regions AS
         SELECT * FROM (
             VALUES
@@ -34,12 +37,13 @@ def _(mo):
         ) AS t(region_id, region_name, country);
         """
     )
-    return (regions,)
+    return
+
 
 @app.cell
 def _(mo):
     salespeople = mo.sql(
-        """
+        f"""
         CREATE OR REPLACE TABLE salespeople AS
         SELECT * FROM (
             VALUES
@@ -56,12 +60,13 @@ def _(mo):
         ) AS t(sp_id, name, region_id, hire_date, base_salary);
         """
     )
-    return (salespeople,)
+    return
+
 
 @app.cell
 def _(mo):
     sales = mo.sql(
-        """
+        f"""
         CREATE OR REPLACE TABLE sales AS
         SELECT * FROM (
             VALUES
@@ -88,217 +93,257 @@ def _(mo):
         ) AS t(sale_id, sp_id, product, amount, sale_date, quarter);
         """
     )
-    return (sales,)
+    return
+
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q1. Count the total number of sales records.""")
+    mo.md("""
+    ### Q1. Count the total number of sales records.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q1 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q2. Find the total (`SUM`) of all sale amounts.""")
+    mo.md("""
+    ### Q2. Find the total (`SUM`) of all sale amounts.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q2 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q3. Calculate the average sale amount.""")
+    mo.md("""
+    ### Q3. Calculate the average sale amount.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q3 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q4. Find the minimum and maximum sale amounts.""")
+    mo.md("""
+    ### Q4. Find the minimum and maximum sale amounts.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q4 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q5. Count sales per salesperson (`sp_id`).""")
+    mo.md("""
+    ### Q5. Count sales per salesperson (`sp_id`).
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q5 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q6. Calculate total revenue per quarter.""")
+    mo.md("""
+    ### Q6. Calculate total revenue per quarter.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q6 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q7. Find the average base salary of salespeople.""")
+    mo.md("""
+    ### Q7. Find the average base salary of salespeople.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q7 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        """
-        ### Q8. Count how many salespeople are in each region.
+    mo.md("""
+    ### Q8. Count how many salespeople are in each region.
 
-        ✍️ **Explain it:** this query groups the `salespeople` table by
-        `region_id`. If a 6th region existed in the `regions` table with
-        **zero** salespeople in it, would it show up as a row in this
-        result? Why or why not? (Keep this answer — it's exactly what
-        next class is about.)
-        """
-    )
+    ✍️ **Explain it:** this query groups the `salespeople` table by
+    `region_id`. If a 6th region existed in the `regions` table with
+    **zero** salespeople in it, would it show up as a row in this
+    result? Why or why not? (Keep this answer — it's exactly what
+    next class is about.)
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q8 = mo.sql(
-        """
+        f"""
         -- Explanation:
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q9. Find the total revenue per product.""")
+    mo.md("""
+    ### Q9. Find the total revenue per product.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q9 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""### Q10. Find the maximum single sale amount per quarter.""")
+    mo.md("""
+    ### Q10. Find the maximum single sale amount per quarter.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q10 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        """
-        ### Q11. 🐞 Debug it
+    mo.md("""
+    ### Q11. 🐞 Debug it
 
-        A classmate wants to know **how many different products** the
-        company sells, and wrote:
+    A classmate wants to know **how many different products** the
+    company sells, and wrote:
 
-        ```sql
-        SELECT COUNT(product) AS num_products
-        FROM sales;
-        ```
+    ```sql
+    SELECT COUNT(product) AS num_products
+    FROM sales;
+    ```
 
-        It runs fine and returns a number — but that number is way too
-        high to be "how many different products." Run it, then figure
-        out what it's actually counting, and fix it.
-        """
-    )
+    It runs fine and returns a number — but that number is way too
+    high to be "how many different products." Run it, then figure
+    out what it's actually counting, and fix it.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q11 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        """
-        ### 🌟 Q12. Bonus (optional — only if you finish early)
+    mo.md("""
+    ### 🌟 Q12. Bonus (optional — only if you finish early)
 
-        Show total revenue per product for **Q4 sales only**, highest
-        revenue first.
+    Show total revenue per product for **Q4 sales only**, highest
+    revenue first.
 
-        Combines a `WHERE` filter, `GROUP BY`, and `ORDER BY` — you've
-        used pairs of these today, not all three together.
-        """
-    )
+    Combines a `WHERE` filter, `GROUP BY`, and `ORDER BY` — you've
+    used pairs of these today, not all three together.
+    """)
     return
+
 
 @app.cell
 def _(mo):
     q12 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE (bonus)
         """
     )
     return
 
+
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md("""## ✅ Exit Ticket — before you submit""")
+    mo.md("""
+    ## ✅ Exit Ticket — before you submit
+    """)
     return
+
 
 @app.cell
 def _():
@@ -310,7 +355,8 @@ def _():
 
 
     """
-    return (exit_ticket,)
+    return
+
 
 if __name__ == "__main__":
     app.run()
