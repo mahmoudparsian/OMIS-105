@@ -1,14 +1,33 @@
-% duckdb emps_depts_db.duckdb < db_schema_and_records.sql
--- Loading resources from /Users/max/.duckdbrc
-Run Time (s): real 0.000 user 0.000242 sys 0.000276
-changes:   0   total_changes: 0
-Run Time (s): real 0.001 user 0.000457 sys 0.000252
-changes:   5   total_changes: 5
-Run Time (s): real 0.000 user 0.000224 sys 0.000058
-changes:   5   total_changes: 5
-Run Time (s): real 0.001 user 0.000561 sys 0.000168
-changes:  13   total_changes: 18
+## Create DuckDB Database: Method-1
 
+#### Create Database named `emps_depts_db.duckdb`
+```
+% rm  -f  emps_depts_db.duckdb
+% duckdb emps_depts_db.duckdb 
+.read db_schema.sql
+.read db_records.sql
+```
+
+## Create DuckDB Database: Method-2
+
+#### Create Database named `emps_depts_db.duckdb`
+
+```
+duckdb emps_depts_db.duckdb -c ".read db_schema.sql" -c ".read db_records.sql"
+```
+
+---
+
+## Create DuckDB Database: Method-3
+
+#### Create Database named `emps_depts_db.duckdb`
+```
+% rm -f  emps_depts_db.duckdb
+% duckdb emps_depts_db.duckdb < db_schema.sql db_records.sql
+```
+#### View Database `emps_depts_db.duckdb`
+
+```
 % duckdb emps_depts_db.duckdb
 -- Loading resources from /Users/max/.duckdbrc
 DuckDB v1.5.5 (Variegata)
@@ -66,3 +85,4 @@ Run Time (s): real 0.003 user 0.001374 sys 0.000418
 changes:   0   total_changes: 0
 duckdb ▸ .exit
 %
+```
