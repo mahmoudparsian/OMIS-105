@@ -1,4 +1,4 @@
-# Lab 3: SQL Functions, GROUP BY, and Subqueries — INSTRUCTOR SOLUTIONS
+# Sample Lab 01: SQL Functions, GROUP BY, and Subqueries — INSTRUCTOR SOLUTIONS
 
 ## OMIS 105 — Database Management Systems
 **Week 3 | Answer Key**

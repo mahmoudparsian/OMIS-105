@@ -1,4 +1,4 @@
-# Lab 3: SQL Functions, GROUP BY, and Subqueries
+# Sample Lab 01: SQL Functions, GROUP BY, and Subqueries
 
 ## OMIS 105 — Database Management Systems
 **Week 3 | Estimated time: 75–90 minutes**
