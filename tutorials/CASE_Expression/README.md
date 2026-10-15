@@ -12,6 +12,7 @@ so you can check every result by eye.
 |------|------------|---------------|
 | [`case_expression_tutorial_01.md`](case_expression_tutorial_01.md) | The written tutorial: every query, with its real DuckDB result shown below it | Read it on GitHub, or follow along in the DuckDB shell |
 | [`case_expression_tutorial_02.md`](case_expression_tutorial_02.md) | The written tutorial: every query, with its real DuckDB result shown below it | Read it on GitHub, or follow along in the DuckDB shell |
+| [`case_expression_tutorial_03.md`](case_expression_tutorial_03.md) | The written tutorial: every query, with its real DuckDB result shown below it | Read it on GitHub, or follow along in the DuckDB shell |
 | [`case_expression_notebook.py`](case_expression_notebook.py) | The same lessons as a Marimo notebook — run and change every query yourself | `marimo edit case_expression_notebook.py` |
 
 The two files use the **same lesson IDs** (B1, P3, I2, ...), so you can

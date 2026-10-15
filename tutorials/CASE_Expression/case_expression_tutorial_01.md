@@ -115,8 +115,10 @@ Suppose we want to count how many books are **Tech** books versus **Non-Tech** b
 ```sql
 SELECT 
     COUNT(*) AS total_books,
-    SUM(CASE WHEN genre = 'Tech' THEN 1 ELSE 0 END) AS tech_book_count,
-    SUM(CASE WHEN genre != 'Tech' THEN 1 ELSE 0 END) AS non_tech_book_count
+    SUM(CASE WHEN genre = 'Tech' THEN 1 ELSE 0 END) 
+       AS tech_book_count,
+    SUM(CASE WHEN genre != 'Tech' THEN 1 ELSE 0 END) 
+       AS non_tech_book_count
 FROM books;
 ```
 
