@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.10"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium")
 
 
@@ -145,7 +145,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, departments, mo):
     _df = mo.sql(
         f"""
         SELECT *
@@ -173,7 +173,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     _df = mo.sql(
         f"""
         SELECT *
@@ -208,7 +208,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     _df = mo.sql(
         f"""
         SELECT
@@ -242,7 +242,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_sorted = mo.sql(
         f"""
         SELECT
@@ -342,13 +342,14 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_dept_headcount = mo.sql(
         f"""
         SELECT
             dept_id,
             COUNT(*)                                     AS employees,
-            GROUP_CONCAT(emp_name, ', ' ORDER BY emp_name) AS members
+            GROUP_CONCAT(emp_name, ', ' ORDER BY emp_name) AS members,
+            LIST(emp_name)
         FROM employees
         GROUP BY dept_id
         ORDER BY dept_id;
@@ -432,7 +433,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_job_headcount = mo.sql(
         f"""
         SELECT
@@ -473,7 +474,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_dept_salary = mo.sql(
         f"""
         SELECT
@@ -530,7 +531,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_job_payroll = mo.sql(
         f"""
         SELECT
@@ -588,7 +589,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_high_earners = mo.sql(
         f"""
         SELECT
@@ -643,7 +644,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_job_avg = mo.sql(
         f"""
         SELECT
@@ -687,7 +688,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     _df = mo.sql(
         f"""
         SELECT
@@ -698,6 +699,25 @@ def _(con, mo):
         FROM employees
         GROUP BY job_title
         HAVING AVG(salary) > 100000
+        ORDER BY avg_salary DESC;
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell
+def _(con, employees, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+            job_title,
+            COUNT(*)                                       AS employees,
+            ROUND(AVG(salary), 2)                          AS avg_salary,
+            GROUP_CONCAT(emp_name, ', ' ORDER BY emp_name) AS members
+        FROM employees
+        GROUP BY job_title
+        HAVING avg_salary > 100000
         ORDER BY avg_salary DESC;
         """,
         engine=con
@@ -750,7 +770,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_dept_job = mo.sql(
         f"""
         SELECT
@@ -815,7 +835,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, employees, mo):
     df_pivot = mo.sql(
         f"""
         SELECT
@@ -888,7 +908,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, departments, employees, mo):
     _df = mo.sql(
         f"""
         SELECT
@@ -920,7 +940,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, departments, employees, mo):
     _df = mo.sql(
         f"""
         SELECT
@@ -952,7 +972,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, departments, employees, mo):
     df_dept_names = mo.sql(
         f"""
         SELECT
@@ -1015,7 +1035,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, departments, employees, mo):
     df_all_depts = mo.sql(
         f"""
         SELECT
@@ -1076,7 +1096,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, departments, employees, mo):
     _df = mo.sql(
         f"""
         SELECT
