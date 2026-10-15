@@ -3,6 +3,11 @@
 ## OMIS 105 — Database Management Systems
 **Week 3 | Answer Key**
 
+> **Note**: `data/products.csv` has a `category_id` column, not a
+> `category` text column. Q8, Q9, Q12, Q14, and Q15 join `products` to
+> `categories` and group by `category_name`. The marimo version of this
+> lab is `sample_lab_02_instructor.py`.
+
 ---
 
 ## Part 1: String Functions (10 points)
@@ -18,7 +23,7 @@ ORDER BY email_length DESC;
 
 **Q2.** (3 pts)
 ```sql
-SELECT product_name, category
+SELECT product_name, category_id
 FROM products
 WHERE product_name ILIKE '%set%'
    OR product_name ILIKE '%kit%';
@@ -62,6 +67,7 @@ ORDER BY days_as_member DESC;
 ## Part 3: CASE Expressions (10 points)
 
 **Q6.** (5 pts)
+
 ```sql
 -- Individual products
 SELECT product_name, price,
@@ -111,21 +117,23 @@ ORDER BY avg_value;
 
 **Q8.** (5 pts)
 ```sql
-SELECT category,
+SELECT c.category_name AS category,
        COUNT(*) AS num_products,
-       ROUND(AVG(price), 2) AS avg_price,
-       ROUND(SUM(price * stock_quantity), 2) AS total_stock_value
-FROM products
-GROUP BY category
+       ROUND(AVG(p.price), 2) AS avg_price,
+       ROUND(SUM(p.price * p.stock_quantity), 2) AS total_stock_value
+FROM products p, categories c
+WHERE p.category_id = c.category_id
+GROUP BY c.category_name
 ORDER BY total_stock_value DESC;
 ```
 
 **Q9.** (5 pts)
 ```sql
-SELECT category, COUNT(*) AS cnt
-FROM products
-WHERE stock_quantity > 100
-GROUP BY category
+SELECT c.category_name AS category, COUNT(*) AS cnt
+FROM products p, categories c
+WHERE p.category_id = c.category_id
+  AND p.stock_quantity > 100
+GROUP BY c.category_name
 HAVING COUNT(*) > 5;
 ```
 
@@ -155,14 +163,15 @@ ORDER BY mo;
 
 **Q12.** (5 pts)
 ```sql
-SELECT p.product_name, p.category, p.price
-FROM products p
-WHERE p.price > (
-    SELECT AVG(p2.price)
-    FROM products p2
-    WHERE p2.category = p.category
-)
-ORDER BY p.category, p.price DESC;
+SELECT p.product_name, c.category_name AS category, p.price
+FROM products p, categories c
+WHERE p.category_id = c.category_id
+  AND p.price > (
+      SELECT AVG(p2.price)
+      FROM products p2
+      WHERE p2.category_id = p.category_id
+  )
+ORDER BY c.category_name, p.price DESC;
 ```
 
 **Q13.** (5 pts)
@@ -178,10 +187,11 @@ LIMIT 1;
 
 **Q14.** (5 pts)
 ```sql
-SELECT category
-FROM products
-GROUP BY category
-HAVING MIN(stock_quantity) > 0;
+SELECT c.category_name AS category
+FROM products p, categories c
+WHERE p.category_id = c.category_id
+GROUP BY c.category_name
+HAVING MIN(p.stock_quantity) > 0;
 ```
 > This works because if MIN(stock) > 0, no product in that category has 0 stock.
 
@@ -191,19 +201,20 @@ HAVING MIN(stock_quantity) > 0;
 
 **Q15.** (10 pts)
 ```sql
-SELECT category,
+SELECT c.category_name AS category,
        COUNT(*) AS num_products,
-       ROUND(AVG(price), 2) AS avg_price,
-       MIN(price) AS cheapest,
-       MAX(price) AS most_expensive,
-       COUNT(CASE WHEN stock_quantity > 0 THEN 1 END) AS in_stock,
-       COUNT(CASE WHEN stock_quantity = 0 THEN 1 END) AS out_of_stock,
+       ROUND(AVG(p.price), 2) AS avg_price,
+       MIN(p.price) AS cheapest,
+       MAX(p.price) AS most_expensive,
+       COUNT(CASE WHEN p.stock_quantity > 0 THEN 1 END) AS in_stock,
+       COUNT(CASE WHEN p.stock_quantity = 0 THEN 1 END) AS out_of_stock,
        CASE
-           WHEN AVG(price) > (SELECT AVG(price) FROM products) THEN 'Above'
+           WHEN AVG(p.price) > (SELECT AVG(price) FROM products) THEN 'Above'
            ELSE 'Below'
        END AS vs_overall_avg
-FROM products
-GROUP BY category
+FROM products p, categories c
+WHERE p.category_id = c.category_id
+GROUP BY c.category_name
 ORDER BY avg_price DESC;
 ```
 

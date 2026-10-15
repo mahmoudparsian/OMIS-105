@@ -9,11 +9,20 @@
 
 ```python
 import duckdb
-con = duckdb.connect()
-for t, f in [('products','products.csv'),('customers','customers.csv'),
-             ('categories','categories.csv'),('orders','orders.csv')]:
-    con.sql(f"CREATE TABLE {t} AS SELECT * FROM read_csv_auto('{f}')")
+con = duckdb.connect(database=":memory:")
+for t in ["products", "customers", "categories", "orders"]:
+    con.execute(
+        f"CREATE OR REPLACE TABLE {t} AS SELECT * FROM read_csv_auto('./data/{t}.csv')"
+    )
 ```
+
+> **Note**: `products` has a `category_id` column (not a `category`
+> text column). To show a readable category name, join `products` to
+> `categories` on `category_id`, the same comma-join style you used in
+> Week 2 Q6.
+>
+> Want to run this lab in marimo? Open `sample_lab_02_student.py`.
+> It has the same questions.
 
 ---
 
