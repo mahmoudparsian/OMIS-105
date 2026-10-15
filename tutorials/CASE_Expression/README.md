@@ -1,5 +1,17 @@
 # SQL's `CASE` Expression — Step by Step
 
+```
+   What is a CASE Expression?
+   
+   In DuckDB, a CASE expression acts as a conditional 
+   switch or "if-then-else" logic within your queries. 
+   It evaluates specific conditions sequentially from 
+   top to bottom and returns a value as soon as a 
+   condition is satisfied. If no conditions match, it 
+   falls back to an optional default value; otherwise, 
+   it returns NULL
+```
+
 * A beginner-friendly tutorial on SQL's `CASE` expression, in DuckDB.
 * It assumes you have **never seen** `CASE` before.
 * It moves in three levels: **Basic → Basic+ → Intermediate**.
