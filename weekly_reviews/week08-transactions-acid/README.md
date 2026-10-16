@@ -1,5 +1,7 @@
 # Week 8 Review — Transactions, ACID & Constraints
 
+📦 **[Download Week 8 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-transactions-acid.zip)** — this week's lectures and review, in one file. No git needed.
+
 Make a group of changes all-or-nothing, and let the database reject bad data on its own.
 
 ## Run It

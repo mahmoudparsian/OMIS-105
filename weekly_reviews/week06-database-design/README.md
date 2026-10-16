@@ -1,5 +1,7 @@
 # Week 6 Review — Database Design, Constraints & Views
 
+📦 **[Download Week 6 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-database-design.zip)** — this week's lectures and review, in one file. No git needed.
+
 Normalize formally (1NF → 3NF), enforce the design with constraints, and change data safely.
 
 ## Run It

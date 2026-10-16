@@ -9,6 +9,8 @@ review notebook, teaching notes, and whatever data that week needs.
 Nothing is shared between folders — you can copy a single week's folder
 anywhere and it still runs.
 
+📦 **No git?** Download any week — its lectures and review together — as one ZIP file from the [download table](../weekly_lectures/README.md#download-a-week-as-a-zip).
+
 ## The Ten Weeks
 
 | Week | Folder | Topic |

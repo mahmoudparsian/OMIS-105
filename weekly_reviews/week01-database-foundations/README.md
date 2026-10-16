@@ -1,5 +1,7 @@
 # Week 1 Review — Querying a Single Table
 
+📦 **[Download Week 1 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week01-database-foundations.zip)** — this week's lectures and review, in one file. No git needed.
+
 Ask one flat table the questions a manager would actually ask.
 
 ## Run It

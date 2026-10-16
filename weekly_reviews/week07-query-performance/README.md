@@ -1,5 +1,7 @@
 # Week 7 Review — Window Functions & Query Performance
 
+📦 **[Download Week 7 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-query-performance.zip)** — this week's lectures and review, in one file. No git needed.
+
 Rank and compare rows without collapsing them, then look at what the database actually does with your query.
 
 ## Run It

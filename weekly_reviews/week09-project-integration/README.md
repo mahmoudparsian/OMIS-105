@@ -1,5 +1,7 @@
 # Week 9 Review — CTEs, Subqueries & Advanced Window Functions
 
+📦 **[Download Week 9 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-project-integration.zip)** — this week's lectures and review, in one file. No git needed.
+
 Multi-step analysis: name intermediate results, nest queries, and use the full window-function toolkit.
 
 ## Run It

@@ -1,0 +1,46 @@
+# Rebuild the one-ZIP-per-week downloads after every push that touches
+# a week folder, and attach them to the "weekly-zips" GitHub Release.
+# Students download from links like:
+#   https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week03-sql-basics.zip
+name: Build week ZIPs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "weekly_lectures/**"
+      - "weekly_reviews/**"
+      - ".github/scripts/build_week_zips.sh"
+      - ".github/workflows/week-zips.yml"
+  workflow_dispatch:   # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write      # needed to create/update the release
+
+concurrency:
+  group: week-zips
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build one ZIP per week
+        run: .github/scripts/build_week_zips.sh dist
+
+      - name: Upload ZIPs to the "weekly-zips" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view weekly-zips >/dev/null 2>&1; then
+            gh release create weekly-zips \
+              --title "Weekly folders (ZIP downloads)" \
+              --notes "Created by the Build week ZIPs workflow." \
+              --latest=false
+          fi
+          gh release upload weekly-zips dist/*.zip --clobber
+          gh release edit weekly-zips --notes "One ZIP per week. Each holds that week's \`lectures/\` and \`review/\` folders.
+
+          Last updated: $(date -u '+%Y-%m-%d %H:%M UTC') from commit ${GITHUB_SHA::7}."

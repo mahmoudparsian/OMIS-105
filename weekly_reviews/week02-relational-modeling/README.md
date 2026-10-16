@@ -1,5 +1,7 @@
 # Week 2 Review — Relational Design & JOINs
 
+📦 **[Download Week 2 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week02-relational-modeling.zip)** — this week's lectures and review, in one file. No git needed.
+
 See why one flat table is a problem, split it into three, and put it back together with `JOIN`.
 
 ## Run It

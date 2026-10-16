@@ -1,5 +1,7 @@
 # Week 4 Review — Advanced Aggregation & Window Functions
 
+📦 **[Download Week 4 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week04-sql-aggregation.zip)** — this week's lectures and review, in one file. No git needed.
+
 Analyze data without collapsing it — window functions, ranking, `CASE`, subtotals, and CTEs.
 
 ## Run It

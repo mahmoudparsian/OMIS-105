@@ -1,5 +1,7 @@
 # Week 10 Review — Modern DuckDB — JSON, PIVOT & Lists
 
+📦 **[Download Week 10 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-review-modern-data.zip)** — this week's lectures and review, in one file. No git needed.
+
 Real-world data shapes — JSON columns, pivoting for reports, and lists — plus a look back at the whole course.
 
 ## Run It

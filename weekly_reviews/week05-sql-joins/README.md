@@ -1,5 +1,7 @@
 # Week 5 Review — Advanced Joins & Set Operations
 
+📦 **[Download Week 5 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week05-sql-joins.zip)** — this week's lectures and review, in one file. No git needed.
+
 Every remaining way to combine tables, including finding the rows that match nothing.
 
 ## Run It

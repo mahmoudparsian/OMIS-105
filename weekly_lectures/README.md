@@ -25,6 +25,34 @@ topics.
 | 9 | [`week09-project-integration/`](week09-project-integration/) | Project & integration — build a real system |
 | 10 | [`week10-review-modern-data/`](week10-review-modern-data/) | Review, synthesis & real-world perspective |
 
+## Download a Week as a ZIP
+
+You do not need git to get the course files. Each link below
+downloads one week as a single ZIP file. Inside it are two folders:
+
+- `lectures/` — that week's folder from here
+- `review/` — the matching folder from [`weekly_reviews/`](../weekly_reviews)
+
+| Week | Download |
+|------|----------|
+| 1 | [`week01-database-foundations.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week01-database-foundations.zip) |
+| 2 | [`week02-relational-modeling.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week02-relational-modeling.zip) |
+| 3 | [`week03-sql-basics.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week03-sql-basics.zip) |
+| 4 | [`week04-sql-aggregation.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week04-sql-aggregation.zip) |
+| 5 | [`week05-sql-joins.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week05-sql-joins.zip) |
+| 6 | [`week06-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-database-design.zip) |
+| 7 | [`week07-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-query-performance.zip) |
+| 8 | [`week08-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-transactions-acid.zip) |
+| 9 | [`week09-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-project-integration.zip) |
+| 10 | [`week10-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-review-modern-data.zip) |
+
+To use a week, unzip it, open a terminal in the `lectures/` or
+`review/` folder, and run `marimo edit` on a notebook.
+
+The ZIP files are rebuilt automatically every time the course files
+change. A link always gives you the newest version. If you downloaded
+a week earlier, download it again to get any updates.
+
 ## What Is in a Week Folder
 
 Weeks 2–8 share a common layout:

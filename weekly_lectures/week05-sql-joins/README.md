@@ -1,5 +1,7 @@
 # Week 5 — SQL Joins
 
+📦 **[Download Week 5 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week05-sql-joins.zip)** — this week's lectures and review, in one file. No git needed.
+
 Lecture materials for Week 5 of **OMIS 105**. This week is about
 combining tables with `JOIN`.
 

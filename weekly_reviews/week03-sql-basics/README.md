@@ -1,5 +1,7 @@
 # Week 3 Review — Aggregation, Grouping & Subqueries
 
+📦 **[Download Week 3 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week03-sql-basics.zip)** — this week's lectures and review, in one file. No git needed.
+
 Collapse many rows into one number per group, chart it, and ask questions that need a query inside a query.
 
 ## Run It

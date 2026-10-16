@@ -1,5 +1,7 @@
 # Week 4 — SQL Aggregation
 
+📦 **[Download Week 4 as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week04-sql-aggregation.zip)** — this week's lectures and review, in one file. No git needed.
+
 
 * Lecture materials for Week 4 of **OMIS 105**. 
 
