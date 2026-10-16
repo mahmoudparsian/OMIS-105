@@ -65,7 +65,7 @@ information every day.
 |[`data`](./data) | Sample data files (CSV and Parquet) |
 |[`software_installation`](./software_installation) | Required software and step-by-step install/verification guides for Python, DuckDB, Marimo, Pandas, Matplotlib, and qStudio |
 
-📦 **No git?** Download any week — its lectures and review together — as one ZIP file from the [download table](./weekly_lectures/README.md#download-a-week-as-a-zip).
+📦 **No git?** Download any week — its lectures and review together — as one ZIP file. See the [download guide](./course_information/DOWNLOADING_COURSE_FILES.md) for the links and step-by-step help on Mac and Windows.
 
 ---
 
