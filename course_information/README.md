@@ -14,6 +14,7 @@
 |[`CLASS_ATTENDANCE.md`](./CLASS_ATTENDANCE.md) | Class Attendance is Mandatory |
 |[`ASSIGNMENTS_and_GRADING.md`](./ASSIGNMENTS_and_GRADING.md) | Assignments, Labs, and Exams |
 |[`ACADEMIC_CONDUCT.md`](./ACADEMIC_CONDUCT.md)| Academic Conduct |
+|[`DOWNLOADING_COURSE_FILES.md`](./DOWNLOADING_COURSE_FILES.md) | Download Each Week as One ZIP File (No Git Needed) |
 
 --- 
 
