@@ -49,7 +49,9 @@ jobs:
           git push -f origin refs/tags/weekly-zips
 
           cat > notes.md <<NOTES
-          ⬇️ **Download one of the \`weekNN-….zip\` files below.** Ignore "Source code (zip)" and "Source code (tar.gz)". GitHub adds those automatically, and they hold the whole repository.
+          ⬇️ **Download one of the \`weekNN-….zip\` files below.** 
+          
+          Ignore "Source code (zip)" and "Source code (tar.gz)". GitHub adds those automatically, and they hold the whole repository.
 
           Each week's ZIP holds two folders: \`lectures/\` and \`review/\`.
 

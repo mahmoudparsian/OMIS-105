@@ -20,13 +20,14 @@ work, the principles behind them, and how they shape
 the way organizations store, retrieve, and analyze 
 information every day.
 
-* This course covers the core issues in databases and database 
-  management systems (DBMS).
-* Students will acquire technical and managerial skills in planning, analysis,
-  design, implementation, and maintenance of databases.
-* Hands-on training in relational database design, normalization, SQL,
-  and database implementation is provided.
-* Use of a DBMS ([DuckDB](https://duckdb.org)) is required. The course emphasizes the practical issues of managing
+* This course covers the core issues in databases 
+  and database management systems (DBMS).
+* Students will acquire technical and managerial skills in planning, 
+  analysis, design, implementation, and maintenance of databases.
+* Hands-on training in relational database design, normalization, 
+  SQL, and database implementation is provided.
+* Use of a DBMS ([DuckDB](https://duckdb.org)) is required. 
+  The course emphasizes the practical issues of managing
   a database environment.
 
 ---
