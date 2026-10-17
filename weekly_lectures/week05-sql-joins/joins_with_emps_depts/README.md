@@ -24,7 +24,7 @@ type returns a different number of rows, and
 joins_with_emps_depts/
 ├── README.md                    # this file
 ├── db_schema_and_records.sql    # CREATE TABLE + INSERT (departments, employees)
-├── how_to_create_database.txt   # a sample DuckDB CLI session: build the file, then look at it
+├── how_to_create_database.md    # a sample DuckDB CLI session: build the file, then look at it
 ├── emps_depts_db.duckdb         # the built database (committed, ready to use)
 ├── notebook.py                  # Marimo notebook: 21 SQL queries + 6 charts
 └── plot_helpers.py              # matplotlib helpers used by notebook.py
@@ -62,7 +62,7 @@ duckdb emps_depts_db.duckdb < db_schema_and_records.sql
 ```
 
 This needs the [DuckDB CLI](https://duckdb.org/docs/installation/)
-on your `PATH`. `how_to_create_database.txt` shows what the session
+on your `PATH`. `how_to_create_database.md` shows what the session
 looks like.
 
 **Step 2a — Notebook:**

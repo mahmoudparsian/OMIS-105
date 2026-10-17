@@ -318,7 +318,9 @@ con.execute("SELECT ...").fetchdf()         # a query cell ends with .fetchdf()
   (including its `interview_practice/`, `manager_questions/`, and
   `data_quality/` subfolders) use native SQL cells on purpose —
   `_df = mo.sql(f"""...""", engine=con)` against a read-only connection
-  to a built `.duckdb` file — so students see only the SQL. Do not
+  to a built `.duckdb` file — so students see only the SQL. So does
+  `weekly_lectures/week05-sql-joins/joins_for_first_time/`, except
+  that its two small tables are built in memory. Do not
   convert them to `con.execute()`.
 
 ## Verifying a Notebook

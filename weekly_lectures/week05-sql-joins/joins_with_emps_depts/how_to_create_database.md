@@ -1,16 +1,25 @@
-% duckdb emps_depts_db.duckdb < db_schema_and_records.sql
--- Loading resources from /Users/max/.duckdbrc
-Run Time (s): real 0.000 user 0.000237 sys 0.000260
-changes:   0   total_changes: 0
-Run Time (s): real 0.001 user 0.000564 sys 0.000229
-changes:   4   total_changes: 4
-Run Time (s): real 0.000 user 0.000185 sys 0.000048
-changes:   4   total_changes: 4
-Run Time (s): real 0.001 user 0.000449 sys 0.000205
-changes:   6   total_changes: 10
+# How to Create a <br> DuckDB Database
 
+Given `db_schema_and_records.sql` file (which 
+defines tables and populates tables), several
+methods are presented to create a DuckDB database.
+The goal is to create a DuckDB database called 
+`emps_depts_db.duckdb`.
+
+## Method 1
+
+#### Create Database
+
+```sh
+% rm -f emps_depts_db.duckdb*
+% duckdb emps_depts_db.duckdb 
+D .read db_schema_and_records.sql
+```
+
+#### Check/Verify Created Database
+
+```sql
 % duckdb emps_depts_db.duckdb
--- Loading resources from /Users/max/.duckdbrc
 DuckDB v1.5.5 (Variegata)
 
 duckdb ▸ .schema
@@ -38,9 +47,6 @@ duckdb ▸ SELECT * FROM departments;
 │      30 │ Sales       │
 │      40 │ Finance     │
 └─────────┴─────────────┘
-Run Time (s): real 0.001 user 0.001108 sys 0.000414
-changes:   0   total_changes: 0
-
 
 duckdb ▸ SELECT * FROM employees;
 ┌────────┬──────────┬────────┬─────────┐
@@ -54,8 +60,23 @@ duckdb ▸ SELECT * FROM employees;
 │      5 │ Diana    │  70000 │    NULL │
 │      6 │ Jane     │  80000 │    NULL │
 └────────┴──────────┴────────┴─────────┘
-Run Time (s): real 0.001 user 0.001128 sys 0.000368
-changes:   0   total_changes: 0
 
 duckdb ▸ .exit
 %
+```
+
+## Method 2
+
+#### Create Database
+
+```sh
+% rm -f emps_depts_db.duckdb*
+duckdb emps_depts_db.duckdb -c ".read db_schema_and_records.sql"
+```
+
+## Method 3
+
+```
+% rm -f emps_depts_db.duckdb*
+% duckdb emps_depts_db.duckdb < db_schema_and_records.sql
+```

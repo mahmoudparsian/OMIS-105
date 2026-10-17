@@ -5,9 +5,24 @@
 Lecture materials for Week 5 of **OMIS 105**. This week is about
 combining tables with `JOIN`.
 
-## Start Here: Employees / Departments
+## Start Here: Your First JOIN
 
-**[`joins_with_emps_depts/`](joins_with_emps_depts/)** — the first
+**[`joins_for_first_time/`](joins_for_first_time/)** — the very first
+joins lesson, about `INNER JOIN` only. A coffee shop has 5 customers
+and 6 orders. The orders table has no names, so it cannot say who
+bought what — until one `INNER JOIN` puts the matching rows side by
+side. It includes:
+
+- [`notebook.py`](joins_for_first_time/notebook.py) — a Marimo
+  notebook with 10 SQL queries, a before/after chart, and an
+  interactive "matchmaker" that shows how each order finds its
+  customer
+
+Start with that folder's [README](joins_for_first_time/README.md).
+
+## Next: Employees / Departments
+
+**[`joins_with_emps_depts/`](joins_with_emps_depts/)** — the second
 joins demo: just 4 departments and 6 employees, small enough to
 check every answer by eye. Two departments have no employees, and
 two employees have no department, so every join type gives a

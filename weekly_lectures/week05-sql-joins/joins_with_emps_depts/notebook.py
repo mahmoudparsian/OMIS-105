@@ -37,7 +37,7 @@ def _(mo):
     import duckdb
 
     # Open the database built from db_schema_and_records.sql
-    # (see how_to_create_database.txt).
+    # (see how_to_create_database.md).
     # read_only=True: queries can read the tables, but nothing in
     # this notebook can change them.
     db_path = mo.notebook_dir() / "emps_depts_db.duckdb"
