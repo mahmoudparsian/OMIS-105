@@ -35,6 +35,20 @@ different row count. It includes:
 
 Start with that folder's [README](joins_with_emps_depts/README.md).
 
+## Reading Guide: Join in Action with Employees / Departments
+
+**[`join_in_action_with_emps_depts/`](join_in_action_with_emps_depts/)**
+— a written guide that uses the same small employees/departments idea:
+4 departments and 7 employees. Two departments have no employees, and
+two employees have no department. It includes:
+
+- [`join_in_action_with_emps_depts_student.md`](join_in_action_with_emps_depts/join_in_action_with_emps_depts_student.md)
+  — 20 business questions on `GROUP BY`, `CASE`, `INNER`, `LEFT`,
+  `RIGHT`, and `FULL OUTER` joins, "find what is missing", and the
+  `ON` vs. `WHERE` trap, plus 6 practice exercises. You write each
+  query yourself, then click **Show result** to compare your output
+  with the real DuckDB result and read a short explanation
+
 ## Join Practice: Users / Roles / Cities
 
 **[`joins_with_users_roles_cities/`](joins_with_users_roles_cities/)**

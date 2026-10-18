@@ -127,7 +127,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo):
     _df = mo.sql(
         f"""
         SELECT customer_id,
@@ -153,7 +153,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, mo, orders):
     _df = mo.sql(
         f"""
         SELECT order_id,
@@ -174,10 +174,10 @@ def _(mo):
     6 orders. Look closely: **there are no names here!** An order only
     says `customer_id = 103`. Who is 103? This table does not know.
 
-    ### 🔑 The shared column
+    ## 🔑 The shared column
 
-    Both tables have a column called **`customer_id`**. This is the
-    "bridge" between them:
+    ### Both tables have a column called `customer_id`.
+    ### This is the "bridge" (link) between them:
 
     ```
        customers                         orders
@@ -189,9 +189,9 @@ def _(mo):
                      same number = same person
     ```
 
-    - In `customers`, `customer_id` is the **primary key** — it is
+    - In `customers`, `customer_id` is the **primary key (PK)** — it is
       unique, one per customer.
-    - In `orders`, `customer_id` is a **foreign key** — it *points to*
+    - In `orders`, `customer_id` is a **foreign key (FK)** — it *points to*
       a row in another table.
 
     Storing a small number in `orders` (instead of copying the name
@@ -217,7 +217,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo):
     _df = mo.sql(
         f"""
         SELECT name, city
@@ -240,10 +240,10 @@ def _(mo):
     - A real coffee chain has **6 million** orders. One query per order?
       Copy and paste every answer into a spreadsheet? No way. 😩
 
-    We need a way to tell the database:
+    ### We need a way to tell the database:
 
-    > *"For **every** order, find the customer with the **same**
-    > `customer_id`, and put the two rows **side by side**."*
+    #### > *"For **every** order, find the customer with the same
+    #### > `customer_id`, and put the two rows **side by side**."
 
     That sentence **is** an `INNER JOIN`.
     """)
@@ -262,7 +262,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo, orders):
     _df = mo.sql(
         f"""
         SELECT orders.order_id,
@@ -284,8 +284,9 @@ def _(con, mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    **Look at that!** ✨ Every order now has a **name** and a **city**
-    next to it. Six lookups, done in one query.
+    ### Look at that!✨
+    ### Every order now has a **name** and a **city**
+    ### next to it. Six lookups, done in one query.
 
     - `orders.item` means "the `item` column from `orders`". Writing
       the table name first tells everyone where each column comes from.
@@ -437,7 +438,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo, orders):
     _df = mo.sql(
         f"""
         SELECT o.order_id,
@@ -474,7 +475,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo, orders):
     _df = mo.sql(
         f"""
         SELECT c.name,
@@ -502,7 +503,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo, orders):
     _df = mo.sql(
         f"""
         SELECT c.name,
@@ -531,7 +532,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, mo, orders):
     df_spend_by_id = mo.sql(
         f"""
         SELECT customer_id,
@@ -556,7 +557,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo, orders):
     df_spend_by_name = mo.sql(
         f"""
         SELECT c.name,
@@ -604,7 +605,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo, orders):
     _df = mo.sql(
         f"""
         SELECT c.city,
@@ -639,7 +640,7 @@ def _(mo):
 
 
 @app.cell
-def _(con, mo):
+def _(con, customers, mo, orders):
     _df = mo.sql(
         f"""
         SELECT
