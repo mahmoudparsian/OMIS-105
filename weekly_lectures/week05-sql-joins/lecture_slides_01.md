@@ -9,10 +9,11 @@ style: |
   section {
     justify-content: flex-start;
   }
+  
 ---
 
-# OMIS 105  
-## Week 5: JOIN Deep Dive (Relational Power)
+# OMIS 105: Week 5
+## JOIN Deep Dive <br> Relational Power
 
 ---
 
@@ -55,14 +56,14 @@ Keys (`customer_id`, `product_id`, ...) link the tables.
 
 # Example Tables
 
-customers:
+**customers:**
 
 | id | name |
 |----|------|
 | 1  | Alice |
 | 2  | Bob |
 
-orders:
+**orders:**
 
 | id | customer_id | amount |
 |----|-------------|--------|
@@ -77,10 +78,14 @@ Alice has two orders. Bob has none.
 
 ```sql
 CREATE OR REPLACE TABLE customers AS
-SELECT * FROM (VALUES (1, 'Alice'), (2, 'Bob')) AS t(id, name);
+SELECT * 
+FROM (VALUES (1, 'Alice'), (2, 'Bob')) 
+AS t(id, name);
 
 CREATE OR REPLACE TABLE orders AS
-SELECT * FROM (VALUES (1, 1, 1000), (2, 1, 800)) AS t(id, customer_id, amount);
+SELECT * 
+FROM (VALUES (1, 1, 1000), (2, 1, 800)) 
+AS t(id, customer_id, amount);
 ```
 
 ---
@@ -96,7 +101,7 @@ JOIN orders o
   ON c.id = o.customer_id;
 ```
 
-`JOIN` alone means `INNER JOIN`.
+**`JOIN`** alone means **`INNER JOIN`**.
 
 ---
 
@@ -149,7 +154,7 @@ LEFT JOIN orders o
 
 ---
 
-# Finding Missing Data: LEFT JOIN + IS NULL
+## Finding Missing Data: <br> LEFT JOIN + IS NULL
 
 👉 “Which customers have **never** ordered?”
 
@@ -216,7 +221,8 @@ Count a column from the right table.
 -- Goal: all customers, with their orders over 900
 SELECT c.name, o.amount
 FROM customers c
-LEFT JOIN orders o ON c.id = o.customer_id
+LEFT JOIN orders o 
+  ON c.id = o.customer_id
 WHERE o.amount > 900;          -- Bob is gone!
 ```
 
@@ -228,15 +234,17 @@ Fix: put the condition in `ON`:
 SELECT c.name, o.amount
 FROM customers c
 LEFT JOIN orders o
-  ON c.id = o.customer_id AND o.amount > 900;   -- Alice 1000, Bob NULL
+  ON c.id = o.customer_id AND o.amount > 900;   
+  -- Alice 1000, Bob NULL
 ```
 
 ---
 
 # JOIN Mental Model
 
-INNER JOIN → only the matches (the overlap)  
-LEFT JOIN → everything on the left, plus matches from the right  
+* `INNER JOIN` → only the matches (the overlap)  
+
+* `LEFT JOIN` → everything on the left, plus matches from the right  
 
 ---
 
@@ -245,11 +253,20 @@ LEFT JOIN → everything on the left, plus matches from the right
 Now use this week's real data (run from the `week05-sql-joins` folder):
 
 ```sql
-CREATE OR REPLACE TABLE customers   AS SELECT * FROM read_csv('data/customers.csv');
-CREATE OR REPLACE TABLE orders      AS SELECT * FROM read_csv('data/orders.csv');
-CREATE OR REPLACE TABLE order_items AS SELECT * FROM read_csv('data/order_items.csv');
-CREATE OR REPLACE TABLE products    AS SELECT * FROM read_csv('data/products.csv');
-CREATE OR REPLACE TABLE reviews     AS SELECT * FROM read_csv('data/reviews.csv');
+CREATE OR REPLACE TABLE customers   
+AS SELECT * FROM read_csv('data/customers.csv');
+
+CREATE OR REPLACE TABLE orders      
+AS SELECT * FROM read_csv('data/orders.csv');
+
+CREATE OR REPLACE TABLE order_items 
+AS SELECT * FROM read_csv('data/order_items.csv');
+
+CREATE OR REPLACE TABLE products    
+AS SELECT * FROM read_csv('data/products.csv');
+
+CREATE OR REPLACE TABLE reviews     
+AS SELECT * FROM read_csv('data/reviews.csv');
 ```
 
 (These replace the small `customers` and `orders` tables from before.)
