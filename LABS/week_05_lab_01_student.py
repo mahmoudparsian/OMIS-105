@@ -123,7 +123,7 @@ def _(mo):
 def _(mo):
     mo.md("""
     ## Q3
-    Count employees per department name with region name
+    Count employees per department name
     """)
     return
 
