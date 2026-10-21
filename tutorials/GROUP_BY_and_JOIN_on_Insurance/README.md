@@ -1,12 +1,18 @@
 # Mastering GROUP BY and INNER JOIN 
 # Dataset: Insurance 
 
-A 25-lesson Marimo notebook that teaches SQL `GROUP BY` end to end —
-from a single-column count all the way to `ROLLUP` and window
-functions — using a real 1,800-row health insurance dataset. A second,
-small table, `regions`, holds the full region names. Cell 4b gives a
-first look at joining the two tables, and Part 2 (Cells 21–25) teaches
-`INNER JOIN` + `GROUP BY` step by step. Every query renders as a styled
+* A 25-lesson Marimo notebook that teaches SQL `GROUP BY` 
+end to end — from a single-column count all the way to 
+`ROLLUP` and window functions — using a real 1,800-row 
+health insurance dataset (`insurance` table). 
+
+* A second, small table, `regions`, holds the full 
+region names. 
+
+* Notebook Cell 4b gives a first look at joining the two tables, and
+
+* Part 2 (Cells 21–25) teaches `INNER JOIN` + `GROUP BY` 
+step by step. Every query renders as a styled
 table, and most have a matching dark-themed chart.
 
 ## Files
@@ -14,8 +20,8 @@ table, and most have a matching dark-themed chart.
 | File | What it is |
 |---|---|
 | `insurance_notebook.py` | The Marimo notebook (all 25 lessons, plus Cell 4b) |
-| `insurance.csv` | The insurance policies — 1,800 rows |
-| `regions.csv` | The sales regions — 6 rows |
+| `insurance.csv` | **Data File:** The insurance policies — 1,800 rows |
+| `regions.csv` | **Data File:** The sales regions — 6 rows |
 | `plots_util.py` | Shared plotting + table-styling helpers (don't edit — just import) |
 
 **`insurance.csv` columns:**
