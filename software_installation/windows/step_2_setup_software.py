@@ -78,7 +78,9 @@ def install_packages():
     # at the top of the file and will not open without it.
     # sqlglot is needed by Marimo itself to run SQL cells — without it,
     # Marimo shows "The following packages are required to execute sql: sqlglot".
-    packages = ["duckdb", "pandas", "marimo", "matplotlib", "sqlglot"]
+    # DuckDB is pinned to 1.5.5 for the whole Fall 2026 quarter, so
+    # every student runs the same version as the class notebooks.
+    packages = ["duckdb==1.5.5", "pandas", "marimo", "matplotlib", "sqlglot"]
     explained = False
 
     print()
@@ -125,15 +127,15 @@ def verify_packages():
     print()
     results = []
 
-    # DuckDB — the course needs 1.0 or newer
+    # DuckDB — the course uses exactly 1.5.5 this quarter
     try:
         import duckdb
         r = duckdb.query("SELECT 42 AS answer").fetchone()
         assert r[0] == 42
-        if int(duckdb.__version__.split(".")[0]) < 1:
+        if duckdb.__version__ != "1.5.5":
             results.append(
-                ("DuckDB", f"{duckdb.__version__} is too old, need 1.0 or newer "
-                           f"— run: pip install --upgrade duckdb", False)
+                ("DuckDB", f"{duckdb.__version__} is the wrong version, need 1.5.5 "
+                           f"— run: pip install duckdb==1.5.5", False)
             )
         else:
             results.append(("DuckDB", duckdb.__version__, True))
