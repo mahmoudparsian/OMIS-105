@@ -1,4 +1,5 @@
-# Mastering SQL GROUP BY with DuckDB — Insurance Dataset
+# Mastering GROUP BY and INNER JOIN 
+# Dataset: Insurance 
 
 A 25-lesson Marimo notebook that teaches SQL `GROUP BY` end to end —
 from a single-column count all the way to `ROLLUP` and window
@@ -14,7 +15,7 @@ table, and most have a matching dark-themed chart.
 |---|---|
 | `insurance_notebook.py` | The Marimo notebook (all 25 lessons, plus Cell 4b) |
 | `insurance.csv` | The insurance policies — 1,800 rows |
-| `regions.csv` | The sales regions — 5 rows |
+| `regions.csv` | The sales regions — 6 rows |
 | `plots_util.py` | Shared plotting + table-styling helpers (don't edit — just import) |
 
 **`insurance.csv` columns:**
@@ -47,13 +48,16 @@ table, and most have a matching dark-themed chart.
 | `se` | South-East | Rafa Gomez | West Palm Beach |
 | `ne` | North-East | Alex Pope | New York |
 | `mw` | Mid-West | Jane Eastwood | Chicago |
+| `ma` | Mid-Atlantic |Betty Woodward | Pittsburgh|
 
-Mid-West (`mw`) has **no policies** in `insurance.csv`. This is on
-purpose: it shows that an `INNER JOIN` drops rows that have no match.
 
-In Part 1, results show the short region code (`se`, `sw`, …). To see
-the full region name, a query must join `insurance` with `regions` —
-that is what Cell 4b and Part 2 do.
+Mid-West (`mw`) and Mid-Atlantic (`ma`) have **no policies** 
+in `insurance.csv`. This is on purpose: it shows that an 
+`INNER JOIN` drops rows that have no match.
+
+In Part 1, results show the short region code (`se`, `sw`, …). 
+To see the full region name, a query must join `insurance` table
+with `regions` table — that is what Cell 4b and Part 2 do.
 
 ## Requirements
 

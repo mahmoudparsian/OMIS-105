@@ -1,19 +1,20 @@
 import marimo
 
-__generated_with = "0.23.9"
+__generated_with = "0.23.10"
 app = marimo.App(width="medium", sql_output="pandas")
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # 🦆 Mastering SQL `GROUP BY` with DuckDB
+    # 🦆 Mastering `GROUP BY` and `INNER JOIN` with DuckDB
     ### Insurance Dataset — 1,800 Rows of Real-World Data, Plus a Regions Table
 
     ---
@@ -25,7 +26,7 @@ def _(mo):
     📄 insurance_notebook.py   ← this notebook
     📄 plots_util.py           ← all plotting functions (don't edit)
     📄 insurance.csv           ← the insurance policies (1,800 rows)
-    📄 regions.csv             ← the sales regions (5 rows)
+    📄 regions.csv             ← the sales regions (6 rows)
     ```
 
     **Table `insurance`:**
@@ -91,23 +92,47 @@ def _():
 
     # ── Connect DuckDB & load both CSV files ──────────────────────────────────────
     con = duckdb.connect()
+
     con.execute("""
         CREATE OR REPLACE TABLE insurance AS
         SELECT *
         FROM read_csv_auto('insurance.csv', types={'smoker': 'VARCHAR'});
     """)
+
     con.execute("""
         CREATE OR REPLACE TABLE regions AS
         SELECT *
         FROM read_csv_auto('regions.csv');
     """)
+
     for _table in ['insurance', 'regions']:
         _n = con.execute(f"SELECT COUNT(*) FROM {_table};").fetchone()[0]
         print(f'✅  Loaded {_n:,} rows into DuckDB table  →  {_table}')
     con.execute("""
         DESCRIBE insurance;
     """).df()
-    return (PALETTE, con, plot_manager_scorecard, plot_age_range, plot_avg_median, plot_bar_2col, plot_bmi_bar, plot_bubble, plot_error_bar, plot_grouped_bar, plot_hbar, plot_hbar_threshold, plot_histogram, plot_line_fill, plot_pie_bar, plot_rank_hbar, plot_rollup_stacked, plot_single_bar, plot_top5, styled_table)
+    return (
+        PALETTE,
+        con,
+        plot_age_range,
+        plot_avg_median,
+        plot_bar_2col,
+        plot_bmi_bar,
+        plot_bubble,
+        plot_error_bar,
+        plot_grouped_bar,
+        plot_hbar,
+        plot_hbar_threshold,
+        plot_histogram,
+        plot_line_fill,
+        plot_manager_scorecard,
+        plot_pie_bar,
+        plot_rank_hbar,
+        plot_rollup_stacked,
+        plot_single_bar,
+        plot_top5,
+        styled_table,
+    )
 
 
 @app.cell(hide_code=True)
@@ -115,7 +140,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 1 — Basic Statistics (No GROUP BY yet)
-    **What are we doing?**  
+    **What are we doing?**
     Before we group anything, let's see the overall summary statistics for the whole dataset — min, max, average, count, and standard deviation.
     """)
     return
@@ -136,7 +161,7 @@ def _(con, styled_table):
     """
     df_1 = con.execute(_sql).df()
     styled_table(df_1)
-    return (df_1,)
+    return
 
 
 @app.cell
@@ -154,7 +179,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 2 — GROUP BY One Column: Count by Gender
-    **What are we doing?**  
+    **What are we doing?**
     How many policies does each gender hold? We `GROUP BY gender` and count the rows in each group.
     """)
     return
@@ -190,7 +215,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 3 — GROUP BY One Column: Avg Charges by Smoker Status
-    **What are we doing?**  
+    **What are we doing?**
     Does smoking significantly raise insurance costs? We `GROUP BY smoker` and compare average charges between the two groups.
     """)
     return
@@ -226,7 +251,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 4 — GROUP BY One Column: Policies by Region
-    **What are we doing?**  
+    **What are we doing?**
     How is the customer base distributed across the four US regions? We `GROUP BY region_id` and count policies and sum charges.
 
     For now we only see short codes like `se` and `sw`. In Cell 4b, right below, we use `INNER JOIN` to show the full region names.
@@ -309,7 +334,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 5 — GROUP BY One Column: Charges by Number of Children
-    **What are we doing?**  
+    **What are we doing?**
     Does having more dependents increase your premium? We `GROUP BY num_children` and compare average vs median charges.
     """)
     return
@@ -345,7 +370,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 6 — GROUP BY with CASE: Age Buckets
-    **What are we doing?**  
+    **What are we doing?**
     We bucket continuous `age` values into life-stage groups using `CASE`, then `GROUP BY` that derived column to see how charges scale with age.
     """)
     return
@@ -380,7 +405,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 7 — GROUP BY Two Columns: Region x Gender
-    **What are we doing?**  
+    **What are we doing?**
     We combine two dimensions — `region_id` AND `gender` — to see if gender differences in charges vary by geography.
     """)
     return
@@ -417,7 +442,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 8 — GROUP BY Two Columns: Smoker x Gender
-    **What are we doing?**  
+    **What are we doing?**
     Is the smoking penalty the same for men and women? We `GROUP BY smoker, gender` to reveal the interaction.
     """)
     return
@@ -455,7 +480,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 9 — GROUP BY Two Columns: Region x Smoker
-    **What are we doing?**  
+    **What are we doing?**
     Do some regions have more smokers, and does that drive up regional costs? We `GROUP BY region_id, smoker`.
     """)
     return
@@ -492,7 +517,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 10 — GROUP BY Two Columns: Age Group x Smoker
-    **What are we doing?**  
+    **What are we doing?**
     Does the cost of smoking compound as you age? We combine the `age_group` bucket with `smoker` status.
     """)
     return
@@ -529,7 +554,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 11 — GROUP BY + HAVING: Filter Groups After Aggregating
-    **What are we doing?**  
+    **What are we doing?**
     `HAVING` is `WHERE` *for groups* — it filters after aggregation. Here we keep only region-gender groups whose average charge exceeds $14,000.
     """)
     return
@@ -566,7 +591,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 12 — GROUP BY Two Columns: BMI Tier x Smoker
-    **What are we doing?**  
+    **What are we doing?**
     We bucket BMI into WHO categories with `CASE`, then cross it with `smoker` — a classic risk-factor interaction query.
     """)
     return
@@ -603,7 +628,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 13 — GROUP BY Two Columns: Children x Smoker
-    **What are we doing?**  
+    **What are we doing?**
     Do smokers with many kids pay dramatically more? We `GROUP BY num_children, smoker` to reveal the compounded risk.
     """)
     return
@@ -640,7 +665,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 14 — GROUP BY + ORDER BY + LIMIT: Top 5 Most Expensive Groups
-    **What are we doing?**  
+    **What are we doing?**
     Which 5 specific region-smoker-gender combinations have the highest average charges? We use `ORDER BY` and `LIMIT` after `GROUP BY` to get the top-N.
     """)
     return
@@ -678,7 +703,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 15 — GROUP BY + COUNT DISTINCT: Unique Ages per Region
-    **What are we doing?**  
+    **What are we doing?**
     `COUNT(DISTINCT col)` counts *unique* values within each group. Here we measure how many distinct ages appear in each region.
     """)
     return
@@ -716,7 +741,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 16 — GROUP BY Two Columns: Region x Number of Children
-    **What are we doing?**  
+    **What are we doing?**
     Are large families concentrated in specific regions? We `GROUP BY region_id, num_children` to count policies per family-size bracket per region.
     """)
     return
@@ -753,7 +778,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 17 — Multiple Aggregates: Full Region Summary
-    **What are we doing?**  
+    **What are we doing?**
     One `GROUP BY` can compute many aggregate functions at once. Here we build a complete financial snapshot per region: count, sum, mean, median, stddev, min, max.
     """)
     return
@@ -793,7 +818,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 18 — GROUP BY ROLLUP: Subtotals & Grand Total
-    **What are we doing?**  
+    **What are we doing?**
     `GROUP BY ROLLUP(a, b)` automatically adds a subtotal row for each group of `a`, plus a grand-total row — multi-level summaries in a single query.
     """)
     return
@@ -830,7 +855,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 19 — GROUP BY + Window Function: Rank within Groups
-    **What are we doing?**  
+    **What are we doing?**
     We combine `GROUP BY` (in a CTE) with `RANK() OVER (PARTITION BY ...)` to rank each region by average charge *within* each smoker cohort.
     """)
     return
@@ -875,7 +900,7 @@ def _(mo):
     mo.md(r"""
     ---
     ## 📊 Cell 20 — The Grand Finale: Everything Together
-    **What are we doing?**  
+    **What are we doing?**
     Our final query combines three `GROUP BY` dimensions, six aggregate functions, a `HAVING` filter, and a window `RANK()` — all in one clean SQL statement.
     """)
     return
