@@ -14,20 +14,22 @@ def _():
 def _(mo):
     mo.md(r"""
     # 🦆 Mastering SQL `GROUP BY` with DuckDB
-    ### Insurance Dataset — 1,800 Rows of Real-World Data
+    ### Insurance Dataset — 1,800 Rows of Real-World Data, Plus a Regions Table
 
     ---
 
-    > **Learning Goal:** Understand how `GROUP BY` collapses many rows into summary groups — and how to combine it with aggregate functions like `COUNT`, `AVG`, `SUM`, `MIN`, and `MAX`.
+    > **Learning Goal:** Understand how `GROUP BY` collapses many rows into summary groups — and how to combine it with aggregate functions like `COUNT`, `AVG`, `SUM`, `MIN`, and `MAX`. Then use `INNER JOIN` to bring in region details from a second table.
 
     **Files needed in the same folder:**
     ```
-    📄 insurance_groupby_v3.ipynb   ← this notebook
-    📄 insurance_plots.py           ← all plotting functions (don't edit)
-    📄 insurance.csv                ← the dataset
+    📄 insurance_notebook.py   ← this notebook
+    📄 plots_util.py           ← all plotting functions (don't edit)
+    📄 insurance.csv           ← the insurance policies (1,800 rows)
+    📄 regions.csv             ← the sales regions (5 rows)
     ```
 
-    **Dataset columns:**
+    **Table `insurance`:**
+
     | Column | Type | Description |
     |---|---|---|
     | `age` | integer | Age of the insured |
@@ -35,8 +37,23 @@ def _(mo):
     | `bmi` | float | Body Mass Index |
     | `num_children` | integer | Number of dependents |
     | `smoker` | string | `yes` / `no` |
-    | `region` | string | US region (`northeast`, `northwest`, `southeast`, `southwest`) |
+    | `region_id` | string | Region code (`ne`, `nw`, `se`, `sw`) — links to `regions` |
     | `charges` | float | Insurance charges billed ($) |
+
+    **Table `regions`:**
+
+    | Column | Type | Description |
+    |---|---|---|
+    | `region_id` | string | Region code — the key that `insurance.region_id` points to |
+    | `region_name` | string | Full name, e.g. `South-West` |
+    | `region_manager` | string | The person who runs the region |
+    | `region_head_quarter` | string | The city where the region's office is |
+
+    `regions` has 5 rows, but `insurance` uses only 4 of them.
+    **Mid-West (`mw`) has no policies.** Watch what happens to it in Part 2.
+
+    **Part 1 (Cells 1–20)** uses only the `insurance` table (except Cell 4b, a first look at a join).
+    **Part 2 (Cells 21–25)** joins it with `regions` using `INNER JOIN`.
     """)
     return
 
@@ -66,27 +83,31 @@ def _():
         plot_avg_median, plot_hbar, plot_grouped_bar, plot_line_fill,
         plot_hbar_threshold, plot_bmi_bar, plot_top5, plot_age_range,
         plot_error_bar, plot_rollup_stacked, plot_rank_hbar, plot_bubble,
+        plot_manager_scorecard,
         PALETTE
     )
 
     setup_style()   # apply dark theme
 
-    # ── Connect DuckDB & load CSV ─────────────────────────────────────────────────
+    # ── Connect DuckDB & load both CSV files ──────────────────────────────────────
     con = duckdb.connect()
     con.execute("""
-        CREATE TABLE insurance AS
+        CREATE OR REPLACE TABLE insurance AS
         SELECT *
         FROM read_csv_auto('insurance.csv', types={'smoker': 'VARCHAR'});
     """)
-    total = con.execute("""
-        SELECT COUNT(*)
-        FROM insurance;
-    """).fetchone()[0]
-    print(f'✅  Loaded {total:,} rows into DuckDB table  →  insurance')
+    con.execute("""
+        CREATE OR REPLACE TABLE regions AS
+        SELECT *
+        FROM read_csv_auto('regions.csv');
+    """)
+    for _table in ['insurance', 'regions']:
+        _n = con.execute(f"SELECT COUNT(*) FROM {_table};").fetchone()[0]
+        print(f'✅  Loaded {_n:,} rows into DuckDB table  →  {_table}')
     con.execute("""
         DESCRIBE insurance;
     """).df()
-    return (PALETTE, con, plot_age_range, plot_avg_median, plot_bar_2col, plot_bmi_bar, plot_bubble, plot_error_bar, plot_grouped_bar, plot_hbar, plot_hbar_threshold, plot_histogram, plot_line_fill, plot_pie_bar, plot_rank_hbar, plot_rollup_stacked, plot_single_bar, plot_top5, styled_table)
+    return (PALETTE, con, plot_manager_scorecard, plot_age_range, plot_avg_median, plot_bar_2col, plot_bmi_bar, plot_bubble, plot_error_bar, plot_grouped_bar, plot_hbar, plot_hbar_threshold, plot_histogram, plot_line_fill, plot_pie_bar, plot_rank_hbar, plot_rollup_stacked, plot_single_bar, plot_top5, styled_table)
 
 
 @app.cell(hide_code=True)
@@ -206,7 +227,9 @@ def _(mo):
     ---
     ## 📊 Cell 4 — GROUP BY One Column: Policies by Region
     **What are we doing?**  
-    How is the customer base distributed across the four US regions? We `GROUP BY region` and count policies and sum charges.
+    How is the customer base distributed across the four US regions? We `GROUP BY region_id` and count policies and sum charges.
+
+    For now we only see short codes like `se` and `sw`. In Cell 4b, right below, we use `INNER JOIN` to show the full region names.
     """)
     return
 
@@ -215,12 +238,12 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge,
             ROUND(SUM(charges), 2) AS total_charges
         FROM insurance
-        GROUP BY region
+        GROUP BY region_id
         ORDER BY total_charges DESC;
     """
     df_4 = con.execute(_sql).df()
@@ -230,8 +253,54 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_4, plot_pie_bar):
-    plot_pie_bar(df_4, x='region', count_col='num_policies',
+    plot_pie_bar(df_4, x='region_id', count_col='num_policies',
                  charge_col='total_charges', title='Regional Distribution')
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 🔗 Cell 4b — Same Query, with Region Names (INNER JOIN)
+    **What are we doing?**
+    Codes like `se` are hard to read. The full names live in the second
+    table, `regions`. We **join** the two tables on `region_id`, then
+    `GROUP BY r.region_name` instead of the code.
+
+    - `insurance AS i` and `regions AS r` give each table a short **alias**.
+    - `ON i.region_id = r.region_id` tells DuckDB how to match the rows.
+
+    The numbers are the same as in Cell 4 — only the labels change.
+    Part 2 (Cells 21–25) explains joins step by step.
+    """)
+    return
+
+
+@app.cell
+def _(con, styled_table):
+    _sql = """
+        SELECT
+            r.region_name,
+            COUNT(*) AS num_policies,
+            ROUND(AVG(i.charges), 2) AS avg_charge,
+            ROUND(SUM(i.charges), 2) AS total_charges
+        FROM insurance AS i
+        INNER JOIN regions AS r
+            ON i.region_id = r.region_id
+        GROUP BY r.region_name
+        ORDER BY total_charges DESC;
+    """
+    df_4b = con.execute(_sql).df()
+    styled_table(df_4b)
+    return (df_4b,)
+
+
+@app.cell
+def _(df_4b, plot_pie_bar):
+    plot_pie_bar(df_4b, x='region_name', count_col='num_policies',
+                 charge_col='total_charges',
+                 title='Regional Distribution — with Region Names')
     return
 
 
@@ -312,7 +381,7 @@ def _(mo):
     ---
     ## 📊 Cell 7 — GROUP BY Two Columns: Region x Gender
     **What are we doing?**  
-    We combine two dimensions — `region` AND `gender` — to see if gender differences in charges vary by geography.
+    We combine two dimensions — `region_id` AND `gender` — to see if gender differences in charges vary by geography.
     """)
     return
 
@@ -321,13 +390,13 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             gender,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
         FROM insurance
-        GROUP BY region, gender
-        ORDER BY region, gender;
+        GROUP BY region_id, gender
+        ORDER BY region_id, gender;
     """
     df_7 = con.execute(_sql).df()
     styled_table(df_7)
@@ -336,7 +405,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(PALETTE, df_7, plot_grouped_bar):
-    plot_grouped_bar(df_7, index_col='region', col_col='gender',
+    plot_grouped_bar(df_7, index_col='region_id', col_col='gender',
                      val_col='avg_charge',
                      title='Avg Charges - Region x Gender',
                      colors=[PALETTE[1], PALETTE[0]])
@@ -387,7 +456,7 @@ def _(mo):
     ---
     ## 📊 Cell 9 — GROUP BY Two Columns: Region x Smoker
     **What are we doing?**  
-    Do some regions have more smokers, and does that drive up regional costs? We `GROUP BY region, smoker`.
+    Do some regions have more smokers, and does that drive up regional costs? We `GROUP BY region_id, smoker`.
     """)
     return
 
@@ -396,13 +465,13 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             smoker,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
         FROM insurance
-        GROUP BY region, smoker
-        ORDER BY region, smoker DESC;
+        GROUP BY region_id, smoker
+        ORDER BY region_id, smoker DESC;
     """
     df_9 = con.execute(_sql).df()
     styled_table(df_9)
@@ -411,7 +480,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_9, plot_grouped_bar):
-    plot_grouped_bar(df_9, index_col='region', col_col='smoker',
+    plot_grouped_bar(df_9, index_col='region_id', col_col='smoker',
                      val_col='avg_charge',
                      title='Avg Charges - Region x Smoker Status',
                      colors=['#2a9d8f', '#e76f51'])
@@ -470,12 +539,12 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             gender,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
         FROM insurance
-        GROUP BY region, gender
+        GROUP BY region_id, gender
         HAVING AVG(charges) > 14000
         ORDER BY avg_charge DESC;
     """
@@ -486,7 +555,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_11, plot_hbar_threshold):
-    plot_hbar_threshold(df_11, x=['region', 'gender'], y='avg_charge',
+    plot_hbar_threshold(df_11, x=['region_id', 'gender'], y='avg_charge',
                         threshold=14000,
                         title='Groups with Avg Charge > $14,000  (HAVING clause)')
     return
@@ -581,13 +650,13 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             smoker,
             gender,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
         FROM insurance
-        GROUP BY region, smoker, gender
+        GROUP BY region_id, smoker, gender
         ORDER BY avg_charge DESC
         LIMIT 5;
     """
@@ -598,7 +667,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_14, plot_top5):
-    plot_top5(df_14, x_cols=['region', 'smoker', 'gender'],
+    plot_top5(df_14, x_cols=['region_id', 'smoker', 'gender'],
               y='avg_charge',
               title='Top 5 Most Expensive Region-Smoker-Gender Groups')
     return
@@ -619,14 +688,14 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             COUNT(*) AS num_policies,
             COUNT(DISTINCT age) AS distinct_ages,
             MIN(age) AS youngest,
             MAX(age) AS oldest,
             ROUND(AVG(age), 1) AS avg_age
         FROM insurance
-        GROUP BY region
+        GROUP BY region_id
         ORDER BY distinct_ages DESC;
     """
     df_15 = con.execute(_sql).df()
@@ -636,7 +705,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_15, plot_age_range):
-    plot_age_range(df_15, region_col='region', min_col='youngest',
+    plot_age_range(df_15, region_col='region_id', min_col='youngest',
                    max_col='oldest', avg_col='avg_age',
                    title='Age Range per Region')
     return
@@ -648,7 +717,7 @@ def _(mo):
     ---
     ## 📊 Cell 16 — GROUP BY Two Columns: Region x Number of Children
     **What are we doing?**  
-    Are large families concentrated in specific regions? We `GROUP BY region, num_children` to count policies per family-size bracket per region.
+    Are large families concentrated in specific regions? We `GROUP BY region_id, num_children` to count policies per family-size bracket per region.
     """)
     return
 
@@ -657,13 +726,13 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             num_children,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
         FROM insurance
-        GROUP BY region, num_children
-        ORDER BY region, num_children;
+        GROUP BY region_id, num_children
+        ORDER BY region_id, num_children;
     """
     df_16 = con.execute(_sql).df()
     styled_table(df_16)
@@ -672,7 +741,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(PALETTE, df_16, plot_grouped_bar):
-    plot_grouped_bar(df_16, index_col='num_children', col_col='region',
+    plot_grouped_bar(df_16, index_col='num_children', col_col='region_id',
                      val_col='num_policies',
                      title='Policy Count - Children x Region',
                      colors=PALETTE[:4], xlabel='Number of Children')
@@ -694,7 +763,7 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            region,
+            region_id,
             COUNT(*) AS policies,
             ROUND(SUM(charges), 0) AS total_revenue,
             ROUND(AVG(charges), 2) AS avg_charge,
@@ -703,7 +772,7 @@ def _(con, styled_table):
             ROUND(MIN(charges), 2) AS min_charge,
             ROUND(MAX(charges), 2) AS max_charge
         FROM insurance
-        GROUP BY region
+        GROUP BY region_id
         ORDER BY total_revenue DESC;
     """
     df_17 = con.execute(_sql).df()
@@ -713,7 +782,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_17, plot_error_bar):
-    plot_error_bar(df_17, x='region', bar_col='total_revenue',
+    plot_error_bar(df_17, x='region_id', bar_col='total_revenue',
                    avg_col='avg_charge', err_col='stddev_charge',
                    title='Total Revenue + Avg+-StdDev by Region')
     return
@@ -734,14 +803,14 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            COALESCE(region, '-- ALL REGIONS --') AS region,
+            COALESCE(region_id, '-- ALL REGIONS --') AS region_id,
             COALESCE(CAST(smoker AS VARCHAR), '-- ALL --') AS smoker,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge,
             ROUND(SUM(charges), 0) AS total_charges
         FROM insurance
-        GROUP BY ROLLUP(region, smoker)
-        ORDER BY region, smoker;
+        GROUP BY ROLLUP(region_id, smoker)
+        ORDER BY region_id, smoker;
     """
     df_18 = con.execute(_sql).df()
     styled_table(df_18)
@@ -750,7 +819,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_18, plot_rollup_stacked):
-    plot_rollup_stacked(df_18, region_col='region', smoker_col='smoker',
+    plot_rollup_stacked(df_18, region_col='region_id', smoker_col='smoker',
                         val_col='total_charges',
                         title='ROLLUP - Stacked Total Charges by Region')
     return
@@ -772,14 +841,14 @@ def _(con, styled_table):
     _sql = """
         WITH base AS (
         SELECT
-            region,
+            region_id,
             smoker,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
         FROM insurance
-        GROUP BY region, smoker )
+        GROUP BY region_id, smoker )
         SELECT
-            region,
+            region_id,
             smoker,
             num_policies,
             avg_charge,
@@ -795,7 +864,7 @@ def _(con, styled_table):
 
 @app.cell
 def _(df_19, plot_rank_hbar):
-    plot_rank_hbar(df_19, region_col='region', smoker_col='smoker',
+    plot_rank_hbar(df_19, region_col='region_id', smoker_col='smoker',
                    val_col='avg_charge', rank_col='rank_within_smoker_group',
                    title='RANK() OVER - Region Rank within Smoker Group')
     return
@@ -817,7 +886,7 @@ def _(con, styled_table):
     _sql = """
         WITH grouped AS (
         SELECT
-            region,
+            region_id,
             smoker,
             gender,
             COUNT(*) AS num_policies,
@@ -828,7 +897,7 @@ def _(con, styled_table):
             ROUND(SUM(charges), 0) AS total_charges,
             ROUND(STDDEV(charges),2) AS stddev_charge
         FROM insurance
-        GROUP BY region, smoker, gender
+        GROUP BY region_id, smoker, gender
         HAVING COUNT(*) >= 15 )
         SELECT
             *,
@@ -846,17 +915,301 @@ def _(con, styled_table):
 def _(df_20, plot_bubble):
     plot_bubble(df_20, x_col='overall_rank', y_col='avg_charge',
                 size_col='num_policies', color_col='total_charges',
-                label_cols=['region', 'smoker', 'gender'],
+                label_cols=['region_id', 'smoker', 'gender'],
                 rank_col='overall_rank',
                 title='Grand Summary - All Groups Ranked\n(bubble size = policy count | color = total revenue)')
+    return
 
-    print('\n Congratulations!  You have now mastered SQL GROUP BY!')
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    # 🔗 Part 2 — `INNER JOIN` + `GROUP BY`
+
+    So far every query used one table. But `insurance` only stores a short
+    code like `se` for each region. The full name, the manager, and the
+    headquarters city live in a **second table**, `regions`.
+
+    To use both tables in one query, we **join** them. An `INNER JOIN`
+    matches rows from two tables where a column has the same value — here,
+    `insurance.region_id = regions.region_id`.
+
+    ```
+    insurance (1,800 rows)              regions (5 rows)
+    ┌─────┬────────┬───────────┐        ┌───────────┬─────────────┐
+    │ age │ smoker │ region_id │───────▶│ region_id │ region_name │
+    └─────┴────────┴───────────┘        └───────────┴─────────────┘
+    ```
+
+    **Key rule:** an `INNER JOIN` keeps **only the rows that match** in
+    both tables. A row with no partner on the other side is dropped.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 🔗 Cell 21 — Your First INNER JOIN: Add Region Details to Each Policy
+    **What are we doing?**
+    First, let's look at the small `regions` table on its own. It has 5 rows.
+    """)
+    return
+
+
+@app.cell
+def _(con, styled_table):
+    _sql = """
+        SELECT
+            region_id,
+            region_name,
+            region_manager,
+            region_head_quarter
+        FROM regions
+        ORDER BY region_id;
+    """
+    df_21a = con.execute(_sql).df()
+    styled_table(df_21a)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Now we join it to `insurance`. Each policy row gets its region's name
+    and manager attached.
+
+    - `insurance AS i` and `regions AS r` give each table a short **alias**.
+    - `ON i.region_id = r.region_id` tells DuckDB *how* to match the rows.
+    - `i.` and `r.` say which table each column comes from.
+    """)
+    return
+
+
+@app.cell
+def _(con, styled_table):
+    _sql = """
+        SELECT
+            i.age,
+            i.gender,
+            i.smoker,
+            i.region_id,
+            r.region_name,
+            r.region_manager,
+            i.charges
+        FROM insurance AS i
+        INNER JOIN regions AS r
+            ON i.region_id = r.region_id
+        LIMIT 8;
+    """
+    df_21 = con.execute(_sql).df()
+    styled_table(df_21)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 🔗 Cell 22 — INNER JOIN + GROUP BY: Policies by Region Name
+    **What are we doing?**
+    You saw this query in Cell 4b. Now let's look at it more closely.
+    The join happens first; then `GROUP BY` collapses the joined rows
+    into one row per region.
+
+    👀 **Look closely:** `regions` has 5 rows, but the result has only 4.
+    **Mid-West is missing.** No policy has `region_id = 'mw'`, so Mid-West
+    has no match — and `INNER JOIN` drops rows without a match.
+    """)
+    return
+
+
+@app.cell
+def _(con, styled_table):
+    _sql = """
+        SELECT
+            r.region_name,
+            COUNT(*) AS num_policies,
+            ROUND(AVG(i.charges), 2) AS avg_charge,
+            ROUND(SUM(i.charges), 2) AS total_charges
+        FROM insurance AS i
+        INNER JOIN regions AS r
+            ON i.region_id = r.region_id
+        GROUP BY r.region_name
+        ORDER BY total_charges DESC;
+    """
+    df_22 = con.execute(_sql).df()
+    styled_table(df_22)
+    return (df_22,)
+
+
+@app.cell
+def _(df_22, plot_pie_bar):
+    plot_pie_bar(df_22, x='region_name', count_col='num_policies',
+                 charge_col='total_charges',
+                 title='Regional Distribution — Now with Real Names')
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 🔗 Cell 23 — INNER JOIN + GROUP BY Two Columns: Manager Scorecard
+    **What are we doing?**
+    A business question: *how big is each manager's book of business, and
+    how risky is it?* We group by `region_manager` **and**
+    `region_head_quarter` — two columns that exist only in `regions`.
+
+    `COUNT(CASE WHEN i.smoker = 'yes' THEN 1 END)` counts only smokers:
+    the `CASE` gives `NULL` for non-smokers, and `COUNT` skips `NULL`s.
+    """)
+    return
+
+
+@app.cell
+def _(con, styled_table):
+    _sql = """
+        SELECT
+            r.region_manager,
+            r.region_head_quarter,
+            COUNT(*) AS num_policies,
+            COUNT(CASE WHEN i.smoker = 'yes' THEN 1 END) AS num_smokers,
+            ROUND(100.0 * COUNT(CASE WHEN i.smoker = 'yes' THEN 1 END) / COUNT(*), 1) AS pct_smokers,
+            ROUND(AVG(i.charges), 2) AS avg_charge,
+            ROUND(SUM(i.charges), 0) AS total_charges
+        FROM insurance AS i
+        INNER JOIN regions AS r
+            ON i.region_id = r.region_id
+        GROUP BY r.region_manager, r.region_head_quarter
+        ORDER BY total_charges DESC;
+    """
+    df_23 = con.execute(_sql).df()
+    styled_table(df_23)
+    return (df_23,)
+
+
+@app.cell
+def _(df_23, plot_manager_scorecard):
+    plot_manager_scorecard(df_23, manager_col='region_manager',
+                           hq_col='region_head_quarter',
+                           total_col='total_charges', pct_col='pct_smokers',
+                           title='Manager Scorecard — Total Charges and Smoker Share')
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 🔗 Cell 24 — INNER JOIN + WHERE + GROUP BY + HAVING
+    **What are we doing?**
+    Which region-and-gender groups of **smokers** cost more than $32,000
+    on average? This query uses every clause we have learned, in order:
+
+    1. `FROM ... INNER JOIN ... ON` — combine the two tables
+    2. `WHERE` — keep only smokers (filters **rows**, before grouping)
+    3. `GROUP BY` — one row per region name and gender
+    4. `HAVING` — keep only expensive groups (filters **groups**, after grouping)
+    5. `ORDER BY` — most expensive first
+    """)
+    return
+
+
+@app.cell
+def _(con, styled_table):
+    _sql = """
+        SELECT
+            r.region_name,
+            i.gender,
+            COUNT(*) AS num_smokers,
+            ROUND(AVG(i.charges), 2) AS avg_charge
+        FROM insurance AS i
+        INNER JOIN regions AS r
+            ON i.region_id = r.region_id
+        WHERE i.smoker = 'yes'
+        GROUP BY r.region_name, i.gender
+        HAVING AVG(i.charges) > 32000
+        ORDER BY avg_charge DESC;
+    """
+    df_24 = con.execute(_sql).df()
+    styled_table(df_24)
+    return (df_24,)
+
+
+@app.cell
+def _(df_24, plot_hbar_threshold):
+    plot_hbar_threshold(df_24, x=['region_name', 'gender'], y='avg_charge',
+                        threshold=32000,
+                        title='Smoker Groups with Avg Charge > $32,000')
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 🔗 Cell 25 — Group First, Then Join (CTE + INNER JOIN)
+    **What are we doing?**
+    In Cells 22–24 we joined 1,800 rows first, then grouped them. We can
+    also do it the other way around:
+
+    1. A CTE (`WITH region_stats AS (...)`) groups `insurance` by
+       `region_id` — just **4 rows** come out.
+    2. Then we `INNER JOIN` those 4 rows to `regions` to add the names.
+
+    Same kind of answer, but the join only has to match 4 rows instead
+    of 1,800. This pattern is common in real reports.
+    """)
+    return
+
+
+@app.cell
+def _(con, styled_table):
+    _sql = """
+        WITH region_stats AS (
+            SELECT
+                region_id,
+                COUNT(*) AS num_policies,
+                ROUND(AVG(age), 1) AS avg_age,
+                ROUND(AVG(bmi), 2) AS avg_bmi,
+                ROUND(AVG(charges), 2) AS avg_charge
+            FROM insurance
+            GROUP BY region_id
+        )
+        SELECT
+            r.region_name,
+            r.region_manager,
+            s.num_policies,
+            s.avg_age,
+            s.avg_bmi,
+            s.avg_charge
+        FROM region_stats AS s
+        INNER JOIN regions AS r
+            ON s.region_id = r.region_id
+        ORDER BY s.avg_charge DESC;
+    """
+    df_25 = con.execute(_sql).df()
+    styled_table(df_25)
+    return (df_25,)
+
+
+@app.cell
+def _(df_25, plot_hbar):
+    plot_hbar(df_25, x='region_name', y='avg_charge',
+              title='Average Charge by Region (grouped first, then joined)')
+
+    print('\n Congratulations!  You have now mastered SQL GROUP BY and INNER JOIN!')
     print('   Key takeaways:')
     print('   * GROUP BY collapses many rows into one row per unique group value')
     print('   * Every SELECT column must be in GROUP BY or inside an aggregate function')
     print('   * HAVING filters AFTER aggregation  (WHERE filters BEFORE)')
     print('   * ROLLUP adds automatic subtotal / grand-total rows')
     print('   * Window functions (RANK, ROW_NUMBER) operate ON TOP of group results')
+    print('   * INNER JOIN ... ON combines two tables where the key values match')
+    print('   * INNER JOIN drops rows with no match (Mid-West has no policies)')
     return
 
 

@@ -1,12 +1,17 @@
 """
-insurance_plots.py
-==================
-Plotting functions for the GROUP BY DuckDB tutorial notebook.
-All functions accept a pandas DataFrame and keyword arguments,
-and produce a matplotlib figure using the shared dark theme.
+plots_util.py
+=============
+Plotting functions for the GROUP BY + INNER JOIN DuckDB tutorial notebook
+(insurance_notebook.py). All functions accept a pandas DataFrame and
+keyword arguments, and produce a matplotlib figure using the shared
+dark theme.
+
+Region columns: Part 1 passes the short code (`region_id`: ne, nw, se, sw);
+Part 2 passes the joined `region_name` (North-East, ...). The functions
+take the column name as an argument, so either works.
 
 Usage in notebook:
-    from insurance_plots import setup_style, styled_table, *
+    from plots_util import setup_style, styled_table, plot_histogram, ...
 """
 
 import matplotlib.pyplot as plt
@@ -131,7 +136,7 @@ def plot_single_bar(df, x, y, title,
 
 
 def plot_pie_bar(df, x, count_col, charge_col, title):
-    """Cell 4 — bar chart + pie chart side by side."""
+    """Cells 4, 4b, 22 — bar chart + pie chart side by side."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
     ax1.bar(df[x], df[count_col], color=PALETTE[:len(df)], edgecolor='#0f1117')
     ax1.set_title('Policy Count by Region')
@@ -308,10 +313,15 @@ def plot_error_bar(df, x, bar_col, avg_col, err_col, title):
 
 
 def plot_rollup_stacked(df, region_col, smoker_col, val_col, title):
-    """Cell 18 — stacked bar chart from ROLLUP result (excludes total rows)."""
-    sub   = df[~df[region_col].str.startswith('──')].copy()
+    """Cell 18 — stacked bar chart from ROLLUP result (excludes total rows).
+
+    The SQL labels subtotal / grand-total rows with a leading '--'
+    (e.g. '-- ALL REGIONS --', '-- ALL --'); those rows are dropped here.
+    """
+    is_total = (df[region_col].str.startswith('--') |
+                df[smoker_col].astype(str).str.startswith('--'))
+    sub   = df[~is_total].copy()
     pivot = sub.pivot(index=region_col, columns=smoker_col, values=val_col).fillna(0)
-    pivot = pivot[[c for c in pivot.columns if not str(c).startswith('──')]]
     fig, ax = plt.subplots(figsize=(10, 4))
     pivot.plot(kind='bar', stacked=True, ax=ax,
                color=['#2a9d8f', '#e76f51'], edgecolor='#0f1117')
@@ -364,6 +374,30 @@ def plot_bubble(df, x_col, y_col, size_col, color_col,
     ax.set_title(title, color='#a8d8ea', fontsize=13)
     ax.set_ylabel('Avg Charge ($)')
     ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'${x:,.0f}'))
+    ax.grid(True, axis='y')
+    plt.tight_layout()
+    plt.show()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PART 2 — INNER JOIN lessons (Cells 21–25)
+# Cells 22, 24, 25 reuse plot_pie_bar, plot_hbar_threshold, plot_hbar.
+# ─────────────────────────────────────────────────────────────────────────────
+
+def plot_manager_scorecard(df, manager_col, hq_col, total_col, pct_col, title):
+    """Cell 23 — total charges per manager, labelled with HQ city and smoker %."""
+    fig, ax = plt.subplots(figsize=(10, 4))
+    labels = df[manager_col] + '\n(' + df[hq_col] + ')'
+    bars = ax.bar(labels, df[total_col], color=PALETTE[:len(df)],
+                  edgecolor='#0f1117', width=0.6)
+    for bar, total, pct in zip(bars, df[total_col], df[pct_col]):
+        ax.text(bar.get_x()+bar.get_width()/2, bar.get_height(),
+                f'${total/1e6:.1f}M\n{pct:.1f}% smokers',
+                ha='center', va='bottom', fontsize=10, color='#e0e0f0')
+    ax.set_title(title, color='#a8d8ea')
+    ax.set_ylabel('Total Charges ($)')
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'${x/1e6:.1f}M'))
+    ax.set_ylim(0, df[total_col].max() * 1.2)
     ax.grid(True, axis='y')
     plt.tight_layout()
     plt.show()
