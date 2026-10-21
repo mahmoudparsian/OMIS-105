@@ -15,7 +15,8 @@ def _():
 def _(mo):
     mo.md(r"""
     # 🦆 Mastering `GROUP BY` and `INNER JOIN` with DuckDB
-    ### Insurance Dataset — 1,800 Rows of Real-World Data, Plus a Regions Table
+    ### Insurance Dataset — 1,800 Rows of Real-World Data,
+    ### Plus a Regions Table - 6 rows
 
     ---
 
@@ -133,6 +134,47 @@ def _():
         plot_top5,
         styled_table,
     )
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    # View `insurance` Table
+    """)
+    return
+
+
+@app.cell
+def _(con, insurance, mo):
+    _df1000 = mo.sql(
+        f"""
+        SELECT * 
+        FROM insurance
+        LIMIT 5;
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    # View `regions` Table
+    """)
+    return
+
+
+@app.cell
+def _(con, mo, regions):
+    _df2000 = mo.sql(
+        f"""
+        SELECT * 
+        FROM regions;
+        """,
+        engine=con
+    )
+    return
 
 
 @app.cell(hide_code=True)
@@ -380,7 +422,13 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            CASE WHEN age < 25 THEN '18-24  Young Adult' WHEN age < 35 THEN '25-34  Early Career' WHEN age < 45 THEN '35-44  Mid Career' WHEN age < 55 THEN '45-54  Late Career' ELSE '55+    Pre-Retirement' END AS age_group,
+            CASE 
+               WHEN age < 25 THEN '18-24  Young Adult' 
+               WHEN age < 35 THEN '25-34  Early Career' 
+               WHEN age < 45 THEN '35-44  Mid Career' 
+               WHEN age < 55 THEN '45-54  Late Career' 
+               ELSE '55+    Pre-Retirement' 
+            END AS age_group,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge,
             ROUND(SUM(charges), 0) AS total_charges
@@ -527,7 +575,13 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            CASE WHEN age < 25 THEN '18-24' WHEN age < 35 THEN '25-34' WHEN age < 45 THEN '35-44' WHEN age < 55 THEN '45-54' ELSE '55+' END AS age_group,
+            CASE 
+               WHEN age < 25 THEN '18-24' 
+               WHEN age < 35 THEN '25-34' 
+               WHEN age < 45 THEN '35-44' 
+               WHEN age < 55 THEN '45-54' 
+               ELSE '55+' 
+            END AS age_group,
             smoker,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
@@ -601,7 +655,12 @@ def _(mo):
 def _(con, styled_table):
     _sql = """
         SELECT
-            CASE WHEN bmi < 18.5 THEN '1 Underweight  (<18.5)' WHEN bmi < 25.0 THEN '2 Normal        (18.5-24.9)' WHEN bmi < 30.0 THEN '3 Overweight    (25-29.9)' ELSE '4 Obese         (30+)' END AS bmi_category,
+            CASE 
+               WHEN bmi < 18.5 THEN '1 Underweight  (<18.5)' 
+               WHEN bmi < 25.0 THEN '2 Normal        (18.5-24.9)' 
+               WHEN bmi < 30.0 THEN '3 Overweight    (25-29.9)' 
+               ELSE '4 Obese         (30+)' 
+            END AS bmi_category,
             smoker,
             COUNT(*) AS num_policies,
             ROUND(AVG(charges), 2) AS avg_charge
