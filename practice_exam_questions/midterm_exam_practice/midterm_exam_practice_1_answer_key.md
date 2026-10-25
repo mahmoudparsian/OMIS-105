@@ -1,6 +1,6 @@
 # OMIS 105 — Midterm Exam Practice Version Answer Key (Weeks 1–5)
 
-Instructor-only. Pair with `midterm_exam_practice.md`.
+Instructor-only. Pair with `midterm_exam_practice_1.md`.
 
 ---
 
