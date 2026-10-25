@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.10"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium", sql_output="pandas")
 
 
@@ -146,6 +146,18 @@ def _(mo):
 
 @app.cell
 def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT COUNT(*) 
+        FROM insurance;
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell
+def _(con, insurance, mo):
     _df1000 = mo.sql(
         f"""
         SELECT * 
@@ -189,6 +201,44 @@ def _(mo):
 
 
 @app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+                COUNT(*) AS total_rows,
+                ROUND(AVG(age), 1) AS avg_age,
+                ROUND(AVG(bmi), 2) AS avg_bmi,
+                ROUND(AVG(charges), 2) AS avg_charges,
+                ROUND(MIN(charges), 2) AS min_charges,
+                ROUND(MAX(charges), 2) AS max_charges,
+                ROUND(STDDEV(charges), 2) AS stddev_charges
+            FROM insurance;
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+                COUNT(*) AS total_rows,
+                ROUND(AVG(age), 1) AS avg_age,
+                ROUND(AVG(bmi), 2) AS avg_bmi,
+                ROUND(AVG(charges), 2) AS avg_charges,
+                ROUND(MIN(charges), 2) AS min_charges,
+                ROUND(MAX(charges), 2) AS max_charges,
+                ROUND(STDDEV(charges), 2) AS stddev_charges
+            FROM insurance;
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell
 def _(con, styled_table):
     _sql = """
         SELECT
@@ -224,6 +274,23 @@ def _(mo):
     **What are we doing?**
     How many policies does each gender hold? We `GROUP BY gender` and count the rows in each group.
     """)
+    return
+
+
+@app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+                gender,
+                COUNT(*) AS num_policies,
+                ROUND(AVG(charges), 2) AS avg_charge
+            FROM insurance
+            GROUP BY gender
+            ORDER BY num_policies DESC;
+        """,
+        engine=con
+    )
     return
 
 
@@ -264,6 +331,25 @@ def _(mo):
 
 
 @app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+                smoker,
+                COUNT(*) AS num_policies,
+                ROUND(AVG(charges), 2) AS avg_charge,
+                ROUND(MIN(charges), 2) AS min_charge,
+                ROUND(MAX(charges), 2) AS max_charge
+            FROM insurance
+            GROUP BY smoker
+            ORDER BY avg_charge DESC;
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell
 def _(con, styled_table):
     _sql = """
         SELECT
@@ -298,6 +384,36 @@ def _(mo):
 
     For now we only see short codes like `se` and `sw`. In Cell 4b, right below, we use `INNER JOIN` to show the full region names.
     """)
+    return
+
+
+@app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT DISTINCT region_id
+        FROM insurance;
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+                region_id,
+                COUNT(*) AS num_policies,
+                ROUND(AVG(charges), 2) AS avg_charge,
+                ROUND(SUM(charges), 2) AS total_charges
+            FROM insurance
+            GROUP BY region_id
+            ORDER BY total_charges DESC;
+        """,
+        engine=con
+    )
     return
 
 
@@ -341,6 +457,26 @@ def _(mo):
     The numbers are the same as in Cell 4 — only the labels change.
     Part 2 (Cells 21–25) explains joins step by step.
     """)
+    return
+
+
+@app.cell
+def _(con, insurance, mo, regions):
+    _df = mo.sql(
+        f"""
+        SELECT
+                r.region_name,
+                COUNT(*) AS num_policies,
+                ROUND(AVG(i.charges), 2) AS avg_charge,
+                ROUND(SUM(i.charges), 2) AS total_charges
+            FROM insurance AS i
+             INNER JOIN regions AS r
+                ON i.region_id = r.region_id
+            GROUP BY r.region_name
+            ORDER BY total_charges DESC;
+        """,
+        engine=con
+    )
     return
 
 
@@ -419,6 +555,30 @@ def _(mo):
 
 
 @app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+                CASE 
+                   WHEN age < 25 THEN '18-24  Young Adult' 
+                   WHEN age < 35 THEN '25-34  Early Career' 
+                   WHEN age < 45 THEN '35-44  Mid Career' 
+                   WHEN age < 55 THEN '45-54  Late Career' 
+                   ELSE '55+    Pre-Retirement' 
+                END AS age_group,
+                COUNT(*) AS num_policies,
+                ROUND(AVG(charges), 2) AS avg_charge,
+                ROUND(SUM(charges), 0) AS total_charges
+            FROM insurance
+            GROUP BY age_group
+            ORDER BY MIN(age);
+        """,
+        engine=con
+    )
+    return
+
+
+@app.cell
 def _(con, styled_table):
     _sql = """
         SELECT
@@ -456,6 +616,24 @@ def _(mo):
     **What are we doing?**
     We combine two dimensions — `region_id` AND `gender` — to see if gender differences in charges vary by geography.
     """)
+    return
+
+
+@app.cell
+def _(con, insurance, mo):
+    _df = mo.sql(
+        f"""
+        SELECT
+                region_id,
+                gender,
+                COUNT(*) AS num_policies,
+                ROUND(AVG(charges), 2) AS avg_charge
+            FROM insurance
+            GROUP BY region_id, gender
+            ORDER BY region_id, gender;
+        """,
+        engine=con
+    )
     return
 
 
@@ -1020,7 +1198,7 @@ def _(mo):
     `insurance.region_id = regions.region_id`.
 
     ```
-    insurance (1,800 rows)              regions (5 rows)
+    insurance (1,800 rows)              regions (6 rows)
     ┌─────┬────────┬───────────┐        ┌───────────┬─────────────┐
     │ age │ smoker │ region_id │───────▶│ region_id │ region_name │
     └─────┴────────┴───────────┘        └───────────┴─────────────┘
@@ -1040,6 +1218,23 @@ def _(mo):
     **What are we doing?**
     First, let's look at the small `regions` table on its own. It has 5 rows.
     """)
+    return
+
+
+@app.cell
+def _(con, mo, regions):
+    _df = mo.sql(
+        f"""
+        SELECT
+                region_id,
+                region_name,
+                region_manager,
+                region_head_quarter
+            FROM regions
+            ORDER BY region_id;
+        """,
+        engine=con
+    )
     return
 
 
@@ -1069,6 +1264,28 @@ def _(mo):
     - `ON i.region_id = r.region_id` tells DuckDB *how* to match the rows.
     - `i.` and `r.` say which table each column comes from.
     """)
+    return
+
+
+@app.cell
+def _(con, insurance, mo, regions):
+    _df = mo.sql(
+        f"""
+        SELECT
+                i.age,
+                i.gender,
+                i.smoker,
+                i.region_id,
+                r.region_name,
+                r.region_manager,
+                i.charges
+            FROM insurance AS i
+            INNER JOIN regions AS r
+                ON i.region_id = r.region_id;
+
+        """,
+        engine=con
+    )
     return
 
 
