@@ -1,12 +1,13 @@
 import marimo
 
-__generated_with = "0.23.9"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium", sql_output="pandas")
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
@@ -33,7 +34,7 @@ def _(mo):
 
     ---
 
-    > **CTE** stands for **Common Table Expression**.  
+    > **CTE** stands for **Common Table Expression**.
     > Think of it as giving a *nickname* to a temporary result set so you can reference it cleanly later in the same query.
 
     ```sql
@@ -52,7 +53,7 @@ def _(mo):
     ---
     ## Cell 1 — Setup: Install DuckDB & Rendering Helper
 
-    We install **DuckDB** (an in-process SQL engine — no server needed!) and define a small helper function `show()` that renders query results as a beautiful HTML table.  
+    We install **DuckDB** (an in-process SQL engine — no server needed!) and define a small helper function `show()` that renders query results as a beautiful HTML table.
 
     > **Run this cell first.** The `show()` helper is used in every subsequent cell.
     """)
@@ -133,7 +134,7 @@ def _():
         display(HTML(html))
 
     print("✅ DuckDB", duckdb.__version__, "ready. show() helper loaded.")
-    return (con, show)
+    return con, show
 
 
 @app.cell(hide_code=True)
@@ -210,7 +211,7 @@ def _(mo):
 
     ### The Problem 🤔
 
-    Imagine you want to find employees who earn **more than the company average salary**.  
+    Imagine you want to find employees who earn **more than the company average salary**.
     Without CTEs, you'd need a messy nested query:
 
     ```sql
@@ -241,8 +242,9 @@ def _(mo):
 def _(show):
     show("""
         WITH avg_salary AS (
-        SELECT ROUND(AVG(salary), 2) AS avg_sal
-        FROM employees )
+           SELECT ROUND(AVG(salary), 2) AS avg_sal
+           FROM employees 
+        )
         SELECT
             e.name,
             e.department,
@@ -287,7 +289,8 @@ def _(show):
             salary,
             rating
         FROM employees
-        WHERE hire_year < 2020 ) /* Step 2: from that subset, keep only top performers */
+        WHERE hire_year < 2020 ) 
+        /* Step 2: from that subset, keep only top performers */
         SELECT
             name,
             department,
@@ -324,15 +327,16 @@ def _(mo):
 def _(show):
     show("""
         WITH dept_stats AS (
-        SELECT
-            department,
-            COUNT(*) AS headcount,
-            SUM(salary) AS total_payroll,
-            ROUND(AVG(salary), 0) AS avg_salary,
-            MIN(salary) AS min_salary,
-            MAX(salary) AS max_salary
-        FROM employees
-        GROUP BY department )
+           SELECT
+               department,
+               COUNT(*) AS headcount,
+               SUM(salary) AS total_payroll,
+               ROUND(AVG(salary), 0) AS avg_salary,
+               MIN(salary) AS min_salary,
+               MAX(salary) AS max_salary
+           FROM employees
+           GROUP BY department 
+        )
         SELECT
             department,
             headcount,
@@ -376,14 +380,20 @@ def _(mo):
 @app.cell
 def _(show):
     show("""
-        WITH dept_avg AS ( /* CTE 1: average salary per department */
-        SELECT
-            department,
-            ROUND(AVG(salary), 0) AS avg_dept_salary
-        FROM employees
-        GROUP BY department ), company_avg AS ( /* CTE 2: single overall average (references base table, not CTE 1) */
-        SELECT ROUND(AVG(salary), 0) AS avg_company_salary
-        FROM employees ) /* Main query: use both CTEs together */
+        WITH dept_avg AS ( 
+           /* CTE 1: average salary per department */
+           SELECT
+               department,
+               ROUND(AVG(salary), 0) AS avg_dept_salary
+           FROM employees
+           GROUP BY department ), 
+        company_avg AS ( 
+          /* CTE 2: single overall average 
+           (references base table, not CTE 1) */
+           SELECT ROUND(AVG(salary), 0) AS avg_company_salary
+           FROM employees 
+        ) 
+        /* Main query: use both CTEs together */
         SELECT
             d.department,
             d.avg_dept_salary,
@@ -421,18 +431,22 @@ def _(mo):
 def _(show):
     show("""
         WITH dept_avg AS (
-        SELECT
-            department,
-            ROUND(AVG(salary), 0) AS avg_dept_salary
-        FROM employees
-        GROUP BY department )
+           SELECT
+               department,
+               ROUND(AVG(salary), 0) AS avg_dept_salary
+           FROM employees
+           GROUP BY department )
         SELECT
             e.name,
             e.department,
             e.salary AS individual_salary,
             d.avg_dept_salary,
             e.salary - d.avg_dept_salary AS vs_dept_avg,
-            CASE WHEN e.salary > d.avg_dept_salary THEN '▲ Above' WHEN e.salary < d.avg_dept_salary THEN '▼ Below' ELSE '= Equal' END AS position
+            CASE 
+              WHEN e.salary > d.avg_dept_salary THEN '▲ Above' 
+              WHEN e.salary < d.avg_dept_salary THEN '▼ Below' 
+              ELSE '= Equal' 
+            END AS position
         FROM employees e
         JOIN dept_avg d ON e.department = d.department
         ORDER BY e.department, e.salary DESC;
@@ -466,24 +480,31 @@ def _(mo):
 @app.cell
 def _(show):
     show("""
-        WITH dept_max_salary AS ( /* CTE 1: highest salary in each department */
-        SELECT
-            department,
+        WITH dept_max_salary AS ( 
+           /* CTE 1: highest salary in each department */
+           SELECT
+               department,
             MAX(salary) AS max_salary
-        FROM employees
-        GROUP BY department ), top_earners AS ( /* CTE 2: match employees to their dept's max salary */
-        SELECT
-            e.name,
-            e.department,
-            e.salary,
-            e.rating,
-            e.job_title
-        FROM employees e
-        JOIN dept_max_salary m ON e.department = m.department
-        AND e.salary = m.max_salary ), elite AS ( /* CTE 3: among top earners, keep only perfect raters */
-        SELECT *
-        FROM top_earners
-        WHERE rating = 5 )
+           FROM employees
+           GROUP BY department ), 
+       top_earners AS ( 
+           /* CTE 2: match employees to their dept's max salary */
+           SELECT
+               e.name,
+               e.department,
+               e.salary,
+               e.rating,
+               e.job_title
+           FROM employees e
+           JOIN dept_max_salary m ON e.department = m.department
+           AND e.salary = m.max_salary 
+        ), 
+        elite AS ( 
+           /* CTE 3: among top earners, keep only perfect raters */
+           SELECT *
+           FROM top_earners
+           WHERE rating = 5 
+        )
         SELECT
             name,
             department,
@@ -524,9 +545,12 @@ def _(show):
             name,
             department,
             salary,
-            CASE WHEN salary < 70000 THEN '💛 Entry  (<$70k)' WHEN salary >= 70000
-        AND salary < 100000 THEN '🟠 Mid    ($70k-$100k)' WHEN salary >= 100000
-        AND salary < 140000 THEN '🔵 Senior ($100k-$140k)' ELSE '🟣 Executive ($140k+)' END AS salary_band
+            CASE 
+              WHEN salary < 70000 THEN '💛 Entry  (<$70k)' 
+              WHEN salary >= 70000 AND salary < 100000 THEN '🟠 Mid    ($70k-$100k)' 
+              WHEN salary >= 100000 AND salary < 140000 THEN '🔵 Senior ($100k-$140k)' 
+              ELSE '🟣 Executive ($140k+)' 
+            END AS salary_band
         FROM employees )
         SELECT
             salary_band,
@@ -570,16 +594,17 @@ def _(mo):
 def _(show):
     show("""
         WITH ranked AS (
-        SELECT
-            name,
-            department,
-            job_title,
-            salary,
-            ROW_NUMBER() OVER (PARTITION BY department
-        ORDER BY salary DESC) AS row_num, RANK() OVER (PARTITION BY department
-        ORDER BY salary DESC) AS RANK, DENSE_RANK() OVER (PARTITION BY department
-        ORDER BY salary DESC) AS DENSE_RANK
-        FROM employees )
+           SELECT
+               name,
+               department,
+               job_title,
+               salary,
+               ROW_NUMBER() OVER (PARTITION BY department
+           ORDER BY salary DESC) AS row_num, RANK() OVER (PARTITION BY department
+           ORDER BY salary DESC) AS RANK, DENSE_RANK() OVER (PARTITION BY department
+           ORDER BY salary DESC) AS DENSE_RANK
+           FROM employees 
+        )
         SELECT *
         FROM ranked
         ORDER BY department, RANK;
@@ -607,16 +632,17 @@ def _(mo):
 def _(show):
     show("""
         WITH dept_ranked AS (
-        SELECT
-            name,
-            department,
-            job_title,
-            salary,
-            years_exp,
-            rating,
-            DENSE_RANK() OVER (PARTITION BY department
-        ORDER BY salary DESC) AS sal_rank
-        FROM employees )
+           SELECT
+              name,
+              department,
+              job_title,
+              salary,
+              years_exp,
+              rating,
+              DENSE_RANK() OVER (PARTITION BY department
+                                 ORDER BY salary DESC) 
+                AS sal_rank
+           FROM employees )
         SELECT
             department,
             name,
@@ -641,9 +667,9 @@ def _(mo):
 
     Let's combine **all concepts** in one elegant query:
 
-    1. Compute company-wide average salary  
-    2. Classify employees into salary bands  
-    3. Rank by salary within department  
+    1. Compute company-wide average salary
+    2. Classify employees into salary bands
+    3. Rank by salary within department
     4. Show only top-2 per department who earn above the company average
 
     ```
@@ -659,9 +685,13 @@ def _(mo):
 @app.cell
 def _(show):
     show("""
-        WITH company_avg AS ( /* Step 1: overall company average */
-        SELECT ROUND(AVG(salary), 0) AS avg_sal
-        FROM employees ), enriched AS ( /* Step 2: attach avg, add band & flag */
+        WITH company_avg AS ( 
+           /* Step 1: overall company average */
+           SELECT ROUND(AVG(salary), 0) AS avg_sal
+           FROM employees 
+        ), 
+        enriched AS ( 
+           /* Step 2: attach avg, add band & flag */
         SELECT
             e.emp_id,
             e.name,
@@ -670,11 +700,21 @@ def _(show):
             e.salary,
             e.rating,
             c.avg_sal,
-            CASE WHEN e.salary < 70000 THEN '💛 Entry' WHEN e.salary < 100000 THEN '🟠 Mid' WHEN e.salary < 140000 THEN '🔵 Senior' ELSE '🟣 Executive' END AS band,
-            CASE WHEN e.salary > c.avg_sal THEN '✅ Yes' ELSE '❌ No' END AS above_company_avg
-        FROM employees e
-        CROSS
-        JOIN company_avg c ), ranked AS ( /* Step 3: rank within department by salary */
+            CASE 
+               WHEN e.salary < 70000 THEN '💛 Entry' 
+               WHEN e.salary < 100000 THEN '🟠 Mid' 
+               WHEN e.salary < 140000 THEN '🔵 Senior' 
+               ELSE '🟣 Executive' 
+            END AS band,
+            CASE 
+               WHEN e.salary > c.avg_sal THEN '✅ Yes' 
+               ELSE '❌ No' 
+            END AS above_company_avg
+         FROM employees e
+         CROSS JOIN company_avg c 
+        ), 
+        ranked AS ( 
+           /* Step 3: rank within department by salary */
         SELECT
             *,
             DENSE_RANK() OVER (PARTITION BY department
