@@ -590,7 +590,7 @@ def _(mo):
 
     **A strong follow-up:** "If repeats should never happen, the
     database can enforce it with a `UNIQUE (student_id, course_id)`
-    constraint." That connects the query to database design (Week 6).
+    constraint." That connects the query to database design (Week 8).
 
     ---
     ## Q12 — Students who never earned an A (1 row)

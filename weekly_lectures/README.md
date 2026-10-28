@@ -19,11 +19,22 @@ topics.
 | 3 | [`week03-sql-basics/`](week03-sql-basics/) | SQL core — `SELECT`, `WHERE`, `ORDER BY` |
 | 4 | [`week04-sql-aggregation/`](week04-sql-aggregation/) | SQL analytics — aggregation, `GROUP BY`, `HAVING` |
 | 5 | [`week05-sql-joins/`](week05-sql-joins/) | JOIN deep dive |
-| 6 | [`week06-database-design/`](week06-database-design/) | Database design & normalization |
-| 7 | [`week07-query-performance/`](week07-query-performance/) | Indexing & query performance |
-| 8 | [`week08-transactions-acid/`](week08-transactions-acid/) | Transactions & ACID |
-| 9 | [`week09-project-integration/`](week09-project-integration/) | Project & integration — build a real system |
-| 10 | [`week10-review-modern-data/`](week10-review-modern-data/) | Review, synthesis & real-world perspective |
+| 6 | [`week06-sql-joins-2/`](week06-sql-joins-2/) | Joins II — `INNER`, `LEFT`, `RIGHT JOIN` in practice, self-joins, 3+ tables |
+| 7 | [`week07-subqueries/`](week07-subqueries/) | Subqueries — a query inside a query |
+| 8 | [`week08-database-design/`](week08-database-design/) | Database design & normalization |
+| 9 | [`week09-query-performance/`](week09-query-performance/) | Indexing & query performance |
+| 10 | [`week10-transactions-acid/`](week10-transactions-acid/) | Transactions & ACID |
+
+### Bonus weeks (optional)
+
+Two weeks moved to [`bonus/`](bonus/) when Joins II and Subqueries were
+added, and are now numbered 11 and 12. Nothing was deleted. Their
+files still say "Week 9" and "Week 10".
+
+| Folder | Topic |
+|--------|-------|
+| [`bonus/week11-project-integration/`](bonus/week11-project-integration/) | Project & integration — build a real system |
+| [`bonus/week12-review-modern-data/`](bonus/week12-review-modern-data/) | Review, synthesis & real-world perspective |
 
 ## Download a Week as a ZIP
 
@@ -40,11 +51,13 @@ downloads one week as a single ZIP file. Inside it are two folders:
 | 3 | [`week03-sql-basics.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week03-sql-basics.zip) |
 | 4 | [`week04-sql-aggregation.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week04-sql-aggregation.zip) |
 | 5 | [`week05-sql-joins.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week05-sql-joins.zip) |
-| 6 | [`week06-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-database-design.zip) |
-| 7 | [`week07-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-query-performance.zip) |
-| 8 | [`week08-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-transactions-acid.zip) |
-| 9 | [`week09-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-project-integration.zip) |
-| 10 | [`week10-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-review-modern-data.zip) |
+| 6 | [`week06-sql-joins-2.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-sql-joins-2.zip) |
+| 7 | [`week07-subqueries.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-subqueries.zip) |
+| 8 | [`week08-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-database-design.zip) |
+| 9 | [`week09-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-query-performance.zip) |
+| 10 | [`week10-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-transactions-acid.zip) |
+| Bonus | [`bonus-week11-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week11-project-integration.zip) |
+| Bonus | [`bonus-week12-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week12-review-modern-data.zip) |
 
 To use a week, unzip it, open a terminal in the `lectures/` or
 `review/` folder, and run `marimo edit` on a notebook.
@@ -55,7 +68,7 @@ a week earlier, download it again to get any updates.
 
 ## What Is in a Week Folder
 
-Weeks 2–8 share a common layout:
+Weeks 2–10 share a common layout:
 
 | File | What It Is |
 |------|-----------|
@@ -66,7 +79,7 @@ Weeks 2–8 share a common layout:
 | `data/` | CSV files the demos and lab read |
 | `lab.md`, `notes.md`, `solution.sql` | Brief scratch notes — see the caveat below |
 
-Three folders differ:
+These folders differ:
 
 - **Week 1** predates the naming convention. Its decks are
   `Lecture_Slides_01.md` / `Lecture_Slides_02.md`, and its demos are six
@@ -77,7 +90,10 @@ Three folders differ:
   day-one welcome notebooks) and `Sample_Lab_Student.py` with its
   solution.
 - **Week 2** has a third demo, `demo3.py`.
-- **Weeks 9 and 10** have no `demo*.py`. They use full Marimo notebooks
+- **Weeks 6 and 7** (Joins II and Subqueries, added 2026-10-27) have the
+  usual slides, demos, lab, quiz, and `data/` (Week 6 also has
+  `images/`), but no `lab.md`, `notes.md`, or `solution.sql` stubs.
+- **The bonus weeks** (old Weeks 9 and 10) have no `demo*.py`. They use full Marimo notebooks
   instead — `week09_notebook_marimo.py`, `lab09_student_marimo.py`
   (the capstone starter template, renamed from
   `week09_project_template_marimo.py`), and `week09_project_example.py`

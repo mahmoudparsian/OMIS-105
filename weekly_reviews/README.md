@@ -20,11 +20,13 @@ anywhere and it still runs.
 | 3 | [`week03-sql-basics/`](week03-sql-basics/) | Aggregation, grouping & subqueries |
 | 4 | [`week04-sql-aggregation/`](week04-sql-aggregation/) | Advanced aggregation & window functions |
 | 5 | [`week05-sql-joins/`](week05-sql-joins/) | Advanced joins & set operations |
-| 6 | [`week06-database-design/`](week06-database-design/) | Database design, constraints & views |
-| 7 | [`week07-query-performance/`](week07-query-performance/) | Window functions & query performance |
-| 8 | [`week08-transactions-acid/`](week08-transactions-acid/) | Transactions, ACID & constraints |
-| 9 | [`week09-project-integration/`](week09-project-integration/) | CTEs, subqueries & advanced window functions |
-| 10 | [`week10-review-modern-data/`](week10-review-modern-data/) | Modern DuckDB — JSON, PIVOT & lists |
+| 6 | `week06-sql-joins-2/` | Joins II *(review notebook not yet written)* |
+| 7 | `week07-subqueries/` | Subqueries *(review notebook not yet written)* |
+| 8 | [`week08-database-design/`](week08-database-design/) | Database design, constraints & views |
+| 9 | [`week09-query-performance/`](week09-query-performance/) | Window functions & query performance |
+| 10 | [`week10-transactions-acid/`](week10-transactions-acid/) | Transactions, ACID & constraints |
+| Bonus | [`bonus/week11-project-integration/`](bonus/week11-project-integration/) | CTEs, subqueries & advanced window functions |
+| Bonus | [`bonus/week12-review-modern-data/`](bonus/week12-review-modern-data/) | Modern DuckDB — JSON, PIVOT & lists |
 
 ## What Is in Each Folder
 
@@ -33,7 +35,7 @@ weekNN-topic/
 ├── README.md                    # What this week covers, how to run it
 ├── weekNN_review_notebook.py    # The Marimo review notebook
 ├── weekNN_review_notes.md       # Teaching notes: timing, discussion, homework
-├── data/                        # CSV for that week (Weeks 1–6 only)
+├── data/                        # CSV for that week (Weeks 1–5 and 8 only)
 └── plot_helpers.py              # Matplotlib helpers (Week 3 only)
 ```
 
@@ -45,19 +47,19 @@ marimo edit week01_review_notebook.py
 ```
 
 Every notebook is independent. It creates its own in-memory DuckDB
-connection and builds every table it needs, so you can open Week 7
-without having run Weeks 1–6.
+connection and builds every table it needs, so you can open Week 9
+without having run Weeks 1–8.
 
 ## Datasets
 
 | Weeks | Domain | Source | Tables |
 |-------|--------|--------|--------|
 | 1–3 | Retail orders | `data/orders_data.csv` (20 rows, flat → normalized) | `customers`, `products`, `sales` |
-| 4–6 | Tech company | `data/company_data.csv` (30 rows, flat → normalized) | `departments`, `employees`, `projects`, `assignments` |
-| 7–8 | CloudMetrics SaaS | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `support_tickets`, `accounts`, `audit_log` |
-| 9–10 | CloudMetrics SaaS (extended) | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `events` (JSON), `kpi_targets` |
+| 4, 5, 8 | Tech company | `data/company_data.csv` (30 rows, flat → normalized) | `departments`, `employees`, `projects`, `assignments` |
+| 9–10 | CloudMetrics SaaS | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `support_tickets`, `accounts`, `audit_log` |
+| Bonus | CloudMetrics SaaS (extended) | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `events` (JSON), `kpi_targets` |
 
-The Weeks 4–6 dataset has deliberate imperfections — NULL `dept_id`s, an
+The tech-company dataset has deliberate imperfections — NULL `dept_id`s, an
 empty department, a self-referencing `manager_id` — so that OUTER JOINs,
 SELF JOINs, and anti-joins have something real to find.
 
@@ -67,7 +69,7 @@ Copy the week folder closest to what you need and edit it — the notebooks
 are self-contained, so a copy runs immediately:
 
 ```bash
-cp -R week07-query-performance week11-my-topic
+cp -R week09-query-performance week11-my-topic
 ```
 
 A week folder is a better starting point than a blank template: it
@@ -82,8 +84,8 @@ anything, keep this true.
 
 - Each notebook opens its own `duckdb.connect(database=":memory:")`.
 - Each notebook builds *every* table it queries. Week 3 rebuilds the
-  normalized tables Week 2 taught; Weeks 5–6 rebuild the company schema
-  Week 4 built.
+  normalized tables Week 2 taught; Weeks 5 and 8 rebuild the company
+  schema Week 4 built.
 - CSVs are duplicated into the week folders that need them, never shared.
 - The data path is resolved from the notebook's own location:
 

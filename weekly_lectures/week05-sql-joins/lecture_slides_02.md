@@ -568,10 +568,11 @@ You now have a comprehensive SQL toolkit!
 
 # What Is Next?
 
-**Week 6: Database Design & Normalization**
-- Functional dependencies
-- Normal forms (1NF, 2NF, 3NF, BCNF)
-- When to denormalize
+**Week 6: Joins II**
+- `LEFT JOIN`, `RIGHT JOIN`, and finding what is missing
+- Self-joins and joins across 3+ tables
+
+**Week 7: Subqueries**
 
 ---
 

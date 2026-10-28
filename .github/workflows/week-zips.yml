@@ -42,6 +42,15 @@ jobs:
           fi
           gh release upload weekly-zips dist/*.zip --clobber
 
+          # Delete ZIPs for weeks that were renamed or moved, so an old
+          # link fails instead of serving an out-of-date folder.
+          for asset in $(gh release view weekly-zips --json assets --jq '.assets[].name'); do
+            if [ ! -f "dist/$asset" ]; then
+              echo "deleting stale asset $asset"
+              gh release delete-asset weekly-zips "$asset" --yes
+            fi
+          done
+
           # GitHub always adds "Source code (zip/tar.gz)" to a release and
           # builds them from the tag's commit. Move the tag to this commit so
           # those two stay current too.
@@ -53,7 +62,7 @@ jobs:
           
           Ignore "Source code (zip)" and "Source code (tar.gz)". GitHub adds those automatically, and they hold the whole repository.
 
-          Each week's ZIP holds two folders: \`lectures/\` and \`review/\`.
+          Each week's ZIP holds two folders: \`lectures/\` and \`review/\`. The \`bonus-…\` ZIPs are optional extra weeks.
 
           Last updated: $(date -u '+%Y-%m-%d %H:%M UTC') from commit ${GITHUB_SHA::7}.
           NOTES

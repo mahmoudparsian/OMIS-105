@@ -548,7 +548,7 @@ def _(mo):
 
     **This concludes our SQL Mastery series!** (Weeks 3–5)
 
-    **Next week**: Database Design and Normalization
+    **Next week**: Joins II, then Subqueries in Week 7
     """)
     return
 

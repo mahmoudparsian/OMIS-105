@@ -72,11 +72,18 @@ rather than taken on trust:
 | **3** | `week03-sql-basics` | `SELECT`, `WHERE`, `ORDER BY` | Single table, row-level filtering |
 | **4** | `week04-sql-aggregation` | `COUNT`, `SUM`, `GROUP BY`, `HAVING` | Aggregation is the point of the queries |
 | **5** | `week05-sql-joins` | `INNER JOIN`, `LEFT JOIN` | Two or more related tables |
-| **6** | `week06-database-design` | Normalization, splitting tables | A schema worth critiquing or normalizing |
-| **7** | `week07-query-performance` | Indexing, `EXPLAIN` | Query plans, index effects |
-| **8** | `week08-transactions-acid` | Transactions, ACID | `BEGIN` / `COMMIT` / `ROLLBACK` |
-| **9** | `week09-project-integration` | End-to-end build | Full pipeline: load → model → query → report |
-| **10** | `week10-review-modern-data` | Synthesis, modern data trends | Beyond core SQL — AI, external services, new formats |
+| **6** | `week06-sql-joins-2` | `INNER`, `LEFT`, `RIGHT JOIN` practice | Two or more related tables, some rows unmatched |
+| **7** | `week07-subqueries` | Subqueries, `IN`, `EXISTS` | A question that needs a value or list first |
+| **8** | `week08-database-design` | Normalization, splitting tables | A schema worth critiquing or normalizing |
+| **9** | `week09-query-performance` | Indexing, `EXPLAIN` | Query plans, index effects |
+| **10** | `week10-transactions-acid` | Transactions, ACID | `BEGIN` / `COMMIT` / `ROLLBACK` |
+| Bonus | `bonus/week11-project-integration` | End-to-end build | Full pipeline: load → model → query → report |
+| Bonus | `bonus/week12-review-modern-data` | Synthesis, modern data trends | Beyond core SQL — AI, external services, new formats |
+
+> **Week numbers changed on 2026-10-27.** Joins II and Subqueries became
+> Weeks 6 and 7, and the old Weeks 6–8 moved to 8–10. The notes below
+> were written before that change. Read their "Week 6/7/8" as today's
+> Weeks 8/9/10, and "Week 9/10" as the bonus weeks.
 
 ---
 

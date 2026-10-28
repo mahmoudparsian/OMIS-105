@@ -412,9 +412,9 @@ JOIN = connection (key = foreign key)
 
 # What’s Next?
 
-Week 6:
-- Database design
-- Normalization (1NF, 2NF, 3NF)
+Week 6: Joins II
+- More practice with `LEFT JOIN` and `RIGHT JOIN`
+- Self-joins and joins across 3+ tables
 
 ---
 

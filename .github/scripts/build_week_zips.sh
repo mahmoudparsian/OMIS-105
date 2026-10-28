@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build one ZIP per week for students who do not use git.
 #
-#   weekNN-topic.zip
+#   weekNN-topic.zip          (and bonus-weekNN-topic.zip for weekly_lectures/bonus/)
 #   └── weekNN-topic/
 #       ├── lectures/   ← weekly_lectures/weekNN-topic/
 #       └── review/     ← weekly_reviews/weekNN-topic/
@@ -19,15 +19,32 @@ out="$(cd "$out" && pwd)"
 stage="$(mktemp -d)"
 trap 'rm -rf "$stage"' EXIT
 
-for lec in weekly_lectures/week*/; do
+# build_one <lectures_dir> <zip_name>
+#   The review folder is the same path with weekly_reviews/ in front.
+build_one() {
+  local lec="${1%/}" name="$2"
+  local week rev
   week="$(basename "$lec")"
+  rev="weekly_reviews/${lec#weekly_lectures/}"
+  rm -rf "$stage/$week"
   mkdir -p "$stage/$week"
-  cp -R "weekly_lectures/$week" "$stage/$week/lectures"
-  if [ -d "weekly_reviews/$week" ]; then
-    cp -R "weekly_reviews/$week" "$stage/$week/review"
+  cp -R "$lec" "$stage/$week/lectures"
+  if [ -d "$rev" ]; then
+    cp -R "$rev" "$stage/$week/review"
   fi
-  rm -f "$out/$week.zip"
-  (cd "$stage" && zip -rqX "$out/$week.zip" "$week" \
+  rm -f "$out/$name.zip"
+  (cd "$stage" && zip -rqX "$out/$name.zip" "$week" \
       -x '*/.DS_Store' '*/__pycache__/*' '*/__marimo__/*')
-  echo "built $week.zip"
+  echo "built $name.zip"
+}
+
+for lec in weekly_lectures/week*/; do
+  build_one "$lec" "$(basename "$lec")"
+done
+
+# Optional bonus weeks: weekly_lectures/bonus/weekNN-topic/
+#   → bonus-weekNN-topic.zip (same lectures/ + review/ layout inside)
+for lec in weekly_lectures/bonus/week*/; do
+  [ -d "$lec" ] || continue
+  build_one "$lec" "bonus-$(basename "$lec")"
 done

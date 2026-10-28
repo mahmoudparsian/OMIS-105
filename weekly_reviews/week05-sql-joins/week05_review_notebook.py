@@ -787,8 +787,8 @@ def _(mo):
     ---
     ## Looking Ahead
 
-    You can now combine tables any way the question demands. Week 6 asks the
-    prior question: how should those tables have been designed in the first place?
+    You can now combine tables any way the question demands. Week 6 gives you
+    more join practice, and Week 7 teaches subqueries: a query inside a query.
     """)
     return
 

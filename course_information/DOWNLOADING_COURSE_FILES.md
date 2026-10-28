@@ -15,13 +15,19 @@ and you have everything for that week.
 | 3 | SQL Basics | [`week03-sql-basics.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week03-sql-basics.zip) |
 | 4 | SQL Aggregation | [`week04-sql-aggregation.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week04-sql-aggregation.zip) |
 | 5 | SQL Joins | [`week05-sql-joins.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week05-sql-joins.zip) |
-| 6 | Database Design | [`week06-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-database-design.zip) |
-| 7 | Query Performance | [`week07-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-query-performance.zip) |
-| 8 | Transactions & ACID | [`week08-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-transactions-acid.zip) |
-| 9 | Project Integration | [`week09-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-project-integration.zip) |
-| 10 | Review & Modern Data | [`week10-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-review-modern-data.zip) |
+| 6 | Joins II | [`week06-sql-joins-2.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-sql-joins-2.zip) |
+| 7 | Subqueries | [`week07-subqueries.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-subqueries.zip) |
+| 8 | Database Design | [`week08-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-database-design.zip) |
+| 9 | Query Performance | [`week09-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-query-performance.zip) |
+| 10 | Transactions & ACID | [`week10-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-transactions-acid.zip) |
+| Bonus | Project Integration (optional) | [`bonus-week11-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week11-project-integration.zip) |
+| Bonus | Review & Modern Data (optional) | [`bonus-week12-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week12-review-modern-data.zip) |
 
-The links stay the same all quarter. You can bookmark them.
+**Changed on October 27, 2026:** we added Joins II (Week 6) and
+Subqueries (Week 7). Database Design, Query Performance, and
+Transactions moved to Weeks 8–10. Project Integration and Modern Data
+are now optional bonus weeks. If you saved an old link for Weeks 6–10,
+please use the links above instead.
 
 ## 🗂️ What Is Inside a ZIP File
 
