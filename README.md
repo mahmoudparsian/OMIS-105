@@ -55,8 +55,8 @@ information every day.
 |[`README.md`](./README.md)    | The file you are reading/viewing |
 |[`course_information`](./course_information) | Course information (labs, grading, policies, and more) |
 |[`outline-10-weeks`](./outline-10-weeks) | Outline/TOC for 10 Weeks |
-|[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks |
-|[`weekly_reviews`](./weekly_reviews) | Weekly Reviews and Notebooks: 10 weeks |
+|[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks, plus 2 optional [bonus weeks](./weekly_lectures/bonus) |
+|[`weekly_reviews`](./weekly_reviews) | Weekly Reviews and Notebooks: same week folders, plus [bonus weeks](./weekly_reviews/bonus) |
 |[`sample_lab`](./sample_lab) | A preview in-class lab (Marimo notebook) — see [`sample_lab/README.md`](./sample_lab/README.md), or [view the solution's rendered output](https://mahmoudparsian.github.io/OMIS-105/sample_lab/sample_lab_solution_output.html) |
 |[`books`](./books) | DuckDB and Database Books |
 |[`data_stories`](./data_stories) | Data Stories: 36 self-contained Marimo notebooks for deep learning — see [`data_stories/README.md`](./data_stories/README.md) for **which story maps to which week** |
@@ -240,11 +240,23 @@ topic list for the course.
 | 03 | SQL Basics | `CASE`, string functions, `UPPER`, `YEAR`, computed columns |
 | 04 | SQL Aggregation | `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `INNER JOIN`, `LEFT JOIN` |
 | 05 | SQL Joins | Multi-table `JOIN`, `LEFT JOIN`, `IS NULL`, `COALESCE` |
-| 06 | Database Design | Normalization (1NF, 2NF, 3NF), decomposition |
-| 07 | Query Performance | Window functions (`ROW_NUMBER`, `RANK`), `EXPLAIN`, indexes, CTEs |
-| 08 | Transactions & ACID | `BEGIN`, `COMMIT`, `ROLLBACK`, `CHECK`, `NOT NULL` |
-| 09 | Project Integration | CTEs, subqueries, `EXISTS`, `LAG`, `LEAD`, `NTILE`, `FIRST_VALUE` |
-| 10 | Review & Modern Data | JSON querying, `PIVOT`, `LIST`, `UNNEST`, `CROSS JOIN` |
+| 06 | Joins II | `INNER` / `LEFT` / `RIGHT JOIN` practice, finding what is missing, self-joins, 3+ tables |
+| 07 | Subqueries | Scalar subqueries, `IN` / `NOT IN` (and the `NULL` trap), `EXISTS`, subqueries in `FROM`, correlated subqueries, CTEs |
+| 08 | Database Design | Normalization (1NF, 2NF, 3NF), decomposition |
+| 09 | Query Performance | Window functions (`ROW_NUMBER`, `RANK`), `EXPLAIN`, indexes, CTEs |
+| 10 | Transactions & ACID | `BEGIN`, `COMMIT`, `ROLLBACK`, `CHECK`, `NOT NULL` |
+| Bonus | Project Integration *(optional)* | CTEs, subqueries, `EXISTS`, `LAG`, `LEAD`, `NTILE`, `FIRST_VALUE` |
+| Bonus | Review & Modern Data *(optional)* | JSON querying, `PIVOT`, `LIST`, `UNNEST`, `CROSS JOIN` |
+
+**Changed on October 27, 2026.** Joins are the most important skill in
+SQL, and subqueries deserve their own week, so we added **Joins II**
+(Week 6) and **Subqueries** (Week 7). Database Design, Query
+Performance, and Transactions moved to Weeks 8–10. Project Integration
+and Review & Modern Data are now optional bonus weeks, in
+[`weekly_lectures/bonus/`](./weekly_lectures/bonus) — nothing was
+deleted. If you saved an old ZIP link for Weeks 6–10, use the
+[download guide](./course_information/DOWNLOADING_COURSE_FILES.md) for
+the new ones.
 
 The [`weekly_lectures/`](./weekly_lectures) slide decks and the
 [10-week outline](./outline-10-weeks) describe a somewhat slower pacing.
@@ -256,14 +268,16 @@ for the full breakdown.
 
 ## Start-Here Tutorials
 
-Two small, self-contained notebooks teach the two biggest ideas in
-SQL analytics. Each has a tiny database you can check by eye, many
+Small, self-contained notebooks teach the biggest ideas in SQL
+analytics. Each has a tiny database you can check by eye, many
 charts, and a README.
 
 | Week | Tutorial | What you learn |
 |------|----------|----------------|
 | 4 | [Learning `GROUP BY`](./weekly_lectures/week04-sql-aggregation/group_by_with_emps_depts) | 18 queries and 11 charts: aggregate functions, `GROUP BY` (basic → advanced), `WHERE` vs. `HAVING`, pivot tables, `GROUP_CONCAT`, and joins with `GROUP BY` |
 | 5 | [Your first joins](./weekly_lectures/week05-sql-joins/joins_with_emps_depts) | `INNER`, `LEFT`, `RIGHT`, `FULL OUTER`, and `CROSS` joins, and how to find what is missing |
+| 6 | [Joins II](./weekly_lectures/week06-sql-joins-2) | A gym database with gaps on purpose: a join switcher, the `ON` vs. `WHERE` trap, counting with `LEFT JOIN`, self-joins, and an org chart drawn from a query |
+| 7 | [Subqueries](./weekly_lectures/week07-subqueries) | A 3-table store: from one-value subqueries to `IN`, `EXISTS`, correlated subqueries, and CTEs — plus why `NOT IN` returns nothing when the list has a `NULL` |
 
 ## Career-Readiness Practice
 
