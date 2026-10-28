@@ -60,7 +60,7 @@ lesson, and it shows up again in Week 4 the moment someone tries to group by yea
 
 - Movies or TV shows — which does Netflix have more of, and has that changed?
 - Which countries produce the most titles? (`country` needs care — some titles list
-  several, which is a multi-valued column and a Week 6 normalization discussion.)
+  several, which is a multi-valued column and a Week 8 normalization discussion.)
 - Titles added per year: the shape tells you when Netflix's catalogue grew fastest.
 - Ratings distribution — is this catalogue aimed at adults or families?
 
@@ -72,7 +72,7 @@ lesson, and it shows up again in Week 4 the moment someone tries to group by yea
 
 - Grouping by it naively treats `"United States, Canada"` as a country of its own.
 - So the counts will be wrong, and wrong in a way that looks plausible.
-- The correct fix is a **junction table** — exactly what Week 6 covers.
+- The correct fix is a **junction table** — exactly what Week 8 covers.
 
 **`netflix.duckdb.wal` may be present.** That is DuckDB's write-ahead log. If the
 database behaves oddly, close every connection and delete both `.duckdb` and `.wal`,

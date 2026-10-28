@@ -68,7 +68,7 @@ database — the SQL is identical either way.
 - **Ask the question before running the second notebook:** "we just created a table
   with seven employees — where is it?" Most students assume a file appeared somewhere.
   The in-memory notebook proves it did not.
-- This is the cheapest possible introduction to **durability**, which Week 8 makes
+- This is the cheapest possible introduction to **durability**, which Week 10 makes
   formal. `TRANSACTIONS_AND_ACID/` picks up exactly this thread: in-memory versus on
   disk, committed versus uncommitted.
 - If your students will use Jupyter rather than Marimo, the `%%sql` syntax here is

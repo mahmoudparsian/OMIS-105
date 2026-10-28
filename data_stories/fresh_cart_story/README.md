@@ -1,6 +1,6 @@
 # 🛒 FreshCart — Grocery Analytics
 
-**OMIS-105 · Week 6 — Database Design** *(→ also Week 9, project integration)*
+**OMIS-105 · Week 8 — Database Design** *(→ also the optional Bonus Week 11, project integration)*
 
 An omnichannel grocer's analytics database, built from a written business
 requirement. **The most complete end-to-end story in this folder**: a stated business

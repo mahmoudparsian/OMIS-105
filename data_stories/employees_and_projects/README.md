@@ -1,7 +1,7 @@
 # 🏗️ Employees & Projects — the Classic COMPANY Schema
 
 **OMIS-105 · Week 2 — Relational Modeling** *(schema)*
-**→ revisit in Week 5** *(the join queries)*
+**→ revisit in Week 5** *(the join queries)* **and Week 7** *(the subqueries)*
 
 The six-table COMPANY database that appears in most database textbooks, loaded into
 DuckDB. If students go on to another database course, **this is the schema they will
@@ -97,7 +97,7 @@ answer is not obvious by inspection.
 - **The wrong answer:** a `locations` column holding `"Houston, Stafford"`. You cannot
   filter it, count it, or join on it.
 - **The right answer:** `dept_locations` as its own table, with a composite key.
-- This is exactly what normalization exists to prevent, and Week 6 revisits it.
+- This is exactly what normalization exists to prevent, and Week 8 revisits it.
 
 ---
 
@@ -109,6 +109,8 @@ answer is not obvious by inspection.
 | Query 1–2 (all employees, gallery) | `SELECT` | **3** |
 | Query 3–4 (avg salary by dept, projects per dept) | `GROUP BY` | **4** |
 | Query 5+ (top employees by hours) | JOINs across `employee` + `works_on` | **5** |
+| Query 17, 18, 21, 25, 28 | Subqueries: `IN`, `NOT IN`, a derived table, a CTE, `EXISTS` | **7** |
+| Query 20, 22, 29, 30 | Window functions (`RANK`, running total, `DENSE_RANK`, `NTILE`) | **9** |
 
 ---
 

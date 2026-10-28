@@ -47,7 +47,7 @@ back. Run the notebook, close everything, reopen it — the rows survive. Compar
 with `CRUD_100_10_rows/`, which starts empty every time.
 
 That difference is the whole subject of `duckdb_magic_notebooks/` (Week 1), and it is
-what Week 8's durability section makes rigorous.
+what Week 10's durability section makes rigorous.
 
 **It takes a backup first (C1).** Before any destructive operation, the notebook
 copies the table:

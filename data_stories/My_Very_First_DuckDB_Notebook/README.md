@@ -66,4 +66,4 @@ it is small.
   Week 3 lab, so this notebook can be revisited then as a warm-up.
 - **Step 10 is worth dwelling on.** Students often assume data is saved automatically.
   Closing an in-memory connection and losing everything is a cheap, memorable way to
-  introduce the idea that persistence is a choice — which Week 8 makes rigorous.
+  introduce the idea that persistence is a choice — which Week 10 makes rigorous.

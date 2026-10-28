@@ -74,7 +74,7 @@ parties                        presidents
   functions, concurrency, and pandas/Polars integration. All useful, none of it part
   of the SQL syllabus.
 - Good uses for §5–10: students who ask what else DuckDB can do, or a revisit in
-  Week 10 alongside the modern-data discussion.
+  Bonus Week 12 alongside the modern-data discussion.
 
 ---
 
@@ -83,7 +83,7 @@ parties                        presidents
 - The presidents dataset works well because **students can check the answers**. If a
   query claims Franklin D. Roosevelt served longest, that is verifiable without
   trusting the database.
-- §6 (concurrency) pairs naturally with the Week 8 transactions story — it explains
+- §6 (concurrency) pairs naturally with the Week 10 transactions story — it explains
   why DuckDB allows one writer, which is the constraint `TRANSACTIONS_AND_ACID/`
   works within.
 - The two `.md` write-ups are good models for how you want student analysis

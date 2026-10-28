@@ -1,8 +1,8 @@
 # 🏦 Transactions & ACID
 
-**OMIS-105 · Week 8 — Transactions & ACID**
+**OMIS-105 · Week 10 — Transactions & ACID**
 
-A hands-on DuckDB notebook built on the Week 8 lab's bank-transfer scenario. It
+A hands-on DuckDB notebook built on the Week 10 lab's bank-transfer scenario. It
 demonstrates each of the four ACID properties with code you can run, and answers
 the lab's challenge question directly.
 
@@ -10,7 +10,7 @@ the lab's challenge question directly.
 
 ## Why this story exists
 
-The Week 8 teaching notes flag the problem this notebook is designed around:
+The Week 10 teaching notes flag the problem this notebook is designed around:
 
 > *Common issue: Students memorize ACID but don't understand it.*
 

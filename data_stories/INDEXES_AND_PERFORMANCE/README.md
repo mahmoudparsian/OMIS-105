@@ -1,8 +1,8 @@
 # ⚡ Indexes & Query Performance
 
-**OMIS-105 · Week 7 — Query Performance**
+**OMIS-105 · Week 9 — Query Performance**
 
-A hands-on DuckDB notebook that follows the Week 7 lab exactly — create a table,
+A hands-on DuckDB notebook that follows the Week 9 lab exactly — create a table,
 query it, create an index, query it again — and then answers the question the lab
 leaves open: **why didn't it get much faster?**
 
@@ -10,7 +10,7 @@ leaves open: **why didn't it get much faster?**
 
 ## Why this story exists
 
-The Week 7 teaching notes flag a recurring problem:
+The Week 9 teaching notes flag a recurring problem:
 
 > *Common issue: Students expect visible speed difference on small data.*
 

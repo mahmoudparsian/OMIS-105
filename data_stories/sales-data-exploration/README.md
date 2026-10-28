@@ -90,5 +90,5 @@ marimo edit sales_data_exploration_marimo.py
   (→ region). Ask for the revenue-by-region number after each step and let them see
   it only becomes answerable at the end.
 - `sql_schema.sql` starts with `BEGIN TRANSACTION;` — a natural forward reference to
-  Week 8, and a chance to mention that bulk loads are wrapped in transactions so a
+  Week 10, and a chance to mention that bulk loads are wrapped in transactions so a
   failure halfway through leaves nothing behind.

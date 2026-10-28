@@ -1,6 +1,6 @@
 # 🏥 Health Insurance Charges
 
-**OMIS-105 · Week 9 — Project Integration** *(the query tiers also serve Weeks 3–4)*
+**OMIS-105 · Bonus Week 11 — Project Integration** *(the query tiers also serve Weeks 3–4)*
 
 A small, clean, seven-column dataset about what drives medical insurance costs. The
 **gentlest of the two insurance stories** — start here before `auto_insurance/`.

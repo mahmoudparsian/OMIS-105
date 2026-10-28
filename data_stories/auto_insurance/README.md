@@ -1,6 +1,6 @@
 # 🚗 Auto Insurance Customers
 
-**OMIS-105 · Week 9 — Project Integration**
+**OMIS-105 · Bonus Week 11 — Project Integration**
 
 Nine thousand insurance customers across **24 columns** — lifetime value, coverage,
 claims, channel, vehicle class and more. The larger and messier of the two insurance

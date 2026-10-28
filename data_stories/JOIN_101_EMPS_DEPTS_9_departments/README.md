@@ -1,6 +1,6 @@
 # 🔗 JOIN 101 — Employees & Departments (9 departments)
 
-**OMIS-105 · Week 5 — SQL Joins**
+**OMIS-105 · Week 6 — Joins II** *(also fits Week 5)*
 
 Employees and departments joined every way SQL allows. This is **the larger of the two** —
 9 departments and 25 employees.

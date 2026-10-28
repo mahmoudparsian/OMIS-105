@@ -106,4 +106,4 @@ teach foreign keys.
 - Comparing `duckdb_sql/` with `mysql_sql/` is a quick, concrete look at SQL dialect
   differences — the same schema, two dialects, sitting side by side.
 - At 100,000+ row junction tables this is also a reasonable place to revisit
-  `INDEXES_AND_PERFORMANCE/` (Week 7) on data students already understand.
+  `INDEXES_AND_PERFORMANCE/` (Week 9) on data students already understand.

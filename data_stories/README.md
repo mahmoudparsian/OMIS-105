@@ -14,8 +14,9 @@
 
 ## Which story belongs to which week
 
-The course runs **10 weeks**. Every story below is mapped to the week whose material
-it exercises.
+The course runs **10 weeks**, plus two optional **bonus weeks** (11–12). Every story
+below is mapped to the week whose material it exercises. (Week numbers follow the
+2026-10-27 restructure: Joins II and Subqueries became Weeks 6–7.)
 
 | Data story | Week |
 |---|---|
@@ -27,7 +28,7 @@ it exercises.
 | `DuckDB_Employee_SQL_Mastery/` | **2** |
 | `cats_and_breeds/` | **2** (→ 3, 5) |
 | `cats_and_breeds_and_images/` | **2** (→ 3, 5) |
-| `employees_and_projects/` | **2** |
+| `employees_and_projects/` | **2** (→ 5, 7, 9) |
 | `emps_depts_projects/` | **2** |
 | `emps_single_table/` | **3** |
 | `CRUD_9_emps_intro/` | **3** |
@@ -45,16 +46,17 @@ it exercises.
 | `Top_500_Movies/` | **4** |
 | `super_stores_sales/` | **4** |
 | `JOIN_101_EMPS_DEPTS_5_departments/` | **5** |
-| `JOIN_101_EMPS_DEPTS_9_departments/` | **5** |
+| `JOIN_101_EMPS_DEPTS_9_departments/` | **6** (→ 5) |
 | `FK_JOINS/` | **5** (PK/FK intro → 2) |
 | `movies_database/` — notebooks 2–3 | **5** |
 | `sales-data-exploration/` | **5** |
-| `fresh_cart_story/` | **6** (→ 9) |
-| `INDEXES_AND_PERFORMANCE/` | **7** |
-| `TRANSACTIONS_AND_ACID/` | **8** |
-| `auto_insurance/` | **9** |
-| `insurance_dataset/` | **9** |
-| `sailors_and_boats/` | **10** (→ 2, 4, 5) — ⚠️ extra setup, see gap 10 |
+| `sailors_and_boats/` — the five notebooks | **7** (→ 2, 4, 5, 9) |
+| `sailors_and_boats/` — the Streamlit app | Bonus **12** — ⚠️ extra setup, see gap 10 |
+| `fresh_cart_story/` | **8** (→ Bonus 11) |
+| `INDEXES_AND_PERFORMANCE/` | **9** |
+| `TRANSACTIONS_AND_ACID/` | **10** |
+| `auto_insurance/` | Bonus **11** |
+| `insurance_dataset/` | Bonus **11** |
 | `music_dataset_1950_to_2019/` | — *(raw CSV only — no notebooks)* |
 | `test_marimo/` | — *(setup check — run it before anything else)* |
 
@@ -80,11 +82,6 @@ rather than taken on trust:
 | Bonus | `bonus/week11-project-integration` | End-to-end build | Full pipeline: load → model → query → report |
 | Bonus | `bonus/week12-review-modern-data` | Synthesis, modern data trends | Beyond core SQL — AI, external services, new formats |
 
-> **Week numbers changed on 2026-10-27.** Joins II and Subqueries became
-> Weeks 6 and 7, and the old Weeks 6–8 moved to 8–10. The notes below
-> were written before that change. Read their "Week 6/7/8" as today's
-> Weeks 8/9/10, and "Week 9/10" as the bonus weeks.
-
 ---
 
 ## Why each story lands where it does
@@ -101,7 +98,7 @@ folder, not from titles.
 | `PRIMARY_KEY` | 2 | `PRIMARY KEY`, `INSERT` ×5, `DELETE` ×4 | 2 |
 | `DuckDB_Employee_SQL_Mastery` | 3 | `CREATE TABLE` ×6, **PK ×6, FK ×6** | 2 |
 | `cats_and_breeds` (+`_and_images`) | 4 / 3 | `CREATE TABLE` ×4 — two related entities; notebooks run on to JOINs/CTEs | 2 → 5 |
-| `employees_and_projects` | 6 | Schema definition across 100 employees | 2 |
+| `employees_and_projects` | 6 | Schema definition across 100 employees; later queries use `IN`/`NOT IN`/`EXISTS` and window functions | 2 → 5, 7, 9 |
 | `emps_depts_projects` | 2 | Three-entity model | 2 |
 | `emps_single_table` | 3 | Full CRUD, `WHERE` ×11, one table | 3 |
 | `CRUD_9_emps_intro` / `_101` / `_102` | 2 / 2 / 1 | `INSERT`/`DELETE`/`WHERE` ×7–12 | 3 |
@@ -113,15 +110,17 @@ folder, not from titles.
 | `netflix_titles` | 4 | **`GROUP BY` ×30**, `WHERE` ×35 | 4 |
 | `Top_500_Movies` | 3 | `GROUP BY` ×14, `HAVING` ×4 | 4 |
 | `super_stores_sales` | 3 | **`GROUP BY` ×74** — the aggregation workhorse | 4 |
-| `JOIN_101_EMPS_DEPTS_5_/10_departments` | 2 / 4 | **`JOIN` ×6/×5, `LEFT JOIN` ×2** | 5 |
+| `JOIN_101_EMPS_DEPTS_5_departments` | 2 | **`JOIN` ×6, `LEFT JOIN` ×2** — a first, gentle join set | 5 |
+| `JOIN_101_EMPS_DEPTS_9_departments` | 4 | **`LEFT JOIN` ×34, `RIGHT JOIN` ×37**, `IS NULL`, `COALESCE` ×13 | 6 |
 | `FK_JOINS` | 3 | README states the goal: "teach PK, FK, and JOINS" — inner/left/right | 5 |
 | `movies_database` nb2–3 | 3 total | **`JOIN` ×21** | 5 |
 | `sales-data-exploration` | 2 | **`JOIN` ×26**, `GROUP BY` ×22 | 5 |
-| `fresh_cart_story` | 2 | Normalized schema: PK ×3, FK ×2, `JOIN` ×43, `GROUP BY` ×42 | 6 → 9 |
-| `INDEXES_AND_PERFORMANCE` | 1 | `CREATE INDEX`, `EXPLAIN`, `EXPLAIN ANALYZE`, timed comparisons | 7 |
-| `TRANSACTIONS_AND_ACID` | 1 | `BEGIN`/`COMMIT`/`ROLLBACK`, `CHECK`, PK, two connections | 8 |
-| `auto_insurance` | 3 | Build → clean → analyse; CTE ×5, window ×4, rank ×8 | 9 |
-| `insurance_dataset` | 5 | Five-notebook pipeline; `GROUP BY` ×17, CTE ×5 | 9 |
+| `sailors_and_boats` notebooks | 5 | **`EXISTS` ×17, `IN (SELECT …)` ×10, scalar subqueries ×11**, CTE ×12 | 7 |
+| `fresh_cart_story` | 2 | Normalized schema: PK ×3, FK ×2, `JOIN` ×43, `GROUP BY` ×42 | 8 → Bonus 11 |
+| `INDEXES_AND_PERFORMANCE` | 1 | `CREATE INDEX`, `EXPLAIN`, `EXPLAIN ANALYZE`, timed comparisons | 9 |
+| `TRANSACTIONS_AND_ACID` | 1 | `BEGIN`/`COMMIT`/`ROLLBACK`, `CHECK`, PK, two connections | 10 |
+| `auto_insurance` | 3 | Build → clean → analyse; CTE ×5, window ×4, rank ×8 | Bonus 11 |
+| `insurance_dataset` | 5 | Five-notebook pipeline; `GROUP BY` ×17, CTE ×5 | Bonus 11 |
 | `CRUD_100_10_rows_flagship` | 1 | CRUD + images + backup table. **No AI code despite the folder name** | 3 |
 
 ### The reasoning in one line each
@@ -138,23 +137,32 @@ folder, not from titles.
   is the natural workhorse for this week.
 - **Week 5** — the two `JOIN_101` folders are purpose-built for it, and `FK_JOINS`
   states in its own README that it exists to teach inner, left and right joins.
-- **Week 6** — `fresh_cart_story` is the only story with a properly normalized
+- **Week 6** — `JOIN_101_EMPS_DEPTS_9_departments` is the join-practice set: about
+  70 `LEFT`/`RIGHT JOIN`s with `IS NULL` and `COALESCE`, on 9 departments where some
+  rows have no partner. Its 5-department twin stays in Week 5 as the gentle first pass,
+  so the near-duplicate pair now serves two weeks instead of competing for one.
+- **Week 7** — the five `sailors_and_boats/` notebooks: the textbook
+  Sailors/Boats/Reserves schema is *the* classic subquery schema ("sailors who
+  reserved a red boat", "…every boat"), and the notebooks use `EXISTS` 17 times,
+  `IN (SELECT …)` 10 times and scalar subqueries 11 times across four graded levels.
+  The later levels go past Week 7 (window functions, `PIVOT`, recursive CTEs) — use
+  levels 2–3 in class and the rest as stretch. `employees_and_projects` Queries 17,
+  18, 21, 25 and 28 are a second, smaller subquery set.
+- **Week 8** — `fresh_cart_story` is the only story with a properly normalized
   multi-table schema to critique.
-- **Week 7** — `INDEXES_AND_PERFORMANCE` follows the lab exactly (build, query,
+- **Week 9** — `INDEXES_AND_PERFORMANCE` follows the lab exactly (build, query,
   index, query again), then explains why the speedup is small: DuckDB is columnar.
-- **Week 8** — `TRANSACTIONS_AND_ACID` demonstrates all four properties on the
+- **Week 10** — `TRANSACTIONS_AND_ACID` demonstrates all four properties on the
   lab's bank-transfer scenario, and answers its challenge question by closing and
   reopening the database.
-- **Week 9** — the two insurance stories are full pipelines (3 and 5 notebooks: load,
-  clean, model, analyse), which is what project week needs.
-- **Week 10** — `sailors_and_boats/`: the textbook Sailors/Boats/Reserves schema
-  taken end to end — a schema decision argued in full, five notebooks (71 queries),
-  a ten-page Streamlit app, and a second 5,000-row dataset for scale. It exercises
-  Weeks 2, 4 and 5 rather than introducing anything new, which is what a closing
-  week wants. (`CRUD_100_10_rows_flagship/` was previously listed here on the
-  strength of its folder name; on inspection it contains no AI code at all and is
-  an ordinary CRUD notebook, now mapped to Week 3.) Its setup is heavier than
-  every other story's — see gap 10 before assigning it.
+- **Bonus Week 11** — the two insurance stories are full pipelines (3 and 5
+  notebooks: load, clean, model, analyse), which is what project week needs.
+- **Bonus Week 12** — the `sailors_and_boats/` Streamlit app (ten pages, a
+  constraint playground, a 5,000-row second dataset) as an end-to-end showcase. Its
+  setup is heavier than every other story's — see gap 10 before assigning it.
+  (`CRUD_100_10_rows_flagship/` was once listed for the closing week on the strength
+  of its folder name; on inspection it contains no AI code at all and is an ordinary
+  CRUD notebook, mapped to Week 3.)
 
 ---
 
@@ -162,18 +170,19 @@ folder, not from titles.
 
 These are worth knowing before you plan the quarter.
 
-**1. Weeks 7 and 8 were uncovered — now filled.** A scan of every `.py` and `.md`
+**1. Performance and transactions (Weeks 9 and 10; Weeks 7 and 8 before the restructure) were uncovered — now filled.** A scan of every `.py` and `.md`
 file for `BEGIN TRANSACTION`, `ROLLBACK`, `CREATE INDEX`, `EXPLAIN ANALYZE` and
 `ACID` originally returned **zero matches**: query performance and transactions were
 taught in `weekly_lectures/` with no supporting story. `INDEXES_AND_PERFORMANCE/`
 and `TRANSACTIONS_AND_ACID/` were written to close that gap. Both are new, so they
 have had less classroom exposure than the older stories.
 
-**2. Several stories exceed the course's SQL ceiling.** The syllabus tops out at joins
-in Week 5, but `super_stores_sales` (22 window functions, 14 CTEs), `auto_insurance`
-(8 ranking calls), `netflix_titles` (10 windows) and `fresh_cart_story` (18 each) all
-use CTEs and window functions that are never taught. They work as demos or stretch
-material — but they cannot be assigned as assessment without teaching those first.
+**2. Several stories run ahead of the syllabus.** `super_stores_sales` (22 window
+functions, 14 CTEs), `auto_insurance` (8 ranking calls), `netflix_titles` (10 windows)
+and `fresh_cart_story` (18 each) all use CTEs and window functions. Since the
+2026-10-27 restructure, CTEs are taught in **Week 7** and window functions in
+**Week 9**, so these stories are fair game for assessment from Week 9 on — but only as
+demos or stretch material before then.
 
 **3. The outline deck used to disagree with the lecture folders — now fixed.**
 `outline-10-weeks/Outline_OMIS_105_10_weeks.md` previously labelled Week 3
@@ -183,7 +192,10 @@ match `weekly_lectures/`: Week 3 = querying one table, Week 4 = functions and
 aggregation, Week 5 = JOINs. The displaced advanced material (window functions, CTEs)
 now sits in a clearly-marked optional appendix.
 
-⚠️ **`Outline_OMIS_105_10_weeks.pdf` is stale** — it still carries the old titles and
+**2026-10-27:** the outline was updated again for the new order (Joins II and
+Subqueries as Weeks 6–7, bonus Weeks 11–12).
+
+⚠️ **`Outline_OMIS_105_10_weeks.pdf` is stale** — it still carries the old order and
 needs re-exporting from the Markdown.
 
 **4. Near-duplicate stories.** Several folders teach the same thing:
@@ -234,13 +246,14 @@ recoverable from git (commit `8306937`).
 Where several stories overlap, each README carries a chooser table so you can pick one
 rather than reading all of them.
 
-**8. Week 10 — closed.** `sailors_and_boats/` now fills it. The earlier candidate
-turned out to be misnamed (see gap 5). If a *second* Week 10 story is ever wanted,
+**8. The closing week — closed.** `sailors_and_boats/` fills Bonus Week 12 (its
+app) and, since the restructure, Week 7 (its notebooks). The earlier candidate turned
+out to be misnamed (see gap 5b). If a *second* modern-data story is ever wanted,
 `music_dataset_1950_to_2019/` is the readiest raw material, or a story built on
 DuckDB's Parquet / cloud-source features would fit the "modern data" theme better.
 
-**9. DuckDB limits what Week 7 and 8 can show.** Being columnar, DuckDB gets far less
-from an index than a row-store would — the Week 7 story measures ~1.6x on 2M rows
+**9. DuckDB limits what Weeks 9 and 10 can show.** Being columnar, DuckDB gets far less
+from an index than a row-store would — the Week 9 story measures ~1.6x on 2M rows
 where PostgreSQL might show 100x, and treats *why* as the lesson. Being embedded and
 single-writer, it also cannot demonstrate deadlocks, lock waits, or isolation levels
 beyond snapshot. Both stories say so explicitly rather than overclaiming.
@@ -264,7 +277,7 @@ The **five Marimo notebooks** (`notebooks/notebook_level_01.py` … `_04.py` and
 without `uv` or an API key — open them the same way as any other story. It is
 only `./run_app.sh` and its LLM page that require the extra install. Treat
 this story as **advanced / optional**: fine to demo or offer as a stretch
-project, but don't assign the app cold in Week 10 without walking students
+project, but don't assign the app cold in Bonus Week 12 without walking students
 through `uv` and the `.env` key first — or point them at the notebooks alone.
 
 ---
