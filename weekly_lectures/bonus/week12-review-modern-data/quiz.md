@@ -1,4 +1,4 @@
-# Week 10 Quiz
+# Week 12 Quiz
 
 1. JOIN:
 Combines tables ✅

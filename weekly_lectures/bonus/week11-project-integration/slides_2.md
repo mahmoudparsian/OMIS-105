@@ -3,11 +3,11 @@ marp: true
 theme: default
 paginate: true
 header: "OMIS 105 – Database Management Systems"
-footer: "Week 9: Capstone Project"
+footer: "Week 11: Capstone Project"
 ---
 
 # OMIS 105: Database Management Systems
-## Week 9 — Capstone Project
+## Week 11 — Capstone Project
 ### Design, Build, and Present a Complete Database
 
 ---
@@ -26,7 +26,7 @@ footer: "Week 9: Capstone Project"
 
 **Design and implement a complete database system** for a real-world scenario of your choosing.
 
-This project integrates everything from Weeks 1–8:
+This project integrates everything from Weeks 1–10:
 - Relational design & ER diagrams
 - Normalization (3NF/BCNF)
 - SQL (DDL + DML + complex queries)
@@ -57,10 +57,10 @@ This project integrates everything from Weeks 1–8:
 
 | Session | Activity |
 |---------|----------|
-| Week 9, Session 1 | Topic selection, requirements, ER design |
-| Week 9, Session 2 | Schema creation, data loading, queries |
-| Week 10 Session 1 | Presentations (Group A) |
-| Week 10 Session 2 | Presentations (Group B) |
+| Week 11, Session 1 | Topic selection, requirements, ER design |
+| Week 11, Session 2 | Schema creation, data loading, queries |
+| Week 12 Session 1 | Presentations (Group A) |
+| Week 12 Session 2 | Presentations (Group B) |
 
 ---
 
@@ -91,7 +91,7 @@ Your database must include:
 - **Meaningful data** (not random gibberish)
 - Schema in **3NF**, with PK, FK, NOT NULL, CHECK, UNIQUE, and DEFAULT where they fit
 
-(Full details: `lab09_student.md`, the capstone specification.)
+(Full details: `lab11_student.md`, the capstone specification.)
 
 ---
 
@@ -312,7 +312,7 @@ CREATE INDEX idx_payments_booking ON payments(booking_id);
 -- Justification: Finding the payment for a booking
 ```
 
-Remember Week 7: an index on a column with few values (like `status`)
+Remember Week 9: an index on a column with few values (like `status`)
 rarely helps, and DuckDB uses indexes only for very selective lookups.
 `PRIMARY KEY` and `UNIQUE` columns already have an index.
 
@@ -417,8 +417,8 @@ book_class(con, member_id=1, class_id=2, booking_id=11, amount=25)
 # Getting Help
 
 - Office hours: see `course_information/QUESTIONS_and_OFFICE_HOURS.md`
-- Start from the template: `lab09_student_marimo.py`
-- See a finished example: `week09_project_example.py` (a small library database)
+- Start from the template: `lab11_student_marimo.py`
+- See a finished example: `week11_project_example.py` (a small library database)
 - Use the ShopSmart project as a **reference** for structure
 - Start with the ER diagram — everything flows from good design
 - Don't wait until the last minute!
@@ -427,13 +427,13 @@ book_class(con, member_id=1, class_id=2, booking_id=11, amount=25)
 
 # Suggested Approach: Today's Sessions
 
-**Week 9, Session 1** (2 hours):
+**Week 11, Session 1** (2 hours):
 - Choose domain (15 min)
 - Requirements analysis (15 min)
 - ER diagram (45 min)
 - CREATE TABLE statements (45 min)
 
-**Week 9, Session 2** (2 hours):
+**Week 11, Session 2** (2 hours):
 - Load sample data (30 min)
 - Write 10 queries (60 min)
 - Create views, indexes, transaction (30 min)
@@ -442,7 +442,7 @@ book_class(con, member_id=1, class_id=2, booking_id=11, amount=25)
 
 # Summary
 
-- The capstone integrates **everything** from Weeks 1–8
+- The capstone integrates **everything** from Weeks 1–10
 - Choose a domain you care about
 - Follow the design methodology step by step
 - Demonstrate a variety of SQL skills
@@ -453,7 +453,7 @@ book_class(con, member_id=1, class_id=2, booking_id=11, amount=25)
 
 # Project Due
 
-**Presentations in Week 10**
+**Presentations in Week 12**
 
 Good luck, and have fun with your projects!
 

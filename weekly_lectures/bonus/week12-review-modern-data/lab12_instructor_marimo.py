@@ -17,7 +17,7 @@ def _(mo):
     # Lab 10: Comprehensive Review — INSTRUCTOR SOLUTIONS
 
     ## OMIS 105 — Database Management Systems
-    **Week 10 | Answer Key**
+    **Week 12 | Answer Key**
 
     ---
     """)

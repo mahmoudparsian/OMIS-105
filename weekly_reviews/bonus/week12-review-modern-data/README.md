@@ -1,4 +1,4 @@
-# Bonus (old Week 10) Review — Modern DuckDB — JSON, PIVOT & Lists
+# Bonus Week 12 Review — Modern DuckDB — JSON, PIVOT & Lists
 
 📦 **[Download this bonus week as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week12-review-modern-data.zip)** — this week's lectures and review, in one file. No git needed.
 
@@ -8,7 +8,7 @@ Real-world data shapes — JSON columns, pivoting for reports, and lists — plu
 
 ```bash
 cd weekly_reviews/bonus/week12-review-modern-data
-marimo edit week10_review_notebook.py
+marimo edit week12_review_notebook.py
 ```
 
 Run the command from inside this folder. The notebook resolves its data
@@ -21,8 +21,8 @@ This notebook is self-contained: it rebuilds every table it needs. You do not ha
 
 | File | Purpose |
 |------|---------|
-| `week10_review_notebook.py` | The review notebook — open this in Marimo |
-| `week10_review_notes.md` | Teaching notes: timing, discussion prompts, homework |
+| `week12_review_notebook.py` | The review notebook — open this in Marimo |
+| `week12_review_notes.md` | Teaching notes: timing, discussion prompts, homework |
 
 ## SQL Covered
 
@@ -30,7 +30,7 @@ This notebook is self-contained: it rebuilds every table it needs. You do not ha
 
 ## Dataset
 
-CloudMetrics SaaS (extended) — created inline in SQL, same five tables as Week 9.
+CloudMetrics SaaS (extended) — created inline in SQL, same five tables as Week 11.
 
 ---
 

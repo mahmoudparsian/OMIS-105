@@ -13,7 +13,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Week 10: Synthesis & Review — Demo Notebook
+    # Week 12: Synthesis & Review — Demo Notebook
     ## OMIS 105: Database Management Systems
 
     This notebook is a comprehensive review of all SQL concepts covered in this course, using the full ShopSmart e-commerce dataset.
@@ -286,7 +286,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## 6. Review: Normalization Check (Week 6)
+    ## 6. Review: Normalization Check (Week 8)
     """)
     return
 
@@ -333,7 +333,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## 7. Review: Performance (Week 7)
+    ## 7. Review: Performance (Week 9)
     """)
     return
 
@@ -360,7 +360,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## 8. Review: Transactions (Week 8)
+    ## 8. Review: Transactions (Week 10)
     """)
     return
 

@@ -28,8 +28,8 @@ topics.
 ### Bonus weeks (optional)
 
 Two weeks moved to [`bonus/`](bonus/) when Joins II and Subqueries were
-added, and are now numbered 11 and 12. Nothing was deleted. Their
-files still say "Week 9" and "Week 10".
+added, and are now numbered 11 and 12 (folders, files, and contents).
+Nothing was deleted.
 
 | Folder | Topic |
 |--------|-------|
@@ -93,12 +93,12 @@ These folders differ:
 - **Weeks 6 and 7** (Joins II and Subqueries, added 2026-10-27) have the
   usual slides, demos, lab, quiz, and `data/` (Week 6 also has
   `images/`), but no `lab.md`, `notes.md`, or `solution.sql` stubs.
-- **The bonus weeks** (old Weeks 9 and 10) have no `demo*.py`. They use full Marimo notebooks
-  instead — `week09_notebook_marimo.py`, `lab09_student_marimo.py`
+- **The bonus weeks** (11 and 12; Weeks 9 and 10 before 2026-10-27) have no `demo*.py`. They use full Marimo notebooks
+  instead — `week11_notebook_marimo.py`, `lab11_student_marimo.py`
   (the capstone starter template, renamed from
-  `week09_project_template_marimo.py`), and `week09_project_example.py`
-  (a worked example project) for the capstone, and `week10_notebook_marimo.py`, `week10_review_marimo.py`,
-  and `week10_capstone_review.md` for the final review.
+  `week09_project_template_marimo.py`), and `week11_project_example.py`
+  (a worked example project) for the capstone, and `week12_notebook_marimo.py`, `week12_review_marimo.py`,
+  and `week12_capstone_review.md` for the final review.
 
 ### Tutorial subfolders
 

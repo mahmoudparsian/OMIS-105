@@ -17,7 +17,7 @@ def _(mo):
     # Lab 9: Capstone Project Specification & Starter Template
 
     ## OMIS 105 — Database Management Systems
-    **Week 9 | Due: Week 10 (presentation)**
+    **Week 11 | Due: Week 12 (presentation)**
 
     ---
 
@@ -25,7 +25,7 @@ def _(mo):
 
     Design, implement, and present a **complete relational database
     system** for a real-world domain of your choosing. This project
-    integrates all concepts from Weeks 1–8.
+    integrates all concepts from Weeks 1–10.
     """)
     return
 
@@ -674,8 +674,8 @@ def _(mo):
     - Upload your notebook with all code and outputs
     - Include any **CSV data files**
     - Include your **ER diagram** (image or in notebook)
-    - Be prepared to **present live** in Week 10
-    - **Total: 100 points** (this project counts as your Week 9/10 grade)
+    - Be prepared to **present live** in Week 12
+    - **Total: 100 points** (this project counts as your Week 11/10 grade)
 
     **Good luck and have fun!**
     """)

@@ -3,11 +3,11 @@ marp: true
 theme: default
 paginate: true
 header: "OMIS 105 – Database Management Systems"
-footer: "Week 10: Synthesis & Review"
+footer: "Week 12: Synthesis & Review"
 ---
 
 # OMIS 105: Database Management Systems
-## Week 10 — Synthesis & Review
+## Week 12 — Synthesis & Review
 ### Bringing It All Together
 
 ---
@@ -358,11 +358,11 @@ Week 1: Foundations (SELECT, WHERE, ORDER BY) ───┐
 Week 2: Relational Model (keys, relationships) ──┤
 Week 3: SQL Basics (functions, CASE, GROUP BY) ──┤
 Week 4: Aggregation + first JOINs ───────────────┤
-Week 5: JOINs, IS NULL, COALESCE ────────────────┤ → Week 9: Project
-Week 6: Normalization (1NF → BCNF) ──────────────┤
-Week 7: Performance (indexes, EXPLAIN) ──────────┤
-Week 8: Transactions (ACID, constraints) ────────┘
-                                   Week 10: Review + Modern Data
+Week 5: JOINs, IS NULL, COALESCE ────────────────┤ → Week 11: Project
+Week 8: Normalization (1NF → BCNF) ──────────────┤
+Week 9: Performance (indexes, EXPLAIN) ──────────┤
+Week 10: Transactions (ACID, constraints) ────────┘
+                                   Week 12: Review + Modern Data
 ```
 
 ---
@@ -443,7 +443,7 @@ WHERE o.order_id IS NULL;
 
 ---
 
-# Review: SQL — Advanced (Week 5 preview, Weeks 7 and 9)
+# Review: SQL — Advanced (Week 5 preview, Weeks 9 and 11)
 
 **Window functions**: compute across rows without collapsing
 ```sql
@@ -463,7 +463,7 @@ WITH cte AS (SELECT ...) SELECT ... FROM cte;
 
 ---
 
-# Review: Normalization (Week 6)
+# Review: Normalization (Week 8)
 
 | NF | Rule | Eliminates |
 |----|------|-----------|
@@ -476,7 +476,7 @@ WITH cte AS (SELECT ...) SELECT ... FROM cte;
 
 ---
 
-# Review: Performance (Week 7)
+# Review: Performance (Week 9)
 
 - **Indexes**: trees (B-tree in most databases, ART in DuckDB) that speed up
   searches returning **few** rows — at a cost on every write
@@ -490,7 +490,7 @@ WITH cte AS (SELECT ...) SELECT ... FROM cte;
 
 ---
 
-# Review: Transactions (Week 8)
+# Review: Transactions (Week 10)
 
 **ACID**: Atomicity, Consistency, Isolation, Durability
 

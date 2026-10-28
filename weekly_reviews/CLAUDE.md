@@ -35,8 +35,8 @@ weekly_reviews/
 ├── week08-database-design/        # was week06 (renumbered 2026-10-27)
 ├── week09-query-performance/      # was week07
 ├── week10-transactions-acid/      # was week08
-└── bonus/                         # old week09/week10, contents unchanged,
-                                   # folders renamed week11/week12 (2026-10-27)
+└── bonus/                         # old week09/week10 → week11/week12, folders
+                                   # and contents renumbered (2026-10-27)
     ├── week11-project-integration/
     └── week12-review-modern-data/
 ```
@@ -106,8 +106,8 @@ or move anything, keep this true.
 | 08 | Database design | 1NF/2NF/3NF, `NOT NULL`, `UNIQUE`, `CHECK`, `CREATE VIEW`, `UPDATE`, `DELETE` |
 | 09 | Window functions & performance | `ROW_NUMBER`, `RANK`, `EXPLAIN`, `CREATE INDEX`, sargable predicates, CTEs |
 | 10 | Transactions & ACID | `BEGIN`, `COMMIT`, `ROLLBACK`, `CHECK`, `NOT NULL`, `PRIMARY KEY`, audit logging |
-| bonus (old 09) | CTEs, subqueries & advanced windows | Chained CTEs, correlated subqueries, `EXISTS`, `NTILE`, `FIRST_VALUE`, moving averages |
-| bonus (old 10) | Modern DuckDB | `json_extract_string`, `PIVOT`, `LIST`, `UNNEST`, `STRFTIME`, `CROSS JOIN` |
+| bonus 11 (old 09) | CTEs, subqueries & advanced windows | Chained CTEs, correlated subqueries, `EXISTS`, `NTILE`, `FIRST_VALUE`, moving averages |
+| bonus 12 (old 10) | Modern DuckDB | `json_extract_string`, `PIVOT`, `LIST`, `UNNEST`, `STRFTIME`, `CROSS JOIN` |
 
 ## Datasets
 

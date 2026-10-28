@@ -1,13 +1,13 @@
 # Capstone Project Specification
 
 ## OMIS 105 — Database Management Systems
-**Week 9 | Due: Week 10 (presentation)**
+**Week 11 | Due: Week 12 (presentation)**
 
 ---
 
 ## Overview
 
-Design, implement, and present a **complete relational database system** for a real-world domain of your choosing. This project integrates all concepts from Weeks 1–8.
+Design, implement, and present a **complete relational database system** for a real-world domain of your choosing. This project integrates all concepts from Weeks 1–10.
 
 ---
 
@@ -112,7 +112,7 @@ You may also propose your own domain — clear it with the instructor first.
 - Upload your **Marimo notebook** (.py) with all code and outputs
 - Include any **CSV data files**
 - Include your **ER diagram** (image or in notebook)
-- Be prepared to **present live** in Week 10
+- Be prepared to **present live** in Week 12
 
 ---
 
@@ -120,10 +120,10 @@ You may also propose your own domain — clear it with the instructor first.
 
 Two Marimo notebooks in this folder help you:
 
-- [`lab09_student_marimo.py`](lab09_student_marimo.py) — **your starting
+- [`lab11_student_marimo.py`](lab11_student_marimo.py) — **your starting
   template.** It repeats this specification and gives you a blank,
   step-by-step starter. Fill it in.
-- [`week09_project_example.py`](week09_project_example.py) — **a worked
+- [`week11_project_example.py`](week11_project_example.py) — **a worked
   example** (a small library database) that shows what each finished
   section should look like. Use it as a model only — your design must
   be your own.
@@ -132,7 +132,7 @@ Open them from this folder:
 
 ```bash
 cd weekly_lectures/bonus/week11-project-integration
-marimo edit lab09_student_marimo.py
+marimo edit lab11_student_marimo.py
 ```
 
 Save your copy under a new name (for example, `capstone_<your_name>.py`).

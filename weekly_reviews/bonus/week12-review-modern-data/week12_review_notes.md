@@ -1,11 +1,11 @@
-# OMIS 105 — Week 10 Review Notes: Modern DuckDB — JSON, PIVOT & Lists
+# OMIS 105 — Week 12 Review Notes: Modern DuckDB — JSON, PIVOT & Lists
 
 **Course:** OMIS 105 — Introduction to Database Management Systems
 **Instructor:** Dr. Mahmoud Parsian (mparsian@scu.edu)
 **Quarter:** Fall 2026
 **Tech Stack:** Python · DuckDB · Marimo
 
-These notes accompany `week10_review_notebook.py`. Open the notebook
+These notes accompany `week12_review_notebook.py`. Open the notebook
 and teach from it; use these notes for timing, discussion prompts, and the
 homework assignment.
 
@@ -13,7 +13,7 @@ homework assignment.
 
 ## Dataset: CloudMetrics SaaS (Extended)
 
-The same SaaS company from Weeks 7–8, plus two new tables: user activity
+The same SaaS company from Weeks 9–10, plus two new tables: user activity
 `events` (with a JSON `metadata` column) and quarterly `kpi_targets`.
 
 | Table | Rows | Purpose |
@@ -40,7 +40,7 @@ Students will be able to:
 - Combine `JOIN`s, `GROUP BY`, `HAVING`, `CTEs`, 
   and window functions
   in a single analytical query
-- Apply all SQL concepts learned in Weeks 1–9 to a new dataset
+- Apply all SQL concepts learned in Weeks 1–11 to a new dataset
 
 ### Teaching Flow (2 hours)
 

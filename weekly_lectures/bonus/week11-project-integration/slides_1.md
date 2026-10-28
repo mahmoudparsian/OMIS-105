@@ -1,5 +1,5 @@
 ---
-title: OMIS 105 - Week 9 (Project & Integration)
+title: OMIS 105 - Week 11 (Project & Integration)
 author: Dr. Mahmoud Parsian
 marp: true
 theme: default
@@ -12,7 +12,7 @@ style: |
 ---
 
 # OMIS 105  
-## Week 9: Project & Integration (Build a Real System)
+## Week 11: Project & Integration (Build a Real System)
 
 ---
 
@@ -64,7 +64,7 @@ A **mini database system**:
 
 # Project Requirements
 
-Minimum (full details: `lab09_student.md`, the capstone specification):
+Minimum (full details: `lab11_student.md`, the capstone specification):
 
 - **5 tables**, in 3NF
 - Primary keys and foreign keys
@@ -190,7 +190,7 @@ ORDER BY total DESC
 LIMIT 3;
 ```
 
-On the Week 9 data: Derek Mitchell (7,429.85), Eva Garcia (7,117.39), Aria Baker (6,108.70)
+On the Week 11 data: Derek Mitchell (7,429.85), Eva Garcia (7,117.39), Aria Baker (6,108.70)
 
 ---
 
@@ -207,12 +207,12 @@ Example:
 
 # Deliverables
 
-You will submit (details in `lab09_student.md`):
+You will submit (details in `lab11_student.md`):
 
 - Your **Marimo notebook** (.py) with all SQL code and outputs
 - Your **CSV data files** (if you used any)
 - Your **ER diagram** (an image, or inside the notebook)
-- A **5–8 minute presentation** in Week 10
+- A **5–8 minute presentation** in Week 12
 
 ---
 
@@ -290,7 +290,7 @@ Database project =
 
 # What’s Next?
 
-Week 10:
+Week 12:
 - Project presentations
 - Review and the big picture
 - Modern data: JSON, PIVOT, LIST, UNNEST

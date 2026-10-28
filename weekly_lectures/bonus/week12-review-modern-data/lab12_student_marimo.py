@@ -17,7 +17,7 @@ def _(mo):
     # Lab 10: Comprehensive Review & Practice Exam
 
     ## OMIS 105 — Database Management Systems
-    **Week 10 | Estimated time: 90 minutes**
+    **Week 12 | Estimated time: 90 minutes**
 
     ---
     """)

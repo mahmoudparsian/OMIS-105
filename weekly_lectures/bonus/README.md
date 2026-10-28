@@ -5,9 +5,9 @@ earlier version of the course. We added a second joins week (Week 6) and
 a subqueries week (Week 7), so these topics no longer fit in the ten
 weeks. Nothing was removed. Everything is still here for you to explore.
 
-The folders are numbered 11 and 12, after the ten course weeks.
-Inside them, the slides and labs still say "Week 9" and "Week 10".
-That is the old numbering.
+They are numbered **Week 11** and **Week 12**, after the ten course weeks —
+the folders, the file names, and the slides and labs inside all use these
+numbers.
 
 | Folder | Topic | Download |
 |--------|-------|----------|

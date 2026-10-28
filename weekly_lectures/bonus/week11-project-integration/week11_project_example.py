@@ -21,13 +21,13 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Week 9 — Capstone Project: A Worked Example
+    # Week 11 — Capstone Project: A Worked Example
 
     This notebook shows a **finished** small project (a library database),
-    one section for each deliverable in `lab09_student.md`.
+    one section for each deliverable in `lab11_student.md`.
     Run it to see what each section should look like.
 
-    **Your starting template is `lab09_student_marimo.py`.** Use this notebook
+    **Your starting template is `lab11_student_marimo.py`.** Use this notebook
     only as a model. Your project must be your own original design —
     not this library example, and not a copy of ShopSmart.
     (This example also has fewer than 20 rows per table, to keep it short;
@@ -425,7 +425,7 @@ def _(mo):
     mo.md(r"""
     ## Step 8: Indexes (3+) — part of 10%
 
-    For each index, say **which query it helps** (Week 7):
+    For each index, say **which query it helps** (Week 9):
     - Good: columns used to look up **a few rows** (one member, one book)
     - Not useful: columns with few different values (like `status`)
     - `PRIMARY KEY` and `UNIQUE` columns already have an index

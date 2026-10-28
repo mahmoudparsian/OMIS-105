@@ -1,4 +1,4 @@
-# Week 10 Review Lab
+# Week 12 Review Lab
 
 1. Write a SELECT query
 2. Write a JOIN query

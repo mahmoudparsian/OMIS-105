@@ -1,8 +1,8 @@
-# OMIS 105 — Week 10: Capstone + Final Review + Practice Exam
+# OMIS 105 — Week 12: Capstone + Final Review + Practice Exam
 
 ---
 
-# 🎯 Week 10 Structure
+# 🎯 Week 12 Structure
 
 ## Session 1 (2 hours)
 - Capstone Project (end-to-end SQL)
@@ -85,15 +85,15 @@ FROM sales GROUP BY customer;
 - Window functions: ROW_NUMBER, RANK, PARTITION BY
 - CTEs, Views
 
-### Week 6
+### Week 8
 - Normalization
 - 1NF, 2NF, 3NF
 
-### Week 7
+### Week 9
 - Indexes, EXPLAIN
 - Query optimization
 
-### Week 8
+### Week 10
 - Transactions
 - COMMIT / ROLLBACK
 - ACID

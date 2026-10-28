@@ -17,13 +17,13 @@ def _(mo):
     # Capstone Project — INSTRUCTOR GRADING GUIDE
 
     ## OMIS 105 — Database Management Systems
-    **Week 9 | Grading Rubric**
+    **Week 11 | Grading Rubric**
 
     ---
 
     This is a grading guide, not an answer key — there's no single
     correct query set to run, since every student picks their own
-    domain (see the Suggested Domains table in `lab09_student_marimo.py`
+    domain (see the Suggested Domains table in `lab11_student_marimo.py`
     / the starter template). Use this alongside the student's submitted
     notebook.
     """)

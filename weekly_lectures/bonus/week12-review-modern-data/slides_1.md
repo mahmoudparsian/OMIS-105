@@ -1,5 +1,5 @@
 ---
-title: OMIS 105 - Week 10 (Review & Synthesis)
+title: OMIS 105 - Week 12 (Review & Synthesis)
 author: Dr. Mahmoud Parsian
 marp: true
 theme: default
@@ -12,7 +12,7 @@ style: |
 ---
 
 # OMIS 105  
-## Week 10: Review, Synthesis & Real-World Perspective
+## Week 12: Review, Synthesis & Real-World Perspective
 
 ---
 

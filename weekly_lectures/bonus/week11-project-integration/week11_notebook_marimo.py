@@ -21,7 +21,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Week 9 - Project Starter
+    # Week 11 - Project Starter
     ## Build your own database
     """)
     return

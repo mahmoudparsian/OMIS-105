@@ -1,4 +1,4 @@
-# Bonus (old Week 9) Review — CTEs, Subqueries & Advanced Window Functions
+# Bonus Week 11 Review — CTEs, Subqueries & Advanced Window Functions
 
 📦 **[Download this bonus week as a ZIP](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week11-project-integration.zip)** — this week's lectures and review, in one file. No git needed.
 
@@ -8,7 +8,7 @@ Multi-step analysis: name intermediate results, nest queries, and use the full w
 
 ```bash
 cd weekly_reviews/bonus/week11-project-integration
-marimo edit week09_review_notebook.py
+marimo edit week11_review_notebook.py
 ```
 
 Run the command from inside this folder. The notebook resolves its data
@@ -21,8 +21,8 @@ This notebook is self-contained: it rebuilds every table it needs. You do not ha
 
 | File | Purpose |
 |------|---------|
-| `week09_review_notebook.py` | The review notebook — open this in Marimo |
-| `week09_review_notes.md` | Teaching notes: timing, discussion prompts, homework |
+| `week11_review_notebook.py` | The review notebook — open this in Marimo |
+| `week11_review_notes.md` | Teaching notes: timing, discussion prompts, homework |
 
 ## SQL Covered
 

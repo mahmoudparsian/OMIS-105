@@ -22,7 +22,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # OMIS 105 — Week 10 Review: Modern DuckDB — JSON, PIVOT & Lists
+    # OMIS 105 — Week 12 Review: Modern DuckDB — JSON, PIVOT & Lists
 
     **Course:** OMIS 105 — Introduction to Database Management Systems
     **Author:** Dr. Mahmoud Parsian
@@ -62,7 +62,7 @@ def _(mo):
     ---
     ## Setup — Build the CloudMetrics Database (Extended)
 
-    The same **CloudMetrics** SaaS company from Weeks 7–8, plus two new tables:
+    The same **CloudMetrics** SaaS company from Weeks 9–10, plus two new tables:
     user activity `events` (with JSON metadata) and quarterly `kpi_targets`.
     All the data is created inline — there is no CSV to load.
 
@@ -538,7 +538,7 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ---
-    ## Week 10 Summary
+    ## Week 12 Summary
 
     | Feature | What It Does |
     |---------|-------------|

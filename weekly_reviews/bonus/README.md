@@ -2,9 +2,8 @@
 
 These two review folders are **optional**. They match the bonus lecture
 folders in [`../../weekly_lectures/bonus/`](../../weekly_lectures/bonus/).
-They were Weeks 9 and 10 in an earlier version of the course. The
-folders are now numbered 11 and 12, but the notebooks inside still say
-"Week 9" and "Week 10".
+They were Weeks 9 and 10 in an earlier version of the course. They are
+now numbered **Week 11** and **Week 12**, after the ten course weeks.
 
 | Folder | Topic |
 |--------|-------|

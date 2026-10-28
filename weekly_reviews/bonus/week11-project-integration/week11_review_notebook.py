@@ -22,7 +22,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # OMIS 105 — Week 9 Review: CTEs, Subqueries & Advanced Window Functions
+    # OMIS 105 — Week 11 Review: CTEs, Subqueries & Advanced Window Functions
 
     **Course:** OMIS 105 — Introduction to Database Management Systems
     **Author:** Dr. Mahmoud Parsian
@@ -63,7 +63,7 @@ def _(mo):
     ---
     ## Setup — Build the CloudMetrics Database (Extended)
 
-    The same **CloudMetrics** SaaS company from Weeks 7–8, plus two new tables:
+    The same **CloudMetrics** SaaS company from Weeks 9–10, plus two new tables:
     user activity `events` (with JSON metadata) and quarterly `kpi_targets`.
     All the data is created inline — there is no CSV to load.
 
@@ -489,7 +489,7 @@ def _(mo):
     ---
     ## Part 2: Advanced Window Functions
 
-    Building on the ROW_NUMBER and RANK from Week 7, we now
+    Building on the ROW_NUMBER and RANK from Week 9, we now
     explore LAG, LEAD, running totals, moving averages, and more.
     """)
     return
@@ -767,7 +767,7 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ---
-    ## Week 9 Summary
+    ## Week 11 Summary
 
     **CTEs and subqueries**
     - `WITH name AS (...)` names a temporary result set
@@ -786,7 +786,7 @@ def _(mo):
 
     ### Looking Ahead
 
-    Week 10 closes the course with the features that make DuckDB more than
+    Week 12 closes the course with the features that make DuckDB more than
     standard SQL: JSON, `PIVOT`, and lists.
     """)
     return
