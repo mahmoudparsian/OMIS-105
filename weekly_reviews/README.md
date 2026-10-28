@@ -20,8 +20,8 @@ anywhere and it still runs.
 | 3 | [`week03-sql-basics/`](week03-sql-basics/) | Aggregation, grouping & subqueries |
 | 4 | [`week04-sql-aggregation/`](week04-sql-aggregation/) | Advanced aggregation & window functions |
 | 5 | [`week05-sql-joins/`](week05-sql-joins/) | Advanced joins & set operations |
-| 6 | `week06-sql-joins-2/` | Joins II *(review notebook not yet written)* |
-| 7 | `week07-subqueries/` | Subqueries *(review notebook not yet written)* |
+| 6 | [`week06-sql-joins-2/`](week06-sql-joins-2/) | Joins II — joins in practice |
+| 7 | [`week07-subqueries/`](week07-subqueries/) | Subqueries — from one value to CTEs |
 | 8 | [`week08-database-design/`](week08-database-design/) | Database design, constraints & views |
 | 9 | [`week09-query-performance/`](week09-query-performance/) | Window functions & query performance |
 | 10 | [`week10-transactions-acid/`](week10-transactions-acid/) | Transactions, ACID & constraints |
@@ -35,7 +35,7 @@ weekNN-topic/
 ├── README.md                    # What this week covers, how to run it
 ├── weekNN_review_notebook.py    # The Marimo review notebook
 ├── weekNN_review_notes.md       # Teaching notes: timing, discussion, homework
-├── data/                        # CSV for that week (Weeks 1–5 and 8 only)
+├── data/                        # CSV for that week (Weeks 1–8 only)
 └── plot_helpers.py              # Matplotlib helpers (Week 3 only)
 ```
 
@@ -55,7 +55,7 @@ without having run Weeks 1–8.
 | Weeks | Domain | Source | Tables |
 |-------|--------|--------|--------|
 | 1–3 | Retail orders | `data/orders_data.csv` (20 rows, flat → normalized) | `customers`, `products`, `sales` |
-| 4, 5, 8 | Tech company | `data/company_data.csv` (30 rows, flat → normalized) | `departments`, `employees`, `projects`, `assignments` |
+| 4–8 | Tech company | `data/company_data.csv` (30 rows, flat → normalized) | `departments`, `employees`, `projects`, `assignments` |
 | 9–10 | CloudMetrics SaaS | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `support_tickets`, `accounts`, `audit_log` |
 | Bonus | CloudMetrics SaaS (extended) | Inline SQL (no CSV) | `plans`, `customers`, `payments`, `events` (JSON), `kpi_targets` |
 
@@ -84,7 +84,7 @@ anything, keep this true.
 
 - Each notebook opens its own `duckdb.connect(database=":memory:")`.
 - Each notebook builds *every* table it queries. Week 3 rebuilds the
-  normalized tables Week 2 taught; Weeks 5 and 8 rebuild the company
+  normalized tables Week 2 taught; Weeks 5–8 rebuild the company
   schema Week 4 built.
 - CSVs are duplicated into the week folders that need them, never shared.
 - The data path is resolved from the notebook's own location:

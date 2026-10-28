@@ -80,7 +80,7 @@ By the end of this course:
 
 - Analytical insights
 
-- A complete mini project
+- A complete mini project (optional bonus week)
 
 ---
 
@@ -101,10 +101,10 @@ By the end of this course:
 We move from:
 
 👉 Basics  <br> 
-→ Querying <br> 
+→ Querying (joins and subqueries) <br> 
 → Design   <br> 
 → Systems  <br>
-→ Project
+→ Project (optional bonus)
 
 ---
 
@@ -116,7 +116,7 @@ By the end of this course, you will be able to:
 2. **Write** complex SQL queries to extract business insights
 3. **Optimize** database performance with indexes and query tuning
 4. **Manage** data integrity through transactions and constraints
-5. **Build** a complete database project from scratch
+5. **Answer** multi-step business questions with joins and subqueries
 6. **Communicate** database designs using ER diagrams
 
 ---
@@ -168,11 +168,25 @@ The dataset **grows each week**, mirroring real-world complexity.
 | Week 3 | SQL MASTERY | The language of data, basics |
 | Week 4 | SQL MASTERY | The language of data, intermediate |
 | Week 5 | SQL MASTERY | The language of data, intermediate |
-| Week 6 | DESIGN | Building databases the right way |
-| Week 7 | PERFORMANCE | Making databases fast |
-| Week 8 | TRANSACTIONS | Making databases safe |
-| Week 9 | PROJECT | Putting it all together |
-| Week 10 | SYNTHESIS | Review, trends, and what's next |
+| Week 6 | SQL MASTERY | Joins II: joins in practice |
+| Week 7 | SQL MASTERY | Subqueries: a query inside a query |
+| Week 8 | DESIGN | Building databases the right way |
+| Week 9 | PERFORMANCE | Making databases fast |
+| Week 10 | TRANSACTIONS | Making databases safe |
+| Bonus | PROJECT | Putting it all together *(optional)* |
+| Bonus | SYNTHESIS | Modern data and what's next *(optional)* |
+
+---
+
+# Updated Roadmap (October 27, 2026)
+
+Joins are the most important skill in SQL, and subqueries deserve
+their own week. So we added two weeks:
+
+- **Week 6 — Joins II** and **Week 7 — Subqueries** (new)
+- Database Design, Performance, and Transactions moved to **Weeks 8–10**
+- Project Integration and Modern Data became **optional bonus weeks**
+  (`weekly_lectures/bonus/`) — nothing was removed
 
 ---
 
@@ -428,11 +442,10 @@ Aggregation is the step where rows become *numbers a manager can act on*. It is 
 ### What You Will Learn
 - **INNER JOIN** — combining matching rows from two tables
 - **LEFT JOIN** — keeping all rows from one side (finding gaps)
-- **RIGHT JOIN** and **FULL OUTER JOIN**
-- Self-joins for comparing rows within the same table
-- Joining 3, 4, or 5 tables in a single query
-- Combining JOINs with GROUP BY and HAVING
-- Building multi-table business reports
+- **RIGHT JOIN** — keeping all rows from the other side
+- Finding missing data with `IS NULL`
+- Replacing `NULL` with `COALESCE`
+- A first look at joining 3 tables
 
 ---
 
@@ -451,7 +464,100 @@ Real business questions span **multiple tables**:
 > If you master JOINs, you can answer almost any business question.
 
 ---
+
 # Week 6  
+## Joins II (Joins in Practice)
+
+- INNER vs LEFT vs RIGHT — side by side
+
+- Finding what is missing
+
+- Counting with joins
+
+- Self-joins and 3+ tables
+
+👉 Goal: Join with confidence
+
+---
+
+# Week 6 — SQL Mastery, Part 4: Joins in Practice
+
+### What You Will Learn
+- Predicting how many rows each join returns — and why they differ
+- `RIGHT JOIN` is a `LEFT JOIN` with the tables swapped
+- The anti-join: `LEFT JOIN ... WHERE ... IS NULL` ("who has never…?")
+- The `ON` vs. `WHERE` trap: when a `LEFT JOIN` quietly becomes an `INNER JOIN`
+- Counting with joins: `COUNT(*)` vs. `COUNT(column)`, and `COALESCE(SUM(...), 0)`
+- Chains of 3–4 tables, and why one `INNER JOIN` can drop rows
+- Self-joins (employee → manager) and a first look at `FULL OUTER JOIN`
+
+---
+
+# Week 6 — Business Insight
+
+### Why This Matters in the Real World
+
+A report says the company has **27** employees. HR says **30**. Nobody made a
+typo — an `INNER JOIN` to the departments table quietly dropped the three
+people who have no department yet.
+
+Most wrong numbers in business reports are not SQL errors. The query runs,
+the result looks reasonable, and it is wrong because a join kept the wrong
+rows. A second week of joins builds the habit that prevents this:
+**before you trust a result, ask which rows your join kept.**
+
+> Joins rarely fail loudly. They fail quietly.
+
+---
+
+# Week 7  
+## Subqueries
+
+- A query inside a query
+
+- `IN`, `NOT IN`, `EXISTS`
+
+- Correlated subqueries
+
+- CTEs (`WITH`)
+
+👉 Goal: Answer two-step questions
+
+---
+
+# Week 7 — SQL Mastery, Part 5: Subqueries
+
+### What You Will Learn
+- Scalar subqueries: one value — "who earns more than the average?"
+- Subqueries in `SELECT` — comparing each row with a total
+- List subqueries with `IN`, and reading nested subqueries inside-out
+- The `NOT IN` + `NULL` trap — and why `NOT EXISTS` is safer
+- `EXISTS`: "is there at least one?"
+- Subqueries in `FROM` (derived tables): an average of totals
+- Correlated subqueries: each row compared with its own group
+- Subquery or JOIN? — and CTEs (`WITH`) to keep long queries readable
+
+---
+
+# Week 7 — Business Insight
+
+### Why This Matters in the Real World
+
+Many business questions have **two steps**: *"Which products sell above the
+average?"* first needs the average, then the products above it.
+
+Typing the average into the query by hand works once — and is wrong the next
+day, when the data changes. A subquery computes it fresh every time.
+
+The same skill answers *"Which customers have never ordered?"*,
+*"Who is the top seller in each region?"*, and *"Which departments pay above
+the company norm?"* — questions every analyst gets in their first month.
+
+> A subquery lets your query do its own homework.
+
+---
+
+# Week 8  
 ## Database Design & Normalization
 
 - **Bad design** vs **Good design**
@@ -465,7 +571,7 @@ Real business questions span **multiple tables**:
 
 ---
 
-# Week 6 — Database Design & Normalization
+# Week 8 — Database Design & Normalization
 
 ### What You Will Learn
 - Functional dependencies: the mathematical foundation of design
@@ -479,7 +585,7 @@ Real business questions span **multiple tables**:
 
 ---
 
-# Week 6 — Business Insight
+# Week 8 — Business Insight
 
 ### Why This Matters in the Real World
 
@@ -495,7 +601,7 @@ Normalization prevents this by ensuring every fact is stored **exactly once**. I
 
 ---
 
-# Week 7  
+# Week 9  
 ## Indexing & Performance
 
 - What is an index?
@@ -507,7 +613,7 @@ Normalization prevents this by ensuring every fact is stored **exactly once**. I
 👉 Goal: Think like a system
 
 ---
-# Week 7 — Performance & Indexing
+# Week 9 — Performance & Indexing
 
 ### What You Will Learn
 - How a DBMS executes queries: parsing, optimization, execution
@@ -521,7 +627,7 @@ Normalization prevents this by ensuring every fact is stored **exactly once**. I
 
 ---
 
-# Week 7 — Business Insight
+# Week 9 — Business Insight
 
 ### Why This Matters in the Real World
 
@@ -537,7 +643,7 @@ Performance tuning is not about making things "a little faster." It is about the
 
 ---
 
-# Week 8  
+# Week 10  
 ## Transactions & ACID
 
 - Transactions (`BEGIN`, `COMMIT`, `ROLLBACK`)
@@ -550,7 +656,7 @@ Performance tuning is not about making things "a little faster." It is about the
 
 ---
 
-# Week 8 — Transactions & ACID
+# Week 10 — Transactions & ACID
 
 ### What You Will Learn
 - What transactions are and why they exist
@@ -564,7 +670,7 @@ Performance tuning is not about making things "a little faster." It is about the
 
 ---
 
-# Week 8 — Business Insight
+# Week 10 — Business Insight
 
 ### Why This Matters in the Real World
 
@@ -580,7 +686,7 @@ a transaction must:
 
 --- 
 
-# Week 8 — Business Insight
+# Week 10 — Business Insight
 
 ### Why This Matters in the Real World
 
@@ -591,7 +697,7 @@ a transaction must:
 
 ---
 
-# Week 9  
+# Bonus Week 11 *(optional)*  
 ## Project (Integration)
 
 - Design your own database
@@ -604,7 +710,7 @@ a transaction must:
 
 ---
 
-# Week 9 — Capstone Project
+# Bonus Week 11 — Capstone Project *(optional)*
 
 ### What You Will Do
 - Choose a real-world domain (restaurant, gym, hospital, airline, etc.)
@@ -618,7 +724,7 @@ a transaction must:
 
 ---
 
-# Week 9 — Business Insight
+# Bonus Week 11 — Business Insight
 
 ### Why This Matters in the Real World
 
@@ -634,7 +740,7 @@ This is the workflow at consulting firms (Deloitte, Accenture), tech companies (
 > The project is where knowledge becomes capability.
 
 ---
-# Week 10  
+# Bonus Week 12 *(optional)*  
 ## Wrap-up & Modern Data
 
 - Review key concepts
@@ -647,7 +753,7 @@ This is the workflow at consulting firms (Deloitte, Accenture), tech companies (
 
 ---
 
-# Week 10 — Synthesis & Review
+# Bonus Week 12 — Synthesis & Review *(optional)*
 
 ### What You Will Cover
 - Capstone project presentations
@@ -655,13 +761,13 @@ This is the workflow at consulting firms (Deloitte, Accenture), tech companies (
 - Data lakes, lakehouses, and vector databases
 - The DBA role: security, backup, capacity planning
 - ETL pipelines and data warehousing
-- Comprehensive review of all 10 weeks
+- Comprehensive review of the course
 - Practice problems covering every major topic
 - Exam preparation strategies and key patterns to remember
 
 ---
 
-# Week 10 — Business Insight
+# Bonus Week 12 — Business Insight
 
 ### Why This Matters in the Real World
 
@@ -724,7 +830,7 @@ Each week builds on the previous one — **attendance matters**.
 - Labs are **individual** work unless stated otherwise
 - You may discuss concepts but must write your own SQL
 - Copying queries from classmates or AI tools without understanding them is a violation
-- The capstone project must be **your own original design** (not a copy of ShopSmart)
+- If you do the optional capstone project, it must be **your own original design** (not a copy of ShopSmart)
 - When in doubt, ask the instructor
 
 ---
@@ -779,10 +885,11 @@ optional; we start SQL from the beginning.
 |---|---|
 | Database Design | Architect data systems |
 | SQL Querying | Extract insights from any dataset |
+| Joins & Subqueries | Answer multi-step questions across many tables |
 | Normalization | Build maintainable, scalable schemas |
 | Performance Tuning | Make systems fast and cost-effective |
 | Transaction Management | Ensure data integrity and safety |
-| Project Delivery | Design, build, present, and defend |
+| Project Delivery *(bonus)* | Design, build, present, and defend |
 
 
 These are the skills hiring managers look for in:
@@ -861,9 +968,9 @@ section { font-size: 22px; }
 
 ### Where the second half of the quarter is heading
 
-Weeks 1–5 take SQL as far as **JOINs**. The techniques below build on that
-foundation. **Window functions and CTEs come back in Weeks 7 and 9** — you are
-seeing them early here, not instead. The remaining items (set operations, views,
+Weeks 1–7 take SQL through **JOINs and subqueries**. The techniques below build
+on that foundation. **CTEs are taught in Week 7 and window functions in Week 9**
+— you are seeing them early here, not instead. The remaining items (set operations, views,
 RFM analysis) are enrichment: they appear in several of the `data_stories/`
 notebooks for students who want to read ahead.
 

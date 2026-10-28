@@ -50,6 +50,10 @@ That one `NULL` sets up the most important trap of the week:
 - [`lab07_student.md`](lab07_student.md) — **the week's lab**: 10
   questions, 30 points, from basic to advanced, with the expected row
   count for each one
+- [`lab07_student_marimo.py`](lab07_student_marimo.py) — the same lab as a Marimo
+  notebook: the data is loaded for you; replace each placeholder query
+- [`lab07_instructor_marimo.py`](lab07_instructor_marimo.py) — the notebook with answers,
+  real results, and a short explanation for each question
 - [`quiz.md`](quiz.md) — 10 multiple-choice questions
 
 ## Files in This Folder
@@ -59,6 +63,7 @@ That one `NULL` sets up the most important trap of the week:
 | `slides_1.md`, `slides_2.md` | Marp slide decks — one per session |
 | `demo1.py`, `demo2.py` | Live-demo Marimo notebooks — one per session |
 | `lab07_student.md` | The lab, with blanks to fill in |
+| `lab07_student_marimo.py`, `lab07_instructor_marimo.py` | The lab as Marimo notebooks — without and with answers |
 | `quiz.md` | Short quiz |
 | `data/` | `customers.csv`, `products.csv`, `orders.csv` |
 

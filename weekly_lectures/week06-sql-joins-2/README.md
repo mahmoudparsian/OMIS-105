@@ -40,6 +40,10 @@ A small gym with four tables. The data has **gaps on purpose**, so
 
 - [`lab06_student.md`](lab06_student.md) — **the week's lab**: 10
   questions, 30 points, with the expected row count for each one
+- [`lab06_student_marimo.py`](lab06_student_marimo.py) — the same lab as a Marimo
+  notebook: the data is loaded for you; replace each placeholder query
+- [`lab06_instructor_marimo.py`](lab06_instructor_marimo.py) — the notebook with answers,
+  real results, and a short explanation for each question
 - [`quiz.md`](quiz.md) — 10 multiple-choice questions
 
 ## Files in This Folder
@@ -49,6 +53,7 @@ A small gym with four tables. The data has **gaps on purpose**, so
 | `slides_1.md`, `slides_2.md` | Marp slide decks — one per session |
 | `demo1.py`, `demo2.py` | Live-demo Marimo notebooks — one per session |
 | `lab06_student.md` | The lab, with blanks to fill in |
+| `lab06_student_marimo.py`, `lab06_instructor_marimo.py` | The lab as Marimo notebooks — without and with answers |
 | `quiz.md` | Short quiz |
 | `data/` | `members.csv`, `bookings.csv`, `classes.csv`, `trainers.csv` |
 | `images/` | Join diagrams (copied from Week 5's `joins_are_visualized/`) |
