@@ -195,8 +195,7 @@ now sits in a clearly-marked optional appendix.
 **2026-10-27:** the outline was updated again for the new order (Joins II and
 Subqueries as Weeks 6–7, bonus Weeks 11–12).
 
-⚠️ **`Outline_OMIS_105_10_weeks.pdf` is stale** — it still carries the old order and
-needs re-exporting from the Markdown.
+The `.pdf` was re-exported from the Markdown the same day, so both match.
 
 **4. Near-duplicate stories.** Several folders teach the same thing:
 
