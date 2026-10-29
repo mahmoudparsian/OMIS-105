@@ -760,6 +760,8 @@ SELECT * FROM toys;
 
 ## INNER JOIN
 
+#### Find cats, which have toys
+
 ```sql
          SELECT  c.cat_id, c.cat_name,
                  t.toy_id, t.toy_name
@@ -781,6 +783,8 @@ SELECT * FROM toys;
 
 ## LEFT JOIN
 
+#### Find cats, which have toys or no toys
+
 ```sql
          SELECT  c.cat_id, c.cat_name,
                  t.toy_id, t.toy_name
@@ -801,9 +805,14 @@ SELECT * FROM toys;
 │      4 │ Misty    │      4 │ mouse    │
 │      5 │ June     │   NULL │ NULL     │
 └────────┴──────────┴────────┴──────────┘
+
+NOTE: Hugo and June have no toys.
+
 ```
 
 ## RIGHT JOIN
+
+#### Find all toys, with associated cats
 
 ```sql
          SELECT  c.cat_id, c.cat_name,
