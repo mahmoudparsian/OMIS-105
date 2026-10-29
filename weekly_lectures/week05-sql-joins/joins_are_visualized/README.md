@@ -845,6 +845,23 @@ ORDER BY  c.cat_id;
 └──────────┴──────────┴──────────┴────────┴──────────┘
 ```
 
+## Find cats with no Toys
+
+```sql
+memory D SELECT  c.cat_id, c.cat_name,
+                 t.cat_id, t.toy_id, t.toy_name
+          FROM cats AS c
+          LEFT JOIN toys AS t
+          ON c.cat_id = t.cat_id
+            WHERE t.cat_id is NULL;
+┌────────┬──────────┬────────┬────────┬──────────┐
+│ cat_id │ cat_name │ cat_id │ toy_id │ toy_name │
+│ int32  │ varchar  │ int32  │ int32  │ varchar  │
+├────────┼──────────┼────────┼────────┼──────────┤
+│      5 │ June     │   NULL │   NULL │ NULL     │
+│      2 │ Hugo     │   NULL │   NULL │ NULL     │
+└────────┴──────────┴────────┴────────┴──────────┘
+```
 
 
 # References
