@@ -17,7 +17,8 @@ def _(mo):
     # 🦆 Mastering SQL Sub-Queries with `WITH` (CTEs)
     ### A Beginner-Friendly Tutorial using DuckDB
 
-    > New to subqueries? Start with `subqueries_notebook_01.py` (the very basics), then come back here.
+    > New to subqueries or CTEs? Start with `subqueries_notebook_01.py` (the very basics) and
+    > `subqueries_notebook_04.py` (CTEs step by step), then come back here.
 
     ---
 

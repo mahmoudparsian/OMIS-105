@@ -37,7 +37,7 @@ def _(mo):
 
     Run the cells from top to bottom. After this notebook, continue with
     `subqueries_notebook_03.py` (correlated subqueries and `EXISTS`)
-    or `subqueries_notebook_02.py` (subqueries with `WITH`).
+    and `subqueries_notebook_04.py` (subqueries with `WITH`).
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
@@ -795,7 +795,7 @@ def _(mo):
 
     - `subqueries_notebook_03.py` — **correlated** subqueries ("the average of *this employee's* department"),
       `EXISTS`, `NOT EXISTS`, and the `NOT IN` + `NULL` trap.
-    - `subqueries_notebook_02.py` — give subqueries a name with `WITH` (CTEs), build multi-step queries, and rank rows.
+    - `subqueries_notebook_04.py` — give subqueries a name with `WITH` (CTEs), step by step.
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

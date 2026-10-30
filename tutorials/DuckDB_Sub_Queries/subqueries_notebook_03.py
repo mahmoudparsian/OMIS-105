@@ -913,7 +913,7 @@ def _(mo):
 
     **What's next?**
 
-    - `subqueries_notebook_02.py` — give subqueries a name with `WITH` (CTEs) and build multi-step queries.
+    - `subqueries_notebook_04.py` — give subqueries a name with `WITH` (CTEs) and build multi-step queries.
     - `subqueries_04_tutorial.md` — the complete reference, with `ANY` / `ALL` and 15 more exercises.
 
     ---
