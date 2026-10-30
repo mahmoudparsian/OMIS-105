@@ -1,6 +1,6 @@
-# Master DuckDB Subqueries & CTEs: <br> A Beginner's Guide
+# DuckDB Subqueries & CTEs on One Table: <br> A Beginner's Guide
 
-Welcome! If you are learning DuckDB (or standard SQL), subqueries are one of the most powerful tools to add to your toolkit. 
+Welcome! If you are learning DuckDB (or standard SQL), subqueries are one of the most powerful tools to add to your toolkit.
 
 A **subquery** is simply a query nested inside another SQL query. Think of it like solving a math problem inside parentheses first before completing the full equation.
 
@@ -13,7 +13,7 @@ Let's start by creating a simple table named `employees` in DuckDB.
 ### Schema & Data Setup
 
 ```sql
-CREATE TABLE employees (
+CREATE OR REPLACE TABLE employees (
     name VARCHAR,
     dept VARCHAR,
     salary INT,
@@ -30,6 +30,15 @@ INSERT INTO employees VALUES
     ('Fiona',   'Engineering', 110000, 38, 'USA'),
     ('George',  'Marketing',   52000, 29, 'UK');
 ```
+
+Quick facts you will use below:
+
+| dept | employees | average salary |
+| :--- | ---: | ---: |
+| Engineering | Alice, Bob, Fiona | 93,333.33 |
+| Marketing | Evan, George | 48,500.00 |
+| Sales | Charlie, Diana | 55,000.00 |
+| *(everyone)* | 7 people | 69,571.43 |
 
 ---
 
@@ -53,12 +62,22 @@ SELECT
 FROM 
     employees
 WHERE 
-    salary > (SELECT AVG(salary) FROM employees);
+    salary > (SELECT AVG(salary) FROM employees)
+ORDER BY 
+    salary DESC;
 ```
 
 ### How DuckDB executes this:
 1. First, it runs `(SELECT AVG(salary) FROM employees)` which returns `69571.43`.
 2. Next, it evaluates `salary > 69571.43` for each row in `employees`.
+
+**Result:**
+
+| name  | dept        | salary |
+| :---  | :---        | ---:   |
+| Fiona | Engineering | 110000 |
+| Alice | Engineering | 90000  |
+| Bob   | Engineering | 80000  |
 
 ---
 
@@ -80,12 +99,28 @@ WHERE
         SELECT DISTINCT dept 
         FROM employees 
         WHERE age < 30
-    );
+    )
+ORDER BY 
+    dept, name;
 ```
 
 ### How DuckDB executes this:
 1. The inner query finds departments with young workers (`Engineering`, `Marketing`).
 2. The outer query finds all employees who belong to either of those departments.
+
+**Result:**
+
+| name   | dept        | age |
+| :---   | :---        | ---: |
+| Alice  | Engineering | 30  |
+| Bob    | Engineering | 28  |
+| Fiona  | Engineering | 38  |
+| Evan   | Marketing   | 24  |
+| George | Marketing   | 29  |
+
+Alice (30) and Fiona (38) are not under 30, but they are in the result. The subquery chooses **departments**; the outer query returns **everyone** in those departments.
+
+> `DISTINCT` inside the subquery is optional. `IN` only checks whether a value is in the list, so duplicates in the list do not change the result.
 
 ---
 
@@ -98,7 +133,7 @@ You can also treat the output of a subquery as a temporary table and query again
 ```sql
 SELECT 
     dept, 
-    avg_salary
+    ROUND(avg_salary, 2) AS avg_salary
 FROM (
     SELECT 
         dept, 
@@ -112,7 +147,15 @@ WHERE
     avg_salary > 60000;
 ```
 
-> **Note:** Subqueries in the `FROM` clause **must** have an alias (like `AS dept_summary`).
+**Result:**
+
+| dept        | avg_salary |
+| :---        | ---:       |
+| Engineering | 93333.33   |
+
+> **Why not just `WHERE AVG(salary) > 60000`?** `WHERE` runs *before* grouping, so it cannot see averages. You could use `HAVING` here instead — the derived table is useful when you want to treat the grouped result as a normal table and keep working with it.
+
+> **Note:** Always give a subquery in the `FROM` clause an alias (like `AS dept_summary`). DuckDB lets you skip it, but many other databases require it.
 
 ---
 
@@ -134,11 +177,25 @@ WHERE
         SELECT AVG(e2.salary)
         FROM employees e2
         WHERE e2.dept = e1.dept
-    );
+    )
+ORDER BY 
+    e1.dept;
 ```
 
 ### How it works:
-- For every row in `e1` ( outer query ), DuckDB calculates the average salary for that employee's department in `e2` ( inner query ).
+- `e1` and `e2` are two **aliases** (nicknames) for the same `employees` table: `e1` is the outer query, `e2` is the inner query.
+- For every row in `e1`, the inner query calculates the average salary of *that employee's* department (`WHERE e2.dept = e1.dept`).
+- Example: for Diana (Sales), the inner query averages Sales only → 55,000. Diana earns 60,000, so she is kept.
+
+**Result:**
+
+| name   | dept        | salary |
+| :---   | :---        | ---:   |
+| Fiona  | Engineering | 110000 |
+| George | Marketing   | 52000  |
+| Diana  | Sales       | 60000  |
+
+Compare this with Section 2: George and Diana are **below** the company average, but **above** their own department's average.
 
 ---
 
@@ -163,12 +220,15 @@ WITH dept_summary AS (
 )
 SELECT 
     dept, 
-    avg_salary
+    ROUND(avg_salary, 2) AS avg_salary,
+    employee_count
 FROM 
     dept_summary
 WHERE 
     avg_salary > 60000;
 ```
+
+Same result as Section 4 (Engineering, 93,333.33, now with `employee_count` = 3), but the steps read from top to bottom: first build `dept_summary`, then use it.
 
 ### Example 2: Chaining Multiple `WITH` Subqueries
 
@@ -207,8 +267,21 @@ FROM
 JOIN 
     dept_averages da ON nae.dept = da.dept
 WHERE 
-    nae.salary > da.avg_dept_salary;
+    nae.salary > da.avg_dept_salary
+ORDER BY 
+    nae.salary DESC;
 ```
+
+**Result:**
+
+| name  | dept        | salary | dept_avg |
+| :---  | :---        | ---:   | ---:     |
+| Fiona | Engineering | 110000 | 93333.33 |
+| Diana | Sales       | 60000  | 55000.00 |
+
+George is above his department average too, but he works in the UK, so the second CTE removed him.
+
+> Notice the department averages are computed from **all** employees (including the UK). Only the final list of people is limited to North America. Where you filter changes the answer — always ask *"average of whom?"*
 
 ---
 
@@ -223,6 +296,10 @@ WITH high_earners AS (
 FROM high_earners;  -- DuckDB lets you omit "SELECT *" if you want the whole table!
 ```
 
+**Result:** Alice (90000) and Fiona (110000). Bob earns exactly 80000, which is not *greater than* 80000.
+
+> This `FROM`-first shortcut works only in DuckDB. In exams and in other databases, write the full `SELECT * FROM high_earners;`.
+
 ---
 
 ## Summary Checklist
@@ -234,3 +311,7 @@ FROM high_earners;  -- DuckDB lets you omit "SELECT *" if you want the whole tab
 | **Derived Table** | Acts as a temporary dataset in `FROM` | Subquery aliased in `FROM` clause |
 | **Correlated Subquery** | References column from outer query | `WHERE inner.col = outer.col` |
 | **CTE (`WITH`)** | Organizes complex subqueries cleanly | `WITH name AS (...)` |
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

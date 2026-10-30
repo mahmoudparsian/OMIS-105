@@ -1,6 +1,6 @@
 # DuckDB SQL Subqueries: <br> A Complete Beginner-to-Advanced Tutorial
 
-**A hands-on guide to SQL subqueries,****`WITH`****clauses, CTEs, and****`INNER JOIN`**
+**A hands-on guide to SQL subqueries, `WITH` clauses (CTEs), and `INNER JOIN`**
 
 - **Database:** DuckDB
 - **Level:** Beginner to intermediate, with advanced patterns
@@ -11,34 +11,34 @@
 
 ## Table of Contents
 
-1. Learning objectives
-2. What is a subquery?
-3. Part I — Start with one sales table
-4. Basic subqueries
-5. Scalar and single-row subqueries
-6. Multi-row subqueries: IN and NOT IN
-7. EXISTS and NOT EXISTS
-8. Subqueries in SELECT
-9. Subqueries in FROM
-10. Correlated subqueries
-11. Nested subqueries
-12. ANY, ALL, and comparison operators
-13. WITH and common table expressions
-14. Recursive CTEs
-15. Part II — Introduce two related tables
-16. INNER JOIN fundamentals
-17. Subqueries with two tables
-18. JOIN versus subquery versus CTE
-19. Advanced analytical examples
-20. Common mistakes and debugging
-21. Performance considerations in DuckDB
-22. Practice exercises
-23. Exercise solutions
-24. Cheat sheet
+1. [Learning objectives](#1-learning-objectives)
+2. [What is a subquery?](#2-what-is-a-subquery)
+3. [Part I — Start with one sales table](#3-part-i--start-with-one-sales-table)
+4. [Basic subqueries](#4-basic-subqueries)
+5. [Scalar and single-row subqueries](#5-scalar-and-single-row-subqueries)
+6. [Multi-row subqueries: IN and NOT IN](#6-multi-row-subqueries-in-and-not-in)
+7. [EXISTS and NOT EXISTS](#7-exists-and-not-exists)
+8. [Subqueries in SELECT](#8-subqueries-in-select)
+9. [Subqueries in FROM](#9-subqueries-in-from)
+10. [Correlated subqueries](#10-correlated-subqueries)
+11. [Nested subqueries](#11-nested-subqueries)
+12. [ANY, ALL, and comparison operators](#12-any-all-and-comparison-operators)
+13. [WITH and common table expressions](#13-with-and-common-table-expressions)
+14. [Additional subquery patterns with one table](#14-additional-subquery-patterns-with-one-table)
+15. [Part II — Introduce two related tables](#15-part-ii--introduce-two-related-tables)
+16. [INNER JOIN fundamentals](#16-inner-join-fundamentals)
+17. [Subqueries with two tables](#17-subqueries-with-two-tables)
+18. [JOIN versus subquery versus CTE](#18-join-versus-subquery-versus-cte)
+19. [Advanced analytical examples](#19-advanced-analytical-examples)
+20. [Common mistakes and debugging](#20-common-mistakes-and-debugging)
+21. [Performance considerations in DuckDB](#21-performance-considerations-in-duckdb)
+22. [Practice exercises](#22-practice-exercises)
+23. [Exercise solutions](#23-exercise-solutions)
+24. [Cheat sheet](#24-cheat-sheet)
 
 ---
 
-# 1\. Learning objectives
+# 1. Learning objectives
 
 By the end of this tutorial, you should be able to:
 
@@ -61,7 +61,7 @@ Most examples are independent after the initial table setup. The second part cre
 
 ---
 
-# 2\. What is a subquery?
+# 2. What is a subquery?
 
 A **subquery** is a SQL query written inside another SQL statement.
 
@@ -75,7 +75,7 @@ We can solve it in two steps:
 
 **Step-2:** Find transactions whose amounts exceed that average.
 
-A subquery combines these steps into one statement.
+A subquery combines these steps into one statement. (We create the `sales` table in Section 3 — read this section first, run the SQL after the setup.)
 
 ```sql
 SELECT *
@@ -86,9 +86,7 @@ WHERE amount > (
 );
 ```
 
-The inner query is:
-
-
+The inner query (the part in parentheses) is:
 
 ```sql
 SELECT AVG(amount)
@@ -97,9 +95,7 @@ FROM sales;
 
 The outer query is:
 
-
-
-```sql
+```text
 SELECT *
 FROM sales
 WHERE amount > (...);
@@ -130,12 +126,11 @@ A query may fit more than one category. For example, a correlated subquery can r
 
 ---
 
-# 3\. Part I — Start with one sales table
+# 3. Part I — Start with one sales table
 
 We will use one table throughout the first part.
 
 ## 3.1 Create the table
-
 
 ```sql
 DROP TABLE IF EXISTS sales;
@@ -165,8 +160,6 @@ The columns mean:
 
 ## 3.2 Insert sample data
 
-sql
-
 ```sql
 INSERT INTO sales VALUES
 (1,  DATE '2026-01-05', 'Laptop',    'Electronics', 'Alice', 'West',  2, 2400.00),
@@ -188,7 +181,6 @@ INSERT INTO sales VALUES
 
 ## 3.3 Inspect the table
 
-
 ```sql
 SELECT *
 FROM sales
@@ -196,7 +188,6 @@ ORDER BY sale_id;
 ```
 
 Check how many rows exist:
-
 
 ```sql
 SELECT COUNT(*) AS total_sales
@@ -210,7 +201,6 @@ Expected result:
 | 15            |
 
 ## 3.4 Calculate summary statistics
-
 
 ```sql
 SELECT
@@ -232,10 +222,9 @@ These aggregates will become the building blocks for our subqueries.
 
 ---
 
-# 4\. Basic subqueries
+# 4. Basic subqueries
 
 ## 4.1 Find sales greater than the overall average
-
 
 ```sql
 SELECT
@@ -248,7 +237,7 @@ WHERE amount > (
     SELECT AVG(amount)
     FROM sales
 )
-ORDER BY amount DESC;
+ORDER BY amount DESC, sale_id;
 ```
 
 The inner query returns approximately `973.33`.
@@ -269,7 +258,6 @@ The last two transactions shown have amounts of 1200.00. They are both above the
 
 ## 4.2 Find the largest sale
 
-
 ```sql
 SELECT *
 FROM sales
@@ -279,9 +267,9 @@ WHERE amount = (
 );
 ```
 
-* The inner query calculates the maximum amount. 
-* The outer query finds rows equal to it.
-
+* The inner query calculates the maximum amount (2400.00). 
+* The outer query finds rows equal to it — here, sale 1 (a Laptop sold by Alice).
+* If two sales tied for the maximum, both would be returned.
 
 ## 4.3 Find sales equal to the smallest sale
 
@@ -297,11 +285,11 @@ WHERE amount = (
 );
 ```
 
+**Result:** one row — sale 9, Chair, 400.00.
+
 This illustrates a general pattern:
 
-sql
-
-```
+```text
 SELECT columns
 FROM table_name
 WHERE column_name comparison_operator (
@@ -320,7 +308,7 @@ must itself be calculated from data.
 
 ---
 
-# 5\. Scalar and single-row subqueries
+# 5. Scalar and single-row subqueries
 
 ## 5.1 What is a scalar subquery?
 
@@ -328,14 +316,12 @@ A scalar subquery returns one value: one row and one column.
 
 Example:
 
-
 ```sql
 SELECT AVG(amount)
 FROM sales;
 ```
 
 This query returns one number, so it can be used in a scalar context.
-
 
 ```sql
 SELECT
@@ -349,7 +335,6 @@ ORDER BY sale_id;
 Each output row displays the transaction amount and the overall average.
 
 ## 5.2 Compare with a scalar subquery
-
 
 ```sql
 SELECT sale_id, amount
@@ -366,9 +351,8 @@ The comparison expects one value on the right side.
 
 For example:
 
-sql
-
-```
+```sql
+-- Incorrect: the inner query returns 8 rows.
 SELECT *
 FROM sales
 WHERE amount = (
@@ -378,12 +362,16 @@ WHERE amount = (
 );
 ```
 
-* The inner query returns several amounts. 
-* A scalar comparison cannot use several values this way, 
-* so DuckDB raises an error.
+* The inner query returns several amounts (8 West-region sales). 
+* `=` needs exactly one value on the right side, 
+  so DuckDB raises an error:
+
+```text
+Invalid Input Error: More than one row returned by a subquery used as
+an expression - scalar subqueries can only return a single row.
+```
 
 Use `IN` when you want to compare against a set of values:
-
 
 ```sql
 SELECT *
@@ -399,42 +387,50 @@ This fixes the cardinality problem, although the query
 has a different meaning: it finds sales whose amounts 
 match any amount from the West region.
 
-## 5.4 Single-row subqueries
+## 5.4 Single-row subqueries (more than one column)
 
-A single-row subquery returns one row, potentially with 
-multiple columns. It can be useful with row comparisons 
-where the database supports the relevant syntax.
-
-For example, DuckDB supports row comparisons:
-
-
+A single-row subquery returns one row, possibly with 
+several columns. To compare several columns at once, 
+put them in parentheses and use `IN`:
 
 ```sql
 SELECT sale_id, product, amount
 FROM sales
-WHERE (product, amount) = (
+WHERE (product, amount) IN (
     SELECT product, amount
     FROM sales
-    WHERE sale_id = 1
-);
+    WHERE sale_id = 5
+)
+ORDER BY sale_id;
 ```
 
-* The inner query returns the product and amount for sale 1. 
-* The outer query finds rows with the same pair of values.
-* Because this compares both columns, it is different from comparing `amount` alone.
+**Result:**
+
+| sale_id | product | amount |
+| --- | --- | --- |
+| 5 | Laptop | 1200.00 |
+| 12 | Laptop | 1200.00 |
+
+* The inner query returns one row: (Laptop, 1200.00) from sale 5. 
+* The outer query finds rows with the **same pair** of values.
+* Sale 1 is also a Laptop, but its amount is 2400.00, so the pair does not match.
+* Comparing `amount` alone would match **any** product sold for 1200.00; 
+  comparing the pair keeps only Laptops sold for 1200.00.
+
+> **DuckDB 1.5 note:** writing `WHERE (product, amount) = (SELECT product, amount ...)` 
+> fails with *"Subquery returns 2 columns - expected 1"*. Use `IN` as shown above.
 
 **Rule:** Always understand how many rows and columns a subquery can return before choosing the outer comparison.
 
 ---
 
-# 6\. Multi-row subqueries: IN and NOT IN
+# 6. Multi-row subqueries: IN and NOT IN
 
 ## 6.1 IN
 
 `IN` checks whether a value matches any value in a set.
 
 Find sales whose products appear in the West region:
-
 
 ```sql
 SELECT
@@ -451,15 +447,15 @@ WHERE product IN (
 ORDER BY sale_id;
 ```
 
-* The inner query produces the set of products sold in the West. 
-* The outer query returns rows with those products.
-* This example is useful for learning `IN`, but it is worth 
-  noticing that several products appear in both regions.
+* The inner query produces the set of products sold in the West: 
+  Laptop, Desk, Phone, and Chair.
+* The outer query returns every sale (East or West) of those products — 13 rows.
+* The two Monitor sales (6 and 10) are missing: Monitors were 
+  sold only in the East.
 
 ## 6.2 NOT IN
 
 Find products that do not appear in the West region:
-
 
 ```sql
 SELECT DISTINCT product
@@ -471,13 +467,17 @@ WHERE product NOT IN (
 );
 ```
 
-With our sample data, the result is empty because every 
-product in the table has been sold in the West.
+**Result:**
+
+| product |
+| --- |
+| Monitor |
+
+Monitor is the only product that was never sold in the West.
 
 ## 6.3 IN with a grouped subquery
 
 Find salespeople who have generated more than 3000 in total revenue:
-
 
 ```sql
 SELECT
@@ -494,8 +494,9 @@ WHERE salesperson IN (
 ORDER BY sale_id;
 ```
 
-* The inner query identifies qualifying salespeople. 
-* The outer query retrieves their individual transactions.
+* The inner query identifies qualifying salespeople: Alice (6450.00) 
+  and Bob (6150.00). Carol's total is only 2000.00.
+* The outer query retrieves their individual transactions — 12 rows.
 
 **This is an important distinction:**
 
@@ -508,8 +509,6 @@ ORDER BY sale_id;
 
 Consider:
 
-
-
 ```sql
 SELECT 1
 WHERE 2 NOT IN (1, NULL);
@@ -518,11 +517,15 @@ WHERE 2 NOT IN (1, NULL);
 The result is no row. SQL cannot establish that `2` is 
 different from every item because one item is unknown.
 
+Step by step: `2 NOT IN (1, NULL)` means `2 <> 1 AND 2 <> NULL`. 
+The first part is `TRUE`; the second is `UNKNOWN` (any comparison 
+with `NULL` is unknown). `TRUE AND UNKNOWN` is `UNKNOWN`, and 
+`WHERE` keeps only rows that are `TRUE`.
+
 * When using `NOT IN`, consider whether the subquery can return `NULL`. 
 * Often, `NOT EXISTS` is safer for finding unmatched rows.
 
 For example:
-
 
 ```sql
 SELECT DISTINCT s.product
@@ -535,11 +538,11 @@ WHERE NOT EXISTS (
 );
 ```
 
-This version expresses the question directly: return products for which no West-region row matches.
+This version expresses the question directly: return products for which no West-region row matches. The result is again Monitor — but this version would still be correct if a `product` value were `NULL`.
 
 ---
 
-# 7\. EXISTS and NOT EXISTS
+# 7. EXISTS and NOT EXISTS
 
 ## 7.1 What does EXISTS mean?
 
@@ -548,7 +551,6 @@ This version expresses the question directly: return products for which no West-
 It does not require the inner query to return a particular column value.
 
 Example:
-
 
 ```sql
 SELECT *
@@ -571,7 +573,6 @@ about whether a row exists, not the selected value.
 
 Find salespeople who have at least one sale above 2000:
 
-
 ```sql
 SELECT DISTINCT s.salesperson
 FROM sales AS s
@@ -588,7 +589,6 @@ The inner query refers to `s.salesperson`, which comes from the outer query.
 The result includes Alice and Bob because each has at least one qualifying transaction.
 
 ## 7.3 Find salespeople with no sale above 2000
-
 
 ```sql
 SELECT DISTINCT s.salesperson
@@ -609,7 +609,6 @@ Both can solve some of the same problems.
 
 Using `IN`:
 
-
 ```sql
 SELECT DISTINCT salesperson
 FROM sales
@@ -621,7 +620,6 @@ WHERE salesperson IN (
 ```
 
 Using `EXISTS`:
-
 
 ```sql
 SELECT DISTINCT s.salesperson
@@ -642,12 +640,11 @@ Both express the idea of identifying salespeople with a qualifying sale.
 
 ---
 
-# 8\. Subqueries in SELECT
+# 8. Subqueries in SELECT
 
 A subquery in the `SELECT` list calculates a value for each output row.
 
 ## 8.1 Show the average next to every sale
-
 
 ```sql
 SELECT
@@ -665,9 +662,7 @@ This can be helpful when comparing each transaction with a benchmark.
 
 ## 8.2 Compare each sale with the overall average
 
-sql
-
-```
+```sql
 SELECT
     sale_id,
     product,
@@ -682,8 +677,6 @@ ORDER BY sale_id;
 * A negative difference means it is below average.
 
 A cleaner alternative is to calculate the average once in a CTE:
-
-
 
 ```sql
 WITH overall AS (
@@ -711,8 +704,6 @@ where one value is required, the query fails.
 For example, this is not a valid way to attach all West-region 
 amounts to every sale:
 
-
-
 ```sql
 -- Incorrect: the inner query can return multiple rows.
 SELECT
@@ -730,7 +721,7 @@ another appropriate technique depending on the desired output.
 
 ---
 
-# 9\. Subqueries in FROM
+# 9. Subqueries in FROM
 
 A subquery in the `FROM` clause is often called a **derived table**.
 
@@ -739,7 +730,6 @@ It produces a table-like result that the outer query can filter or aggregate.
 ## 9.1 Aggregate first, then filter
 
 Find salespeople with total revenue above 3000:
-
 
 ```sql
 SELECT
@@ -764,8 +754,6 @@ The alias `salesperson_totals` is important: a derived table needs a name.
 
 ## 9.2 Calculate average revenue per salesperson
 
-
-
 ```sql
 SELECT AVG(total_revenue) AS average_salesperson_revenue
 FROM (
@@ -787,8 +775,6 @@ Understanding which level you are aggregating is one of the most important SQL s
 ## 9.3 Multiple aggregation levels
 
 Find salespeople whose total revenue exceeds the average salesperson total:
-
-
 
 ```sql
 SELECT
@@ -817,20 +803,21 @@ This query has two levels of aggregation:
 1. Sum transaction amounts per salesperson.
 2. Average those salesperson totals.
 
-It is valid, but it repeats logic. The next section 
-introduces `WITH`, which often makes this kind of 
-query easier to read.
+**Result:** Alice (6450.00) and Bob (6150.00). The average salesperson total is 4866.67.
+
+It is valid, but it repeats logic: the same `GROUP BY salesperson` query 
+is written twice. Section 13 introduces `WITH`, which lets you write it 
+once and give it a name.
 
 ---
 
-# 10\. Correlated subqueries
+# 10. Correlated subqueries
 
 A **correlated subquery** refers to a column from the outer query.
 
 Unlike a self-contained subquery, its logic depends on the current outer row.
 
 ## 10.1 Compare each sale with its salesperson's average
-
 
 ```sql
 SELECT
@@ -848,12 +835,26 @@ ORDER BY s.salesperson, s.amount DESC;
 
 The condition:
 
-
 ```sql
 x.salesperson = s.salesperson
 ```
 
 connects the inner query to the current outer row.
+
+**Result:**
+
+| sale_id | salesperson | amount |
+| --- | --- | --- |
+| 1 | Alice | 2400.00 |
+| 14 | Alice | 1400.00 |
+| 12 | Alice | 1200.00 |
+| 2 | Bob | 2100.00 |
+| 5 | Bob | 1200.00 |
+| 4 | Carol | 800.00 |
+| 8 | Carol | 700.00 |
+
+Alice's average is 1075.00, Bob's is 1025.00, and Carol's is 666.67 — 
+each sale is compared with **its own** salesperson's average.
 
 Conceptually:
 
@@ -866,7 +867,6 @@ The optimizer may use a more efficient execution strategy
 than literally running the inner query once per row.
 
 ## 10.2 Find the highest sale for each salesperson
-
 
 ```sql
 SELECT
@@ -888,7 +888,6 @@ has multiple sales at their maximum amount.
 
 ## 10.3 Find sales above their region's average
 
-
 ```sql
 SELECT
     s.sale_id,
@@ -909,8 +908,6 @@ with a benchmark calculated for its group.
 ## 10.4 Correlated subquery versus window function
 
 The same problem can often be solved using a window function:
-
-
 
 ```sql
 SELECT
@@ -937,12 +934,11 @@ Neither approach is universally better. Choose the version that is easiest to un
 
 ---
 
-# 11\. Nested subqueries
+# 11. Nested subqueries
 
 A nested subquery is a subquery inside another subquery.
 
 ## 11.1 Find salespeople whose total revenue exceeds the average salesperson revenue
-
 
 ```sql
 SELECT
@@ -967,8 +963,7 @@ The next level calculates the average of those totals.
 
 The outer query returns salespeople whose totals exceed that average.
 
-## 11.2 Find products sold in regions where average sale amount exceeds 900
-
+## 11.2 Find products sold in regions with total revenue above 7000
 
 ```sql
 SELECT DISTINCT product
@@ -977,14 +972,20 @@ WHERE region IN (
     SELECT region
     FROM sales
     GROUP BY region
-    HAVING AVG(amount) > 900
+    HAVING SUM(amount) > 7000
 )
 ORDER BY product;
 ```
 
-* The inner query determines which regions qualify. 
+* The inner query determines which regions qualify: West (7650.00). 
+  East (6950.00) does not.
 * The outer query finds products sold in those regions.
 
+**Result:** Chair, Desk, Laptop, Phone. Monitor is missing because it was never sold in the West.
+
+> Strictly speaking, this example is a subquery that *contains* a `GROUP BY`, 
+> not a subquery inside a subquery. Section 9.3 and 11.1 show true nesting: 
+> a derived table inside a scalar subquery.
 
 ## 11.3 Understand nested-query structure
 
@@ -1002,7 +1003,7 @@ consider breaking it into named CTEs.
 
 ---
 
-# 12\. ANY, ALL, and comparison operators
+# 12. ANY, ALL, and comparison operators
 
 SQL provides comparison operators that work with sets of values.
 
@@ -1011,7 +1012,6 @@ DuckDB supports quantified comparisons such as `ANY` and `ALL`.
 ## 12.1 Greater than ANY
 
 Find sales whose amount is greater than at least one West-region sale:
-
 
 ```sql
 SELECT
@@ -1030,27 +1030,41 @@ For a nonempty set of ordinary, non-`NULL` numeric
 values, `x > ANY (set)` is true when `x` exceeds at 
 least one value in the set.
 
+Here the smallest West sale is 400.00, so every sale above 400.00 
+qualifies — 14 of the 15 rows. Only sale 9 (400.00) is left out.
+
 It is therefore similar to comparing against the 
 minimum value, although the quantified comparison 
 has its own `NULL` and empty-set semantics.
 
 ## 12.2 Greater than ALL
 
-Find sales whose amount is greater than every West-region sale:
-
+Find sales whose amount is greater than every East-region sale:
 
 ```sql
 SELECT
     sale_id,
+    region,
     amount
 FROM sales
 WHERE amount > ALL (
     SELECT amount
     FROM sales
-    WHERE region = 'West'
+    WHERE region = 'East'
 )
 ORDER BY amount;
 ```
+
+**Result:**
+
+| sale_id | region | amount |
+| --- | --- | --- |
+| 1 | West | 2400.00 |
+
+The largest East sale is 2100.00, and only sale 1 beats it.
+
+> Try it with `'West'` instead: the result is **empty**. The largest West 
+> sale is 2400.00, the largest sale overall — and no sale is greater than itself.
 
 For a nonempty set without `NULL`, `x > ALL (set)` 
 means `x` exceeds the maximum value in that set.
@@ -1073,7 +1087,7 @@ means `x` exceeds the maximum value in that set.
 
 ---
 
-# 13\. WITH and common table expressions
+# 13. WITH and common table expressions
 
 This is one of the most important sections of the tutorial.
 
@@ -1083,7 +1097,6 @@ name for use within a larger statement.
 CTEs are introduced with `WITH`.
 
 ## 13.1 Basic CTE
-
 
 ```sql
 WITH average_sale AS (
@@ -1105,13 +1118,16 @@ Read the query in two parts:
 
 1. `average_sale` calculates the average.
 2. The main query uses the named result.
-3. A CTE does not create a permanent table. 
-   Its name is available to the statement in which it is defined.
+
+A CTE does not create a permanent table. 
+Its name exists only inside the statement in which it is defined.
+
+`CROSS JOIN` pairs every sale with every row of `average_sale`. 
+That is safe because `average_sale` has exactly **one** row.
 
 ## 13.2 Multiple CTEs
 
 You can define multiple CTEs, separated by commas.
-
 
 ```sql
 WITH salesperson_totals AS (
@@ -1141,10 +1157,14 @@ ORDER BY st.total_revenue DESC;
 
 * The final query compares each salesperson's total with the average.
 
+**Result:** Alice (6450.00) and Bob (6150.00), each next to the average 4866.67.
+
+Compare this with Section 9.3: the same answer, but the 
+`GROUP BY salesperson` step is written only once.
+
 ## 13.3 A CTE that replaces a nested derived table
 
 Compare this:
-
 
 ```sql
 SELECT
@@ -1161,7 +1181,6 @@ WHERE total_revenue > 3000;
 ```
 
 With this:
-
 
 ```sql
 WITH totals AS (
@@ -1182,7 +1201,6 @@ WHERE total_revenue > 3000;
 * The CTE version gives the intermediate result a name before the final query uses it.
 
 ## 13.4 Reusing a CTE
-
 
 ```sql
 WITH totals AS (
@@ -1212,7 +1230,6 @@ on the query and applicable optimizer rules.
 
 ## 13.5 CTE with filtering and aggregation
 
-
 ```sql
 WITH west_sales AS (
     SELECT *
@@ -1240,6 +1257,9 @@ The steps are:
 2. Calculate revenue by product.
 3. Keep products whose total revenue exceeds 1000.
 
+**Result:** Laptop (3600.00) and Phone (2100.00). In the West, Chair 
+totals exactly 1000.00 (not *more* than 1000) and Desk totals 950.00.
+
 The names make the transformation easier to understand.
 
 ## 13.6 CTE versus subquery
@@ -1265,7 +1285,6 @@ sequences, hierarchical data, and graph traversal.
 
 Here is a simple number sequence:
 
-
 ```sql
 WITH RECURSIVE numbers(n) AS (
     SELECT 1
@@ -1282,7 +1301,6 @@ ORDER BY n;
 ```
 
 Expected output:
-
 
 ```text
 1
@@ -1313,13 +1331,12 @@ generate far more rows than intended.
 
 ---
 
-# 14\. Additional subquery patterns with one table
+# 14. Additional subquery patterns with one table
 
 ## 14.1 Aggregate in the outer query, filter with a subquery
 
 Find total revenue per salesperson for salespeople 
 who have made a transaction above 1500:
-
 
 ```sql
 SELECT
@@ -1336,7 +1353,6 @@ ORDER BY total_revenue DESC;
 ```
 
 ## 14.2 Compare a product with its own category average
-
 
 ```sql
 SELECT
@@ -1355,8 +1371,7 @@ ORDER BY s.category, s.amount DESC;
 
 This compares each transaction with the average for its category.
 
-## 14.3 Find duplicate product names
-
+## 14.3 Find products sold more than once
 
 ```sql
 SELECT product, 
@@ -1373,7 +1388,7 @@ ORDER BY transaction_count DESC;
 
 ---
 
-# 15\. Part II — Introduce two related tables
+# 15. Part II — Introduce two related tables
 
 Now we will use two tables:
 
@@ -1385,8 +1400,6 @@ The tables are related by `product_id`.
 Using a numeric key rather than repeating the product name makes the relationship explicit and avoids depending on text labels to identify products.
 
 ## 15.1 Create the products table
-
-
 
 ```sql
 DROP TABLE IF EXISTS products;
@@ -1400,8 +1413,6 @@ CREATE TABLE products (
 ```
 
 Insert sample products:
-
-
 
 ```sql
 INSERT INTO products VALUES
@@ -1419,7 +1430,6 @@ To keep the two-table examples self-contained,
 we will replace the original `sales` table with 
 a version that includes `product_id`.
 
-
 ```sql
 DROP TABLE IF EXISTS sales;
 
@@ -1435,7 +1445,6 @@ CREATE TABLE sales (
 ```
 
 Insert the same transactions using product IDs:
-
 
 ```sql
 INSERT INTO sales VALUES
@@ -1458,7 +1467,6 @@ INSERT INTO sales VALUES
 
 Verify the tables:
 
-
 ```sql
 SELECT * FROM products ORDER BY product_id;
 
@@ -1477,13 +1485,12 @@ the earlier version.
 
 ---
 
-# 16\. INNER JOIN fundamentals
+# 16. INNER JOIN fundamentals
 
 An `INNER JOIN` combines rows from two tables 
 when their join condition matches.
 
 ## 16.1 Basic INNER JOIN
-
 
 ```sql
 SELECT
@@ -1513,7 +1520,6 @@ connects each transaction to its product.
 
 Find electronics sales above 1000:
 
-
 ```sql
 SELECT
     s.sale_id,
@@ -1533,7 +1539,6 @@ ORDER BY s.amount DESC;
 ## 16.3 Aggregate after joining
 
 Calculate revenue by product:
-
 
 ```sql
 SELECT
@@ -1555,7 +1560,6 @@ An `INNER JOIN` is not the right tool when you want
 to keep unmatched products. A `LEFT JOIN` can expose 
 missing matches:
 
-
 ```sql
 SELECT
     p.product_id,
@@ -1576,14 +1580,13 @@ We will also solve this problem using `NOT EXISTS` later.
 
 ---
 
-# 17\. Subqueries with two tables
+# 17. Subqueries with two tables
 
 This section combines subqueries with joins.
 
 ## 17.1 Use a subquery to filter sales by product category
 
 Find transactions for products in the Furniture category:
-
 
 ```sql
 SELECT
@@ -1604,7 +1607,6 @@ ORDER BY sale_id;
 
 Compare it with the join version:
 
-
 ```sql
 SELECT
     s.sale_id,
@@ -1622,7 +1624,6 @@ ORDER BY s.sale_id;
   final output needs columns from both tables.
 
 ## 17.2 Use EXISTS to find products that have sales
-
 
 ```sql
 SELECT
@@ -1646,8 +1647,6 @@ and `EXISTS` tests existence rather than returning all
 matching sales.
 
 ## 17.3 Use NOT EXISTS to find products without sales
-
-
 
 ```sql
 SELECT
@@ -1676,7 +1675,6 @@ row in another.
 
 Using `LEFT JOIN`:
 
-
 ```sql
 SELECT p.product_id, p.product_name
 FROM products AS p
@@ -1686,7 +1684,6 @@ WHERE s.sale_id IS NULL;
 ```
 
 Using `NOT EXISTS`:
-
 
 ```sql
 SELECT p.product_id, p.product_name
@@ -1705,7 +1702,6 @@ question directly and avoids the `NULL` pitfalls
 associated with `NOT IN`.
 
 ## 17.5 Find sales above the average sale amount for their product category
-
 
 ```sql
 SELECT
@@ -1737,9 +1733,7 @@ ORDER BY p.category, s.amount DESC;
 * The reference `p.category` is from the outer query. 
   That reference makes the inner query correlated.
 
-
 ## 17.6 Find the highest transaction for each product
-
 
 ```sql
 SELECT
@@ -1763,7 +1757,6 @@ If several transactions tie for the highest amount,
 all tied rows are returned.
 
 ## 17.7 Find products whose total revenue exceeds average product revenue
-
 
 ```sql
 WITH product_totals AS (
@@ -1789,6 +1782,8 @@ WHERE pt.total_revenue > a.avg_revenue
 ORDER BY pt.total_revenue DESC;
 ```
 
+**Result:** Laptop (4800.00) and Phone (4200.00). The average product total is 2920.00 (14600.00 ÷ 5 products with sales).
+
 This combines several important skills:
 
 1. Join sales with products.
@@ -1801,7 +1796,6 @@ Notice that the average is calculated over product totals, not individual transa
 ## 17.8 Use a subquery in FROM with a join
 
 Calculate revenue by category using an intermediate table:
-
 
 ```sql
 SELECT
@@ -1827,7 +1821,6 @@ ORDER BY total_revenue DESC;
 The same result can be expressed more simply with a 
 direct join and grouping:
 
-
 ```sql
 SELECT
     p.category,
@@ -1843,7 +1836,6 @@ The simpler version is preferable when no intermediate
 aggregation is needed.
 
 ## 17.9 Use a CTE to make a two-table query readable
-
 
 ```sql
 WITH joined_sales AS (
@@ -1883,7 +1875,7 @@ This is a good approach for queries that will be maintained or extended by other
 
 ---
 
-# 18\. JOIN versus subquery versus CTE
+# 18. JOIN versus subquery versus CTE
 
 There is no universal rule that joins are always faster or subqueries are always slower. DuckDB's optimizer can transform many equivalent queries into similar execution plans.
 
@@ -1905,7 +1897,6 @@ Choose syntax based on the question, required output, and readability.
 
 Using a subquery:
 
-
 ```sql
 SELECT product_id, product_name
 FROM products
@@ -1916,7 +1907,6 @@ WHERE product_id IN (
 ```
 
 Using `EXISTS`:
-
 
 ```sql
 SELECT p.product_id, p.product_name
@@ -1929,7 +1919,6 @@ WHERE EXISTS (
 ```
 
 Using a join:
-
 
 ```sql
 SELECT DISTINCT p.product_id, p.product_name
@@ -1966,7 +1955,6 @@ whether multiple rows are meaningful in your result.
 
 This is perfectly reasonable:
 
-
 ```sql
 SELECT *
 FROM sales
@@ -1982,13 +1970,12 @@ WHERE amount > 1000;
 
 ---
 
-# 19\. Advanced analytical examples
+# 19. Advanced analytical examples
 
 ## 19.1 Top sale per category
 
 Return every transaction tied for the highest 
 amount within its product category:
-
 
 ```sql
 SELECT
@@ -2009,8 +1996,14 @@ WHERE s.amount = (
 ORDER BY p.category, s.amount DESC;
 ```
 
-## 19.2 Compare each product's revenue with its category average
+**Result:**
 
+| sale_id | product_name | category | amount |
+| --- | --- | --- | --- |
+| 1 | Laptop | Electronics | 2400.00 |
+| 7 | Desk | Furniture | 900.00 |
+
+## 19.2 Compare each product's revenue with its category average
 
 ```sql
 WITH product_revenue AS (
@@ -2043,10 +2036,13 @@ compares **product-level revenue** with the
 
 * The average is not the average transaction amount.
 
+**Result:** Laptop (4800.00) and Phone (4200.00) in Electronics, whose 
+product average is 3500.00; Desk (2300.00) in Furniture, whose product 
+average is 2050.00.
+
 ## 19.3 Use a window function instead
 
 The same comparison can be written with a window function:
-
 
 ```sql
 WITH product_revenue AS (
@@ -2087,7 +2083,6 @@ This is often a very readable pattern for analytical work.
 
 ## 19.4 Revenue by region above the average regional revenue
 
-
 ```sql
 WITH region_totals AS (
     SELECT
@@ -2107,6 +2102,8 @@ WHERE total_revenue > (
 ORDER BY total_revenue DESC;
 ```
 
+**Result:** West (7650.00). East has 6950.00, and the average of the two regions is 7300.00.
+
 This example uses only the sales table in the 
 two-table schema.
 
@@ -2117,7 +2114,6 @@ aggregation even when joins are not needed.
 
 A version that explicitly excludes `NULL` from the 
 inner result is:
-
 
 ```sql
 SELECT
@@ -2139,7 +2135,6 @@ have the same `NOT IN` null-trap.
 
 ## 19.6 Calculate a percentage of total revenue
 
-
 ```sql
 WITH total_revenue AS (
     SELECT SUM(amount) AS grand_total
@@ -2160,7 +2155,6 @@ ORDER BY s.sale_id;
   return `NULL` instead of dividing by zero.
 
 ## 19.7 Build a reusable reporting query
-
 
 ```sql
 WITH joined_sales AS (
@@ -2209,17 +2203,23 @@ This query follows a reporting pipeline:
 3. Calculate average regional revenue within each category.
 4. Return regions above their category's average.
 
+**Result:**
+
+| category | region | total_revenue | average_region_revenue |
+| --- | --- | --- | --- |
+| Electronics | West | 5700.00 | 5250.00 |
+| Furniture | East | 2150.00 | 2050.00 |
+
 It demonstrates how joins, aggregation, 
 CTEs, and comparisons work together.
 
 ---
 
-# 20\. Common mistakes and debugging
+# 20. Common mistakes and debugging
 
 ## 20.1 Using `=` when the subquery returns multiple rows
 
 **Incorrect:**
-
 
 ```sql
 SELECT *
@@ -2230,10 +2230,10 @@ WHERE product_id = (
 );
 ```
 
-The inner query returns multiple rows.
+The inner query returns multiple rows, so DuckDB raises 
+*"More than one row returned by a subquery used as an expression"*.
 
 Use `IN` when membership is intended:
-
 
 ```sql
 SELECT *
@@ -2246,8 +2246,7 @@ WHERE product_id IN (
 
 ## 20.2 Forgetting the alias for a derived table
 
-**Incorrect:**
-
+**Works in DuckDB, but not portable:**
 
 ```sql
 SELECT *
@@ -2257,9 +2256,9 @@ FROM (
 );
 ```
 
-In DuckDB, a derived table should be given 
-an alias for portable, clear SQL:
-
+DuckDB accepts this, but many other databases 
+(for example MySQL and SQL Server) reject a derived table 
+without a name. Always give it an alias:
 
 ```sql
 SELECT *
@@ -2273,7 +2272,6 @@ FROM (
 
 **Incorrect:**
 
-
 ```sql
 SELECT salesperson, SUM(amount)
 FROM sales
@@ -2286,7 +2284,6 @@ GROUP BY salesperson;
 
 **Correct:**
 
-
 ```sql
 SELECT salesperson, SUM(amount) AS total_revenue
 FROM sales
@@ -2295,7 +2292,6 @@ HAVING SUM(amount) > 3000;
 ```
 
 Alternatively, aggregate in a subquery and filter the derived result:
-
 
 ```sql
 SELECT *
@@ -2320,7 +2316,6 @@ FROM sales;
 
 Average salesperson total:
 
-
 ```sql
 SELECT AVG(total_revenue)
 FROM (
@@ -2336,7 +2331,6 @@ Always identify the level at which the metric is calculated.
 
 **Risky:**
 
-
 ```sql
 SELECT product_id
 FROM products
@@ -2350,7 +2344,6 @@ If the subquery contains `NULL`, the results
 may not match your expectations.
 
 **Prefer:**
-
 
 ```sql
 SELECT p.product_id
@@ -2371,7 +2364,6 @@ WHERE NOT EXISTS (
 ## 20.7 Forgetting correlated aliases
 
 Use explicit aliases to distinguish the outer and inner tables:
-
 
 ```sql
 SELECT s.sale_id
@@ -2402,7 +2394,6 @@ DuckDB can optimize joins, subqueries, and CTEs.
 For performance-sensitive work, inspect the actual 
 plan with:
 
-
 ```sql
 EXPLAIN
 SELECT *
@@ -2419,7 +2410,7 @@ when investigating a real workload.
 
 ---
 
-# 21\. Performance considerations in DuckDB
+# 21. Performance considerations in DuckDB
 
 DuckDB is a column-oriented analytical database, 
 so efficient SQL should express the desired operation 
@@ -2433,7 +2424,6 @@ clearly and allow its optimizer to work.
 
 For example, existence checks are naturally expressed 
 with `EXISTS`:
-
 
 ```sql
 SELECT p.product_name
@@ -2456,7 +2446,6 @@ However, CTE materialization is not guaranteed
 in every situation.
 
 ## 21.3 Use EXPLAIN
-
 
 ```sql
 EXPLAIN
@@ -2490,7 +2479,7 @@ using realistic data. Factors include:
 
 ---
 
-# 22\. Practice exercises
+# 22. Practice exercises
 
 Try these exercises before reading the solutions.
 
@@ -2526,16 +2515,15 @@ Try these exercises before reading the solutions.
 
 **Exercise 13:** Use multiple CTEs to calculate revenue by region and identify regions above average regional revenue.
 
-**Exercise 14:** Use `> ALL` to find sales that exceed every West-region transaction amount.
+**Exercise 14:** Use `> ALL` to find sales that exceed every East-region transaction amount.
 
 **Exercise 15:** Generate the numbers 1 through 20 with a recursive CTE.
 
 ---
 
-# 23\. Exercise solutions
+# 23. Exercise solutions
 
 ## Solution 1
-
 
 ```sql
 SELECT *
@@ -2744,9 +2732,11 @@ FROM sales
 WHERE amount > ALL (
     SELECT amount
     FROM sales
-    WHERE region = 'West'
+    WHERE region = 'East'
 );
 ```
+
+Expected: one row, sale 1 (2400.00).
 
 ## Solution 15
 
@@ -2765,7 +2755,7 @@ ORDER BY n;
 
 ---
 
-# 24\. Cheat sheet
+# 24. Cheat sheet
 
 ## Subquery patterns
 
@@ -2868,14 +2858,14 @@ INNER JOIN products AS p
 ## Final mental model
 
 - **Scalar subquery:** Give me one value.
-- **`IN`****:** Is this value in the returned set?
-- **`EXISTS`****:** Does a matching row exist?
-- **`NOT EXISTS`****:** Is there no matching row?
+- **`IN`:** Is this value in the returned set?
+- **`EXISTS`:** Does a matching row exist?
+- **`NOT EXISTS`:** Is there no matching row?
 - **Correlated subquery:** Calculate something using the current outer row.
 - **Derived table:** Treat a query result as a table.
-- **`WITH`****:** Name the intermediate query steps.
+- **`WITH`:** Name the intermediate query steps.
 - **Recursive CTE:** Repeatedly generate rows from prior results.
-- **`INNER JOIN`****:** Combine matching rows from related tables.
+- **`INNER JOIN`:** Combine matching rows from related tables.
 - **Window function:** Calculate group-level metrics while retaining individual rows.
 
 * The most important habit is to identify the shape 
@@ -2900,4 +2890,8 @@ Once that becomes second nature, subqueries, joins, and CTEs become different to
 8. Use `EXPLAIN` to begin exploring DuckDB query plans.
 
 **End of tutorial.**
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
 

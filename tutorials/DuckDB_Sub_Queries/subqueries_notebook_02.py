@@ -17,20 +17,24 @@ def _(mo):
     # 🦆 Mastering SQL Sub-Queries with `WITH` (CTEs)
     ### A Beginner-Friendly Tutorial using DuckDB
 
+    > New to subqueries? Start with `subqueries_notebook_01.py` (the very basics), then come back here.
+
     ---
 
     ## 🎯 What You'll Learn
 
     | Lesson | Concept |
     |--------|------------------------------------------|
-    | 1 | Why sub-queries exist & what a CTE is |
-    | 2 | Basic `WITH` syntax |
-    | 3 | Filtering with a CTE |
-    | 4 | Aggregating inside a CTE |
-    | 5 | Chaining multiple CTEs |
-    | 6 | Joining a CTE back to the base table |
-    | 7 | Nesting logic step-by-step |
-    | 8 | Ranking with `RANK()` & `DENSE_RANK()` |
+    | 1 | Why `WITH` helps: a sub-query vs. a named CTE |
+    | 2 | Basic `WITH` syntax — filtering in a CTE |
+    | 3 | Aggregating inside a CTE |
+    | 4 | Chaining two CTEs |
+    | 5 | Joining a CTE back to the base table |
+    | 6 | A three-step CTE pipeline |
+    | 7 | Deriving a column, then grouping by it |
+    | 8 | Ranking with `ROW_NUMBER()`, `RANK()` & `DENSE_RANK()` |
+    | 9 | Filtering on a rank |
+    | 🏁 | Grand Finale — everything together |
 
     ---
 
@@ -51,44 +55,42 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ---
-    ## Cell 1 — Setup: Install DuckDB & Rendering Helper
+    ## Cell 1 — Setup: Load DuckDB & a Rendering Helper
 
-    We install **DuckDB** (an in-process SQL engine — no server needed!) and define a small helper function `show()` that renders query results as a beautiful HTML table.
+    We load **DuckDB** (an in-process SQL engine — no server needed!) and define a small helper function `show()` that runs a query and displays the result as a styled HTML table.
 
-    > **Run this cell first.** The `show()` helper is used in every subsequent cell.
+    > The `show()` helper is used in every lesson cell below.
     """)
     return
 
 
 @app.cell
-def _():
-    # ── Install & import ──────────────────────────────────────────────────────────
-
+def _(mo):
+    # ── Import & connect (in-memory database) ────────────────────────────────────
     import duckdb
-    from IPython.display import display, HTML
+    from html import escape
 
-    # ── Connect (in-memory database) ─────────────────────────────────────────────
-    con = duckdb.connect()
+    con = duckdb.connect(database=":memory:")
 
     # ── Rendering helper (kept here, reused everywhere) ──────────────────────────
     def show(sql, title=None):
-        """Execute SQL and render results as a styled HTML table."""
-        df = con.execute(sql).df()
+        """Execute SQL and return the result as a styled HTML table."""
+        df = con.execute(sql).fetchdf()
 
         # ── Build header ──
-        header_cells = "".join(f"<th>{c}</th>" for c in df.columns)
+        header_cells = "".join(f"<th>{escape(str(c))}</th>" for c in df.columns)
         header = f"<thead><tr>{header_cells}</tr></thead>"
 
         # ── Build rows ──
         rows = ""
-        for i, row in df.iterrows():
+        for i, row in enumerate(df.itertuples(index=False)):
             cls = "even" if i % 2 == 0 else "odd"
-            cells = "".join(f"<td>{v}</td>" for v in row)
+            cells = "".join(f"<td>{escape(str(v))}</td>" for v in row)
             rows += f"<tr class='{cls}'>{cells}</tr>"
         body = f"<tbody>{rows}</tbody>"
 
         # ── Caption ──
-        caption = f"<caption>{title}</caption>" if title else ""
+        caption = f"<caption>{escape(title)}</caption>" if title else ""
         row_count = f"<p class='meta'>{len(df)} row(s) returned</p>"
 
         html = f"""
@@ -131,9 +133,9 @@ def _():
           <table>{caption}{header}{body}</table>
           {row_count}
         </div>"""
-        display(HTML(html))
+        return mo.Html(html)
 
-    print("✅ DuckDB", duckdb.__version__, "ready. show() helper loaded.")
+    mo.md(f"✅ DuckDB {duckdb.__version__} ready. `show()` helper loaded.")
     return con, show
 
 
@@ -212,19 +214,21 @@ def _(mo):
     ### The Problem 🤔
 
     Imagine you want to find employees who earn **more than the company average salary**.
-    Without CTEs, you'd need a messy nested query:
+    You need two steps: first compute the average, then compare each salary to it.
+
+    One way is a **sub-query** — a query inside another query, in parentheses:
 
     ```sql
-    -- ❌ Hard to read — sub-query buried inside
+    -- Version A: sub-query inside WHERE
     SELECT name, salary
     FROM employees
     WHERE salary > (SELECT AVG(salary) FROM employees);
     ```
 
-    With `WITH`, we **name** that inner calculation and make the query self-documenting:
+    With `WITH`, we **give that inner step a name** and write it first:
 
     ```sql
-    -- ✅ Clean & readable
+    -- Version B: the same logic, named with WITH
     WITH avg_salary AS (
         SELECT AVG(salary) AS avg_sal FROM employees
     )
@@ -233,7 +237,12 @@ def _(mo):
     WHERE salary > avg_sal;
     ```
 
-    Both do the **same thing** — but the second version reads like English. 👇
+    Both return the **same rows**. For a short query like this, Version A is fine.
+    `WITH` pays off when a query has **many steps** — each step gets a name, and you read the query from top to bottom.
+
+    > `FROM employees, avg_salary` (a comma) is a `CROSS JOIN`. It is safe here because `avg_salary` has exactly **one row**, so every employee row gets the average attached.
+
+    Below, the CTE version also shows the average and the difference. 👇
     """)
     return
 
@@ -317,8 +326,12 @@ def _(mo):
 
     ```
     CTE  →  dept_stats  (GROUP BY department)
-    Main →  SELECT * FROM dept_stats ORDER BY avg_salary DESC
+    Main →  format the numbers as $ text, sort by average salary
     ```
+
+    > ⚠️ **Watch the sort.** The outer query turns `avg_salary` into text like `'$91,750'`.
+    > If we wrote `ORDER BY avg_salary`, DuckDB would sort that **text** — and `'$9…'` comes after `'$1…'`,
+    > so $91,750 would land above $112,500. Writing `ORDER BY dept_stats.avg_salary` sorts by the **number** from the CTE instead.
     """)
     return
 
@@ -340,12 +353,13 @@ def _(show):
         SELECT
             department,
             headcount,
-            '$' || total_payroll AS total_payroll,
-            '$' || avg_salary AS avg_salary,
-            '$' || min_salary AS min_salary,
-            '$' || max_salary AS max_salary
+            '$' || format('{:,}', total_payroll)      AS total_payroll,
+            '$' || format('{:,}', avg_salary::BIGINT) AS avg_salary,
+            '$' || format('{:,}', min_salary)         AS min_salary,
+            '$' || format('{:,}', max_salary)         AS max_salary
         FROM dept_stats
-        ORDER BY avg_salary DESC;
+        -- sort by the NUMBER in the CTE, not the '$...' text above
+        ORDER BY dept_stats.avg_salary DESC;
     """,
     title="Lesson 3 — Department-level payroll summary")
     return
@@ -371,8 +385,11 @@ def _(mo):
     ```
     CTE 1  →  dept_avg      (avg salary per department)
     CTE 2  →  company_avg   (single overall average)
-    Main   →  JOIN both, keep departments above the bar
+    Main   →  CROSS JOIN both, keep departments above the bar
     ```
+
+    > In this lesson the two CTEs are independent — both read from `employees`.
+    > In Lesson 6 you will see a CTE that reads from an **earlier** CTE.
     """)
     return
 
@@ -576,16 +593,20 @@ def _(mo):
 
     | Function | Behaviour when tied |
     |---|---|
-    | `ROW_NUMBER()` | Always unique — ties broken arbitrarily |
+    | `ROW_NUMBER()` | Always unique — ties get different numbers, in no guaranteed order |
     | `RANK()` | Ties share a rank; next rank **skips** (1,1,3) |
     | `DENSE_RANK()` | Ties share a rank; next rank **does not skip** (1,1,2) |
 
-    **Goal:** Rank every employee by salary *within their department*.
+    **Goal:** Rank every employee by **performance rating** *within their department*.
+
+    Why rating and not salary? In our data, no two people in the same department earn the same salary — so all three functions would give the **same** numbers. Ratings have many **ties** (several 5s and 4s), which is exactly where the three functions differ.
 
     ```
-    CTE  →  ranked   (add RANK() and DENSE_RANK() columns)
+    CTE  →  ranked   (add ROW_NUMBER(), RANK(), DENSE_RANK() columns)
     Main →  SELECT everything from ranked
     ```
+
+    👀 Look at **Engineering**: three people have rating 5. `RANK()` gives them 1, 1, 1 and then jumps to **4**; `DENSE_RANK()` gives 1, 1, 1 and then **2**.
     """)
     return
 
@@ -597,19 +618,17 @@ def _(show):
            SELECT
                name,
                department,
-               job_title,
-               salary,
-               ROW_NUMBER() OVER (PARTITION BY department
-           ORDER BY salary DESC) AS row_num, RANK() OVER (PARTITION BY department
-           ORDER BY salary DESC) AS RANK, DENSE_RANK() OVER (PARTITION BY department
-           ORDER BY salary DESC) AS DENSE_RANK
-           FROM employees 
+               rating,
+               ROW_NUMBER() OVER (PARTITION BY department ORDER BY rating DESC) AS row_num,
+               RANK()       OVER (PARTITION BY department ORDER BY rating DESC) AS rnk,
+               DENSE_RANK() OVER (PARTITION BY department ORDER BY rating DESC) AS dense_rnk
+           FROM employees
         )
         SELECT *
         FROM ranked
-        ORDER BY department, RANK;
+        ORDER BY department, rnk, row_num;
     """,
-    title="Lesson 8 — Salary rank within each department (ROW_NUMBER vs RANK vs DENSE_RANK)")
+    title="Lesson 8 — Rating rank within each department (ROW_NUMBER vs RANK vs DENSE_RANK)")
     return
 
 
@@ -621,9 +640,13 @@ def _(mo):
 
     **The golden pattern:** compute ranks inside a CTE, then filter `WHERE rank = 1` in the outer query.
 
-    > ⚠️ You **cannot** write `WHERE RANK() = 1` directly in a single query — window functions aren't allowed in `WHERE`. A CTE elegantly solves this!
+    > ⚠️ You **cannot** write `WHERE RANK() OVER (...) = 1` — window functions are not allowed in `WHERE`, because `WHERE` runs *before* the ranks are computed. A CTE solves this: compute the rank first, then filter on it.
 
     **Goal:** Show the **#1 highest-paid employee in each department**.
+
+    > 💡 **DuckDB shortcut:** DuckDB also has a `QUALIFY` clause that filters on a window function directly
+    > (`... QUALIFY DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) = 1`).
+    > Many other databases do not have it, so learn the CTE pattern first — it works everywhere.
     """)
     return
 
@@ -754,8 +777,8 @@ def _(mo):
     | 7 | JOIN CTE to base | Attach summary stats to detail rows |
     | 8 | Three CTEs | Build multi-step analytics pipelines |
     | 9 | Derive + aggregate | Create columns in CTE, group by them |
-    | 10 | `RANK()` / `DENSE_RANK()` | Rank rows within partitions |
-    | 11 | Filter on rank | `WHERE rank = 1` requires a CTE |
+    | 10 | `ROW_NUMBER()` / `RANK()` / `DENSE_RANK()` | Rank rows within partitions; they differ only on ties |
+    | 11 | Filter on rank | `WHERE rank = 1` needs a CTE (or DuckDB's `QUALIFY`) |
     | 12 | Everything together | Compose all patterns into one query |
 
     ---

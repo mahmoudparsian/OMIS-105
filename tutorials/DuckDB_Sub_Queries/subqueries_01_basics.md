@@ -20,10 +20,10 @@ Before writing code, walk students through a real-world scenario.
 
 ## 2. Interactive Setup
 
-Run this script to create a lightweight mock dataset in DuckDB:
+Run this script to create a small practice table in DuckDB:
 
 ```sql
-CREATE TABLE employees AS 
+CREATE OR REPLACE TABLE employees AS
 SELECT * FROM (VALUES 
     ('Alice', 'Sales', 80000),
     ('Bob', 'Sales', 50000),
@@ -46,7 +46,7 @@ Start here. Scalar subqueries map directly to the "Solve for X" mental model.
 1. **Inner Query (Step 1):** Calculate the average salary.
    ```sql
    SELECT AVG(salary) FROM employees;
-   -- Output: 82000
+   -- Output: 82000.0
    ```
 
 2. **Outer Query (Step 2):** Embed the inner query using parentheses.
@@ -59,7 +59,14 @@ Start here. Scalar subqueries map directly to the "Solve for X" mental model.
    );
    ```
 
-> 💡 **Teaching Tip:** Highlight how DuckDB evaluates `(SELECT AVG(salary) FROM employees)` first, substitutes `82000`, and executes `WHERE salary > 82000`.
+   **Result:**
+
+   | name    | salary |
+   | :---    | ---:   |
+   | Charlie | 120000 |
+   | David   | 90000  |
+
+> 💡 **Teaching Tip:** Highlight how the inner query `(SELECT AVG(salary) FROM employees)` produces `82000`, and the outer query then runs as `WHERE salary > 82000`. (This is the right *mental model*. DuckDB's optimizer is free to execute it differently, but the result is the same.)
 
 ---
 
@@ -74,7 +81,7 @@ When a subquery produces multiple values in a single column, use set comparison 
    SELECT department 
    FROM employees 
    WHERE salary > 100000;
-   -- Output: ['Eng']
+   -- Output: one row, 'Eng' (only Charlie earns over $100,000)
    ```
 
 2. **Outer Query (Step 2):** Match department names against that list using `IN`.
@@ -87,6 +94,15 @@ When a subquery produces multiple values in a single column, use set comparison 
        WHERE salary > 100000
    );
    ```
+
+   **Result:**
+
+   | name    | department |
+   | :---    | :---       |
+   | Charlie | Eng        |
+   | David   | Eng        |
+
+   David earns only $90,000, but he is in the list because his *department* qualifies. The subquery picks departments; the outer query returns every employee in them.
 
 ---
 
@@ -108,6 +124,8 @@ FROM (
 ) AS dept_averages;
 ```
 
+**Result:** `105000.0`. The inner query returns three rows — Sales 65000, Eng 105000, HR 70000 — and the outer query takes the largest.
+
 > 💡 **DuckDB Note:** While DuckDB allows omitting aliases for derived tables, teaching students to explicitly name them (e.g., `AS dept_averages`) is a standard best practice across SQL dialects.
 
 ---
@@ -118,6 +136,18 @@ FROM (
 | :--- | :--- | :--- |
 | **Missing Parentheses** | Forgetting `()` around the inner query. | Always enclose subqueries inside parentheses. |
 | **Cardinality Mismatch** | Using single-value operators (`>`, `=`, `<`) with subqueries returning multiple rows or columns. | Use `IN`, `ANY`, or `ALL` for multi-row queries, or restrict inner query output. |
-| **Missing Table Aliases** | Querying a derived table without giving it a name. | Assign an explicit alias using `AS <name>` in the `FROM` clause. |
+| **Missing Table Aliases** | Querying a derived table without giving it a name. DuckDB allows this, but many other databases (PostgreSQL before v16, MySQL, SQL Server) reject it. | Always assign an alias using `AS <name>` in the `FROM` clause. |
+| **Wrong Column in `IN`** | The inner query returns a different column than the outer one compares, e.g. `WHERE department IN (SELECT name ...)`. | The column before `IN` and the column the subquery returns must mean the same thing. |
 
-> 🛠 **Instructor Tip:** Trigger intentional errors live (e.g., `WHERE salary > (SELECT salary FROM employees)`) to show DuckDB's exact error messaging. Recognizing error logs builds student debugging confidence early on.
+> 🛠 **Instructor Tip:** Trigger intentional errors live to show DuckDB's exact error messages. Recognizing error messages builds student debugging confidence early on. For example:
+>
+> ```sql
+> SELECT name FROM employees
+> WHERE salary > (SELECT salary FROM employees);
+> ```
+>
+> DuckDB 1.5 answers: `Invalid Input Error: More than one row returned by a subquery used as an expression - scalar subqueries can only return a single row.` The fix is to return one value (`MAX(salary)`, `AVG(salary)`) or to use `IN` / `ANY` / `ALL`.
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

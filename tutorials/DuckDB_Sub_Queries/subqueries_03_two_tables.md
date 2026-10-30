@@ -1,6 +1,6 @@
 # Mastering DuckDB Subqueries & Joins: A 2-Table Tutorial
 
-Welcome to Part 2 of the DuckDB tutorial series! In this guide, we will step up from a single table to working with **two related tables**. 
+This guide follows `subqueries_02_single_table.md`. We now step up from a single table to **two related tables**.
 
 You will learn how to:
 
@@ -18,14 +18,14 @@ We will create two tables:
 
 ```sql
 -- Create departments table
-CREATE TABLE departments (
+CREATE OR REPLACE TABLE departments (
     dept_id INTEGER PRIMARY KEY,
     dept_name VARCHAR,
     location VARCHAR
 );
 
 -- Create employees table
-CREATE TABLE employees (
+CREATE OR REPLACE TABLE employees (
     emp_id INTEGER PRIMARY KEY,
     name VARCHAR,
     salary INTEGER,
@@ -72,6 +72,8 @@ INSERT INTO employees VALUES
 | 5      | Evan    | 55000  | 23  | 102     |
 | 6      | Fiona   | 90000  | 38  | 101     |
 
+> Notice: **HR (104) has no employees.** Keep an eye on it — it shows the difference between "a department exists" and "a department has matching rows".
+
 ---
 
 ## 2. Refresh: The Standard INNER JOIN
@@ -87,7 +89,8 @@ SELECT
     d.location
 FROM employees e
 INNER JOIN departments d 
-    ON e.dept_id = d.dept_id;
+    ON e.dept_id = d.dept_id
+ORDER BY e.emp_id;
 ```
 
 **Result:**
@@ -121,7 +124,8 @@ WHERE dept_id IN (
     SELECT dept_id 
     FROM departments 
     WHERE location = 'Austin'
-);
+)
+ORDER BY name;
 ```
 
 **Step-by-Step Execution:**
@@ -129,6 +133,8 @@ WHERE dept_id IN (
 1. Inner Query runs first: `SELECT dept_id FROM departments WHERE location = 'Austin'` → Returns `(101, 104)`.
 
 2. Outer Query runs: Finds employees where `dept_id` is either `101` or `104`.
+
+HR (104) is in Austin, but it has no employees — so only Engineering people appear.
 
 **Result:**
 
@@ -153,8 +159,11 @@ WHERE EXISTS (
     FROM employees e
     WHERE e.dept_id = d.dept_id 
       AND e.salary > 80000
-);
+)
+ORDER BY dept_name;
 ```
+
+**How to read it:** for each department `d`, DuckDB asks: *"Is there at least one employee in this department who earns over $80,000?"* If yes, the department is kept. `SELECT 1` is a convention — `EXISTS` only checks whether a row exists, not what it contains.
 
 **Result:**
 
@@ -162,6 +171,30 @@ WHERE EXISTS (
 | :---        | :---     |
 | Engineering | Austin   |
 | Marketing   | New York |
+
+Engineering qualifies through Alice and Fiona, but it appears only **once**. `EXISTS` never creates duplicate rows — a `JOIN` would have returned Engineering twice.
+
+#### The opposite: `NOT EXISTS`
+
+**Goal:** Find departments that have **no employees at all**.
+
+```sql
+SELECT dept_name, location
+FROM departments d
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM employees e
+    WHERE e.dept_id = d.dept_id
+);
+```
+
+**Result:**
+
+| dept_name | location |
+| :---      | :---     |
+| HR        | Austin   |
+
+This "find rows with no match" pattern is called an **anti-join**. It is a common business question: products never sold, customers who never ordered, courses nobody took.
 
 ---
 
@@ -179,7 +212,8 @@ WHERE e.salary > (
     SELECT AVG(salary) 
     FROM employees 
     WHERE dept_id = 101
-);
+)
+ORDER BY e.salary DESC;
 ```
 
 **Step-by-Step Execution:**
@@ -194,6 +228,20 @@ WHERE e.salary > (
 | :---  | :---   | :---        |
 | Alice | 95000  | Engineering |
 | Fiona | 90000  | Engineering |
+
+> **Going further — avoid the magic number `101`.** The query above only works if you *know* Engineering is 101. A subquery inside the subquery can look it up by name:
+>
+> ```sql
+> WHERE e.salary > (
+>     SELECT AVG(salary)
+>     FROM employees
+>     WHERE dept_id = (
+>         SELECT dept_id FROM departments WHERE dept_name = 'Engineering'
+>     )
+> )
+> ```
+>
+> Read it from the inside out: find Engineering's ID → average its salaries → compare.
 
 ---
 
@@ -225,7 +273,8 @@ SELECT
 FROM departments d
 INNER JOIN dept_stats s 
     ON d.dept_id = s.dept_id
-WHERE d.location IN ('Austin', 'New York');
+WHERE d.location IN ('Austin', 'New York')
+ORDER BY d.dept_name;
 ```
 
 **Result:**
@@ -234,6 +283,8 @@ WHERE d.location IN ('Austin', 'New York');
 | :---        | :---     | :---            | :---       |
 | Engineering | Austin   | 3               | 85000.00   |
 | Marketing   | New York | 2               | 68500.00   |
+
+Sales is missing because it is in Chicago. HR is in Austin, but it is missing too: it has no employees, so it has no row in `dept_stats`, and the `INNER JOIN` drops it. (A `LEFT JOIN` from `departments` would keep HR with `NULL` values.)
 
 ---
 
@@ -267,7 +318,8 @@ SELECT
     he.salary,
     ROUND(he.dept_avg_salary, 2) AS dept_avg
 FROM high_earners he
-INNER JOIN departments d ON he.dept_id = d.dept_id;
+INNER JOIN departments d ON he.dept_id = d.dept_id
+ORDER BY he.name;
 ```
 
 **Result:**
@@ -278,6 +330,8 @@ INNER JOIN departments d ON he.dept_id = d.dept_id;
 | Charlie | Marketing   | 82000  | 68500.00 |
 | Fiona   | Engineering | 90000  | 85000.00 |
 
+Diana is the only Sales employee, so she *equals* her department average (60,000) — not above it. The same is true for any one-person department.
+
 ---
 
 ## Cheat Sheet: When to Use Which Tool?
@@ -286,5 +340,10 @@ INNER JOIN departments d ON he.dept_id = d.dept_id;
 | :--- | :--- |
 | **`INNER JOIN`** | Combining columns from 2+ tables based on a key match. |
 | **`WHERE ... IN (subquery)`** | Filtering table A using a list of values derived from table B. |
-| **`WHERE EXISTS (subquery)`** | Checking if matching records exist in table B without returning extra columns. |
+| **`WHERE EXISTS (subquery)`** | Checking if matching records exist in table B without returning extra columns or duplicate rows. |
+| **`WHERE NOT EXISTS (subquery)`** | Finding rows in table A with **no** match in table B (anti-join). |
 | **`WITH clause (CTE)`** | Pre-aggregating data from one table before joining it to another, or keeping long queries clean. |
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
