@@ -14,33 +14,32 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # 🦆 Correlated Subqueries and `EXISTS`
-    ### When the inner query depends on the outer row
+    # 🦆 CTEs: Giving Subqueries a Name with `WITH`
+    ### Write a query as a list of steps, read it from top to bottom
 
     **OMIS 105 — Introduction to Database Management Systems**
 
-    In `subqueries_notebook_01.py`, every inner query returned **the same answer for every row**
-    (for example, the company average). In this notebook, the inner query gives a
-    **different answer for each row** — because it *uses a value from the outer row*.
-    That is a **correlated subquery**. Then we use the same idea with **`EXISTS`**,
-    which asks a yes/no question: *"is there at least one matching row?"*
+    A **CTE** (*Common Table Expression*) is a subquery that you **write first** and **give a name**.
+    The main query then uses that name like a table. CTEs do not let you ask new questions —
+    they let you ask **long** questions in a way people can read.
 
     | Part | Topic | Queries |
     |---|---|---|
     | 1 | Look at the data | Q1 – Q2 |
-    | 2 | Why we need a new idea | Q3 – Q4 |
-    | 3 | Your first correlated subquery | Q5 |
-    | 4 | X-ray: see the inner result for every row | Q6 |
-    | 5 | Step through it yourself (interactive) | — |
-    | 6 | Top earner in each department | Q7 |
-    | 7 | Pitfall: forgetting the aliases | Q8 |
-    | 8 | `EXISTS` — is there at least one? | Q9 – Q11 |
-    | 9 | `NOT EXISTS` — find what is missing | Q12 |
-    | 10 | The `NOT IN` + `NULL` trap | Q13 – Q15 |
-    | 11 | Try it yourself (interactive) | — |
-    | 12 | Exercises | E1 – E3 |
+    | 2 | From subquery to CTE | Q3 – Q4 |
+    | 3 | Anatomy of `WITH` | — |
+    | 4 | A CTE that holds one value | Q5 |
+    | 5 | Two CTEs | Q6 |
+    | 6 | A CTE that reads an earlier CTE | Q7 – Q8 |
+    | 7 | CTE + `JOIN` | Q9 – Q10 |
+    | 8 | Use the same CTE twice | Q11 |
+    | 9 | Debug a pipeline one step at a time (interactive) | Q12 |
+    | 10 | Rules and real error messages | — |
+    | 11 | Exercises | E1 – E3 |
 
-    **Before this notebook:** `subqueries_notebook_01.py` (the very basics).
+    **Before this notebook:** `subqueries_notebook_01.py` (subqueries) and, ideally,
+    `subqueries_notebook_02.py` (correlated subqueries).
+    **After it:** `subqueries_notebook_04.py` — more CTE patterns on a bigger table, plus ranking.
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
@@ -66,15 +65,14 @@ def _():
     con.execute("""
         CREATE OR REPLACE TABLE employees AS
         SELECT * FROM (VALUES
-            (1, 'Alice',  10,    60000),
-            (2, 'Bob',    10,    52000),
-            (3, 'Carmen', 20,   105000),
-            (4, 'Daniel', 20,    98000),
-            (5, 'Emma',   20,    87000),
-            (6, 'Farid',  30,    64000),
-            (7, 'Grace',  30,    92000),
-            (8, 'Hannah', 40,    58000),
-            (9, 'Ivan',   NULL,  70000)
+            (1, 'Alice',  10,  60000),
+            (2, 'Bob',    10,  52000),
+            (3, 'Carmen', 20, 105000),
+            (4, 'Daniel', 20,  98000),
+            (5, 'Emma',   20,  87000),
+            (6, 'Farid',  30,  64000),
+            (7, 'Grace',  30,  92000),
+            (8, 'Hannah', 40,  58000)
         ) AS t(emp_id, name, dept_id, salary)
     """)
     return (con,)
@@ -86,7 +84,8 @@ def _(mo):
     ---
     ## 1. Look at the Data
 
-    Two tables, linked by `dept_id`:
+    The same 8 employees as notebook 01, now linked to a `departments` table by `dept_id`.
+    **Legal (50) has no employees.**
 
     ```
     departments (dept_id) ──< employees (dept_id)
@@ -128,10 +127,65 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Remember two facts — they matter later:**
+    ---
+    ## 2. From Subquery to CTE
 
-    - 🏢 **Legal (50) has no employees.**
-    - 🆕 **Ivan is a new hire with no department yet:** his `dept_id` is `NULL`.
+    > **Question:** Which departments have an average salary above 70,000?
+
+    **Q3 — The subquery version you already know** (a derived table in `FROM`, from notebook 01):
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        SELECT dept_id, ROUND(avg_salary, 2) AS avg_salary
+        FROM (
+            SELECT dept_id, AVG(salary) AS avg_salary
+            FROM employees
+            GROUP BY dept_id
+        ) AS dept_averages
+        WHERE avg_salary > 70000
+        ORDER BY avg_salary DESC
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    To read Q3, you start in the **middle** (the inner query), then jump **out** to the outer query.
+
+    **Q4 — The CTE version.** Cut the inner query out, move it to the **top**, and give it a name:
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        WITH dept_averages AS (
+            SELECT dept_id, AVG(salary) AS avg_salary
+            FROM employees
+            GROUP BY dept_id
+        )
+        SELECT dept_id, ROUND(avg_salary, 2) AS avg_salary
+        FROM dept_averages
+        WHERE avg_salary > 70000
+        ORDER BY avg_salary DESC
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Same result:** Engineering (20) at 96,666.67 and Marketing (30) at 78,000.
+    Same logic, too — only the **order on the page** changed. Now you read it **from top to bottom**:
+
+    1. *First*, build `dept_averages` (one row per department).
+    2. *Then*, select from it and keep the averages above 70,000.
     """)
     return
 
@@ -140,9 +194,45 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ---
-    ## 2. Why We Need a New Idea
+    ## 3. Anatomy of `WITH`
 
-    **Q3 — Recap from notebook 01:** who earns more than the **company** average?
+    ```
+    WITH dept_averages AS (            ← WITH, then a NAME, then AS (
+        SELECT dept_id, AVG(salary)    ← any SELECT query
+        FROM employees                    (this is the "subquery")
+        GROUP BY dept_id
+    )                                  ← close the parenthesis
+    SELECT ...                         ← the MAIN query: uses the name
+    FROM dept_averages                    like a normal table
+    WHERE ...;
+    ```
+
+    With **several** CTEs, write `WITH` **once** and separate the CTEs with **commas**:
+
+    ```
+    WITH step_one AS ( ... ),          ← comma after every CTE …
+         step_two AS ( ... ),
+         step_three AS ( ... )         ← … except the last one
+    SELECT ... FROM step_three;        ← the main query
+    ```
+
+    > 💡 Choose names that say **what is inside**: `dept_averages`, `company_avg`, `top_earners`.
+    > Then the query reads almost like a sentence.
+
+    > A CTE is **not** a saved table. It exists only while **this one statement** runs (see Part 10).
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 4. A CTE That Holds One Value
+
+    A CTE can be tiny — even **one row with one number**.
+
+    **Q5 — Employees who earn more than the company average** (notebook 01, Q4 — now with a CTE):
     """)
     return
 
@@ -150,156 +240,19 @@ def _(mo):
 @app.cell
 def _(con):
     con.execute("""
-        SELECT name, dept_id, salary
-        FROM employees
-        WHERE salary > (
-            SELECT AVG(salary)
+        WITH company AS (
+            SELECT AVG(salary) AS company_avg
             FROM employees
         )
-        ORDER BY salary DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    The inner query returns **one number** (76,222.22) — the same for every employee.
-
-    Now a fairer question:
-
-    > **Who earns more than the average of *their own* department?**
-
-    Alice earns 60,000 — below the company average, but Sales is a low-paid department.
-    Is she above the **Sales** average? We need a **different average for each department**.
-
-    **Q4 — The department averages.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT
-            dept_id,
-            ROUND(AVG(salary), 2) AS avg_salary,
-            COUNT(*)              AS employees
-        FROM employees
-        GROUP BY dept_id
-        ORDER BY dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Sales (10) averages **56,000**, so Alice (60,000) *is* above her department's average.
-
-    The last row is Ivan alone: `GROUP BY` puts all `NULL` values into one group.
-
-    We cannot type five numbers into `WHERE`. We need an inner query that **looks at the
-    current employee's department** and calculates *that* average. That is a correlated subquery.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 3. Your First Correlated Subquery
-
-    **Q5 — Employees who earn more than the average of their own department.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT e.name, e.dept_id, e.salary
-        FROM employees AS e
-        WHERE e.salary > (
-            SELECT AVG(x.salary)
-            FROM employees AS x
-            WHERE x.dept_id = e.dept_id     -- the link to the outer row
-        )
-        ORDER BY e.dept_id, e.salary DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ### 🧠 How to read it
-
-    The same table is used **twice**, so we give it two **aliases** (nicknames):
-
-    - `e` = the **outer** query — "the employee we are checking now"
-    - `x` = the **inner** query — "the employees we compare with"
-
-    The line `WHERE x.dept_id = e.dept_id` uses `e` — a column from the **outer** query.
-    That makes the inner query **correlated**: its answer depends on which employee `e` is.
-
-    Think of it as a loop:
-
-    ```
-    for each employee e:
-        inner query: average salary of employees x in e's department
-        keep e if e.salary > that average
-    ```
-
-    | Employee `e` | `e.dept_id` | Inner query returns | `e.salary > ...`? |
-    |---|---|---|---|
-    | Alice | 10 | 56,000.00 | 60,000 > 56,000 ✅ |
-    | Bob | 10 | 56,000.00 | 52,000 > 56,000 ❌ |
-    | Emma | 20 | 96,666.67 | 87,000 > 96,666.67 ❌ |
-    | Hannah | 40 | 58,000.00 | 58,000 > 58,000 ❌ (equal is not greater) |
-    | Ivan | `NULL` | `NULL` | unknown ❌ |
-
-    **Result: Alice, Carmen, Daniel, Grace.** Compare with Q3: Alice is **in** now, Emma is **out**.
-
-    > Why is Ivan out? `x.dept_id = NULL` is never true, so the inner query finds **no rows**,
-    > and the average of no rows is `NULL`. `70000 > NULL` is *unknown*, and `WHERE` keeps only *true*.
-
-    > The loop is a way to **think** about it. DuckDB is smarter: it usually computes all the
-    > department averages once and matches them up. The result is the same.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 4. X-Ray: See the Inner Result for Every Row
-
-    A correlated subquery can also be a **column** in `SELECT`.
-    This is a great way to *see* what the inner query returns for each row.
-
-    **Q6 — Each employee, their department's average, and their department's size.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
         SELECT
             e.name,
-            e.dept_id,
             e.salary,
-            (SELECT ROUND(AVG(x.salary), 2)
-               FROM employees AS x
-              WHERE x.dept_id = e.dept_id) AS dept_avg,
-            (SELECT COUNT(*)
-               FROM employees AS x
-              WHERE x.dept_id = e.dept_id) AS dept_size
+            c.company_avg,
+            e.salary - c.company_avg AS difference
         FROM employees AS e
-        ORDER BY e.dept_id NULLS LAST, e.salary DESC
+        CROSS JOIN company AS c
+        WHERE e.salary > c.company_avg
+        ORDER BY e.salary DESC
     """).fetchdf()
     return
 
@@ -307,461 +260,427 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Every row gets **its own** `dept_avg`. Ivan's row shows the `NULL` effect:
-    `dept_avg` is empty (`NaN`) and `dept_size` is **0** — the inner query matched nobody.
+    Carmen, Daniel, Grace, Emma — above 77,000.
 
-    > 💡 **Debugging tip:** when a correlated `WHERE` gives a surprising answer,
-    > copy the subquery into `SELECT` like this and look at the numbers.
+    **`CROSS JOIN`** pairs every employee with every row of `company`. That is safe here because
+    `company` has exactly **one** row: each employee simply gets the average attached as a new column.
+    A bonus of the CTE: we can **show** `company_avg` in the output, which the `WHERE` subquery could not.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 5. Two CTEs
+
+    > **Question:** Which departments pay **below** the company average, on average?
+
+    We need two results: the department averages **and** the company average.
+
+    **Q6 — Two CTEs, separated by a comma.**
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        WITH dept_averages AS (
+            SELECT dept_id, AVG(salary) AS dept_avg
+            FROM employees
+            GROUP BY dept_id
+        ),
+        company AS (
+            SELECT AVG(salary) AS company_avg
+            FROM employees
+        )
+        SELECT
+            d.dept_id,
+            ROUND(d.dept_avg, 2) AS dept_avg,
+            c.company_avg
+        FROM dept_averages AS d
+        CROSS JOIN company AS c
+        WHERE d.dept_avg < c.company_avg
+        ORDER BY d.dept_avg
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Sales (10) at 56,000 and HR (40) at 58,000 — both below 77,000.
+
+    Here the two CTEs are **independent**: both read from `employees`.
+    Next, one CTE will read from **another**.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 6. A CTE That Reads an Earlier CTE
+
+    > **Question:** Which departments have a total payroll **above the average department payroll**?
+
+    That is **two levels** of aggregation: first `SUM` per department, then `AVG` of those sums.
+
+    **Q7 — The second CTE reads from the first.**
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        WITH dept_payroll AS (                 -- step 1: total per department
+            SELECT dept_id, SUM(salary) AS payroll
+            FROM employees
+            GROUP BY dept_id
+        ),
+        avg_payroll AS (                       -- step 2: average of step 1
+            SELECT AVG(payroll) AS avg_payroll
+            FROM dept_payroll                  -- ← reads the first CTE
+        )
+        SELECT p.dept_id, p.payroll, a.avg_payroll
+        FROM dept_payroll AS p
+        CROSS JOIN avg_payroll AS a
+        WHERE p.payroll > a.avg_payroll
+        ORDER BY p.payroll DESC
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    The four payrolls are 112,000 (Sales), 290,000 (Engineering), 156,000 (Marketing), and 58,000 (HR).
+    Their average is **154,000**. Engineering is far above it; Marketing just makes it (156,000).
+
+    **Q8 — For comparison: the same question without `WITH`.**
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        SELECT dept_id, payroll
+        FROM (
+            SELECT dept_id, SUM(salary) AS payroll
+            FROM employees
+            GROUP BY dept_id
+        ) AS p
+        WHERE payroll > (
+            SELECT AVG(payroll)
+            FROM (
+                SELECT dept_id, SUM(salary) AS payroll   -- the same query, written again
+                FROM employees
+                GROUP BY dept_id
+            ) AS p2
+        )
+        ORDER BY payroll DESC
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Same answer — but the payroll query is written **twice**, and you must read from the inside out
+    through three levels of parentheses. If you later change one copy and forget the other,
+    you get a wrong answer.
+
+    > ✅ **This is the main reason to use a CTE:** write each step **once**, give it a **name**,
+    > and let later steps **build on** earlier ones. A CTE can use any CTE written **above** it.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 7. CTE + `JOIN`
+
+    A CTE can be joined to real tables, just like any table.
+
+    **Q9 — A department report with names and cities — including Legal.**
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        WITH dept_stats AS (
+            SELECT
+                dept_id,
+                COUNT(*)    AS headcount,
+                SUM(salary) AS payroll,
+                AVG(salary) AS avg_salary
+            FROM employees
+            GROUP BY dept_id
+        )
+        SELECT
+            d.dept_name,
+            d.city,
+            COALESCE(s.headcount, 0)  AS headcount,
+            COALESCE(s.payroll, 0)    AS payroll,
+            ROUND(s.avg_salary, 2)    AS avg_salary
+        FROM departments AS d
+        LEFT JOIN dept_stats AS s
+               ON s.dept_id = d.dept_id
+        ORDER BY d.dept_id
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    `dept_stats` has only **4** rows — Legal has no employees, so it has no group.
+    The `LEFT JOIN` from `departments` keeps **all 5** departments, and `COALESCE` turns Legal's
+    missing headcount and payroll into **0**. (Its average stays empty: there is no average of nobody.)
+
+    **Q10 — Employees above their own department's average.**
+
+    In notebook 02 you solved this with a **correlated subquery**. Here is the CTE way:
+    compute every department average **once**, then join it to the employees.
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        WITH dept_averages AS (
+            SELECT dept_id, AVG(salary) AS dept_avg
+            FROM employees
+            GROUP BY dept_id
+        )
+        SELECT
+            e.name,
+            d.dept_name,
+            e.salary,
+            ROUND(a.dept_avg, 2)            AS dept_avg,
+            ROUND(e.salary - a.dept_avg, 2) AS above_by
+        FROM employees AS e
+        JOIN dept_averages AS a ON a.dept_id = e.dept_id
+        JOIN departments   AS d ON d.dept_id = e.dept_id
+        WHERE e.salary > a.dept_avg
+        ORDER BY d.dept_id, e.salary DESC
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Alice, Carmen, Daniel, Grace — the same four people as notebook 02, Q5.
+    The CTE version can also **show** the department average and the gap, which helps explain the answer.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 8. Use the Same CTE Twice
+
+    A CTE can be used **more than once** in the same statement.
+
+    **Q11 — The department(s) with the most employees.**
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute("""
+        WITH dept_stats AS (
+            SELECT dept_id, COUNT(*) AS headcount, AVG(salary) AS avg_salary
+            FROM employees
+            GROUP BY dept_id
+        )
+        SELECT dept_id, headcount, ROUND(avg_salary, 2) AS avg_salary
+        FROM dept_stats                         -- use #1
+        WHERE headcount = (
+            SELECT MAX(headcount)
+            FROM dept_stats                     -- use #2
+        )
+    """).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Engineering (20), with 3 employees. Notice that a CTE and a subquery work **together** here:
+    the scalar subquery `(SELECT MAX(headcount) FROM dept_stats)` reads the CTE.
+    If two departments tied for the most employees, both would appear.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    step_picker = mo.ui.dropdown(
+        options={
+            "Step 1 — dept_stats": "dept_stats",
+            "Step 2 — company": "company",
+            "Step 3 — compared": "compared",
+        },
+        value="Step 1 — dept_stats",
+        label="Show the result of",
+    )
+    mo.vstack([
+        mo.md(r"""
+    ---
+    ## 9. Debug a Pipeline One Step at a Time 🎛️
+
+    **Q12** below is a three-step pipeline. When a long query gives a strange answer,
+    use this professional trick: **keep the `WITH` part, and change only the last line** to
+    `SELECT * FROM <one step>`. That shows you exactly what each step produces.
+
+    Pick a step and watch the last line — and the result — change.
+    """),
+        step_picker,
+    ])
+    return (step_picker,)
+
+
+@app.cell(hide_code=True)
+def _(con, mo, step_picker):
+    from textwrap import dedent as _dedent
+
+    _pipeline = """\
+    WITH dept_stats AS (
+        SELECT dept_id, COUNT(*) AS headcount, AVG(salary) AS avg_salary
+        FROM employees
+        GROUP BY dept_id
+    ),
+    company AS (
+        SELECT AVG(salary) AS company_avg
+        FROM employees
+    ),
+    compared AS (
+        SELECT
+            d.dept_name,
+            s.headcount,
+            ROUND(s.avg_salary, 2) AS avg_salary,
+            c.company_avg,
+            CASE WHEN s.avg_salary > c.company_avg
+                 THEN 'Above' ELSE 'Below' END AS vs_company
+        FROM dept_stats AS s
+        JOIN departments AS d ON d.dept_id = s.dept_id
+        CROSS JOIN company AS c
+    )"""
+    _last = f"SELECT * FROM {step_picker.value}"
+    _notes = {
+        "dept_stats": "One row per department **that has employees** — 4 rows, no Legal.",
+        "company": "Exactly **one** row: the company average, 77,000.",
+        "compared": "Steps 1 and 2 combined, with department names and an Above/Below label.",
+    }
+    _pipeline = _dedent(_pipeline)
+    _md = (
+        "```sql\n" + _pipeline + "\n" + _last
+        + ";      -- ← only this line changes\n```\n\n"
+        + _notes[step_picker.value]
+    )
+    mo.vstack([
+        mo.md(_md),
+        con.execute(f"{_pipeline}\n{_last}").fetchdf(),
+    ])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## 10. Rules and Real Error Messages
+
+    Each mistake below was run in DuckDB. This is what you would see:
     """)
     return
 
 
 @app.cell(hide_code=True)
 def _(con, mo):
-    _names = [
-        _r[0]
-        for _r in con.execute("SELECT name FROM employees ORDER BY emp_id").fetchall()
+    con.execute("""
+        WITH dept_stats AS (
+            SELECT dept_id, COUNT(*) AS headcount
+            FROM employees
+            GROUP BY dept_id
+        )
+        SELECT * FROM dept_stats
+    """)
+    _mistakes = [
+        (
+            "1. Using a CTE after its statement has ended",
+            "SELECT * FROM dept_stats;   -- a new statement",
+            "A CTE lives only inside its own statement. "
+            "To keep a result, use `CREATE TABLE ... AS` or a `VIEW`.",
+        ),
+        (
+            "2. Using a CTE before it is defined",
+            "WITH a AS (SELECT * FROM b),\n     b AS (SELECT 1 AS x)\nSELECT * FROM a;",
+            "A CTE can use only the CTEs written **above** it. Put `b` first.",
+        ),
+        (
+            "3. Writing `WITH` twice",
+            "WITH a AS (SELECT 1 AS x)\nWITH b AS (SELECT 2 AS y)\nSELECT * FROM a, b;",
+            "Write `WITH` once, then separate the CTEs with commas.",
+        ),
+        (
+            "4. Forgetting the comma between CTEs",
+            "WITH a AS (SELECT 1 AS x)\n     b AS (SELECT 2 AS y)\nSELECT * FROM a, b;",
+            "Add a comma after `)` of every CTE except the last.",
+        ),
+        (
+            "5. A comma after the last CTE",
+            "WITH a AS (SELECT 1 AS x),\nSELECT * FROM a;",
+            "No comma between the last CTE and the main `SELECT`.",
+        ),
     ]
-    emp_picker = mo.ui.dropdown(options=_names, value="Alice", label="Employee e")
-    mo.vstack([
-        mo.md(r"""
-    ---
-    ## 5. Step Through It Yourself 🎛️
-
-    Pick an employee. You will see the inner query **exactly as DuckDB thinks of it for that row**
-    — with `e.dept_id` replaced by the real value — and whether Q5 keeps the row.
-    """),
-        emp_picker,
-    ])
-    return (emp_picker,)
-
-
-@app.cell(hide_code=True)
-def _(con, emp_picker, mo):
-    _name, _dept, _salary = con.execute(
-        "SELECT name, dept_id, salary FROM employees WHERE name = ?",
-        [emp_picker.value],
-    ).fetchone()
-    _avg = con.execute(
-        "SELECT AVG(salary) FROM employees WHERE dept_id = ?", [_dept]
-    ).fetchone()[0]
-    _dept_text = "NULL" if _dept is None else str(_dept)
-    _avg_text = "NULL" if _avg is None else f"{_avg:,.2f}"
-    if _avg is None:
-        _verdict = (
-            f"❌ **{_name} is not kept.** {_salary:,} > NULL is *unknown*, "
-            "and `WHERE` keeps only *true*."
+    _cards = []
+    for _title, _sql, _fix in _mistakes:
+        try:
+            con.execute(_sql)
+            _msg = "No error?"
+        except Exception as _e:
+            _msg = str(_e).splitlines()[0]
+        _md = (
+            f"**{_title}**\n\n```sql\n{_sql}\n```\n\n"
+            f"**DuckDB says:** `{_msg}`\n\n**Fix:** {_fix}"
         )
-    elif _salary > _avg:
-        _verdict = f"✅ **{_name} is kept:** {_salary:,} > {_avg_text}"
-    else:
-        _verdict = f"❌ **{_name} is not kept:** {_salary:,} is not greater than {_avg_text}"
-    mo.md(f"""
-    **Outer row:** `e.name = '{_name}'`, `e.dept_id = {_dept_text}`, `e.salary = {_salary:,}`
-
-    **Inner query for this row:**
-    ```sql
-    SELECT AVG(x.salary)
-    FROM employees AS x
-    WHERE x.dept_id = {_dept_text}      -- was: e.dept_id
-    ```
-    **Inner result:** {_avg_text}
-
-    {_verdict}
-    """)
+        _cards.append(mo.callout(mo.md(_md), kind="danger"))
+    mo.vstack(_cards)
     return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ---
-    ## 6. Top Earner in Each Department
+    Mistakes 1 and 2 give a **Catalog Error** ("table does not exist") — DuckDB cannot find the name.
+    Mistakes 3–5 give a **Parser Error** — the query is not valid SQL. The error points to the
+    word *right after* the problem.
 
-    Swap `AVG` for `MAX`, and `>` for `=`.
+    ### When should I use a CTE?
 
-    **Q7 — The highest-paid employee in each department.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT e.name, e.dept_id, e.salary
-        FROM employees AS e
-        WHERE e.salary = (
-            SELECT MAX(x.salary)
-            FROM employees AS x
-            WHERE x.dept_id = e.dept_id
-        )
-        ORDER BY e.dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    One row per department: Alice, Carmen, Grace, and Hannah (the only person in HR).
-    Ivan is missing again — his department is `NULL`, so there is no "maximum of his department".
-
-    > If two people tied for the top salary in a department, **both** would appear.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 7. Pitfall: Forgetting the Aliases
-
-    What if we write Q5 **without** `e` and `x`?
-
-    **Q8 — Looks almost the same. Is it?**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT name, dept_id, salary
-        FROM employees
-        WHERE salary > (
-            SELECT AVG(salary)
-            FROM employees
-            WHERE dept_id = dept_id      -- ⚠️ which dept_id is which?
-        )
-        ORDER BY salary DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **No error — but the wrong answer.** Carmen, Daniel, Grace, Emma: Alice is missing and Emma is back.
-
-    **Why?** Inside the subquery, SQL looks for `dept_id` in the **nearest** table first —
-    the inner `employees`. So `dept_id = dept_id` compares each inner row **with itself**.
-    That is true for every row (except Ivan's `NULL`). The subquery is **not correlated** at all:
-    it returns one number, the average of the 8 employees with a department (**77,000**).
-
-    > ✅ **Rule:** in a correlated subquery, **always** give both tables an alias and
-    > **always** write `alias.column`. A missing alias does not cause an error — it causes a wrong answer.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 8. `EXISTS` — Is There at Least One?
-
-    `EXISTS ( subquery )` is **true** if the subquery returns **at least one row**, and **false** if it returns none.
-    It does not care *what* the rows contain — only whether there are any.
-    That is why people write `SELECT 1` inside: the `1` is never used.
-
-    `EXISTS` is almost always **correlated**: "is there an employee **in this department** who…?"
-
-    **Q9 — Departments that have at least one employee.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT d.dept_id, d.dept_name
-        FROM departments AS d
-        WHERE EXISTS (
-            SELECT 1
-            FROM employees AS e
-            WHERE e.dept_id = d.dept_id
-        )
-        ORDER BY d.dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Four departments. **Legal** is missing: for Legal, the inner query finds no rows → `EXISTS` is false.
-
-    You can add more conditions inside.
-
-    **Q10 — Departments with at least one employee earning over 90,000.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT d.dept_name
-        FROM departments AS d
-        WHERE EXISTS (
-            SELECT 1
-            FROM employees AS e
-            WHERE e.dept_id = d.dept_id
-              AND e.salary > 90000
-        )
-        ORDER BY d.dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **Engineering** (Carmen, Daniel) and **Marketing** (Grace).
-
-    ### Why not just a `JOIN`?
-
-    **Q11 — The same question with `JOIN`.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT d.dept_name
-        FROM departments AS d
-        JOIN employees AS e
-          ON e.dept_id = d.dept_id
-        WHERE e.salary > 90000
-        ORDER BY d.dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **Engineering appears twice** — once for Carmen and once for Daniel. A `JOIN` returns one row
-    per *matching pair*. You would need `DISTINCT` to fix it.
-
-    `EXISTS` never duplicates: each department is checked once and is either kept or not.
-
-    > Use `JOIN` when you need **columns from both tables**.
-    > Use `EXISTS` when you only ask **"is there a match?"**
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 9. `NOT EXISTS` — Find What Is Missing
-
-    Flip the question: keep the rows for which **no** matching row exists.
-    This pattern is called an **anti-join**, and it answers many business questions:
-    customers who never ordered, products never sold, courses nobody took.
-
-    **Q12 — Departments with no employees.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT d.dept_id, d.dept_name, d.city
-        FROM departments AS d
-        WHERE NOT EXISTS (
-            SELECT 1
-            FROM employees AS e
-            WHERE e.dept_id = d.dept_id
-        )
-        ORDER BY d.dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **Legal** (Oakland) — exactly as expected.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 10. The `NOT IN` + `NULL` Trap
-
-    In notebook 01 you learned `NOT IN`. It *looks* like it answers the same question as Q12.
-
-    **Q13 — Departments whose ID is not in the employees' list of department IDs.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT dept_id, dept_name
-        FROM departments
-        WHERE dept_id NOT IN (
-            SELECT dept_id
-            FROM employees
-        )
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    😱 **Zero rows!** Legal has disappeared — with no error message.
-
-    **Why?** Ivan's `dept_id` is `NULL`, so the inner list is `(10, 10, 20, 20, 20, 30, 30, 40, NULL)`.
-    For Legal, `50 NOT IN (..., NULL)` means:
-
-    ```
-    50 <> 10  AND  50 <> 20  AND ...  AND  50 <> NULL
-      TRUE          TRUE                   UNKNOWN
-    → the whole condition is UNKNOWN → the row is not kept
-    ```
-
-    One `NULL` in the list is enough to make `NOT IN` return **nothing**.
-
-    **Q14 — Fix 1: remove the `NULL`s from the list.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT dept_id, dept_name
-        FROM departments
-        WHERE dept_id NOT IN (
-            SELECT dept_id
-            FROM employees
-            WHERE dept_id IS NOT NULL
-        )
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Legal is back. **Fix 2** is simply `NOT EXISTS` (Q12) — it does not have this trap,
-    because `EXISTS` only asks *"did any row match?"*, and a `NULL` never matches.
-
-    > ✅ **Rule:** to find "rows with no match", prefer **`NOT EXISTS`**.
-    > If you use `NOT IN`, make sure the list can never contain `NULL`.
-
-    `NOT EXISTS` works in the other direction too.
-
-    **Q15 — Employees whose department does not exist in `departments`.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT e.name, e.dept_id
-        FROM employees AS e
-        WHERE NOT EXISTS (
-            SELECT 1
-            FROM departments AS d
-            WHERE d.dept_id = e.dept_id
-        )
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **Ivan** — the new hire still waiting for a department. A useful data-quality check!
-
-    ### Which tool when?
-
-    | Question | Good choice |
+    | Situation | Good choice |
     |---|---|
-    | Compare each row with **its own group** (department average, maximum…) | correlated subquery |
-    | "Does at least one matching row exist?" | `EXISTS` |
-    | "Is there **no** matching row?" | `NOT EXISTS` (safe with `NULL`) |
-    | "Is this value in a fixed list?" | `IN` |
-    | "I need columns from both tables" | `JOIN` |
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    salary_slider = mo.ui.slider(
-        start=50000, stop=110000, step=5000, value=90000,
-        label="Salary threshold", show_value=True,
-    )
-    mo.vstack([
-        mo.md(r"""
-    ---
-    ## 11. Try It Yourself 🎛️
-
-    Move the slider. Which departments have **at least one** employee earning more than the threshold
-    (`EXISTS`), and which have **none** (`NOT EXISTS`)?
-    """),
-        salary_slider,
-    ])
-    return (salary_slider,)
-
-
-@app.cell(hide_code=True)
-def _(con, mo, salary_slider):
-    _t = salary_slider.value
-    _yes = con.execute(
-        """
-        SELECT d.dept_name
-        FROM departments AS d
-        WHERE EXISTS (
-            SELECT 1 FROM employees AS e
-            WHERE e.dept_id = d.dept_id AND e.salary > ?
-        )
-        ORDER BY d.dept_id
-        """,
-        [_t],
-    ).fetchdf()
-    _no = con.execute(
-        """
-        SELECT d.dept_name
-        FROM departments AS d
-        WHERE NOT EXISTS (
-            SELECT 1 FROM employees AS e
-            WHERE e.dept_id = d.dept_id AND e.salary > ?
-        )
-        ORDER BY d.dept_id
-        """,
-        [_t],
-    ).fetchdf()
-    mo.hstack(
-        [
-            mo.vstack([mo.md(f"**`EXISTS` — someone earns > {_t:,}**"), _yes]),
-            mo.vstack([mo.md(f"**`NOT EXISTS` — nobody earns > {_t:,}**"), _no]),
-        ],
-        widths="equal",
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    👀 **Notice:** the two lists always add up to all **5** departments. And **Legal is always on the
-    `NOT EXISTS` side** — it has no employees, so "nobody earns more than X" is true for any X.
+    | A short, one-step condition (`WHERE salary > (SELECT AVG(salary) ...)`) | a plain subquery is fine |
+    | Two or more steps, or nested parentheses are getting hard to read | **CTE** |
+    | The same intermediate result is needed **twice** | **CTE** (write it once) |
+    | You want to **show** an intermediate value (like the company average) in the output | **CTE** + `CROSS JOIN` |
+    | You need the result again in **later** queries | a table or a `VIEW` — a CTE disappears |
     """)
     return
 
@@ -770,11 +689,12 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ---
-    ## 12. Exercises
+    ## 11. Exercises
 
     Write each query in the empty cell below it, then open the solution to check.
 
-    **E1.** Show the employees who earn **less** than the average of their own department.
+    **E1.** Rewrite notebook 01's Q4 with a CTE: show the **names** of the employees who earn more
+    than the company average. Use a CTE named `company`.
     """)
     return
 
@@ -793,18 +713,17 @@ def _(mo):
     mo.accordion({
         "💡 Solution E1": mo.md(r"""
     ```sql
-    SELECT e.name, e.dept_id, e.salary
-    FROM employees AS e
-    WHERE e.salary < (
-        SELECT AVG(x.salary)
-        FROM employees AS x
-        WHERE x.dept_id = e.dept_id
+    WITH company AS (
+        SELECT AVG(salary) AS company_avg
+        FROM employees
     )
-    ORDER BY e.dept_id, e.salary;
+    SELECT e.name
+    FROM employees AS e
+    CROSS JOIN company AS c
+    WHERE e.salary > c.company_avg
+    ORDER BY e.salary DESC;
     ```
-    **3 rows:** Bob (Sales), Emma (Engineering), Farid (Marketing).
-    Hannah *equals* her department's average, and Ivan's comparison is unknown — neither is kept.
-    Q5 (4 rows) + E1 (3 rows) + Hannah + Ivan = all 9 employees.
+    **Carmen, Daniel, Grace, Emma.**
     """)
     })
     return
@@ -813,8 +732,8 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **E2.** Show the departments where **nobody** earns more than 60,000.
-    *Hint:* `NOT EXISTS` with two conditions inside.
+    **E2.** Use a CTE named `top_salary` with the **highest salary in each department**.
+    Then show **every** department's name, city, and top salary — Legal included.
     """)
     return
 
@@ -833,19 +752,19 @@ def _(mo):
     mo.accordion({
         "💡 Solution E2": mo.md(r"""
     ```sql
-    SELECT d.dept_name
-    FROM departments AS d
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM employees AS e
-        WHERE e.dept_id = d.dept_id
-          AND e.salary > 60000
+    WITH top_salary AS (
+        SELECT dept_id, MAX(salary) AS max_salary
+        FROM employees
+        GROUP BY dept_id
     )
+    SELECT d.dept_name, d.city, t.max_salary
+    FROM departments AS d
+    LEFT JOIN top_salary AS t
+           ON t.dept_id = d.dept_id
     ORDER BY d.dept_id;
     ```
-    **Sales, HR, Legal.** Alice earns exactly 60,000 — not *more* than 60,000 — so Sales qualifies.
-    Legal qualifies because it has no employees at all. If you want only departments that *have*
-    employees, add `AND EXISTS (SELECT 1 FROM employees AS e2 WHERE e2.dept_id = d.dept_id)`.
+    **5 rows:** Sales 60,000 · Engineering 105,000 · Marketing 92,000 · HR 58,000 · Legal (empty).
+    "Legal included" is the clue for `LEFT JOIN` from `departments`. An `INNER JOIN` would give only 4 rows.
     """)
     })
     return
@@ -854,9 +773,13 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **E3 (challenge).** Show the employees who are the **only person in their department**.
-    *Hint:* "there is **no other** employee in my department" → `NOT EXISTS` with
-    `x.emp_id <> e.emp_id`.
+    **E3 (challenge).** Build a **three-step** pipeline:
+
+    1. `dept_payroll` — total salary per department.
+    2. `total` — the company's total payroll (one row), read **from step 1**.
+    3. `shares` — each department's payroll as a **percentage** of the total, rounded to 2 decimals.
+
+    Then show the department **names** whose share is **more than 15%**, largest first.
     """)
     return
 
@@ -875,22 +798,34 @@ def _(mo):
     mo.accordion({
         "💡 Solution E3": mo.md(r"""
     ```sql
-    SELECT e.name, e.dept_id
-    FROM employees AS e
-    WHERE e.dept_id IS NOT NULL
-      AND NOT EXISTS (
-          SELECT 1
-          FROM employees AS x
-          WHERE x.dept_id = e.dept_id
-            AND x.emp_id <> e.emp_id
-      )
-    ORDER BY e.emp_id;
+    WITH dept_payroll AS (
+        SELECT dept_id, SUM(salary) AS payroll
+        FROM employees
+        GROUP BY dept_id
+    ),
+    total AS (
+        SELECT SUM(payroll) AS total_payroll
+        FROM dept_payroll
+    ),
+    shares AS (
+        SELECT
+            p.dept_id,
+            p.payroll,
+            ROUND(100.0 * p.payroll / t.total_payroll, 2) AS pct
+        FROM dept_payroll AS p
+        CROSS JOIN total AS t
+    )
+    SELECT d.dept_name, s.payroll, s.pct
+    FROM shares AS s
+    JOIN departments AS d ON d.dept_id = s.dept_id
+    WHERE s.pct > 15
+    ORDER BY s.pct DESC;
     ```
-    **Hannah** (HR).
+    Total payroll is **616,000**. **Engineering 47.08% · Marketing 25.32% · Sales 18.18%.**
+    HR (9.42%) is below 15%.
 
-    Without the line `e.dept_id IS NOT NULL`, **Ivan** appears too: `x.dept_id = NULL` never matches,
-    so "no other employee in my department" is true for him. That is the `NULL` lesson once more —
-    always ask what happens to the `NULL` rows.
+    Write `100.0` (not `100`) so the division is done with decimals.
+    🔍 Stuck? Use the Part 9 trick: end with `SELECT * FROM shares` and look at the step.
     """)
     })
     return
@@ -902,19 +837,18 @@ def _(mo):
     ---
     ## 🎓 Summary
 
-    - A **correlated subquery** uses a column from the outer query (`WHERE x.dept_id = e.dept_id`),
-      so its answer can be **different for each outer row**.
-    - Read it as a loop: *for each outer row, run the inner query, then decide.*
-    - **Always use aliases** (`e`, `x`) and write `alias.column`. Forgetting them gives a wrong answer, not an error (Q8).
-    - **`EXISTS`** is true if the subquery returns at least one row. It never creates duplicates (Q10 vs. Q11).
-    - **`NOT EXISTS`** finds rows with no match — the **anti-join** (Q12, Q15).
-    - **`NOT IN` returns nothing if the list contains a `NULL`** (Q13). Prefer `NOT EXISTS`.
-    - `NULL` never equals anything — not even inside a correlated subquery (Ivan).
+    - A **CTE** is a subquery with a **name**, written **first**: `WITH name AS ( SELECT ... )`.
+    - Write `WITH` **once**; separate several CTEs with **commas**; no comma before the main `SELECT`.
+    - A CTE can read any CTE written **above** it — so a query becomes a **pipeline of steps** (Q7).
+    - A CTE can be joined to tables (Q9, Q10), used **twice** (Q11), or hold just **one value** (Q5).
+    - CTEs make queries **easier to read and to debug** — end with `SELECT * FROM <step>` to inspect any step (Q12).
+    - A CTE lives only for **one statement**. To keep a result, create a table or a view.
 
     **What's next?**
 
-    - `subqueries_notebook_04.py` — give subqueries a name with `WITH` (CTEs) and build multi-step queries.
-    - `subqueries_04_tutorial.md` — the complete reference, with `ANY` / `ALL` and 15 more exercises.
+    - `subqueries_notebook_04.py` — nine more CTE lessons on a 20-row table, ending with
+      ranking (`ROW_NUMBER`, `RANK`, `DENSE_RANK`) and "top earner per department".
+    - `subqueries_04_tutorial.md` §13 — CTEs in the complete reference, including **recursive** CTEs.
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

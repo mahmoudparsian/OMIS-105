@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.10"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium", sql_output="pandas")
 
 
@@ -14,674 +14,195 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # 🦆 CTEs: Giving Subqueries a Name with `WITH`
-    ### Write a query as a list of steps, read it from top to bottom
+    # 🦆 Mastering SQL Sub-Queries with `WITH` (CTEs)
+    ### A Beginner-Friendly Tutorial using DuckDB
 
-    **OMIS 105 — Introduction to Database Management Systems**
-
-    A **CTE** (*Common Table Expression*) is a subquery that you **write first** and **give a name**.
-    The main query then uses that name like a table. CTEs do not let you ask new questions —
-    they let you ask **long** questions in a way people can read.
-
-    | Part | Topic | Queries |
-    |---|---|---|
-    | 1 | Look at the data | Q1 – Q2 |
-    | 2 | From subquery to CTE | Q3 – Q4 |
-    | 3 | Anatomy of `WITH` | — |
-    | 4 | A CTE that holds one value | Q5 |
-    | 5 | Two CTEs | Q6 |
-    | 6 | A CTE that reads an earlier CTE | Q7 – Q8 |
-    | 7 | CTE + `JOIN` | Q9 – Q10 |
-    | 8 | Use the same CTE twice | Q11 |
-    | 9 | Debug a pipeline one step at a time (interactive) | Q12 |
-    | 10 | Rules and real error messages | — |
-    | 11 | Exercises | E1 – E3 |
-
-    **Before this notebook:** `subqueries_notebook_01.py` (subqueries) and, ideally,
-    `subqueries_notebook_03.py` (correlated subqueries).
-    **After it:** `subqueries_notebook_02.py` — more CTE patterns on a bigger table, plus ranking.
+    > New to subqueries or CTEs? Start with `subqueries_notebook_01.py` (the very basics) and
+    > `subqueries_notebook_03.py` (CTEs step by step), then come back here.
 
     ---
-    *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
+
+    ## 🎯 What You'll Learn
+
+    | Lesson | Concept |
+    |--------|------------------------------------------|
+    | 1 | Why `WITH` helps: a sub-query vs. a named CTE |
+    | 2 | Basic `WITH` syntax — filtering in a CTE |
+    | 3 | Aggregating inside a CTE |
+    | 4 | Chaining two CTEs |
+    | 5 | Joining a CTE back to the base table |
+    | 6 | A three-step CTE pipeline |
+    | 7 | Deriving a column, then grouping by it |
+    | 8 | Ranking with `ROW_NUMBER()`, `RANK()` & `DENSE_RANK()` |
+    | 9 | Filtering on a rank |
+    | 🏁 | Grand Finale — everything together |
+
+    ---
+
+    > **CTE** stands for **Common Table Expression**.
+    > Think of it as giving a *nickname* to a temporary result set so you can reference it cleanly later in the same query.
+
+    ```sql
+    WITH my_temp_table AS (
+        SELECT ...   -- your sub-query lives here
+    )
+    SELECT * FROM my_temp_table;   -- then you use it here
+    ```
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 1 — Setup: Load DuckDB & a Rendering Helper
+
+    We load **DuckDB** (an in-process SQL engine — no server needed!) and define a small helper function `show()` that runs a query and displays the result as a styled HTML table.
+
+    > The `show()` helper is used in every lesson cell below.
     """)
     return
 
 
 @app.cell
-def _():
+def _(mo):
+    # ── Import & connect (in-memory database) ────────────────────────────────────
     import duckdb
+    from html import escape
 
     con = duckdb.connect(database=":memory:")
-    con.execute("""
-        CREATE OR REPLACE TABLE departments AS
-        SELECT * FROM (VALUES
-            (10, 'Sales',       'San Francisco'),
-            (20, 'Engineering', 'San Jose'),
-            (30, 'Marketing',   'San Francisco'),
-            (40, 'HR',          'San Jose'),
-            (50, 'Legal',       'Oakland')
-        ) AS t(dept_id, dept_name, city)
-    """)
-    con.execute("""
-        CREATE OR REPLACE TABLE employees AS
-        SELECT * FROM (VALUES
-            (1, 'Alice',  10,  60000),
-            (2, 'Bob',    10,  52000),
-            (3, 'Carmen', 20, 105000),
-            (4, 'Daniel', 20,  98000),
-            (5, 'Emma',   20,  87000),
-            (6, 'Farid',  30,  64000),
-            (7, 'Grace',  30,  92000),
-            (8, 'Hannah', 40,  58000)
-        ) AS t(emp_id, name, dept_id, salary)
-    """)
-    return (con,)
+
+    # ── Rendering helper (kept here, reused everywhere) ──────────────────────────
+    def show(sql, title=None):
+        """Execute SQL and return the result as a styled HTML table."""
+        df = con.execute(sql).fetchdf()
+
+        # ── Build header ──
+        header_cells = "".join(f"<th>{escape(str(c))}</th>" for c in df.columns)
+        header = f"<thead><tr>{header_cells}</tr></thead>"
+
+        # ── Build rows ──
+        rows = ""
+        for i, row in enumerate(df.itertuples(index=False)):
+            cls = "even" if i % 2 == 0 else "odd"
+            cells = "".join(f"<td>{escape(str(v))}</td>" for v in row)
+            rows += f"<tr class='{cls}'>{cells}</tr>"
+        body = f"<tbody>{rows}</tbody>"
+
+        # ── Caption ──
+        caption = f"<caption>{escape(title)}</caption>" if title else ""
+        row_count = f"<p class='meta'>{len(df)} row(s) returned</p>"
+
+        html = f"""
+        <style>
+          .dq-wrap  {{ font-family: 'Segoe UI', Arial, sans-serif; margin: 18px 0; }}
+          .dq-wrap caption {{
+            caption-side: top;
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #1a1a2e;
+            text-align: left;
+            padding: 6px 0 8px 2px;
+            letter-spacing: .3px;
+          }}
+          .dq-wrap table {{
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,.12);
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: .92em;
+          }}
+          .dq-wrap th {{
+            background: #1a1a2e;
+            color: #e2e8f0;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: .4px;
+            text-transform: uppercase;
+            font-size: .82em;
+          }}
+          .dq-wrap td {{ padding: 9px 14px; color: #2d3748; }}
+          .dq-wrap tr.even td {{ background: #f7f9fc; }}
+          .dq-wrap tr.odd  td {{ background: #ffffff; }}
+          .dq-wrap tr:hover td {{ background: #ebf4ff; transition: background .15s; }}
+          .dq-wrap .meta  {{ font-size:.78em; color:#718096; margin:4px 2px 0; }}
+        </style>
+        <div class='dq-wrap'>
+          <table>{caption}{header}{body}</table>
+          {row_count}
+        </div>"""
+        return mo.Html(html)
+
+    mo.md(f"✅ DuckDB {duckdb.__version__} ready. `show()` helper loaded.")
+    return con, show
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
     ---
-    ## 1. Look at the Data
+    ## Cell 2 — Create the Dataset: `employees` (20 rows)
 
-    The same 8 employees as notebook 01, now linked to a `departments` table by `dept_id`.
-    **Legal (50) has no employees.**
+    We'll work with a single table throughout the entire tutorial.
 
-    ```
-    departments (dept_id) ──< employees (dept_id)
-    ```
-
-    **Q1 — Departments.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT *
-        FROM departments
-        ORDER BY dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **Q2 — Employees.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT *
-        FROM employees
-        ORDER BY emp_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 2. From Subquery to CTE
-
-    > **Question:** Which departments have an average salary above 70,000?
-
-    **Q3 — The subquery version you already know** (a derived table in `FROM`, from notebook 01):
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT dept_id, ROUND(avg_salary, 2) AS avg_salary
-        FROM (
-            SELECT dept_id, AVG(salary) AS avg_salary
-            FROM employees
-            GROUP BY dept_id
-        ) AS dept_averages
-        WHERE avg_salary > 70000
-        ORDER BY avg_salary DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    To read Q3, you start in the **middle** (the inner query), then jump **out** to the outer query.
-
-    **Q4 — The CTE version.** Cut the inner query out, move it to the **top**, and give it a name:
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        WITH dept_averages AS (
-            SELECT dept_id, AVG(salary) AS avg_salary
-            FROM employees
-            GROUP BY dept_id
-        )
-        SELECT dept_id, ROUND(avg_salary, 2) AS avg_salary
-        FROM dept_averages
-        WHERE avg_salary > 70000
-        ORDER BY avg_salary DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **Same result:** Engineering (20) at 96,666.67 and Marketing (30) at 78,000.
-    Same logic, too — only the **order on the page** changed. Now you read it **from top to bottom**:
-
-    1. *First*, build `dept_averages` (one row per department).
-    2. *Then*, select from it and keep the averages above 70,000.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 3. Anatomy of `WITH`
-
-    ```
-    WITH dept_averages AS (            ← WITH, then a NAME, then AS (
-        SELECT dept_id, AVG(salary)    ← any SELECT query
-        FROM employees                    (this is the "subquery")
-        GROUP BY dept_id
-    )                                  ← close the parenthesis
-    SELECT ...                         ← the MAIN query: uses the name
-    FROM dept_averages                    like a normal table
-    WHERE ...;
-    ```
-
-    With **several** CTEs, write `WITH` **once** and separate the CTEs with **commas**:
-
-    ```
-    WITH step_one AS ( ... ),          ← comma after every CTE …
-         step_two AS ( ... ),
-         step_three AS ( ... )         ← … except the last one
-    SELECT ... FROM step_three;        ← the main query
-    ```
-
-    > 💡 Choose names that say **what is inside**: `dept_averages`, `company_avg`, `top_earners`.
-    > Then the query reads almost like a sentence.
-
-    > A CTE is **not** a saved table. It exists only while **this one statement** runs (see Part 10).
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 4. A CTE That Holds One Value
-
-    A CTE can be tiny — even **one row with one number**.
-
-    **Q5 — Employees who earn more than the company average** (notebook 01, Q4 — now with a CTE):
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        WITH company AS (
-            SELECT AVG(salary) AS company_avg
-            FROM employees
-        )
-        SELECT
-            e.name,
-            e.salary,
-            c.company_avg,
-            e.salary - c.company_avg AS difference
-        FROM employees AS e
-        CROSS JOIN company AS c
-        WHERE e.salary > c.company_avg
-        ORDER BY e.salary DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Carmen, Daniel, Grace, Emma — above 77,000.
-
-    **`CROSS JOIN`** pairs every employee with every row of `company`. That is safe here because
-    `company` has exactly **one** row: each employee simply gets the average attached as a new column.
-    A bonus of the CTE: we can **show** `company_avg` in the output, which the `WHERE` subquery could not.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 5. Two CTEs
-
-    > **Question:** Which departments pay **below** the company average, on average?
-
-    We need two results: the department averages **and** the company average.
-
-    **Q6 — Two CTEs, separated by a comma.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        WITH dept_averages AS (
-            SELECT dept_id, AVG(salary) AS dept_avg
-            FROM employees
-            GROUP BY dept_id
-        ),
-        company AS (
-            SELECT AVG(salary) AS company_avg
-            FROM employees
-        )
-        SELECT
-            d.dept_id,
-            ROUND(d.dept_avg, 2) AS dept_avg,
-            c.company_avg
-        FROM dept_averages AS d
-        CROSS JOIN company AS c
-        WHERE d.dept_avg < c.company_avg
-        ORDER BY d.dept_avg
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Sales (10) at 56,000 and HR (40) at 58,000 — both below 77,000.
-
-    Here the two CTEs are **independent**: both read from `employees`.
-    Next, one CTE will read from **another**.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 6. A CTE That Reads an Earlier CTE
-
-    > **Question:** Which departments have a total payroll **above the average department payroll**?
-
-    That is **two levels** of aggregation: first `SUM` per department, then `AVG` of those sums.
-
-    **Q7 — The second CTE reads from the first.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        WITH dept_payroll AS (                 -- step 1: total per department
-            SELECT dept_id, SUM(salary) AS payroll
-            FROM employees
-            GROUP BY dept_id
-        ),
-        avg_payroll AS (                       -- step 2: average of step 1
-            SELECT AVG(payroll) AS avg_payroll
-            FROM dept_payroll                  -- ← reads the first CTE
-        )
-        SELECT p.dept_id, p.payroll, a.avg_payroll
-        FROM dept_payroll AS p
-        CROSS JOIN avg_payroll AS a
-        WHERE p.payroll > a.avg_payroll
-        ORDER BY p.payroll DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    The four payrolls are 112,000 (Sales), 290,000 (Engineering), 156,000 (Marketing), and 58,000 (HR).
-    Their average is **154,000**. Engineering is far above it; Marketing just makes it (156,000).
-
-    **Q8 — For comparison: the same question without `WITH`.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        SELECT dept_id, payroll
-        FROM (
-            SELECT dept_id, SUM(salary) AS payroll
-            FROM employees
-            GROUP BY dept_id
-        ) AS p
-        WHERE payroll > (
-            SELECT AVG(payroll)
-            FROM (
-                SELECT dept_id, SUM(salary) AS payroll   -- the same query, written again
-                FROM employees
-                GROUP BY dept_id
-            ) AS p2
-        )
-        ORDER BY payroll DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Same answer — but the payroll query is written **twice**, and you must read from the inside out
-    through three levels of parentheses. If you later change one copy and forget the other,
-    you get a wrong answer.
-
-    > ✅ **This is the main reason to use a CTE:** write each step **once**, give it a **name**,
-    > and let later steps **build on** earlier ones. A CTE can use any CTE written **above** it.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 7. CTE + `JOIN`
-
-    A CTE can be joined to real tables, just like any table.
-
-    **Q9 — A department report with names and cities — including Legal.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        WITH dept_stats AS (
-            SELECT
-                dept_id,
-                COUNT(*)    AS headcount,
-                SUM(salary) AS payroll,
-                AVG(salary) AS avg_salary
-            FROM employees
-            GROUP BY dept_id
-        )
-        SELECT
-            d.dept_name,
-            d.city,
-            COALESCE(s.headcount, 0)  AS headcount,
-            COALESCE(s.payroll, 0)    AS payroll,
-            ROUND(s.avg_salary, 2)    AS avg_salary
-        FROM departments AS d
-        LEFT JOIN dept_stats AS s
-               ON s.dept_id = d.dept_id
-        ORDER BY d.dept_id
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    `dept_stats` has only **4** rows — Legal has no employees, so it has no group.
-    The `LEFT JOIN` from `departments` keeps **all 5** departments, and `COALESCE` turns Legal's
-    missing headcount and payroll into **0**. (Its average stays empty: there is no average of nobody.)
-
-    **Q10 — Employees above their own department's average.**
-
-    In notebook 03 you solved this with a **correlated subquery**. Here is the CTE way:
-    compute every department average **once**, then join it to the employees.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        WITH dept_averages AS (
-            SELECT dept_id, AVG(salary) AS dept_avg
-            FROM employees
-            GROUP BY dept_id
-        )
-        SELECT
-            e.name,
-            d.dept_name,
-            e.salary,
-            ROUND(a.dept_avg, 2)            AS dept_avg,
-            ROUND(e.salary - a.dept_avg, 2) AS above_by
-        FROM employees AS e
-        JOIN dept_averages AS a ON a.dept_id = e.dept_id
-        JOIN departments   AS d ON d.dept_id = e.dept_id
-        WHERE e.salary > a.dept_avg
-        ORDER BY d.dept_id, e.salary DESC
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Alice, Carmen, Daniel, Grace — the same four people as notebook 03, Q5.
-    The CTE version can also **show** the department average and the gap, which helps explain the answer.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 8. Use the Same CTE Twice
-
-    A CTE can be used **more than once** in the same statement.
-
-    **Q11 — The department(s) with the most employees.**
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        WITH dept_stats AS (
-            SELECT dept_id, COUNT(*) AS headcount, AVG(salary) AS avg_salary
-            FROM employees
-            GROUP BY dept_id
-        )
-        SELECT dept_id, headcount, ROUND(avg_salary, 2) AS avg_salary
-        FROM dept_stats                         -- use #1
-        WHERE headcount = (
-            SELECT MAX(headcount)
-            FROM dept_stats                     -- use #2
-        )
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Engineering (20), with 3 employees. Notice that a CTE and a subquery work **together** here:
-    the scalar subquery `(SELECT MAX(headcount) FROM dept_stats)` reads the CTE.
-    If two departments tied for the most employees, both would appear.
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    step_picker = mo.ui.dropdown(
-        options={
-            "Step 1 — dept_stats": "dept_stats",
-            "Step 2 — company": "company",
-            "Step 3 — compared": "compared",
-        },
-        value="Step 1 — dept_stats",
-        label="Show the result of",
-    )
-    mo.vstack([
-        mo.md(r"""
-    ---
-    ## 9. Debug a Pipeline One Step at a Time 🎛️
-
-    **Q12** below is a three-step pipeline. When a long query gives a strange answer,
-    use this professional trick: **keep the `WITH` part, and change only the last line** to
-    `SELECT * FROM <one step>`. That shows you exactly what each step produces.
-
-    Pick a step and watch the last line — and the result — change.
-    """),
-        step_picker,
-    ])
-    return (step_picker,)
-
-
-@app.cell(hide_code=True)
-def _(con, mo, step_picker):
-    from textwrap import dedent as _dedent
-
-    _pipeline = """\
-    WITH dept_stats AS (
-        SELECT dept_id, COUNT(*) AS headcount, AVG(salary) AS avg_salary
-        FROM employees
-        GROUP BY dept_id
-    ),
-    company AS (
-        SELECT AVG(salary) AS company_avg
-        FROM employees
-    ),
-    compared AS (
-        SELECT
-            d.dept_name,
-            s.headcount,
-            ROUND(s.avg_salary, 2) AS avg_salary,
-            c.company_avg,
-            CASE WHEN s.avg_salary > c.company_avg
-                 THEN 'Above' ELSE 'Below' END AS vs_company
-        FROM dept_stats AS s
-        JOIN departments AS d ON d.dept_id = s.dept_id
-        CROSS JOIN company AS c
-    )"""
-    _last = f"SELECT * FROM {step_picker.value}"
-    _notes = {
-        "dept_stats": "One row per department **that has employees** — 4 rows, no Legal.",
-        "company": "Exactly **one** row: the company average, 77,000.",
-        "compared": "Steps 1 and 2 combined, with department names and an Above/Below label.",
-    }
-    _pipeline = _dedent(_pipeline)
-    _md = (
-        "```sql\n" + _pipeline + "\n" + _last
-        + ";      -- ← only this line changes\n```\n\n"
-        + _notes[step_picker.value]
-    )
-    mo.vstack([
-        mo.md(_md),
-        con.execute(f"{_pipeline}\n{_last}").fetchdf(),
-    ])
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    ---
-    ## 10. Rules and Real Error Messages
-
-    Each mistake below was run in DuckDB. This is what you would see:
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(con, mo):
-    con.execute("""
-        WITH dept_stats AS (
-            SELECT dept_id, COUNT(*) AS headcount
-            FROM employees
-            GROUP BY dept_id
-        )
-        SELECT * FROM dept_stats
-    """)
-    _mistakes = [
-        (
-            "1. Using a CTE after its statement has ended",
-            "SELECT * FROM dept_stats;   -- a new statement",
-            "A CTE lives only inside its own statement. "
-            "To keep a result, use `CREATE TABLE ... AS` or a `VIEW`.",
-        ),
-        (
-            "2. Using a CTE before it is defined",
-            "WITH a AS (SELECT * FROM b),\n     b AS (SELECT 1 AS x)\nSELECT * FROM a;",
-            "A CTE can use only the CTEs written **above** it. Put `b` first.",
-        ),
-        (
-            "3. Writing `WITH` twice",
-            "WITH a AS (SELECT 1 AS x)\nWITH b AS (SELECT 2 AS y)\nSELECT * FROM a, b;",
-            "Write `WITH` once, then separate the CTEs with commas.",
-        ),
-        (
-            "4. Forgetting the comma between CTEs",
-            "WITH a AS (SELECT 1 AS x)\n     b AS (SELECT 2 AS y)\nSELECT * FROM a, b;",
-            "Add a comma after `)` of every CTE except the last.",
-        ),
-        (
-            "5. A comma after the last CTE",
-            "WITH a AS (SELECT 1 AS x),\nSELECT * FROM a;",
-            "No comma between the last CTE and the main `SELECT`.",
-        ),
-    ]
-    _cards = []
-    for _title, _sql, _fix in _mistakes:
-        try:
-            con.execute(_sql)
-            _msg = "No error?"
-        except Exception as _e:
-            _msg = str(_e).splitlines()[0]
-        _md = (
-            f"**{_title}**\n\n```sql\n{_sql}\n```\n\n"
-            f"**DuckDB says:** `{_msg}`\n\n**Fix:** {_fix}"
-        )
-        _cards.append(mo.callout(mo.md(_md), kind="danger"))
-    mo.vstack(_cards)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    Mistakes 1 and 2 give a **Catalog Error** ("table does not exist") — DuckDB cannot find the name.
-    Mistakes 3–5 give a **Parser Error** — the query is not valid SQL. The error points to the
-    word *right after* the problem.
-
-    ### When should I use a CTE?
-
-    | Situation | Good choice |
+    | Column | Description |
     |---|---|
-    | A short, one-step condition (`WHERE salary > (SELECT AVG(salary) ...)`) | a plain subquery is fine |
-    | Two or more steps, or nested parentheses are getting hard to read | **CTE** |
-    | The same intermediate result is needed **twice** | **CTE** (write it once) |
-    | You want to **show** an intermediate value (like the company average) in the output | **CTE** + `CROSS JOIN` |
-    | You need the result again in **later** queries | a table or a `VIEW` — a CTE disappears |
+    | `emp_id` | Unique employee ID |
+    | `name` | Employee name |
+    | `department` | Department they belong to |
+    | `job_title` | Their role |
+    | `salary` | Annual salary (USD) |
+    | `years_exp` | Years of experience |
+    | `hire_year` | Year they were hired |
+    | `rating` | Annual performance rating (1–5) |
     """)
+    return
+
+
+@app.cell
+def _(con, show):
+    con.execute("""
+        CREATE
+        OR REPLACE TABLE employees AS
+        SELECT *
+        FROM (
+        VALUES
+            (1, 'Alice Chen', 'Engineering', 'Senior Engineer', 120000, 8, 2016, 5),
+            (2, 'Bob Martinez', 'Engineering', 'Junior Engineer', 72000, 2, 2022, 3),
+            (3, 'Clara Osei', 'Engineering', 'Lead Engineer', 145000, 12, 2012, 5),
+            (4, 'David Kim', 'Engineering', 'Junior Engineer', 68000, 1, 2023, 4),
+            (5, 'Eva Rossi', 'Marketing', 'Marketing Manager', 105000, 7, 2017, 4),
+            (6, 'Felix Nguyen', 'Marketing', 'Analyst', 62000, 3, 2021, 3),
+            (7, 'Grace Patel', 'Marketing', 'Analyst', 65000, 4, 2020, 4),
+            (8, 'Hiro Tanaka', 'Marketing', 'Director', 135000, 11, 2013, 5),
+            (9, 'Isla Scott', 'HR', 'HR Manager', 90000, 6, 2018, 4),
+            (10, 'James Okafor', 'HR', 'Recruiter', 58000, 2, 2022, 3),
+            (11, 'Karen Li', 'HR', 'Recruiter', 60000, 3, 2021, 5),
+            (12, 'Leo Diaz', 'Finance', 'CFO', 200000, 15, 2009, 5),
+            (13, 'Mia Brown', 'Finance', 'Accountant', 78000, 4, 2020, 3),
+            (14, 'Nate Wilson', 'Finance', 'Accountant', 80000, 5, 2019, 4),
+            (15, 'Olivia Turner', 'Finance', 'Financial Analyst', 92000, 6, 2018, 4),
+            (16, 'Paul Adams', 'Engineering', 'Staff Engineer', 160000, 14, 2010, 5),
+            (17, 'Quinn Bell', 'Engineering', 'Engineer', 95000, 5, 2019, 3),
+            (18, 'Rachel Green', 'Sales', 'Sales Rep', 70000, 3, 2021, 4),
+            (19, 'Sam Hughes', 'Sales', 'Sales Manager', 110000, 9, 2015, 5),
+            (20, 'Tina Ford', 'Sales', 'Sales Rep', 67000, 2, 2022, 2) ) t(emp_id,
+            name,
+            department,
+            job_title,
+            salary,
+            years_exp,
+            hire_year,
+            rating);
+    """)
+
+    show("""
+        SELECT *
+        FROM employees;
+    """, title="📋 Full employees table (20 rows)")
     return
 
 
@@ -689,145 +210,62 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ---
-    ## 11. Exercises
+    ## Cell 3 — Lesson 1: Why Do We Need `WITH`?
 
-    Write each query in the empty cell below it, then open the solution to check.
+    ### The Problem 🤔
 
-    **E1.** Rewrite notebook 01's Q4 with a CTE: show the **names** of the employees who earn more
-    than the company average. Use a CTE named `company`.
-    """)
-    return
+    Imagine you want to find employees who earn **more than the company average salary**.
+    You need two steps: first compute the average, then compare each salary to it.
 
+    One way is a **sub-query** — a query inside another query, in parentheses:
 
-@app.cell
-def _(con):
-    con.execute("""
-        -- your query for E1 here
-        SELECT 'replace me' AS hint
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.accordion({
-        "💡 Solution E1": mo.md(r"""
     ```sql
-    WITH company AS (
-        SELECT AVG(salary) AS company_avg
-        FROM employees
-    )
-    SELECT e.name
-    FROM employees AS e
-    CROSS JOIN company AS c
-    WHERE e.salary > c.company_avg
-    ORDER BY e.salary DESC;
+    -- Version A: sub-query inside WHERE
+    SELECT name, salary
+    FROM employees
+    WHERE salary > (SELECT AVG(salary) FROM employees);
     ```
-    **Carmen, Daniel, Grace, Emma.**
-    """)
-    })
-    return
 
+    With `WITH`, we **give that inner step a name** and write it first:
 
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **E2.** Use a CTE named `top_salary` with the **highest salary in each department**.
-    Then show **every** department's name, city, and top salary — Legal included.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute("""
-        -- your query for E2 here
-        SELECT 'replace me' AS hint
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.accordion({
-        "💡 Solution E2": mo.md(r"""
     ```sql
-    WITH top_salary AS (
-        SELECT dept_id, MAX(salary) AS max_salary
-        FROM employees
-        GROUP BY dept_id
+    -- Version B: the same logic, named with WITH
+    WITH avg_salary AS (
+        SELECT AVG(salary) AS avg_sal FROM employees
     )
-    SELECT d.dept_name, d.city, t.max_salary
-    FROM departments AS d
-    LEFT JOIN top_salary AS t
-           ON t.dept_id = d.dept_id
-    ORDER BY d.dept_id;
+    SELECT name, salary
+    FROM employees, avg_salary
+    WHERE salary > avg_sal;
     ```
-    **5 rows:** Sales 60,000 · Engineering 105,000 · Marketing 92,000 · HR 58,000 · Legal (empty).
-    "Legal included" is the clue for `LEFT JOIN` from `departments`. An `INNER JOIN` would give only 4 rows.
-    """)
-    })
-    return
 
+    Both return the **same rows**. For a short query like this, Version A is fine.
+    `WITH` pays off when a query has **many steps** — each step gets a name, and you read the query from top to bottom.
 
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **E3 (challenge).** Build a **three-step** pipeline:
+    > `FROM employees, avg_salary` (a comma) is a `CROSS JOIN`. It is safe here because `avg_salary` has exactly **one row**, so every employee row gets the average attached.
 
-    1. `dept_payroll` — total salary per department.
-    2. `total` — the company's total payroll (one row), read **from step 1**.
-    3. `shares` — each department's payroll as a **percentage** of the total, rounded to 2 decimals.
-
-    Then show the department **names** whose share is **more than 15%**, largest first.
+    Below, the CTE version also shows the average and the difference. 👇
     """)
     return
 
 
 @app.cell
-def _(con):
-    con.execute("""
-        -- your query for E3 here
-        SELECT 'replace me' AS hint
-    """).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.accordion({
-        "💡 Solution E3": mo.md(r"""
-    ```sql
-    WITH dept_payroll AS (
-        SELECT dept_id, SUM(salary) AS payroll
-        FROM employees
-        GROUP BY dept_id
-    ),
-    total AS (
-        SELECT SUM(payroll) AS total_payroll
-        FROM dept_payroll
-    ),
-    shares AS (
+def _(show):
+    show("""
+        WITH avg_salary AS (
+           SELECT ROUND(AVG(salary), 2) AS avg_sal
+           FROM employees 
+        )
         SELECT
-            p.dept_id,
-            p.payroll,
-            ROUND(100.0 * p.payroll / t.total_payroll, 2) AS pct
-        FROM dept_payroll AS p
-        CROSS JOIN total AS t
-    )
-    SELECT d.dept_name, s.payroll, s.pct
-    FROM shares AS s
-    JOIN departments AS d ON d.dept_id = s.dept_id
-    WHERE s.pct > 15
-    ORDER BY s.pct DESC;
-    ```
-    Total payroll is **616,000**. **Engineering 47.08% · Marketing 25.32% · Sales 18.18%.**
-    HR (9.42%) is below 15%.
-
-    Write `100.0` (not `100`) so the division is done with decimals.
-    🔍 Stuck? Use the Part 9 trick: end with `SELECT * FROM shares` and look at the step.
-    """)
-    })
+            e.name,
+            e.department,
+            e.salary,
+            a.avg_sal AS company_avg,
+            e.salary - a.avg_sal AS diff_from_avg
+        FROM employees e, avg_salary a
+        WHERE e.salary > a.avg_sal
+        ORDER BY e.salary DESC;
+    """,
+    title="Lesson 1 — Employees earning above company average")
     return
 
 
@@ -835,23 +273,518 @@ def _(mo):
 def _(mo):
     mo.md(r"""
     ---
-    ## 🎓 Summary
+    ## Cell 4 — Lesson 2: Basic `WITH` Syntax — Filtering
 
-    - A **CTE** is a subquery with a **name**, written **first**: `WITH name AS ( SELECT ... )`.
-    - Write `WITH` **once**; separate several CTEs with **commas**; no comma before the main `SELECT`.
-    - A CTE can read any CTE written **above** it — so a query becomes a **pipeline of steps** (Q7).
-    - A CTE can be joined to tables (Q9, Q10), used **twice** (Q11), or hold just **one value** (Q5).
-    - CTEs make queries **easier to read and to debug** — end with `SELECT * FROM <step>` to inspect any step (Q12).
-    - A CTE lives only for **one statement**. To keep a result, create a table or a view.
+    **Goal:** Find all employees hired before 2020 who also have a rating ≥ 4.
 
-    **What's next?**
+    We first build a CTE of *veteran employees* (hired before 2020), then filter for high performers.
 
-    - `subqueries_notebook_02.py` — nine more CTE lessons on a 20-row table, ending with
-      ranking (`ROW_NUMBER`, `RANK`, `DENSE_RANK`) and "top earner per department".
-    - `subqueries_04_tutorial.md` §13 — CTEs in the complete reference, including **recursive** CTEs.
+    ```
+    Step 1 ─► CTE  →  veteran_employees  (hired before 2020)
+    Step 2 ─► main query filters CTE  → rating >= 4
+    ```
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH veteran_employees AS ( /* Step 1: isolate employees hired before 2020 */
+        SELECT
+            emp_id,
+            name,
+            department,
+            hire_year,
+            salary,
+            rating
+        FROM employees
+        WHERE hire_year < 2020 ) 
+        /* Step 2: from that subset, keep only top performers */
+        SELECT
+            name,
+            department,
+            hire_year,
+            salary,
+            rating
+        FROM veteran_employees
+        WHERE rating >= 4
+        ORDER BY hire_year ASC;
+    """,
+    title="Lesson 2 — Veteran employees (pre-2020) with rating ≥ 4")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 5 — Lesson 3: Aggregating Inside a CTE
+
+    **Goal:** Show each department's headcount, total payroll, and average salary.
+
+    We push the `GROUP BY` logic inside the CTE. The outer query then just selects from it — clean and reusable.
+
+    ```
+    CTE  →  dept_stats  (GROUP BY department)
+    Main →  format the numbers as $ text, sort by average salary
+    ```
+
+    > ⚠️ **Watch the sort.** The outer query turns `avg_salary` into text like `'$91,750'`.
+    > If we wrote `ORDER BY avg_salary`, DuckDB would sort that **text** — and `'$9…'` comes after `'$1…'`,
+    > so $91,750 would land above $112,500. Writing `ORDER BY dept_stats.avg_salary` sorts by the **number** from the CTE instead.
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH dept_stats AS (
+           SELECT
+               department,
+               COUNT(*) AS headcount,
+               SUM(salary) AS total_payroll,
+               ROUND(AVG(salary), 0) AS avg_salary,
+               MIN(salary) AS min_salary,
+               MAX(salary) AS max_salary
+           FROM employees
+           GROUP BY department 
+        )
+        SELECT
+            department,
+            headcount,
+            '$' || format('{:,}', total_payroll)      AS total_payroll,
+            '$' || format('{:,}', avg_salary::BIGINT) AS avg_salary,
+            '$' || format('{:,}', min_salary)         AS min_salary,
+            '$' || format('{:,}', max_salary)         AS max_salary
+        FROM dept_stats
+        -- sort by the NUMBER in the CTE, not the '$...' text above
+        ORDER BY dept_stats.avg_salary DESC;
+    """,
+    title="Lesson 3 — Department-level payroll summary")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 6 — Lesson 4: Chaining Two CTEs
+
+    **Goal:** Find departments whose *average salary* is above the *overall company average*.
+
+    This requires **two** CTEs, one after another, separated by a comma:
+
+    ```sql
+    WITH
+      cte_one AS ( ... ),       -- first CTE
+      cte_two AS ( ... )        -- second CTE (can reference cte_one!)
+    SELECT ... FROM cte_two;
+    ```
+
+    ```
+    CTE 1  →  dept_avg      (avg salary per department)
+    CTE 2  →  company_avg   (single overall average)
+    Main   →  CROSS JOIN both, keep departments above the bar
+    ```
+
+    > In this lesson the two CTEs are independent — both read from `employees`.
+    > In Lesson 6 you will see a CTE that reads from an **earlier** CTE.
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH dept_avg AS ( 
+           /* CTE 1: average salary per department */
+           SELECT
+               department,
+               ROUND(AVG(salary), 0) AS avg_dept_salary
+           FROM employees
+           GROUP BY department ), 
+        company_avg AS ( 
+          /* CTE 2: single overall average 
+           (references base table, not CTE 1) */
+           SELECT ROUND(AVG(salary), 0) AS avg_company_salary
+           FROM employees 
+        ) 
+        /* Main query: use both CTEs together */
+        SELECT
+            d.department,
+            d.avg_dept_salary,
+            c.avg_company_salary,
+            d.avg_dept_salary - c.avg_company_salary AS premium
+        FROM dept_avg d
+        CROSS
+        JOIN company_avg c
+        WHERE d.avg_dept_salary > c.avg_company_salary
+        ORDER BY premium DESC;
+    """,
+    title="Lesson 4 — Departments above the company-wide salary average")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 7 — Lesson 5: Joining a CTE back to the Base Table
+
+    **Goal:** For every employee, show their salary **and** their department's average — side by side.
+
+    This is one of the most practical CTE patterns: compute a summary in a CTE, then **JOIN it** back to the detail rows.
+
+    ```
+    CTE  →  dept_avg   (avg per department)
+    Main →  JOIN employees ON department  → show both individual + dept average
+    ```
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH dept_avg AS (
+           SELECT
+               department,
+               ROUND(AVG(salary), 0) AS avg_dept_salary
+           FROM employees
+           GROUP BY department )
+        SELECT
+            e.name,
+            e.department,
+            e.salary AS individual_salary,
+            d.avg_dept_salary,
+            e.salary - d.avg_dept_salary AS vs_dept_avg,
+            CASE 
+              WHEN e.salary > d.avg_dept_salary THEN '▲ Above' 
+              WHEN e.salary < d.avg_dept_salary THEN '▼ Below' 
+              ELSE '= Equal' 
+            END AS position
+        FROM employees e
+        JOIN dept_avg d ON e.department = d.department
+        ORDER BY e.department, e.salary DESC;
+    """,
+    title="Lesson 5 — Every employee vs. their department average")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 8 — Lesson 6: Building Logic Step-by-Step (3 CTEs)
+
+    **Goal:** Find the **top earner in each department**, then show only those top earners who also have a rating of 5.
+
+    We solve it in three clear steps:
+
+    ```
+    CTE 1  →  dept_max_salary   (MAX salary per department)
+    CTE 2  →  top_earners       (join back employees to get who owns that salary)
+    CTE 3  →  elite             (filter top_earners where rating = 5)
+    Main   →  SELECT from elite
+    ```
+
+    > 💡 **Key insight:** each CTE can reference *any* previously defined CTE — you're building a query pipeline!
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH dept_max_salary AS ( 
+           /* CTE 1: highest salary in each department */
+           SELECT
+               department,
+            MAX(salary) AS max_salary
+           FROM employees
+           GROUP BY department ), 
+       top_earners AS ( 
+           /* CTE 2: match employees to their dept's max salary */
+           SELECT
+               e.name,
+               e.department,
+               e.salary,
+               e.rating,
+               e.job_title
+           FROM employees e
+           JOIN dept_max_salary m ON e.department = m.department
+           AND e.salary = m.max_salary 
+        ), 
+        elite AS ( 
+           /* CTE 3: among top earners, keep only perfect raters */
+           SELECT *
+           FROM top_earners
+           WHERE rating = 5 
+        )
+        SELECT
+            name,
+            department,
+            job_title,
+            salary,
+            rating,
+            '🏆 Top earner + perfect rating' AS badge
+        FROM elite
+        ORDER BY salary DESC;
+    """,
+    title="Lesson 6 — Top earner per department who also has a perfect rating")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 9 — Lesson 7: Practical CTE — Salary Bands
+
+    **Goal:** Classify every employee into a salary band, then count how many fall into each band.
+
+    ```
+    CTE 1  →  banded   (assign each employee a band with CASE)
+    Main   →  GROUP BY band, count and sum
+    ```
+
+    This pattern — *derive a column in a CTE, then aggregate by it* — is extremely common in real analytics work.
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH banded AS (
+        SELECT
+            name,
+            department,
+            salary,
+            CASE 
+              WHEN salary < 70000 THEN '💛 Entry  (<$70k)' 
+              WHEN salary >= 70000 AND salary < 100000 THEN '🟠 Mid    ($70k-$100k)' 
+              WHEN salary >= 100000 AND salary < 140000 THEN '🔵 Senior ($100k-$140k)' 
+              ELSE '🟣 Executive ($140k+)' 
+            END AS salary_band
+        FROM employees )
+        SELECT
+            salary_band,
+            COUNT(*) AS employee_count,
+            MIN(salary) AS band_min,
+            MAX(salary) AS band_max,
+            ROUND(AVG(salary),0) AS band_avg
+        FROM banded
+        GROUP BY salary_band
+        ORDER BY band_min;
+    """,
+    title="Lesson 7 — Employee count per salary band")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 10 — Lesson 8: Intro to Window / Ranking Functions with `WITH`
+
+    Now we step it up! **Ranking functions** let you rank rows *within groups* without collapsing them (unlike `GROUP BY`).
+
+    | Function | Behaviour when tied |
+    |---|---|
+    | `ROW_NUMBER()` | Always unique — ties get different numbers, in no guaranteed order |
+    | `RANK()` | Ties share a rank; next rank **skips** (1,1,3) |
+    | `DENSE_RANK()` | Ties share a rank; next rank **does not skip** (1,1,2) |
+
+    **Goal:** Rank every employee by **performance rating** *within their department*.
+
+    Why rating and not salary? In our data, no two people in the same department earn the same salary — so all three functions would give the **same** numbers. Ratings have many **ties** (several 5s and 4s), which is exactly where the three functions differ.
+
+    ```
+    CTE  →  ranked   (add ROW_NUMBER(), RANK(), DENSE_RANK() columns)
+    Main →  SELECT everything from ranked
+    ```
+
+    👀 Look at **Engineering**: three people have rating 5. `RANK()` gives them 1, 1, 1 and then jumps to **4**; `DENSE_RANK()` gives 1, 1, 1 and then **2**.
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH ranked AS (
+           SELECT
+               name,
+               department,
+               rating,
+               ROW_NUMBER() OVER (PARTITION BY department ORDER BY rating DESC) AS row_num,
+               RANK()       OVER (PARTITION BY department ORDER BY rating DESC) AS rnk,
+               DENSE_RANK() OVER (PARTITION BY department ORDER BY rating DESC) AS dense_rnk
+           FROM employees
+        )
+        SELECT *
+        FROM ranked
+        ORDER BY department, rnk, row_num;
+    """,
+    title="Lesson 8 — Rating rank within each department (ROW_NUMBER vs RANK vs DENSE_RANK)")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 11 — Lesson 9: Filter by Rank — `#1 in Department`
+
+    **The golden pattern:** compute ranks inside a CTE, then filter `WHERE rank = 1` in the outer query.
+
+    > ⚠️ You **cannot** write `WHERE RANK() OVER (...) = 1` — window functions are not allowed in `WHERE`, because `WHERE` runs *before* the ranks are computed. A CTE solves this: compute the rank first, then filter on it.
+
+    **Goal:** Show the **#1 highest-paid employee in each department**.
+
+    > 💡 **DuckDB shortcut:** DuckDB also has a `QUALIFY` clause that filters on a window function directly
+    > (`... QUALIFY DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) = 1`).
+    > Many other databases do not have it, so learn the CTE pattern first — it works everywhere.
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH dept_ranked AS (
+           SELECT
+              name,
+              department,
+              job_title,
+              salary,
+              years_exp,
+              rating,
+              DENSE_RANK() OVER (PARTITION BY department
+                                 ORDER BY salary DESC) 
+                AS sal_rank
+           FROM employees )
+        SELECT
+            department,
+            name,
+            job_title,
+            salary,
+            years_exp,
+            rating,
+            '🥇 #1' AS dept_rank
+        FROM dept_ranked
+        WHERE sal_rank = 1
+        ORDER BY salary DESC;
+    """,
+    title="Lesson 9 — The highest-paid employee in each department")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+    ## Cell 12 — 🏁 Grand Finale: Everything Together
+
+    Let's combine **all concepts** in one elegant query:
+
+    1. Compute company-wide average salary
+    2. Classify employees into salary bands
+    3. Rank by salary within department
+    4. Show only top-2 per department who earn above the company average
+
+    ```
+    CTE 1  →  company_avg   (overall average)
+    CTE 2  →  enriched      (band + above/below avg flag)
+    CTE 3  →  ranked        (DENSE_RANK by salary per dept)
+    Main   →  top-2 per dept, above company avg, ordered nicely
+    ```
+    """)
+    return
+
+
+@app.cell
+def _(show):
+    show("""
+        WITH company_avg AS ( 
+           /* Step 1: overall company average */
+           SELECT ROUND(AVG(salary), 0) AS avg_sal
+           FROM employees 
+        ), 
+        enriched AS ( 
+           /* Step 2: attach avg, add band & flag */
+        SELECT
+            e.emp_id,
+            e.name,
+            e.department,
+            e.job_title,
+            e.salary,
+            e.rating,
+            c.avg_sal,
+            CASE 
+               WHEN e.salary < 70000 THEN '💛 Entry' 
+               WHEN e.salary < 100000 THEN '🟠 Mid' 
+               WHEN e.salary < 140000 THEN '🔵 Senior' 
+               ELSE '🟣 Executive' 
+            END AS band,
+            CASE 
+               WHEN e.salary > c.avg_sal THEN '✅ Yes' 
+               ELSE '❌ No' 
+            END AS above_company_avg
+         FROM employees e
+         CROSS JOIN company_avg c 
+        ), 
+        ranked AS ( 
+           /* Step 3: rank within department by salary */
+        SELECT
+            *,
+            DENSE_RANK() OVER (PARTITION BY department
+        ORDER BY salary DESC) AS dept_rank
+        FROM enriched ) /* Final: top-2 per department, only those above company avg */
+        SELECT
+            dept_rank AS "🏅 Rank",
+            department,
+            name,
+            job_title,
+            salary,
+            band,
+            rating,
+            above_company_avg
+        FROM ranked
+        WHERE dept_rank <= 2
+        AND above_company_avg = '✅ Yes'
+        ORDER BY department, dept_rank;
+    """,
+    title="🏁 Grand Finale — Top-2 earners per dept who are above the company average")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ---
+
+    ## 🎓 Summary — What You Learned
+
+    | Cell | Pattern | Key Idea |
+    |------|---------|----------|
+    | 3 | Basic `WITH` | Name a sub-query to reuse it cleanly |
+    | 4 | Filter in CTE | Pre-filter rows before the main query |
+    | 5 | Aggregate in CTE | Push `GROUP BY` into the CTE |
+    | 6 | Two CTEs | Chain CTEs with a comma |
+    | 7 | JOIN CTE to base | Attach summary stats to detail rows |
+    | 8 | Three CTEs | Build multi-step analytics pipelines |
+    | 9 | Derive + aggregate | Create columns in CTE, group by them |
+    | 10 | `ROW_NUMBER()` / `RANK()` / `DENSE_RANK()` | Rank rows within partitions; they differ only on ties |
+    | 11 | Filter on rank | `WHERE rank = 1` needs a CTE (or DuckDB's `QUALIFY`) |
+    | 12 | Everything together | Compose all patterns into one query |
 
     ---
-    *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
+
+    > **Next steps:** Explore recursive CTEs (`WITH RECURSIVE`) for hierarchical data, or try `NTILE()`, `PERCENT_RANK()`, and `LAG()` / `LEAD()` window functions!
     """)
     return
 

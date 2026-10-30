@@ -36,8 +36,8 @@ def _(mo):
     | 10 | Exercises | E1 – E3 |
 
     Run the cells from top to bottom. After this notebook, continue with
-    `subqueries_notebook_03.py` (correlated subqueries and `EXISTS`)
-    and `subqueries_notebook_04.py` (subqueries with `WITH`).
+    `subqueries_notebook_02.py` (correlated subqueries and `EXISTS`)
+    and `subqueries_notebook_03.py` (subqueries with `WITH`).
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
@@ -404,7 +404,7 @@ def _(mo):
 
     > ⚠️ **Careful with `NOT IN`:** if the inner list contains a `NULL`, `NOT IN` returns **no rows at all**.
     > Our table has no `NULL`s, so we are safe here. You will see this trap in action — and its fix, `NOT EXISTS` —
-    > in `subqueries_notebook_03.py` (Part 10).
+    > in `subqueries_notebook_02.py` (Part 10).
     """)
     return
 
@@ -793,9 +793,9 @@ def _(mo):
 
     **What's next?**
 
-    - `subqueries_notebook_03.py` — **correlated** subqueries ("the average of *this employee's* department"),
+    - `subqueries_notebook_02.py` — **correlated** subqueries ("the average of *this employee's* department"),
       `EXISTS`, `NOT EXISTS`, and the `NOT IN` + `NULL` trap.
-    - `subqueries_notebook_04.py` — give subqueries a name with `WITH` (CTEs), step by step.
+    - `subqueries_notebook_03.py` — give subqueries a name with `WITH` (CTEs), step by step.
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
