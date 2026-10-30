@@ -36,7 +36,8 @@ def _(mo):
     | 10 | Exercises | E1 – E3 |
 
     Run the cells from top to bottom. After this notebook, continue with
-    `subqueries_notebook_02.py` (subqueries with `WITH`).
+    `subqueries_notebook_03.py` (correlated subqueries and `EXISTS`)
+    or `subqueries_notebook_02.py` (subqueries with `WITH`).
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
@@ -402,8 +403,8 @@ def _(mo):
     HR (Hannah) and Sales (Alice, Bob) — the 3 employees Q9 did not show. Q9 + Q10 = all 8 rows.
 
     > ⚠️ **Careful with `NOT IN`:** if the inner list contains a `NULL`, `NOT IN` returns **no rows at all**.
-    > Our table has no `NULL`s, so we are safe here. You will meet this trap — and its fix, `NOT EXISTS` —
-    > in `subqueries_04_tutorial.md` (§6.4) and in the Week 7 lecture.
+    > Our table has no `NULL`s, so we are safe here. You will see this trap in action — and its fix, `NOT EXISTS` —
+    > in `subqueries_notebook_03.py` (Part 10).
     """)
     return
 
@@ -792,10 +793,9 @@ def _(mo):
 
     **What's next?**
 
+    - `subqueries_notebook_03.py` — **correlated** subqueries ("the average of *this employee's* department"),
+      `EXISTS`, `NOT EXISTS`, and the `NOT IN` + `NULL` trap.
     - `subqueries_notebook_02.py` — give subqueries a name with `WITH` (CTEs), build multi-step queries, and rank rows.
-    - `subqueries_02_single_table.md` — the same basics, plus **correlated** subqueries
-      ("the average of *this employee's* department").
-    - `subqueries_03_two_tables.md` — subqueries across two tables, `EXISTS`, and `NOT EXISTS`.
 
     ---
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

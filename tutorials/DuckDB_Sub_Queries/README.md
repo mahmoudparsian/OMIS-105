@@ -17,14 +17,17 @@ support Week 9 (window functions and CTEs).
 | 3 | [`subqueries_03_two_tables.md`](subqueries_03_two_tables.md) | Two related tables: `INNER JOIN`, `IN`, `EXISTS`, scalar subqueries, and CTEs that join. | `departments`, `employees` |
 | 4 | [`subqueries_notebook_01.py`](subqueries_notebook_01.py) | A Marimo notebook with the very basics: one value (`=`, `>`, `MAX`), a subquery in `SELECT`, a list (`IN`, `NOT IN`), a table in `FROM`, the most common error, an interactive demo, and 3 exercises. | `employees` (8 rows) |
 | 5 | [`subqueries_notebook_02.py`](subqueries_notebook_02.py) | A Marimo notebook: 9 lessons + a finale on `WITH` — from one CTE to multi-step pipelines and ranking (`ROW_NUMBER`, `RANK`, `DENSE_RANK`). | `employees` (20 rows) |
-| 6 | [`subqueries_04_tutorial.md`](subqueries_04_tutorial.md) | The complete reference: every subquery type, `ANY`/`ALL`, recursive CTEs, joins vs. subqueries, common mistakes, and 15 exercises with solutions. | `sales`, then `sales` + `products` |
+| 6 | [`subqueries_notebook_03.py`](subqueries_notebook_03.py) | A Marimo notebook on **correlated subqueries** and **`EXISTS` / `NOT EXISTS`**, including the alias pitfall, the `NOT IN` + `NULL` trap, two interactive demos, and 3 exercises. | `departments`, `employees` (9 rows) |
+| 7 | [`subqueries_04_tutorial.md`](subqueries_04_tutorial.md) | The complete reference: every subquery type, `ANY`/`ALL`, recursive CTEs, joins vs. subqueries, common mistakes, and 15 exercises with solutions. | `sales`, then `sales` + `products` |
 
 Files 1–3 are quick reads (15–30 minutes each). Notebook 01 takes about
-45 minutes and notebook 02 about one hour. File 6 is long — use it as a
+45 minutes, notebook 03 about 45 minutes, and notebook 02 about one hour. File 7 is long — use it as a
 reference and for practice.
 
 **Short on time?** Start with `subqueries_notebook_01.py` — it needs no
-other file — then go on to `subqueries_notebook_02.py`.
+other file. Then do `subqueries_notebook_03.py` (correlated subqueries,
+`EXISTS`) and `subqueries_notebook_02.py` (`WITH`), in either order —
+for Week 7, notebook 03 comes first.
 
 Each Markdown file creates its own tables at the top, so you can run
 its SQL in any DuckDB tool (the DuckDB CLI, qStudio, or a Marimo
@@ -43,6 +46,7 @@ Open a terminal in this folder and run:
 ```bash
 marimo edit subqueries_notebook_01.py
 marimo edit subqueries_notebook_02.py
+marimo edit subqueries_notebook_03.py
 ```
 
 Each command opens a notebook in your browser. Both notebooks create
@@ -65,6 +69,25 @@ Engineering, Marketing, HR), `salary`.
 | 8 | — | The most common error: `=` with a subquery that returns a list |
 | 9 | — | Interactive: pick a department, see the inner and outer results change |
 | 10 | E1 – E3 | Exercises with hidden solutions |
+
+### Notebook 03 — correlated subqueries and `EXISTS`
+
+**Dataset:** `departments` (5 rows — Legal has no employees) and
+`employees` (9 rows — Ivan, a new hire, has a `NULL` department).
+
+| Part | Queries | Key idea |
+|---|---|---|
+| 1–2 | Q1 – Q4 | The data; why "above *my department's* average" needs a new idea |
+| 3 | Q5 | First correlated subquery: `WHERE x.dept_id = e.dept_id`, read as a loop |
+| 4 | Q6 | X-ray: the correlated subquery as a column, one result per row |
+| 5 | — | Interactive: pick an employee, see the inner query for that row |
+| 6 | Q7 | Top earner in each department (`MAX`) |
+| 7 | Q8 | Pitfall: no aliases → no error, but a wrong answer |
+| 8 | Q9 – Q11 | `EXISTS`; why it never duplicates rows, unlike `JOIN` |
+| 9 | Q12 | `NOT EXISTS` — the anti-join (departments with no employees) |
+| 10 | Q13 – Q15 | The `NOT IN` + `NULL` trap: zero rows, and two fixes |
+| 11 | — | Interactive: salary slider, `EXISTS` vs. `NOT EXISTS` side by side |
+| 12 | E1 – E3 | Exercises with hidden solutions |
 
 ### Notebook 02 — subqueries with `WITH` (CTEs)
 
