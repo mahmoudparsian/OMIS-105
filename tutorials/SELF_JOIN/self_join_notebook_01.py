@@ -27,7 +27,7 @@ def _(mo):
 
     2. Marimo stores its result as a dataframe that DuckDB can query as a table.
 
-    3. `employee_id` identifies a person; `manager_id` points to their manager's ID.
+    3. `emp_id` identifies a person; `manager_id` points to their manager's ID.
 
     4. Alice has no manager (`NULL`). Salaries are annual amounts in USD.
 
@@ -53,8 +53,8 @@ def _(mo):
             (8,  'Henry', 'Engineering', 4,     70000),
             (9,  'Ivy',   'Sales',       3,     78000),
             (10, 'Jack',  'Engineering', 2,     95000)
-        ) AS staff(employee_id, name, department, manager_id, salary)
-        ORDER BY employee_id;
+        ) AS staff(emp_id, name, department, manager_id, salary)
+        ORDER BY emp_id;
         """
     )
     return (employees,)
@@ -66,7 +66,7 @@ def _(mo):
     mo.md("""
     ## CELL #4 — Query 1: Who manages each employee?
 
-    Match an employee's `manager_id` to another employee's `employee_id`.
+    Match an employee's `manager_id` to another employee's `emp_id`.
     `e` supplies the employee name; `m` supplies the manager name.
     For example, David's manager ID is 2, which finds Bob.
 
@@ -83,8 +83,8 @@ def _(employees, mo):
         SELECT e.name AS employee, m.name AS manager
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
-        ORDER BY e.employee_id;
+            ON e.manager_id = m.emp_id
+        ORDER BY e.emp_id;
         """
     )
     return
@@ -112,8 +112,8 @@ def _(employees, mo):
         SELECT e.name AS employee, m.name AS manager
         FROM employees AS e
         LEFT JOIN employees AS m
-            ON e.manager_id = m.employee_id
-        ORDER BY e.employee_id;
+            ON e.manager_id = m.emp_id
+        ORDER BY e.emp_id;
         """
     )
     return
@@ -143,9 +143,9 @@ def _(employees, mo):
                e.salary - m.salary AS salary_difference
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
+            ON e.manager_id = m.emp_id
         WHERE e.salary > m.salary
-        ORDER BY e.employee_id;
+        ORDER BY e.emp_id;
         """
     )
     return
@@ -158,7 +158,7 @@ def _(mo):
     ## CELL #10 — Query 4: Which coworker pairs share a manager?
 
     Match two employees with the same manager.
-    `a.employee_id < b.employee_id` excludes pairing someone with themselves
+    `a.emp_id < b.emp_id` excludes pairing someone with themselves
     and keeps each pair only once. Using `<>` would keep both orders of each pair.
 
     **Expected: 7 pairs.** Bob–Carol; David–Eva, David–Jack, Eva–Jack;
@@ -177,8 +177,8 @@ def _(employees, mo):
         FROM employees AS a
         INNER JOIN employees AS b
             ON a.manager_id = b.manager_id
-           AND a.employee_id < b.employee_id
-        ORDER BY a.employee_id, b.employee_id;
+           AND a.emp_id < b.emp_id
+        ORDER BY a.emp_id, b.emp_id;
         """
     )
     return
@@ -191,7 +191,7 @@ def _(mo):
     ## CELL #12 — Query 5: How many direct reports does everyone have?
 
     Treat every employee as a potential manager (`m`) and match their reports (`e`).
-    `LEFT JOIN` keeps people with no reports. `COUNT(e.employee_id)` counts only
+    `LEFT JOIN` keeps people with no reports. `COUNT(e.emp_id)` counts only
     matches; `COUNT(*)` would incorrectly count an unmatched row as 1.
 
     **Expected: 10 rows.** Bob has 3 reports, Carol 3, Alice 2, David 1,
@@ -205,13 +205,13 @@ def _(employees, mo):
     query_5 = mo.sql(
         f"""
         -- CELL #13
-        SELECT m.employee_id, m.name AS employee,
-               COUNT(e.employee_id) AS direct_reports
+        SELECT m.emp_id, m.name AS employee,
+               COUNT(e.emp_id) AS direct_reports
         FROM employees AS m
         LEFT JOIN employees AS e
-            ON e.manager_id = m.employee_id
-        GROUP BY m.employee_id, m.name
-        ORDER BY direct_reports DESC, m.employee_id;
+            ON e.manager_id = m.emp_id
+        GROUP BY m.emp_id, m.name
+        ORDER BY direct_reports DESC, m.emp_id;
         """
     )
     return

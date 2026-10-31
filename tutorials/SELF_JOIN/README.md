@@ -3,15 +3,18 @@
 ```
    What is a Self Join?
 
-   A self join joins a table to ITSELF. You list the
-   same table twice, give each copy its own alias
-   (for example e = employee, m = manager), and write
-   an ON rule that connects the two roles. There is
-   no SELF JOIN keyword: you use INNER JOIN or
-   LEFT JOIN, exactly as before.
+   A self join joins a table to ITSELF.  You 
+   list the SAME table twice, give each copy 
+   its own alias (for  example e = employee, 
+   m = manager),  and write an ON rule  that 
+   connects the two roles. 
+   
+   There  is no SELF JOIN  keyword:  you use 
+   INNER JOIN or LEFT JOIN, exactly as before.
 ```
 
-* Two beginner-friendly Marimo notebooks on the self join, in DuckDB.
+* A short reading guide and two beginner-friendly Marimo notebooks
+on the self join, in DuckDB.
 * They assume you already know a basic `INNER JOIN` and `LEFT JOIN`
 between **two** tables.
 * All examples use tiny tables built in memory, so you can check
@@ -21,11 +24,12 @@ every result by eye.
 
 | File | What it is | Time |
 |------|------------|------|
+| [`self_joins_guide.md`](self_joins_guide.md) | **Read first.** A short guide you can read on GitHub: 5 self joins on a 5-row `employees` table (employee → manager, `LEFT JOIN` + `COALESCE`, coworker pairs, grand-managers, earns more than the manager), a cheat sheet, and a complete second example: 6 self joins on an 8-row `customers` referral table | ~25 min |
 | [`self_join_notebook_01.py`](self_join_notebook_01.py) | **Quick start.** 5 queries on a 10-row `employees` table: employee → manager, `LEFT JOIN` to keep the boss, earns more than the manager, coworker pairs, direct-report counts | ~20 min |
 | [`self_join_notebook_02.py`](self_join_notebook_02.py) | **Full lesson.** 15 queries in 13 parts on a 12-row company, plus a second table (`daily_sales`). Adds an org chart drawn from a self join, a step-by-step matching tracer, `COALESCE`, three-way pair counts (why `<`), the `COUNT(*)` trap, grand-managers (three copies of one table), today vs. yesterday, a pick-a-manager widget, real error messages, a cheat sheet, and 6 exercises with solutions | ~60 min |
 
-Start with `01` for a short first look, or go straight to `02`.
-Both use the same idea and the same alias names (`e` = employee,
+Read the guide first, then start with `01` for a short first look,
+or go straight to `02`. The two notebooks use the same idea and the same alias names (`e` = employee,
 `m` = manager), so they work well together.
 
 ## What You Will Learn (Notebook 02)
@@ -49,10 +53,10 @@ Both use the same idea and the same alias names (`e` = employee,
 ## The Sample Data (Notebook 02)
 
 ```
-employees   (employee_id, name, title, department, manager_id, salary, hire_date)   -- 12 rows
+employees   (emp_id, name, title, department, manager_id, salary, hire_date)   -- 12 rows
 daily_sales (sale_date, revenue)                                                    -- 7 rows
 
-employees.manager_id → employees.employee_id   (the table points to itself)
+employees.manager_id → employees.emp_id   (the table points to itself)
 ```
 
 * Alice is the CEO, so her `manager_id` is `NULL`, on purpose.
@@ -60,9 +64,10 @@ employees.manager_id → employees.employee_id   (the table points to itself)
 
 ## Best-Fit Week
 
-**Week 5 — SQL Joins.** Notebook 02 also reviews `GROUP BY` /
+**Week 6 — SQL Joins II** (self joins are a Week 6 topic). It builds
+on the joins from Week 5. Notebook 02 also reviews `GROUP BY` /
 `HAVING` (Week 2) and `COALESCE` / `IS NULL` (Week 5). Its
-today-vs-yesterday part is a good warm-up for `LAG()` in Week 9.
+today-vs-yesterday part is a good warm-up for `LAG()` in bonus Week 11.
 
 ## How to Run
 

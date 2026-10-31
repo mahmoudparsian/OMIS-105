@@ -21,7 +21,7 @@ def _():
 
     con.execute("""
         CREATE OR REPLACE TABLE employees (
-            employee_id INTEGER PRIMARY KEY,
+            emp_id      INTEGER PRIMARY KEY,
             name        VARCHAR,
             title       VARCHAR,
             department  VARCHAR,
@@ -82,7 +82,7 @@ def _(mo):
     All of them live in **one table**, `employees`.
 
     Each row has a `manager_id` column. It holds the
-    `employee_id` of that person's manager. So the manager is
+    `emp_id` of that person's manager. So the manager is
     **also a row in the same table**.
 
     The HR director asks:
@@ -117,7 +117,7 @@ def _(mo):
     | 9. Two steps up | Q13 | Three copies of one table. |
     | 10. Not only org charts | Q14–Q15 | Compare today with yesterday. |
     | 11. Explore | — | Pick a manager, see the team. |
-    | 12. Common mistakes | — | Real errors, and one silent bug. |
+    | 12. Common mistakes | — | Two real errors and two silent bugs. |
     | 13. Cheat sheet & practice | — | A template and 6 exercises with solutions. |
 
     The tables are tiny on purpose: you can check every answer by eye.
@@ -134,7 +134,7 @@ def _(mo):
     ### Q1. The `employees` table
 
     Look at the `manager_id` column. Bob's `manager_id` is `1`.
-    Who has `employee_id = 1`? Alice. So **Alice is Bob's manager**.
+    Who has `emp_id = 1`? Alice. So **Alice is Bob's manager**.
 
     Alice is the CEO. She has no manager, so her `manager_id` is `NULL`.
     """)
@@ -145,7 +145,7 @@ def _(mo):
 def _(con, mo):
     _df = mo.sql(
         f"""
-        SELECT employee_id,
+        SELECT emp_id,
                name,
                title,
                department,
@@ -153,7 +153,7 @@ def _(con, mo):
                salary,
                hire_date
         FROM employees
-        ORDER BY employee_id;
+        ORDER BY emp_id;
         """,
         engine=con
     )
@@ -177,16 +177,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(con, mo):
     _nodes = con.execute("""
-        SELECT employee_id, name, title
+        SELECT emp_id, name, title
         FROM employees
-        ORDER BY employee_id
+        ORDER BY emp_id
     """).fetchall()
     _edges = con.execute("""
-        SELECT m.employee_id, e.employee_id
+        SELECT m.emp_id, e.emp_id
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
-        ORDER BY m.employee_id, e.employee_id
+            ON e.manager_id = m.emp_id
+        ORDER BY m.emp_id, e.emp_id
     """).fetchall()
 
     _ids = {_name: _id for _id, _name, _title in _nodes}
@@ -234,11 +234,11 @@ def _(mo):
     Both copies have the same 12 rows. The `ON` rule connects them:
 
     ```sql
-    ON e.manager_id = m.employee_id
+    ON e.manager_id = m.emp_id
     ```
 
     Read it out loud: *"the employee's `manager_id` must equal the
-    manager's `employee_id`."*
+    manager's `emp_id`."*
 
     ```
        e  (employee copy)                     m  (manager copy)
@@ -287,8 +287,8 @@ def _(con, mo):
                m.title AS manager_title
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
-        ORDER BY e.employee_id;
+            ON e.manager_id = m.emp_id
+        ORDER BY e.emp_id;
         """,
         engine=con
     )
@@ -302,7 +302,7 @@ def _(mo):
     # Part 4 — How the Matching Works 🔍
 
     Pick an employee. Watch DuckDB take their `manager_id` from the
-    `e` copy, then look for the row with that `employee_id` in the
+    `e` copy, then look for the row with that `emp_id` in the
     `m` copy.
     """)
     return
@@ -311,7 +311,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(con, mo):
     _names = [r[0] for r in con.execute(
-        "SELECT name FROM employees ORDER BY employee_id"
+        "SELECT name FROM employees ORDER BY emp_id"
     ).fetchall()]
     trace_picker = mo.ui.dropdown(
         options=_names, value="Henry", label="Employee (`e`):"
@@ -323,15 +323,15 @@ def _(con, mo):
 @app.cell(hide_code=True)
 def _(con, mo, trace_picker):
     _e = con.execute("""
-        SELECT employee_id, name, title, manager_id
+        SELECT emp_id, name, title, manager_id
         FROM employees
         WHERE name = ?
     """, [trace_picker.value]).fetchdf()
     _m = con.execute("""
-        SELECT m.employee_id, m.name, m.title
+        SELECT m.emp_id, m.name, m.title
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
+            ON e.manager_id = m.emp_id
         WHERE e.name = ?
     """, [trace_picker.value]).fetchdf()
 
@@ -345,7 +345,7 @@ def _(con, mo, trace_picker):
         ), kind="warn")
     else:
         _step = mo.callout(mo.md(
-            f"**Step 2:** look in `m` for `employee_id = {int(_mid)}` → "
+            f"**Step 2:** look in `m` for `emp_id = {int(_mid)}` → "
             f"found **{_m['name'].iloc[0]}**. So {trace_picker.value}'s "
             f"manager is {_m['name'].iloc[0]}. ✅"
         ), kind="success")
@@ -383,8 +383,8 @@ def _(con, mo):
                m.name AS manager
         FROM employees AS e
         LEFT JOIN employees AS m
-            ON e.manager_id = m.employee_id
-        ORDER BY e.employee_id;
+            ON e.manager_id = m.emp_id
+        ORDER BY e.emp_id;
         """,
         engine=con
     )
@@ -413,8 +413,8 @@ def _(con, mo):
                COALESCE(m.name, '(reports to the board)') AS manager
         FROM employees AS e
         LEFT JOIN employees AS m
-            ON e.manager_id = m.employee_id
-        ORDER BY e.employee_id;
+            ON e.manager_id = m.emp_id
+        ORDER BY e.emp_id;
         """,
         engine=con
     )
@@ -452,7 +452,7 @@ def _(con, mo):
                e.salary - m.salary AS difference
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
+            ON e.manager_id = m.emp_id
         WHERE e.salary > m.salary
         ORDER BY difference DESC;
         """,
@@ -499,7 +499,7 @@ def _(con, mo):
                m.hire_date AS manager_hired
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
+            ON e.manager_id = m.emp_id
         WHERE e.hire_date < m.hire_date
         ORDER BY e.hire_date;
         """,
@@ -539,7 +539,7 @@ def _(mo):
 
     ```sql
     ON a.manager_id = b.manager_id     -- same manager
-    AND a.employee_id < b.employee_id  -- the "<" trick
+    AND a.emp_id < b.emp_id            -- the "<" trick
     ```
 
     **Expected: 7 pairs.** Bob–Carol · David–Eva · Frank–Grace ·
@@ -558,10 +558,10 @@ def _(con, mo):
         FROM employees AS a
         INNER JOIN employees AS b
             ON a.manager_id = b.manager_id
-           AND a.employee_id < b.employee_id
+           AND a.emp_id < b.emp_id
         INNER JOIN employees AS m
-            ON a.manager_id = m.employee_id
-        ORDER BY a.employee_id, b.employee_id;
+            ON a.manager_id = m.emp_id
+        ORDER BY a.emp_id, b.emp_id;
         """,
         engine=con
     )
@@ -576,8 +576,8 @@ def _(mo):
     | Extra condition | What goes wrong |
     |-----------------|-----------------|
     | *(none)* | Every person is paired **with themselves** (Henry–Henry). |
-    | `a.employee_id <> b.employee_id` | No self-pairs, but every pair appears **twice** (Henry–Ivy **and** Ivy–Henry). |
-    | `a.employee_id < b.employee_id` | Each pair appears **once**. ✅ |
+    | `a.emp_id <> b.emp_id` | No self-pairs, but every pair appears **twice** (Henry–Ivy **and** Ivy–Henry). |
+    | `a.emp_id < b.emp_id` | Each pair appears **once**. ✅ |
 
     **Expected:** 25, then 14, then 7.
     (25 = 14 two-way pairs + 11 self-pairs. 14 ÷ 2 = 7.)
@@ -598,12 +598,12 @@ def _(con, mo):
              FROM employees AS a
              INNER JOIN employees AS b
                  ON a.manager_id = b.manager_id
-                AND a.employee_id <> b.employee_id) AS with_not_equal,
+                AND a.emp_id <> b.emp_id) AS with_not_equal,
             (SELECT COUNT(*)
              FROM employees AS a
              INNER JOIN employees AS b
                  ON a.manager_id = b.manager_id
-                AND a.employee_id < b.employee_id) AS with_less_than;
+                AND a.emp_id < b.emp_id) AS with_less_than;
         """,
         engine=con
     )
@@ -637,7 +637,7 @@ def _(con, mo):
         FROM employees AS a
         INNER JOIN employees AS b
             ON a.manager_id = b.manager_id
-           AND a.employee_id < b.employee_id
+           AND a.emp_id < b.emp_id
         WHERE ABS(a.salary - b.salary) > 20000
         ORDER BY gap DESC;
         """,
@@ -659,7 +659,7 @@ def _(mo):
 
     Two counts, side by side:
 
-    * `COUNT(e.employee_id)` counts only **real** matches. ✅
+    * `COUNT(e.emp_id)` counts only **real** matches. ✅
     * `COUNT(*)` counts **rows** — and an unmatched person still has
       one row (full of `NULL`s), so it says **1**. ❌
 
@@ -676,14 +676,14 @@ def _(con, mo):
         f"""
         SELECT m.name AS person,
                m.title,
-               COUNT(e.employee_id) AS direct_reports,
+               COUNT(e.emp_id) AS direct_reports,
                COUNT(*)             AS wrong_count,
                STRING_AGG(e.name, ', ' ORDER BY e.name) AS who
         FROM employees AS m
         LEFT JOIN employees AS e
-            ON e.manager_id = m.employee_id
-        GROUP BY m.employee_id, m.name, m.title
-        ORDER BY direct_reports DESC, m.employee_id;
+            ON e.manager_id = m.emp_id
+        GROUP BY m.emp_id, m.name, m.title
+        ORDER BY direct_reports DESC, m.emp_id;
         """,
         engine=con
     )
@@ -715,8 +715,8 @@ def _(con, mo):
                ROUND(AVG(e.salary)) AS avg_salary
         FROM employees AS m
         INNER JOIN employees AS e
-            ON e.manager_id = m.employee_id
-        GROUP BY m.employee_id, m.name
+            ON e.manager_id = m.emp_id
+        GROUP BY m.emp_id, m.name
         HAVING SUM(e.salary) > 200000
         ORDER BY team_payroll DESC;
         """,
@@ -759,10 +759,10 @@ def _(con, mo):
                g.name AS grand_manager
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
+            ON e.manager_id = m.emp_id
         INNER JOIN employees AS g
-            ON m.manager_id = g.employee_id
-        ORDER BY g.employee_id, m.employee_id, e.employee_id;
+            ON m.manager_id = g.emp_id
+        ORDER BY g.emp_id, m.emp_id, e.emp_id;
         """,
         engine=con
     )
@@ -849,7 +849,7 @@ def _(mo):
     **Expected: 3 rows** — Tuesday, Friday, and Saturday.
     (Thursday tied Wednesday, so it does not count.)
 
-    💡 In Week 9 you will meet `LAG()`, a window function that does
+    💡 In bonus Week 11 you can meet `LAG()`, a window function that does
     this same job in a different way. The self join is the classic,
     works-everywhere version.
     """)
@@ -892,11 +892,11 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(con, mo):
     _managers = [r[0] for r in con.execute("""
-        SELECT DISTINCT m.name, m.employee_id
+        SELECT DISTINCT m.name, m.emp_id
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
-        ORDER BY m.employee_id
+            ON e.manager_id = m.emp_id
+        ORDER BY m.emp_id
     """).fetchall()]
     team_picker = mo.ui.dropdown(
         options=_managers, value="David", label="Manager (`m`):"
@@ -915,7 +915,7 @@ def _(con, mo, team_picker):
                e.salary
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.manager_id = m.employee_id
+            ON e.manager_id = m.emp_id
         WHERE m.name = '{team_picker.value}'
         ORDER BY e.salary DESC;
         """,
@@ -944,7 +944,7 @@ def _(con, mo):
             """SELECT name
     FROM employees
     INNER JOIN employees
-        ON manager_id = employee_id;""",
+        ON manager_id = emp_id;""",
             "Both copies are called `employees`, so DuckDB cannot tell "
             "which `manager_id` you mean. **Fix:** give each copy its "
             "own alias — `employees AS e` and `employees AS m`.",
@@ -954,7 +954,7 @@ def _(con, mo):
             """SELECT name
     FROM employees AS e
     INNER JOIN employees AS m
-        ON e.manager_id = m.employee_id;""",
+        ON e.manager_id = m.emp_id;""",
             "**Every** column exists in both copies. A bare `name` is "
             "always ambiguous in a self join. **Fix:** write `e.name` "
             "or `m.name` — always prefix every column.",
@@ -987,16 +987,16 @@ def _(mo):
     returns 11 rows. But the roles are swapped, so the labels lie.
 
     ```sql
-    ON e.employee_id = m.manager_id   -- backwards!
+    ON e.emp_id = m.manager_id   -- backwards!
     ```
 
     Look at the first row: it says Alice's "manager" is Carol.
     In fact, Carol reports to Alice.
 
     **Fix:** say the rule out loud — *"the **employee's**
-    `manager_id` equals the **manager's** `employee_id`"* — so the
+    `manager_id` equals the **manager's** `emp_id`"* — so the
     `manager_id` column always sits next to the employee alias:
-    `e.manager_id = m.employee_id`.
+    `e.manager_id = m.emp_id`.
     """)
     return
 
@@ -1009,8 +1009,8 @@ def _(con, mo):
                m.name AS manager_WRONG
         FROM employees AS e
         INNER JOIN employees AS m
-            ON e.employee_id = m.manager_id
-        ORDER BY e.employee_id, m.employee_id DESC;
+            ON e.emp_id = m.manager_id
+        ORDER BY e.emp_id, m.emp_id DESC;
         """,
         engine=con
     )
@@ -1022,7 +1022,7 @@ def _(mo):
     mo.md("""
     ### Mistake 4 — Forgetting the `<` rule in pairs
 
-    You saw it in Q9: without `a.employee_id < b.employee_id` you get
+    You saw it in Q9: without `a.emp_id < b.emp_id` you get
     self-pairs and double-counted pairs. A report that says "14
     teammate pairs" when the truth is 7 is a **silent** error, too.
 
@@ -1034,14 +1034,14 @@ def _(mo):
     SELECT e.name AS employee, m.name AS manager
     FROM employees AS e
     LEFT JOIN employees AS m              -- LEFT keeps the top boss
-        ON e.manager_id = m.employee_id;
+        ON e.manager_id = m.emp_id;
 
     -- Pattern 2: pairs of peers (each pair once)
     SELECT a.name, b.name
     FROM employees AS a
     INNER JOIN employees AS b
         ON a.manager_id = b.manager_id    -- what they share
-       AND a.employee_id < b.employee_id; -- no self-pairs, no duplicates
+       AND a.emp_id < b.emp_id;          -- no self-pairs, no duplicates
 
     -- Pattern 3: row → the row before it (today vs. yesterday)
     SELECT t.sale_date, t.revenue - y.revenue AS change
@@ -1081,7 +1081,7 @@ def _(mo):
            m.department AS manager_department
     FROM employees AS e
     INNER JOIN employees AS m
-        ON e.manager_id = m.employee_id;
+        ON e.manager_id = m.emp_id;
     ```
     11 rows. Bob and Carol are the only ones whose manager (Alice)
     works in a different department.
@@ -1091,7 +1091,7 @@ def _(mo):
     SELECT e.name, e.department, m.department AS manager_department
     FROM employees AS e
     INNER JOIN employees AS m
-        ON e.manager_id = m.employee_id
+        ON e.manager_id = m.emp_id
     WHERE e.department <> m.department;
     ```
     2 rows: Bob (Engineering) and Carol (Sales). Their manager, Alice,
@@ -1102,9 +1102,9 @@ def _(mo):
     SELECT m.name
     FROM employees AS m
     LEFT JOIN employees AS e
-        ON e.manager_id = m.employee_id
-    WHERE e.employee_id IS NULL
-    ORDER BY m.employee_id;
+        ON e.manager_id = m.emp_id
+    WHERE e.emp_id IS NULL
+    ORDER BY m.emp_id;
     ```
     7 rows: Eva, Grace, Henry, Ivy, Jack, Kim, Leo.
         """),
@@ -1114,8 +1114,8 @@ def _(mo):
     FROM employees AS a
     INNER JOIN employees AS b
         ON a.department = b.department
-       AND a.employee_id < b.employee_id
-    ORDER BY a.employee_id, b.employee_id;
+       AND a.emp_id < b.emp_id
+    ORDER BY a.emp_id, b.emp_id;
     ```
     25 pairs: 15 in Engineering (6 people) and 10 in Sales (5 people).
     Alice is alone in Leadership, so she has no pair.
@@ -1125,9 +1125,9 @@ def _(mo):
     SELECT e.name, e.salary, g.name AS grand_manager, g.salary AS gm_salary
     FROM employees AS e
     INNER JOIN employees AS m
-        ON e.manager_id = m.employee_id
+        ON e.manager_id = m.emp_id
     INNER JOIN employees AS g
-        ON m.manager_id = g.employee_id
+        ON m.manager_id = g.emp_id
     WHERE e.salary > g.salary;
     ```
     0 rows! Eva (145,000) earns more than Bob, but her grand-manager
