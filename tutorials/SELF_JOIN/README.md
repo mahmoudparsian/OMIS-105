@@ -1,5 +1,7 @@
 # Self Join — When a Table Joins Itself
 
+You need to learn the SQL self-join because it allows you to query relationships that exist within a single table.
+
 ```
    What is a Self Join?
 
