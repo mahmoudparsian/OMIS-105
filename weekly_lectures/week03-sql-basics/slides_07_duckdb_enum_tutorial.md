@@ -118,6 +118,17 @@ WHERE priority >= 'HIGH';
 | :--- | :--- | :--- |
 | 2 | Database outage | CRITICAL |
 
+
+
+### 3. Enum Removal
+Enum types are stored in the catalog, and a catalog 
+dependency is added to each table that uses them. 
+It is possible to drop an enum from the catalog using 
+the following command:
+
+```sql
+DROP TYPE enum_name;
+```
 ---
 
 ## Summary Checklist

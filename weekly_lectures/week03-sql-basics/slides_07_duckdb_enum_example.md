@@ -87,6 +87,16 @@ SELECT enum_range(NULL::order_status);
 -- [pending, shipped, delivered, cancelled]
 ```
 
+## 4. Enum Removal
+Enum types are stored in the catalog, and a catalog 
+dependency is added to each table that uses them. 
+It is possible to drop an enum from the catalog using 
+the following command:
+
+```sql
+DROP TYPE enum_name;
+```
+
 ---
 
 ## Why Use ENUMs?
