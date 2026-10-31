@@ -3,14 +3,27 @@
 ```
    What is a Self Join?
 
-   A self join joins a table to ITSELF.  You 
-   list the SAME table twice, give each copy 
-   its own alias (for  example e = employee, 
-   m = manager),  and write an ON rule  that 
+   A self join joins a table to  ITSELF.  You 
+   list the SAME table twice,  give each copy 
+   its  own alias (for  example e = employee, 
+   m = manager),  and  write an ON rule  that 
    connects the two roles. 
    
-   There  is no SELF JOIN  keyword:  you use 
+   There  is no SELF JOIN  keyword:  you  use 
    INNER JOIN or LEFT JOIN, exactly as before.
+```
+
+```sql
+   -- SELF-JOIN EXAMPLE: 
+   -- find manager's name for employees
+
+   employees(emp_id, emp_name, mgr_id)
+
+   SELECT e.emp_name AS employee_name, 
+          m.emp_name AS manager_name
+   FROM employees AS e 
+   JOIN employees AS m 
+      ON e.mgr_id = m.emp_id;
 ```
 
 * A short reading guide and three beginner-friendly Marimo notebooks
