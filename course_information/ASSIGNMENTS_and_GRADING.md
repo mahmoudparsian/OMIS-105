@@ -65,7 +65,7 @@ policy, including what happens if you are absent.
 ---
 
 
-## 5. Transparent 1000-Point System
+## 5. Transparent 1000-Point System and Letter Grades
 
 The 1000-point grading scale keeps grading 
 simple, transparent, and easy to understand.
@@ -79,6 +79,26 @@ simple, transparent, and easy to understand.
 850 points = 85%
 950 points = 95%
 ```
+
+**Letter grades** (total points out of 1,000):
+
+| Letter | Points (out of 1,000) | Percentage |
+|:---:|---|---|
+| A | 940 – 1,000 | 94% – 100% |
+| A− | 900 – 939 | 90% – 93.9% |
+| B+ | 870 – 899 | 87% – 89.9% |
+| B | 830 – 869 | 83% – 86.9% |
+| B− | 800 – 829 | 80% – 82.9% |
+| C+ | 770 – 799 | 77% – 79.9% |
+| C | 730 – 769 | 73% – 76.9% |
+| C− | 700 – 729 | 70% – 72.9% |
+| D+ | 670 – 699 | 67% – 69.9% |
+| D | 630 – 669 | 63% – 66.9% |
+| D− | 600 – 629 | 60% – 62.9% |
+| F | below 600 | below 60% |
+
+Fractional totals are rounded to the nearest whole point before this table
+is applied (939.5 → 940 → A; 939.4 → 939 → A−).
 
 ---
 
