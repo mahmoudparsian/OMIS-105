@@ -41,7 +41,8 @@ policy, including what happens if you are absent.
 
 ## 4. Course Policies
 
-1. The lowest in-class lab score will be dropped.
+1. **Lowest lab replaced.** The lowest in-class lab score is replaced by
+   the average of your other 19 lab scores, so labs still total 600 points.
 
 2. All exams (Midterm and Final) are 
 	* **closed book**, 
