@@ -560,10 +560,11 @@ ORDER BY c.cust_id;
 
 ## 7. Next Steps
 
-Practice with the two notebooks in this folder:
+Practice with the three notebooks in this folder:
 
-* [`self_join_notebook_01.py`](self_join_notebook_01.py) — quick start, 5 queries
-* [`self_join_notebook_02.py`](self_join_notebook_02.py) — the full lesson, with an org chart, common mistakes, and 6 exercises
+* [`self_join_notebook_01_quickstart.py`](self_join_notebook_01_quickstart.py) — quick start, 5 queries
+* [`self_join_notebook_02_company.py`](self_join_notebook_02_company.py) — the full lesson, with an org chart, common mistakes, and 6 exercises
+* [`self_join_notebook_03_referrals.py`](self_join_notebook_03_referrals.py) — the referral example from Section 6, as live queries, with a referral tree and 4 exercises
 
 ---
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
