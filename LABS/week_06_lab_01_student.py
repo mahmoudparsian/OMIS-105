@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.10"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium")
 
 
@@ -51,7 +51,7 @@ def _(mo):
         ) AS t(member_id, member_name, city, join_date);
         """
     )
-    return (members,)
+    return
 
 
 @app.cell
@@ -80,7 +80,7 @@ def _(mo):
         ) AS t(booking_id, member_id, class_id, booking_date);
         """
     )
-    return (bookings,)
+    return
 
 
 @app.cell
@@ -101,7 +101,7 @@ def _(mo):
         ) AS t(class_id, class_name, trainer_id, price);
         """
     )
-    return (classes,)
+    return
 
 
 @app.cell
@@ -120,7 +120,7 @@ def _(mo):
         ) AS t(trainer_id, trainer_name, manager_id);
         """
     )
-    return (trainers,)
+    return
 
 
 @app.cell(hide_code=True)
@@ -138,7 +138,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q1 = mo.sql(
-        """
+        f"""
         -- Predict: ___ rows
         -- YOUR SQL HERE
         """
@@ -159,7 +159,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q2 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -181,7 +181,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q3 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -201,7 +201,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q4 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -221,7 +221,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q5 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -241,7 +241,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q6 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -261,7 +261,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q7 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -281,7 +281,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q8 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -301,7 +301,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q9 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -321,7 +321,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q10 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -352,7 +352,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q11 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE
         """
     )
@@ -372,7 +372,7 @@ def _(mo):
 @app.cell
 def _(mo):
     q12 = mo.sql(
-        """
+        f"""
         -- YOUR SQL HERE (bonus)
         """
     )
@@ -397,7 +397,7 @@ def _():
 
 
     """
-    return (exit_ticket,)
+    return
 
 
 if __name__ == "__main__":
