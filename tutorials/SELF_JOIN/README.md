@@ -71,8 +71,11 @@ together. Then try `03`: the same patterns on a different table
 ## The Sample Data (Notebook 02)
 
 ```
-employees   (emp_id, name, title, department, manager_id, salary, hire_date)   -- 12 rows
-daily_sales (sale_date, revenue)                                                    -- 7 rows
+-- 12 rows
+employees   (emp_id, name, title, department, manager_id, salary, hire_date)   
+
+-- 7 rows
+daily_sales (sale_date, revenue)                                                    
 
 employees.manager_id → employees.emp_id   (the table points to itself)
 ```
