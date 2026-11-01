@@ -15,11 +15,15 @@ def _():
 def _():
     import duckdb
 
-    ## windows:
-    ##    DATABASE_URL = 'C:/Users/YourName/my_1st_db.duckdb'
-    ##    DATABASE_URL = r"C:\Users\YourName\my_1st_db.duckdb"
+    ## The database is a file named "first_database.duckdb",
+    ## created in the same folder as this notebook.
+    ## This works on Mac, Windows, and molab.
+    ##
+    ## To keep it somewhere else, give a full path:
+    ##    Mac:     DATABASE_URL = "/Users/YourName/first_database.duckdb"
+    ##    Windows: DATABASE_URL = r"C:\Users\YourName\first_database.duckdb"
 
-    DATABASE_URL = "/Users/mparsian/mp/duckdb_databases/first_database.duckdb"
+    DATABASE_URL = "first_database.duckdb"
     custom_engine = duckdb.connect(DATABASE_URL, read_only=False)
 
     print("custom_engine=", custom_engine)
@@ -35,7 +39,7 @@ def _():
 def _(custom_engine, mo):
     _df = mo.sql(
         f"""
-        CREATE TABLE scores(
+        CREATE OR REPLACE TABLE scores (
             country VARCHAR,
             name VARCHAR,
             score INT
