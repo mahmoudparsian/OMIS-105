@@ -12,6 +12,11 @@ Click an **Open in molab** button to run a lab in your web browser.
 Nothing to install, and no sign-in. Molab is a free service from the
 makers of Marimo.
 
+**How does this work?** Each button opens the lab in **WASM**
+(WebAssembly) mode. In one sentence: **WASM lets the browser run
+Python, so the lab runs on the student's own computer with nothing
+installed.**
+
 * The lab may take a few seconds to open while Python loads.
 * Your changes may not be saved. To keep your work, run the lab on your computer (see below).
 
