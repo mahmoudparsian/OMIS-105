@@ -179,8 +179,7 @@ Put **step 1 inside step 2**, in parentheses:
 ```sql
 SELECT product_name, price
 FROM products
-WHERE price > (SELECT AVG(price)
-               FROM products);
+WHERE price > (SELECT AVG(price) FROM products);
 ```
 
 | product_name | price |
