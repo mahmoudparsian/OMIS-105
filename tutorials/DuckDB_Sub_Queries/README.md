@@ -15,14 +15,15 @@ support Week 9 (window functions and CTEs).
 | 1 | [`subqueries_01_basics.md`](subqueries_01_basics.md) | A short first look: the "solve for X" idea, then three levels — one value, a list, a table in `FROM`. Includes common errors. | `employees` (5 rows) |
 | 2 | [`subqueries_02_single_table.md`](subqueries_02_single_table.md) | Scalar, `IN`, derived-table, and correlated subqueries on one table, then the same ideas rewritten with `WITH`. | `employees` (7 rows) |
 | 3 | [`subqueries_03_two_tables.md`](subqueries_03_two_tables.md) | Two related tables: `INNER JOIN`, `IN`, `EXISTS`, scalar subqueries, and CTEs that join. | `departments`, `employees` |
-| 4 | [`subqueries_notebook_01.py`](subqueries_notebook_01.py) | A Marimo notebook with the very basics: one value (`=`, `>`, `MAX`), a subquery in `SELECT`, a list (`IN`, `NOT IN`), a table in `FROM`, the most common error, an interactive demo, and 3 exercises. | `employees` (8 rows) |
-| 5 | [`subqueries_notebook_02.py`](subqueries_notebook_02.py) | A Marimo notebook on **correlated subqueries** and **`EXISTS` / `NOT EXISTS`**, including the alias pitfall, the `NOT IN` + `NULL` trap, two interactive demos, and 3 exercises. | `departments`, `employees` (9 rows) |
-| 6 | [`subqueries_notebook_03.py`](subqueries_notebook_03.py) | A Marimo notebook on **CTEs with `WITH`**, step by step: subquery → CTE, anatomy, chained CTEs, CTE + `JOIN`, using a CTE twice, debugging a pipeline one step at a time (interactive), real error messages, and 3 exercises. | `departments`, `employees` (8 rows) |
-| 7 | [`subqueries_notebook_04.py`](subqueries_notebook_04.py) | A Marimo notebook: 9 lessons + a finale on `WITH` — from one CTE to multi-step pipelines and ranking (`ROW_NUMBER`, `RANK`, `DENSE_RANK`). | `employees` (20 rows) |
-| 8 | [`subqueries_04_tutorial.md`](subqueries_04_tutorial.md) | The complete reference: every subquery type, `ANY`/`ALL`, recursive CTEs, joins vs. subqueries, common mistakes, and 15 exercises with solutions. | `sales`, then `sales` + `products` |
+| 4 | [`subqueries_04_emps_depts.md`](subqueries_04_emps_depts) | Two related tables: `INNER JOIN`, `IN`, `EXISTS`, scalar subqueries, and CTEs that join. | `departments`, `employees` |
+| 5 | [`subqueries_notebook_01.py`](subqueries_notebook_01.py) | A Marimo notebook with the very basics: one value (`=`, `>`, `MAX`), a subquery in `SELECT`, a list (`IN`, `NOT IN`), a table in `FROM`, the most common error, an interactive demo, and 3 exercises. | `employees` (8 rows) |
+| 6 | [`subqueries_notebook_02.py`](subqueries_notebook_02.py) | A Marimo notebook on **correlated subqueries** and **`EXISTS` / `NOT EXISTS`**, including the alias pitfall, the `NOT IN` + `NULL` trap, two interactive demos, and 3 exercises. | `departments`, `employees` (9 rows) |
+| 7 | [`subqueries_notebook_03.py`](subqueries_notebook_03.py) | A Marimo notebook on **CTEs with `WITH`**, step by step: subquery → CTE, anatomy, chained CTEs, CTE + `JOIN`, using a CTE twice, debugging a pipeline one step at a time (interactive), real error messages, and 3 exercises. | `departments`, `employees` (8 rows) |
+| 8 | [`subqueries_notebook_04.py`](subqueries_notebook_04.py) | A Marimo notebook: 9 lessons + a finale on `WITH` — from one CTE to multi-step pipelines and ranking (`ROW_NUMBER`, `RANK`, `DENSE_RANK`). | `employees` (20 rows) |
+| 9 | [`subqueries_05_tutorial.md`](subqueries_05_tutorial.md) | The complete reference: every subquery type, `ANY`/`ALL`, recursive CTEs, joins vs. subqueries, common mistakes, and 15 exercises with solutions. | `sales`, then `sales` + `products` |
 
-Files 1–3 are quick reads (15–30 minutes each). Notebooks 01, 02, and
-03 take about 45 minutes each, and notebook 04 about one hour. File 8 is
+Files 1–4 are quick reads (15–30 minutes each). Notebooks 01, 02, and
+03 take about 45 minutes each, and notebook 04 about one hour. File 9 is
 long — use it as a reference and for practice.
 
 **Short on time?** Do the four notebooks in number order:
