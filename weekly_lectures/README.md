@@ -81,9 +81,11 @@ Weeks 2–10 share a common layout:
 
 **Week 9 is different:** its two sessions teach ranking functions from
 `ranking_slides_1.md` / `ranking_slides_2.md` with `ranking_demo_1.py` /
-`ranking_demo_2.py`. Its `slides_1.md`, `slides_2.md`, `demo1.py`, `demo2.py`,
-`lab09_student.md`, and `quiz.md` cover indexes and query performance —
-reference material for the short indexes segment at the end of Session 2.
+`ranking_demo_2.py`; `lab09_student.md` (and `lab09_student_marimo.py`) and
+`quiz.md` practice them. The earlier indexes and query-performance material is
+kept as reference for the short indexes segment at the end of Session 2:
+`slides_1.md`, `slides_2.md`, `demo1.py`, `demo2.py`, `lab09_indexes_student.md`
+(and `lab09_indexes_*_marimo.py`), and `quiz_indexes.md`.
 
 These folders differ:
 

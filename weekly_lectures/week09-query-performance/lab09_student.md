@@ -1,161 +1,202 @@
-# Lab 7: Performance & Indexing
+# Lab 9: Ranking Functions — `ROW_NUMBER`, `RANK`, `DENSE_RANK`
 
 ## OMIS 105 — Database Management Systems
-**Week 9 | Estimated time: 75–90 minutes**
+**Week 9 | Estimated time: 75–90 minutes | 10 questions × 3 points = 30 points**
 
 ---
 
 ## Setup
 
-```python
-import duckdb, time
-con = duckdb.connect()
-for t, f in [('categories','categories.csv'),('products','products.csv'),
-             ('customers','customers.csv'),('orders','orders.csv'),
-             ('order_items','order_items.csv'),('reviews','reviews.csv'),
-             ('shipping','shipping.csv'),('suppliers','suppliers.csv'),
-             ('product_suppliers','product_suppliers.csv')]:
-    con.sql(f"CREATE TABLE {t} AS SELECT * FROM read_csv_auto('{f}')")
-```
-
----
-
-## Part 1: Understanding Query Plans (15 points)
-
-**Q1.** Run `EXPLAIN` on the following query and describe what you see. What operations does DuckDB use?
-
-```sql
-EXPLAIN
-SELECT product_name, price FROM products WHERE price > 100;
-```
-
-**Q2.** Run `EXPLAIN` on a JOIN query. Identify the join algorithm DuckDB chooses.
-
-```sql
-EXPLAIN
-SELECT c.first_name, o.order_id, o.total_amount
-FROM customers c
-INNER JOIN orders o ON c.customer_id = o.customer_id
-WHERE o.total_amount > 300;
-```
-
-**Q3.** Run `EXPLAIN` on a query with GROUP BY. What additional operations appear?
-
-```sql
-EXPLAIN
-SELECT category_id, COUNT(*), AVG(price)
-FROM products
-GROUP BY category_id;
-```
-
----
-
-## Part 2: Creating and Using Indexes (15 points)
-
-**Q4.** Create an index on `orders(status)`. Then run EXPLAIN on a query filtering by status. Does the plan change?
-
-```sql
--- Create index, then EXPLAIN
-```
-
-**Q5.** Create a composite index on `orders(customer_id, order_date)`. Write a query that would benefit from this index and run EXPLAIN.
-
-```sql
--- Your index + query + EXPLAIN
-```
-
-**Q6.** List all indexes you have created using `SELECT * FROM duckdb_indexes()`. Then drop one of them.
-
-```sql
--- Your queries here
-```
-
----
-
-## Part 3: Query Optimization (25 points)
-
-**Q7.** The following query is inefficient. Identify the problems and rewrite it for better performance. Explain each change.
-
-```sql
-SELECT *
-FROM customers c
-LEFT JOIN orders o ON c.customer_id = o.customer_id
-LEFT JOIN order_items oi ON o.order_id = oi.order_id
-LEFT JOIN products p ON oi.product_id = p.product_id
-WHERE p.category_id = 1
-ORDER BY o.order_date DESC;
-```
-
-**Q8.** Rewrite this query to avoid using a function on an indexed column:
-
-```sql
-SELECT * FROM orders
-WHERE EXTRACT(YEAR FROM order_date) = 2024
-  AND EXTRACT(MONTH FROM order_date) = 6;
-```
-
-**Q9.** Rewrite this query using EXISTS instead of IN. Explain why EXISTS can be faster.
-
-```sql
-SELECT * FROM customers
-WHERE customer_id IN (
-    SELECT customer_id FROM orders
-    WHERE total_amount > 500
-);
-```
-
-**Q10.** This query runs slowly on large tables. Optimize it.
-
-```sql
-SELECT c.first_name, c.last_name, c.email,
-       COUNT(o.order_id) AS total_orders,
-       SUM(o.total_amount) AS total_spent,
-       AVG(o.total_amount) AS avg_order
-FROM customers c
-LEFT JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.customer_id, c.first_name, c.last_name, c.email
-ORDER BY total_spent DESC;
-```
-
-Suggest what indexes would help and any query rewrites.
-
----
-
-## Part 4: Performance Measurement (10 points)
-
-**Q11.** Write a Python function that times a query and returns the execution time in milliseconds. Use it to compare the performance of two equivalent queries:
-
-Query A (subquery): Find customers whose total spending exceeds the average customer spending.
-Query B (CTE): Same result, different approach.
+Open a new Marimo notebook **inside the `week09-query-performance` folder**
+(so the `data/` path works), and run this cell first:
 
 ```python
-# Your timing function and two queries
+import duckdb
+con = duckdb.connect(database=":memory:")
+for t in ["customers", "orders", "order_items", "products", "categories", "reviews"]:
+    con.execute(f"CREATE OR REPLACE TABLE {t} AS SELECT * FROM read_csv('data/{t}.csv')")
 ```
 
-**Q12.** Generate a larger dataset by duplicating the orders table 10 times. Re-run your comparison from Q11 on the larger dataset. Does the relative performance change?
+Then write each answer in its own cell:
 
 ```python
-# Your code here
+con.execute("""
+    SELECT ...
+""").fetchdf()
+```
+
+**The tables:**
+
+| Table | Columns |
+|---|---|
+| `customers` | `customer_id`, `first_name`, `last_name`, `email`, `city`, `state`, `join_date` |
+| `orders` | `order_id`, `customer_id`, `order_date`, `status`, `total_amount` |
+| `order_items` | `item_id`, `order_id`, `product_id`, `quantity`, `unit_price` |
+| `products` | `product_id`, `product_name`, `category_id`, `price`, `stock_quantity` |
+| `categories` | `category_id`, `category_name`, `description` |
+| `reviews` | `review_id`, `product_id`, `customer_id`, `rating`, `review_text`, `review_date` |
+
+**Rules for every query:**
+
+- **Every answer must use a ranking function** — `ROW_NUMBER`, `RANK`, or `DENSE_RANK`
+- To **filter** on a rank, compute it in a subquery or CTE first — `WHERE` cannot see it
+- With `ROW_NUMBER`, always add the tie-breaker the question gives
+- List the columns you need — no `SELECT *` — and use the `ORDER BY` given
+- The **expected row count** is given for each question. If yours is different, check your ranking first
+
+---
+
+## Part 1: `ROW_NUMBER` (9 points)
+
+Number rows one by one — and restart the numbering in each group.
+
+**Q1. Number the products.** Show `product_name`, `price`, and `rn` — a `ROW_NUMBER()` by price, **highest first**, with `product_id` as the tie-breaker. Order by `rn` and show the first 10 rows.
+
+*Expected: 10 rows.*
+
+```sql
+-- your query here
+
 ```
 
 ---
 
-## Part 5: Index Design Challenge (10 points)
+**Q2. Restart for each category.** Join `products` to `categories`. Show `category_name`, `product_name`, `price`, and `rn` — a `ROW_NUMBER()` that **restarts at 1 in each category** (highest price first, tie-breaker `product_id`). Order by `category_name`, then `rn`.
 
-**Q13.** You are told that the ShopSmart application runs these 5 queries most frequently:
+*Expected: 64 rows; exactly 8 rows have `rn = 1`.*
 
-1. `SELECT * FROM orders WHERE customer_id = ? AND status = 'completed'`
-2. `SELECT * FROM products WHERE category_id = ? ORDER BY price DESC`
-3. `SELECT * FROM order_items WHERE order_id = ?`
-4. `SELECT * FROM reviews WHERE product_id = ? ORDER BY review_date DESC`
-5. `SELECT * FROM orders WHERE order_date BETWEEN ? AND ?`
+```sql
+-- your query here
 
-Design an index strategy: which indexes would you create? For each, explain your reasoning. Are there any indexes you would NOT create, and why?
+```
 
 ---
 
-## Submission
+**Q3. The most expensive product in each category.** Use Q2's query as a **subquery** and keep only `rn = 1`. Show `category_name`, `product_name`, and `price`. Order by `category_name`.
 
-- Submit notebook with all queries, EXPLAIN outputs, timing results, and written analysis
-- **Total: 75 points**
+*Expected: 8 rows.*
 
+```sql
+-- your query here
+
+```
+
+---
+
+## Part 2: Ties — `RANK` and `DENSE_RANK` (12 points)
+
+The data has real ties: three customers with 9 orders, two cities with 6 customers, two with 4.
+
+**Q4. All three, side by side.** In a CTE, count each customer's orders: `customer_id`, `first_name`, `n_orders` (join `customers` and `orders`). Then show those three columns plus `row_num` (`ROW_NUMBER`, tie-breaker `customer_id`), `rnk` (`RANK`), and `dense_rnk` (`DENSE_RANK`) — all ordered by `n_orders`, highest first. Order by `row_num` and show the first 10 rows.
+
+🔮 **Predict first:** three customers have 9 orders. What will `rnk` and `dense_rnk` be for the customer with **8** orders?
+
+*Expected: 10 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q5. Top 4 — keeping ties.** Using Q4's CTE, show `customer_id`, `first_name`, `n_orders`, and `rnk` (`RANK`) for every customer with `rnk <= 4`. Order by `rnk`, then `customer_id`.
+
+✍️ **Explain it:** you asked for the top **4** — why are there more than 4 rows? How many rows would `ROW_NUMBER() <= 4` return?
+
+*Expected: 5 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q6. Rank the cities.** In a CTE, count the customers in each `city` (`n_customers`). Show `city`, `n_customers`, and `city_rank` — a `DENSE_RANK` by `n_customers`, highest first. Order by `city_rank`, then `city`.
+
+*Expected: 10 rows; the last `city_rank` is 5.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q7. The 3rd-highest value.** Which city or cities have the **3rd-highest** number of customers? Rank in a CTE with `DENSE_RANK`, then keep `city_rank = 3`. Show `city` and `n_customers`. Order by `city`.
+
+✍️ **Explain it:** change `DENSE_RANK` to `RANK`. How many rows do you get now, and why?
+
+*Expected: 2 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+## Part 3: Ranking Results and Patterns (9 points)
+
+Rank a `GROUP BY` result, find the first event per group, and fix a common error.
+
+**Q8. Rank a `GROUP BY` result.** In a CTE, compute each category's `revenue` = `SUM(quantity * unit_price)` from `order_items` (join `products` and `categories`), rounded to 2 decimals. Show `category_name`, `revenue`, and `revenue_rank` (`DENSE_RANK`, highest revenue first). Order by `revenue_rank`, then `category_name`.
+
+*Expected: 8 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q9. Each customer's first order.** Show each customer's **first** order: `customer_id`, `order_id`, `order_date`. Use `ROW_NUMBER()` with `PARTITION BY customer_id`, ordered by `order_date` (tie-breaker `order_id`), in a subquery; keep `rn = 1`. Order by `order_date`, then `customer_id`.
+
+*Expected: 40 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q10. 🐞 Debug it.** A classmate wanted the **best-rated** products (every product tied for the highest average rating) and wrote:
+
+```sql
+WITH product_ratings AS (
+    SELECT p.product_name,
+           ROUND(AVG(r.rating), 2) AS avg_rating
+    FROM products AS p
+    JOIN reviews AS r ON r.product_id = p.product_id
+    GROUP BY p.product_name
+)
+SELECT product_name, avg_rating,
+       DENSE_RANK() OVER (ORDER BY avg_rating DESC) AS rating_rank
+FROM product_ratings
+WHERE rating_rank = 1;
+```
+
+DuckDB answers: **`WHERE clause cannot contain window functions!`** Explain in one sentence why `WHERE` cannot see `rating_rank`, then fix the query. Show `product_name` and `avg_rating`. Order by `product_name`.
+
+*Expected: 10 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+## Grading
+
+- 3 points per question: 2 for a correct result, 1 for using the right
+  ranking function (and `PARTITION BY` / a subquery or CTE where needed)
+- The short written answers in Q5, Q7, and Q10 are part of their second point
+
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

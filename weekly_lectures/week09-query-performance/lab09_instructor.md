@@ -1,197 +1,330 @@
-# Lab 7: Performance & Indexing — INSTRUCTOR SOLUTIONS
+# Lab 9: Ranking Functions — `ROW_NUMBER`, `RANK`, `DENSE_RANK`
 
 ## OMIS 105 — Database Management Systems
-**Week 9 | Answer Key**
+**Week 9 | Answer Key | 10 questions × 3 points = 30 points**
+
+Every query and result below was run against the CSVs in `data/` (DuckDB 1.5.5 and 2.0 give the same output).
 
 ---
 
-## Part 1: Understanding Query Plans (15 points)
+## Part 1: `ROW_NUMBER` (9 points)
 
-**Q1.** (5 pts) Students should identify: SEQ_SCAN (sequential scan) on products, FILTER (price > 100), and PROJECTION (selecting product_name, price). DuckDB uses columnar scanning and filters in the scan operator.
+**Q1. Number the products.** *Expected: 10 rows.*
 
-**Q2.** (5 pts) DuckDB typically uses a HASH_JOIN for equi-joins. Students should identify: scan of both tables, the hash join on customer_id, and the filter on total_amount.
+```sql
+SELECT product_name, price,
+       ROW_NUMBER() OVER (ORDER BY price DESC, product_id) AS rn
+FROM products
+ORDER BY rn
+LIMIT 10;
+```
 
-**Q3.** (5 pts) Additional operations: HASH_GROUP_BY or UNGROUPED_AGGREGATE. Students should see the scan, then the grouping/aggregation operator.
+| product_name | price | rn |
+|---|---|---|
+| Tablet Air | 446.63 | 1 |
+| Laptop Pro 15 | 372.07 | 2 |
+| Smartphone X12 | 321.52 | 3 |
+| Bluetooth Speaker | 297.29 | 4 |
+| Green Tea Box | 149.61 | 5 |
+| Building Blocks | 148.48 | 6 |
+| Shower Curtain | 147.86 | 7 |
+| Cargo Shorts | 146.10 | 8 |
+| Cotton T-Shirt | 143.80 | 9 |
+| Science Set | 137.40 | 10 |
 
 ---
 
-## Part 2: Creating and Using Indexes (15 points)
+**Q2. Restart for each category.** *Expected: 64 rows; exactly 8 rows have `rn = 1`.*
 
-**Q4.** (5 pts)
 ```sql
-CREATE INDEX idx_orders_status ON orders(status);
-EXPLAIN SELECT * FROM orders WHERE status = 'completed';
-```
-> DuckDB is an analytical database and may not always use indexes the same way OLTP databases do. Students should note this. The plan may or may not show index usage — the learning point is understanding *when* indexes help.
-
-**Q5.** (5 pts)
-```sql
-CREATE INDEX idx_orders_cust_date ON orders(customer_id, order_date);
-
-EXPLAIN
-SELECT * FROM orders
-WHERE customer_id = 5
-  AND order_date >= '2024-01-01'
-ORDER BY order_date;
+SELECT c.category_name, p.product_name, p.price,
+       ROW_NUMBER() OVER (PARTITION BY c.category_name
+                          ORDER BY p.price DESC, p.product_id) AS rn
+FROM products AS p
+JOIN categories AS c ON c.category_id = p.category_id
+ORDER BY c.category_name, rn;
 ```
 
-**Q6.** (5 pts)
-```sql
-SELECT * FROM duckdb_indexes();
-DROP INDEX idx_orders_status;
-```
+| category_name | product_name | price | rn |
+|---|---|---|---|
+| Beauty | Face Moisturizer | 132.07 | 1 |
+| Beauty | Eye Serum | 113.02 | 2 |
+| Beauty | Shampoo Natural | 98.21 | 3 |
+| Beauty | Nail Kit | 67.12 | 4 |
+| Beauty | Lip Balm Set | 62.37 | 5 |
+| Beauty | Hand Cream | 43.41 | 6 |
+| Beauty | Body Lotion | 43.10 | 7 |
+| Beauty | Sunscreen SPF50 | 35.83 | 8 |
+| Books | SQL Cookbook | 122.37 | 1 |
+| Books | Data Science Handbook | 115.03 | 2 |
+| … 54 more rows |  |  |  |
 
 ---
 
-## Part 3: Query Optimization (25 points)
-
-**Q7.** (7 pts) Problems and fixes:
-1. `SELECT *` — should select only needed columns
-2. LEFT JOINs — since WHERE filters on products (p.category_id = 1), LEFT JOINs are effectively INNER JOINs. Use INNER JOIN explicitly.
-3. Start from the most filtered table
+**Q3. The most expensive product in each category.** *Expected: 8 rows.*
 
 ```sql
-SELECT c.first_name, c.last_name,
-       o.order_id, o.order_date,
-       p.product_name, oi.quantity
-FROM products p
-INNER JOIN order_items oi ON p.product_id = oi.product_id
-INNER JOIN orders o ON oi.order_id = o.order_id
-INNER JOIN customers c ON o.customer_id = c.customer_id
-WHERE p.category_id = 1
-ORDER BY o.order_date DESC;
+SELECT category_name, product_name, price
+FROM (
+    SELECT c.category_name, p.product_name, p.price,
+           ROW_NUMBER() OVER (PARTITION BY c.category_name
+                              ORDER BY p.price DESC, p.product_id) AS rn
+    FROM products AS p
+    JOIN categories AS c ON c.category_id = p.category_id
+) AS ranked
+WHERE rn = 1
+ORDER BY category_name;
 ```
 
-**Q8.** (6 pts)
-```sql
-SELECT * FROM orders
-WHERE order_date >= '2024-06-01'
-  AND order_date < '2024-07-01';
-```
-> This allows an index on order_date to be used directly instead of computing EXTRACT on every row.
+| category_name | product_name | price |
+|---|---|---|
+| Beauty | Face Moisturizer | 132.07 |
+| Books | SQL Cookbook | 122.37 |
+| Clothing | Cargo Shorts | 146.10 |
+| Electronics | Tablet Air | 446.63 |
+| Food & Grocery | Green Tea Box | 149.61 |
+| Home & Kitchen | Shower Curtain | 147.86 |
+| Sports | Resistance Bands | 110.72 |
+| Toys | Building Blocks | 148.48 |
 
-**Q9.** (6 pts)
-```sql
-SELECT * FROM customers c
-WHERE EXISTS (
-    SELECT 1 FROM orders o
-    WHERE o.customer_id = c.customer_id
-      AND o.total_amount > 500
-);
-```
-> EXISTS stops scanning after finding the first match, while IN must build the complete list. For large subquery result sets, EXISTS is typically faster.
+---
 
-**Q10.** (6 pts)
-```sql
--- Index recommendations:
-CREATE INDEX idx_orders_customer ON orders(customer_id);
+## Part 2: Ties — `RANK` and `DENSE_RANK` (12 points)
 
--- Query rewrite using CTE for clarity:
-WITH order_summary AS (
-    SELECT customer_id,
-           COUNT(*) AS total_orders,
-           ROUND(SUM(total_amount), 2) AS total_spent,
-           ROUND(AVG(total_amount), 2) AS avg_order
-    FROM orders
-    GROUP BY customer_id
+**Q4. All three, side by side.** *Expected: 10 rows.*
+
+```sql
+WITH order_counts AS (
+    SELECT cu.customer_id, cu.first_name,
+           COUNT(*) AS n_orders
+    FROM customers AS cu
+    JOIN orders AS o ON o.customer_id = cu.customer_id
+    GROUP BY cu.customer_id, cu.first_name
 )
-SELECT c.first_name, c.last_name, c.email,
-       COALESCE(os.total_orders, 0) AS total_orders,
-       COALESCE(os.total_spent, 0) AS total_spent,
-       COALESCE(os.avg_order, 0) AS avg_order
-FROM customers c
-LEFT JOIN order_summary os ON c.customer_id = os.customer_id
-ORDER BY total_spent DESC;
+SELECT customer_id, first_name, n_orders,
+       ROW_NUMBER() OVER (ORDER BY n_orders DESC, customer_id) AS row_num,
+       RANK()       OVER (ORDER BY n_orders DESC)              AS rnk,
+       DENSE_RANK() OVER (ORDER BY n_orders DESC)              AS dense_rnk
+FROM order_counts
+ORDER BY row_num
+LIMIT 10;
 ```
-> Pre-aggregating in a CTE reduces the join size. Index on orders(customer_id) speeds the GROUP BY.
+
+| customer_id | first_name | n_orders | row_num | rnk | dense_rnk |
+|---|---|---|---|---|---|
+| 18 | Rosa | 9 | 1 | 1 | 1 |
+| 29 | Cora | 9 | 2 | 1 | 1 |
+| 30 | Derek | 9 | 3 | 1 | 1 |
+| 13 | Mia | 8 | 4 | 4 | 2 |
+| 39 | Nora | 8 | 5 | 4 | 2 |
+| 5 | Eva | 7 | 6 | 6 | 3 |
+| 7 | Grace | 7 | 7 | 6 | 3 |
+| 16 | Pete | 7 | 8 | 6 | 3 |
+| 17 | Quinn | 7 | 9 | 6 | 3 |
+| 20 | Tina | 7 | 10 | 6 | 3 |
+
+**Note:** Rosa, Cora, Derek (9 orders): `rnk` 1, `dense_rnk` 1. Mia (8 orders): **`rnk` 4, `dense_rnk` 2** — `RANK` skips 2 and 3 after the three-way tie; `DENSE_RANK` does not.
 
 ---
 
-## Part 4: Performance Measurement (10 points)
+**Q5. Top 4 — keeping ties.** *Expected: 5 rows.*
 
-**Q11.** (5 pts)
-```python
-def time_query(con, sql, runs=5):
-    times = []
-    for _ in range(runs):
-        start = time.time()
-        con.sql(sql).fetchall()
-        times.append((time.time() - start) * 1000)
-    avg = sum(times) / len(times)
-    print(f"  Avg: {avg:.2f}ms over {runs} runs")
-    return avg
-
-# Query A: Subquery approach
-print("Query A (subquery):")
-qa = """
-    SELECT c.first_name, c.last_name, SUM(o.total_amount) AS spent
-    FROM customers c JOIN orders o ON c.customer_id = o.customer_id
-    GROUP BY c.customer_id, c.first_name, c.last_name
-    HAVING SUM(o.total_amount) > (
-        SELECT AVG(total_per_cust) FROM (
-            SELECT SUM(total_amount) AS total_per_cust
-            FROM orders GROUP BY customer_id
-        )
-    )
-"""
-time_query(con, qa)
-
-# Query B: CTE approach
-print("Query B (CTE):")
-qb = """
-    WITH cust_totals AS (
-        SELECT customer_id, SUM(total_amount) AS spent
-        FROM orders GROUP BY customer_id
-    )
-    SELECT c.first_name, c.last_name, ct.spent
-    FROM customers c JOIN cust_totals ct ON c.customer_id = ct.customer_id
-    WHERE ct.spent > (SELECT AVG(spent) FROM cust_totals)
-"""
-time_query(con, qb)
+```sql
+WITH order_counts AS (
+    SELECT cu.customer_id, cu.first_name,
+           COUNT(*) AS n_orders
+    FROM customers AS cu
+    JOIN orders AS o ON o.customer_id = cu.customer_id
+    GROUP BY cu.customer_id, cu.first_name
+),
+ranked AS (
+    SELECT *, RANK() OVER (ORDER BY n_orders DESC) AS rnk
+    FROM order_counts
+)
+SELECT customer_id, first_name, n_orders, rnk
+FROM ranked
+WHERE rnk <= 4
+ORDER BY rnk, customer_id;
 ```
 
-**Q12.** (5 pts) Students should create a larger table and re-run:
-```python
-con.sql("""
-    CREATE TABLE orders_big AS
-    SELECT * FROM orders
-    UNION ALL SELECT * FROM orders
-    UNION ALL SELECT * FROM orders
-    -- ... repeat 10 times
-""")
-# Then re-run timing comparisons
-```
-> With larger data, the CTE approach typically maintains or improves relative performance because the subquery is only computed once.
+| customer_id | first_name | n_orders | rnk |
+|---|---|---|---|
+| 18 | Rosa | 9 | 1 |
+| 29 | Cora | 9 | 1 |
+| 30 | Derek | 9 | 1 |
+| 13 | Mia | 8 | 4 |
+| 39 | Nora | 8 | 4 |
+
+**Note:** 5 rows, because Mia and Nora tie at 8 orders and **both** get rank 4. `ROW_NUMBER() <= 4` would return exactly 4 rows and drop Nora only because of the tie-breaker.
 
 ---
 
-## Part 5: Index Design Challenge (10 points)
+**Q6. Rank the cities.** *Expected: 10 rows; the last `city_rank` is 5.*
 
-**Q13.** (10 pts) Recommended indexes:
+```sql
+WITH city_counts AS (
+    SELECT city, COUNT(*) AS n_customers
+    FROM customers
+    GROUP BY city
+)
+SELECT city, n_customers,
+       DENSE_RANK() OVER (ORDER BY n_customers DESC) AS city_rank
+FROM city_counts
+ORDER BY city_rank, city;
+```
 
-| Query | Recommended Index | Reasoning |
-|-------|------------------|-----------|
-| 1 | `orders(customer_id, status)` | Composite covers both filter columns |
-| 2 | `products(category_id, price DESC)` | Covers filter + sort |
-| 3 | `order_items(order_id)` | Direct lookup by FK |
-| 4 | `reviews(product_id, review_date DESC)` | Covers filter + sort |
-| 5 | `orders(order_date)` | Range scan on date |
-
-Notes:
-- Query 1 and 5 both involve orders — could consider a single composite but the use cases are different enough to warrant separate indexes.
-- order_items(order_id) may already be fast if order_id is part of the PK.
-- Trade-off: 5 indexes will slow INSERT/UPDATE on these tables. If write volume is high, prioritize the most frequent queries.
+| city | n_customers | city_rank |
+|---|---|---|
+| Boston | 9 | 1 |
+| Denver | 6 | 2 |
+| Portland | 6 | 2 |
+| Austin | 4 | 3 |
+| San Jose | 4 | 3 |
+| New York | 3 | 4 |
+| San Francisco | 3 | 4 |
+| Seattle | 3 | 4 |
+| Chicago | 1 | 5 |
+| Miami | 1 | 5 |
 
 ---
 
-## Grading Rubric
+**Q7. The 3rd-highest value.** *Expected: 2 rows.*
 
-| Part | Points |
-|------|--------|
-| Part 1: Query Plans | 15 |
-| Part 2: Indexes | 15 |
-| Part 3: Optimization | 25 |
-| Part 4: Measurement | 10 |
-| Part 5: Index Design | 10 |
-| **Total** | **75** |
+```sql
+WITH city_counts AS (
+    SELECT city, COUNT(*) AS n_customers
+    FROM customers
+    GROUP BY city
+),
+ranked AS (
+    SELECT city, n_customers,
+           DENSE_RANK() OVER (ORDER BY n_customers DESC) AS city_rank
+    FROM city_counts
+)
+SELECT city, n_customers
+FROM ranked
+WHERE city_rank = 3
+ORDER BY city;
+```
 
+| city | n_customers |
+|---|---|
+| Austin | 4 |
+| San Jose | 4 |
+
+With `RANK` instead (`= 3`): **0 rows**.
+
+**Note:** Austin and San Jose (4 customers each). With `RANK`, the ranks are 1, 2, 2, **4**, … — no city has rank 3, so the query returns **0 rows**. For "Nth-highest value" questions, use `DENSE_RANK`.
+
+---
+
+## Part 3: Ranking Results and Patterns (9 points)
+
+**Q8. Rank a `GROUP BY` result.** *Expected: 8 rows.*
+
+```sql
+WITH category_revenue AS (
+    SELECT c.category_name,
+           ROUND(SUM(oi.quantity * oi.unit_price), 2) AS revenue
+    FROM order_items AS oi
+    JOIN products   AS p ON p.product_id  = oi.product_id
+    JOIN categories AS c ON c.category_id = p.category_id
+    GROUP BY c.category_name
+)
+SELECT category_name, revenue,
+       DENSE_RANK() OVER (ORDER BY revenue DESC) AS revenue_rank
+FROM category_revenue
+ORDER BY revenue_rank, category_name;
+```
+
+| category_name | revenue | revenue_rank |
+|---|---|---|
+| Electronics | 40431.29 | 1 |
+| Toys | 22141.36 | 2 |
+| Sports | 16237.24 | 3 |
+| Books | 15754.27 | 4 |
+| Food & Grocery | 15125.25 | 5 |
+| Home & Kitchen | 14595.29 | 6 |
+| Clothing | 13978.58 | 7 |
+| Beauty | 13679.98 | 8 |
+
+---
+
+**Q9. Each customer's first order.** *Expected: 40 rows.*
+
+```sql
+SELECT customer_id, order_id, order_date
+FROM (
+    SELECT customer_id, order_id, order_date,
+           ROW_NUMBER() OVER (PARTITION BY customer_id
+                              ORDER BY order_date, order_id) AS rn
+    FROM orders
+) AS ranked
+WHERE rn = 1
+ORDER BY order_date, customer_id;
+```
+
+| customer_id | order_id | order_date |
+|---|---|---|
+| 28 | 70 | 2024-01-01 |
+| 5 | 32 | 2024-01-05 |
+| 34 | 37 | 2024-01-05 |
+| 7 | 164 | 2024-01-07 |
+| 20 | 161 | 2024-01-08 |
+| 35 | 14 | 2024-01-08 |
+| 13 | 123 | 2024-01-11 |
+| 27 | 55 | 2024-01-13 |
+| 22 | 144 | 2024-01-15 |
+| 36 | 198 | 2024-01-19 |
+| … 30 more rows |  |  |
+
+---
+
+**Q10. 🐞 Debug it.** *Expected: 10 rows.*
+
+```sql
+WITH product_ratings AS (
+    SELECT p.product_name,
+           ROUND(AVG(r.rating), 2) AS avg_rating
+    FROM products AS p
+    JOIN reviews AS r ON r.product_id = p.product_id
+    GROUP BY p.product_name
+),
+ranked AS (
+    SELECT product_name, avg_rating,
+           DENSE_RANK() OVER (ORDER BY avg_rating DESC) AS rating_rank
+    FROM product_ratings
+)
+SELECT product_name, avg_rating
+FROM ranked
+WHERE rating_rank = 1
+ORDER BY product_name;
+```
+
+| product_name | avg_rating |
+|---|---|
+| Cycling Helmet | 5.00 |
+| Data Science Handbook | 5.00 |
+| Desk Lamp | 5.00 |
+| Dumbbells Set | 5.00 |
+| Jump Rope | 5.00 |
+| Mechanical Keyboard | 5.00 |
+| Shower Curtain | 5.00 |
+| Tablet Air | 5.00 |
+| Tennis Racket | 5.00 |
+| USB-C Hub | 5.00 |
+
+**Note:** `WHERE` is applied **before** window functions are computed, so `rating_rank` does not exist yet. Fix: put the `DENSE_RANK` in a second CTE (or a subquery) and filter outside it. 10 products tie at an average of 5.00.
+
+---
+
+## Grading
+
+- 3 points per question: 2 for a correct result, 1 for using the right
+  ranking function (and `PARTITION BY` / a subquery or CTE where needed)
+- The short written answers in Q5, Q7, and Q10 are part of their second point
+
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*
