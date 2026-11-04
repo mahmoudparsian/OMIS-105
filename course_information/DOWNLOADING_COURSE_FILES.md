@@ -18,7 +18,7 @@ and you have everything for that week.
 | 6 | Joins II | [`week06-sql-joins-2.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-sql-joins-2.zip) |
 | 7 | Subqueries | [`week07-subqueries.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-subqueries.zip) |
 | 8 | Database Design | [`week08-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-database-design.zip) |
-| 9 | Query Performance | [`week09-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-query-performance.zip) |
+| 9 | Ranking Functions & Query Performance | [`week09-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-query-performance.zip) |
 | 10 | Transactions & ACID | [`week10-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-transactions-acid.zip) |
 | Bonus | Project Integration (optional) | [`bonus-week11-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week11-project-integration.zip) |
 | Bonus | Review & Modern Data (optional) | [`bonus-week12-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week12-review-modern-data.zip) |

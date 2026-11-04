@@ -1,0 +1,12 @@
+item_id,item_name,category,price
+101,Latte,Coffee,5.50
+102,Cappuccino,Coffee,5.50
+103,Espresso,Coffee,3.50
+104,Mocha,Coffee,6.00
+201,Croissant,Bakery,4.00
+202,Muffin,Bakery,4.00
+203,Bagel,Bakery,3.00
+204,Scone,Bakery,3.50
+301,Matcha,Tea,6.00
+302,Chai,Tea,4.50
+303,Green Tea,Tea,3.00

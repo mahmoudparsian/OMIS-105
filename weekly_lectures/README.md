@@ -22,7 +22,7 @@ topics.
 | 6 | [`week06-sql-joins-2/`](week06-sql-joins-2/) | Joins II — `INNER`, `LEFT`, `RIGHT JOIN` in practice, self-joins, 3+ tables |
 | 7 | [`week07-subqueries/`](week07-subqueries/) | Subqueries — a query inside a query |
 | 8 | [`week08-database-design/`](week08-database-design/) | Database design & normalization |
-| 9 | [`week09-query-performance/`](week09-query-performance/) | Indexing & query performance |
+| 9 | [`week09-query-performance/`](week09-query-performance/) | Ranking functions (`ROW_NUMBER`, `RANK`, `DENSE_RANK`) — `ranking_slides_1.md`, `ranking_slides_2.md`; indexes and query performance |
 | 10 | [`week10-transactions-acid/`](week10-transactions-acid/) | Transactions & ACID |
 
 ### Bonus weeks (optional)
@@ -78,6 +78,12 @@ Weeks 2–10 share a common layout:
 | `quiz.md` | Short quiz questions for the week |
 | `data/` | CSV files the demos and lab read |
 | `lab.md`, `notes.md`, `solution.sql` | Brief scratch notes — see the caveat below |
+
+**Week 9 is different:** its two sessions teach ranking functions from
+`ranking_slides_1.md` / `ranking_slides_2.md` with `ranking_demo_1.py` /
+`ranking_demo_2.py`. Its `slides_1.md`, `slides_2.md`, `demo1.py`, `demo2.py`,
+`lab09_student.md`, and `quiz.md` cover indexes and query performance —
+reference material for the short indexes segment at the end of Session 2.
 
 These folders differ:
 
