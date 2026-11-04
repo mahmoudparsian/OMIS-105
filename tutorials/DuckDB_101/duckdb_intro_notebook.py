@@ -308,7 +308,7 @@ def _(con):
             MAX(grade) AS max_gpa,
             AVG(age) AS avg_age
         FROM students;
-    """).fetchone()
+    """).fetchall()[0]
 
     print(f"Total students : {result[0]}")
     print(f"Average GPA    : {result[1]:.2f}")

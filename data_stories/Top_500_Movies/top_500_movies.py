@@ -137,8 +137,8 @@ def _(duckdb, mo):
     """
 
     conn.execute(BUILD_SQL)
-    _n = conn.execute("SELECT COUNT(*) FROM movies").fetchone()[0]
-    _c = conn.execute("SELECT COUNT(*) FROM pragma_table_info('movies')").fetchone()[0]
+    _n = conn.execute("SELECT COUNT(*) FROM movies").fetchall()[0][0]
+    _c = conn.execute("SELECT COUNT(*) FROM pragma_table_info('movies')").fetchall()[0][0]
 
     mo.md(
         f"""

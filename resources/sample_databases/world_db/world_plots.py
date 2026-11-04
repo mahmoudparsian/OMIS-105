@@ -235,7 +235,7 @@ def plot_box(df, x, y, title="", xlabel="", ylabel="", figsize=(10, 5)):
     data = [df[df[x] == g][y].dropna().values for g in groups]
 
     fig, ax = plt.subplots(figsize=figsize)
-    bp = ax.boxplot(data, patch_artist=True, labels=_wrap_labels(groups))
+    bp = ax.boxplot(data, patch_artist=True, tick_labels=_wrap_labels(groups))
     for patch, color in zip(bp["boxes"], PALETTE):
         patch.set_facecolor(color)
         patch.set_alpha(0.7)

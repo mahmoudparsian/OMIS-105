@@ -567,7 +567,7 @@ def _(con):
 @app.cell
 def _(con):
     # ── Polars ────────────────────────────────────────────────────────────────────
-    df_pl = con.execute("""
+    df_pl = con.sql("""
         SELECT
             p.sequence,
             p.last_name,

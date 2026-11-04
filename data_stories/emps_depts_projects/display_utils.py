@@ -286,7 +286,7 @@ def plot_box(df, x, y, title="", xlabel="", ylabel="", figsize=None):
     categories = df[x].unique()
     data_groups = [df[df[x] == cat][y].values for cat in categories]
 
-    bp = ax.boxplot(data_groups, patch_artist=True, labels=categories,
+    bp = ax.boxplot(data_groups, patch_artist=True, tick_labels=categories,
                     widths=0.5, medianprops=dict(color="black", linewidth=1.5))
     for patch, color in zip(bp["boxes"], COLORS):
         patch.set_facecolor(color)

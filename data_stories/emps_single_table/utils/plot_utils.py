@@ -269,7 +269,7 @@ def plot_box(
     data = [df[df[x] == cat][y].values for cat in categories]
 
     fig, ax = plt.subplots(figsize=figsize)
-    bp = ax.boxplot(data, labels=categories, patch_artist=True, notch=True,
+    bp = ax.boxplot(data, tick_labels=categories, patch_artist=True, notch=True,
                     boxprops=dict(linewidth=1.2),
                     medianprops=dict(color="#E74C3C", linewidth=2))
     for i, box in enumerate(bp["boxes"]):

@@ -75,7 +75,7 @@ def _(mo):
 def _():
     import duckdb as _duckdb
 
-    _result = _duckdb.query("SELECT 42 AS answer").fetchone()
+    _result = _duckdb.query("SELECT 42 AS answer").fetchall()[0]
     assert _result[0] == 42
     print(f"  [+] PASS  DuckDB {_duckdb.__version__}")
     return

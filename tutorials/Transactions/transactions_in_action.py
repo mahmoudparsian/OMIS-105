@@ -518,7 +518,8 @@ def _(amount, con):
                     FROM accounts
                     WHERE account_id = ?;
                 """, [from_acct]
-            ).fetchone()
+            ).fetchall()
+            result = result[0] if result else None
             
             if result is None:
                 raise ValueError(f"Account {from_acct} does not exist.")

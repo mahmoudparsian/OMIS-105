@@ -30,7 +30,7 @@ def _():
         SELECT *
         FROM read_csv_auto('./data/orders_denormalized.csv');
     """)
-    print(f"Loaded orders_denorm: {con.sql('SELECT COUNT(*) FROM orders_denorm').fetchone()[0]} rows")
+    print(f"Loaded orders_denorm: {con.sql('SELECT COUNT(*) FROM orders_denorm').fetchall()[0][0]} rows")
 
     # Also load normalized tables for comparison
     for t, f in [('categories','./data/categories.csv'),
@@ -200,7 +200,7 @@ def _(con):
         FROM orders_2nf
         LIMIT 5;
     """).show()
-    print(f"orders_2nf: {con.sql('SELECT COUNT(*) FROM orders_2nf').fetchone()[0]} rows")
+    print(f"orders_2nf: {con.sql('SELECT COUNT(*) FROM orders_2nf').fetchall()[0][0]} rows")
     return
 
 
@@ -221,7 +221,7 @@ def _(con):
         FROM products_2nf
         LIMIT 5;
     """).show()
-    print(f"products_2nf: {con.sql('SELECT COUNT(*) FROM products_2nf').fetchone()[0]} rows")
+    print(f"products_2nf: {con.sql('SELECT COUNT(*) FROM products_2nf').fetchall()[0][0]} rows")
     return
 
 
@@ -274,7 +274,7 @@ def _(con):
         FROM customers_3nf
         LIMIT 5;
     """).show()
-    print(f"customers_3nf: {con.sql('SELECT COUNT(*) FROM customers_3nf').fetchone()[0]} rows")
+    print(f"customers_3nf: {con.sql('SELECT COUNT(*) FROM customers_3nf').fetchall()[0][0]} rows")
     return
 
 
@@ -327,8 +327,8 @@ def _(con):
     denorm_count = con.sql("""
         SELECT COUNT(*)
         FROM orders_denorm;
-    """).fetchone()[0]
-    norm_total = sum(con.sql(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+    """).fetchall()[0][0]
+    norm_total = sum(con.sql(f"SELECT COUNT(*) FROM {t}").fetchall()[0][0]
         for t in ['customers_3nf','categories_3nf','products_2nf','orders_2nf','order_items_2nf'])
 
     print(f"Denormalized: {denorm_count} rows in 1 table (13 columns)")

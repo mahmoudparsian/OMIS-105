@@ -144,9 +144,9 @@ def _(con):
     con.execute(
         "INSERT INTO customers VALUES (501, 'Temp', 'Rollback', 'temp501@example.com', 'X', 'XX', current_date)"
     )
-    mid_txn_count = con.sql("SELECT count(*) FROM customers WHERE customer_id = 501").fetchone()[0]
+    mid_txn_count = con.sql("SELECT count(*) FROM customers WHERE customer_id = 501").fetchall()[0][0]
     con.execute("ROLLBACK")
-    after_rollback_count = con.sql("SELECT count(*) FROM customers WHERE customer_id = 501").fetchone()[0]
+    after_rollback_count = con.sql("SELECT count(*) FROM customers WHERE customer_id = 501").fetchall()[0][0]
     f"Inside the transaction: {mid_txn_count} row. After ROLLBACK: {after_rollback_count} rows."
     return
 
@@ -205,7 +205,7 @@ def _(con, mo):
         step2 = f"❌ Second INSERT failed as expected: {type(e).__name__}: {e}"
 
     try:
-        con.sql("SELECT 1").fetchone()
+        con.sql("SELECT 1").fetchall()
         step3 = "Query succeeded (unexpected)."
     except Exception as e:
         step3 = f"⚠️ Even a harmless SELECT now fails: {type(e).__name__}: {e}"
@@ -301,7 +301,7 @@ def _(con, ex1, mo, run_button):
             log.append("🔄 Rolled back — nothing from this transaction was saved.")
         log.append(
             f"\n\n`order_id = 9001` exists afterwards: "
-            f"{con.sql('SELECT count(*) FROM orders WHERE order_id = 9001').fetchone()[0] > 0}"
+            f"{con.sql('SELECT count(*) FROM orders WHERE order_id = 9001').fetchall()[0][0] > 0}"
         )
         return mo.md("\n\n".join(log))
 

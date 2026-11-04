@@ -31,7 +31,7 @@ def _():
                  ('reviews','./data/reviews.csv'),
                  ('shipping','./data/shipping.csv')]:
         con.sql(f"CREATE OR REPLACE TABLE {t} AS SELECT * FROM read_csv_auto('{f}')")
-        print(f"Loaded {t}: {con.sql(f'SELECT COUNT(*) FROM {t}').fetchone()[0]} rows")
+        print(f"Loaded {t}: {con.sql(f'SELECT COUNT(*) FROM {t}').fetchall()[0][0]} rows")
     return (con, time)
 
 
@@ -259,7 +259,7 @@ def _(con, time):
     cnt = con.sql("""
         SELECT COUNT(*)
         FROM orders_big;
-    """).fetchone()[0]
+    """).fetchall()[0][0]
     print(f"orders_big: {cnt} rows")
 
     start5 = time.time()

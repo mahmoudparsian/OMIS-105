@@ -87,7 +87,7 @@ def _(mo):
 def _(employees, mo):
     q1 = mo.sql(
         f"""
-        SELECT e1.name, e2.name, e1.dept_id
+        SELECT e1.name AS employee, e2.name AS coworker, e1.dept_id
         FROM employees e1
         JOIN employees e2 ON e1.dept_id=e2.dept_id AND e1.id<>e2.id
         """
@@ -211,7 +211,7 @@ def _(mo):
 def _(employees, mo):
     q7 = mo.sql(
         f"""
-        SELECT e1.name, e2.name
+        SELECT e1.name AS employee, e2.name AS same_salary_as
         FROM employees e1
         JOIN employees e2 ON e1.salary=e2.salary AND e1.id<>e2.id
         """
@@ -230,7 +230,7 @@ def _(mo):
 def _(employees, mo):
     q8 = mo.sql(
         f"""
-        SELECT e1.name, e2.name
+        SELECT e1.name AS employee, e2.name AS other_in_dept
         FROM employees e1
         JOIN employees e2 ON e1.dept_id=e2.dept_id AND e1.id<>e2.id
         """

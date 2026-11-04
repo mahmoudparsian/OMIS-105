@@ -266,7 +266,7 @@ def _(DB_PATH, clean, duckdb, os):
     row_count = con.sql("""
         SELECT COUNT(*) AS n
         FROM sales;
-    """).fetchone()[0]
+    """).fetchall()[0][0]
     print(f'Table "sales" created with {row_count:,} rows.')
     con.sql("""
         DESCRIBE sales;

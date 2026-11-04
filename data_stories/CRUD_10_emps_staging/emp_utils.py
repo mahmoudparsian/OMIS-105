@@ -281,7 +281,7 @@ def plot_box(result, x_col: str, y_col: str, title: str = "") -> None:
                         xlabel=x_col, ylabel=y_col)
     groups = [df[df[x_col] == g][y_col].dropna().values
               for g in df[x_col].unique()]
-    bp = ax.boxplot(groups, labels=df[x_col].unique(), patch_artist=True, notch=False)
+    bp = ax.boxplot(groups, tick_labels=df[x_col].unique(), patch_artist=True, notch=False)
     for i, patch in enumerate(bp["boxes"]):
         patch.set_facecolor(PALETTE[i % len(PALETTE)])
         patch.set_alpha(0.8)

@@ -30,7 +30,7 @@ def _():
                  ('order_items','./data/order_items.csv'),
                  ('shipping','./data/shipping.csv')]:
         con.sql(f"CREATE OR REPLACE TABLE {t} AS SELECT * FROM read_csv_auto('{f}')")
-        print(f"Loaded {t}: {con.sql(f'SELECT COUNT(*) FROM {t}').fetchone()[0]} rows")
+        print(f"Loaded {t}: {con.sql(f'SELECT COUNT(*) FROM {t}').fetchall()[0][0]} rows")
     return (con,)
 
 
@@ -86,7 +86,7 @@ def _(con):
         SELECT stock_quantity
         FROM products
         WHERE product_id = 1;
-    """).fetchone()[0]
+    """).fetchall()[0][0]
     print(f"Before: stock = {original}")
 
     con.execute("""
@@ -99,12 +99,12 @@ def _(con):
     """)
 
     # Check inside transaction
-    inside = con.sql("SELECT stock_quantity FROM products WHERE product_id = 1").fetchone()[0]
+    inside = con.sql("SELECT stock_quantity FROM products WHERE product_id = 1").fetchall()[0][0]
     print(f"Inside transaction: stock = {inside}")
 
     con.execute("ROLLBACK")
 
-    after = con.sql("SELECT stock_quantity FROM products WHERE product_id = 1").fetchone()[0]
+    after = con.sql("SELECT stock_quantity FROM products WHERE product_id = 1").fetchall()[0][0]
     print(f"After ROLLBACK: stock = {after}")
     print("Change was undone!")
     return
@@ -128,7 +128,7 @@ def _(con, product_id):
             """)
 
             # Step 1: Check stock
-            stock = con.sql(f"SELECT stock_quantity FROM products WHERE product_id = {product_id}").fetchone()[0]
+            stock = con.sql(f"SELECT stock_quantity FROM products WHERE product_id = {product_id}").fetchall()[0][0]
             if stock < quantity:
                 raise Exception(f"Insufficient stock: {stock} < {quantity}")
 
@@ -136,8 +136,8 @@ def _(con, product_id):
             max_oid = con.sql("""
                 SELECT COALESCE(MAX(order_id), 0) + 1
                 FROM orders;
-            """).fetchone()[0]
-            price = con.sql(f"SELECT price FROM products WHERE product_id = {product_id}").fetchone()[0]
+            """).fetchall()[0][0]
+            price = con.sql(f"SELECT price FROM products WHERE product_id = {product_id}").fetchall()[0][0]
             total = round(price * quantity, 2)
 
             con.execute(f"INSERT INTO orders VALUES ({max_oid}, {customer_id}, CURRENT_DATE, 'processing', {total})")
@@ -146,7 +146,7 @@ def _(con, product_id):
             max_iid = con.sql("""
                 SELECT COALESCE(MAX(item_id), 0) + 1
                 FROM order_items;
-            """).fetchone()[0]
+            """).fetchall()[0][0]
             con.execute(f"INSERT INTO order_items VALUES ({max_iid}, {max_oid}, {product_id}, {quantity}, {price})")
 
             # Step 4: Update stock
@@ -313,7 +313,7 @@ def _(con):
         SELECT stock_quantity
         FROM products
         WHERE product_id = 2;
-    """).fetchone()[0]
+    """).fetchall()[0][0]
     print(f"User A reads stock: {stock}")
     print(f"User B reads stock: {stock}")
 
@@ -327,7 +327,7 @@ def _(con):
     con.execute(f"UPDATE products SET stock_quantity = {new_stock_b} WHERE product_id = 2")
     print(f"User B writes stock: {new_stock_b}")
 
-    final = con.sql("SELECT stock_quantity FROM products WHERE product_id = 2").fetchone()[0]
+    final = con.sql("SELECT stock_quantity FROM products WHERE product_id = 2").fetchall()[0][0]
     print(f"\nFinal stock: {final}")
     print(f"Expected (two items sold): {stock - 2}")
     print(f"Lost update! One sale was lost.")
@@ -352,7 +352,7 @@ def _(con, stock):
         SELECT stock_quantity
         FROM products
         WHERE product_id = 2;
-    """).fetchone()[0]
+    """).fetchall()[0][0]
     print(f"Correct final stock: {final2} (expected {stock - 2})")
     print("Using atomic UPDATE avoids the lost update problem!")
     return
@@ -428,7 +428,7 @@ def _(con):
             oid = con.sql("""
                 SELECT COALESCE(MAX(order_id),0)+1
                 FROM orders;
-            """).fetchone()[0]
+            """).fetchall()[0][0]
             con.execute(f"INSERT INTO orders VALUES ({oid},{customer_id},CURRENT_DATE,'processing',0)")
             # (DuckDB has no SAVEPOINT; on any error below we ROLLBACK the whole txn)
 
@@ -436,18 +436,19 @@ def _(con):
             iid = con.sql("""
                 SELECT COALESCE(MAX(item_id),0)
                 FROM order_items;
-            """).fetchone()[0]
+            """).fetchall()[0][0]
             
             # 2. Add each item
             for product_id, qty in items:
                 iid += 1
-                stock = con.sql(f"SELECT stock_quantity FROM products WHERE product_id={product_id}").fetchone()
+                stock = con.sql(f"SELECT stock_quantity FROM products WHERE product_id={product_id}").fetchall()
+                stock = stock[0] if stock else None
                 if stock is None:
                     raise Exception(f"Product {product_id} not found")
                 if stock[0] < qty:
                     raise Exception(f"Product {product_id}: need {qty}, only {stock[0]} available")
                 
-                price = con.sql(f"SELECT price FROM products WHERE product_id={product_id}").fetchone()[0]
+                price = con.sql(f"SELECT price FROM products WHERE product_id={product_id}").fetchall()[0][0]
                 line = round(price * qty, 2)
                 total += line
                 

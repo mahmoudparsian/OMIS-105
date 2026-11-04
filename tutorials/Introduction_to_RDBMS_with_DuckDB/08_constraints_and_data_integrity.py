@@ -78,7 +78,7 @@ def _(con, mo):
         label="Try to insert data that violates...",
     )
 
-    existing_email = con.sql("SELECT email FROM customers LIMIT 1").fetchone()[0]
+    existing_email = con.sql("SELECT email FROM customers LIMIT 1").fetchall()[0][0]
 
     statements = {
         "Duplicate PRIMARY KEY": (

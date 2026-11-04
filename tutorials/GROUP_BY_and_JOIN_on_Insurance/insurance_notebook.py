@@ -107,7 +107,7 @@ def _():
     """)
 
     for _table in ['insurance', 'regions']:
-        _n = con.execute(f"SELECT COUNT(*) FROM {_table};").fetchone()[0]
+        _n = con.execute(f"SELECT COUNT(*) FROM {_table};").fetchall()[0][0]
         print(f'✅  Loaded {_n:,} rows into DuckDB table  →  {_table}')
     con.execute("""
         DESCRIBE insurance;

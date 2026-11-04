@@ -526,7 +526,8 @@ def _(con):
             con.execute("BEGIN")
             row = con.sql(
                 f"SELECT status, total_amount FROM orders WHERE order_id={order_id}"
-            ).fetchone()
+            ).fetchall()
+            row = row[0] if row else None
             if not row:
                 raise Exception(f"Order {order_id} not found")
             if row[0] != 'completed':

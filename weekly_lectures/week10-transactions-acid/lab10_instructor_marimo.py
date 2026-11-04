@@ -261,7 +261,8 @@ def _(con):
             con.execute("BEGIN")
             bal = con.sql(
                 f"SELECT balance FROM bank_accounts WHERE account_id={from_id}"
-            ).fetchone()
+            ).fetchall()
+            bal = bal[0] if bal else None
             if bal is None:
                 raise Exception(f"Account {from_id} not found")
             if bal[0] < amount:
@@ -269,7 +270,8 @@ def _(con):
 
             dest = con.sql(
                 f"SELECT account_id FROM bank_accounts WHERE account_id={to_id}"
-            ).fetchone()
+            ).fetchall()
+            dest = dest[0] if dest else None
             if dest is None:
                 raise Exception(f"Account {to_id} not found")
 
@@ -314,19 +316,20 @@ def _(con):
     def place_order(con, customer_id, items):
         try:
             con.execute("BEGIN")
-            oid = con.sql("SELECT COALESCE(MAX(order_id),0)+1 FROM orders").fetchone()[0]
+            oid = con.sql("SELECT COALESCE(MAX(order_id),0)+1 FROM orders").fetchall()[0][0]
             con.execute(
                 f"INSERT INTO orders VALUES ({oid},{customer_id},CURRENT_DATE,'processing',0)"
             )
 
             total = 0
-            iid = con.sql("SELECT COALESCE(MAX(item_id),0) FROM order_items").fetchone()[0]
+            iid = con.sql("SELECT COALESCE(MAX(item_id),0) FROM order_items").fetchall()[0][0]
 
             for product_id, qty in items:
                 iid += 1
                 row = con.sql(
                     f"SELECT price, stock_quantity FROM products WHERE product_id={product_id}"
-                ).fetchone()
+                ).fetchall()
+                row = row[0] if row else None
                 if row is None:
                     raise Exception(f"Product {product_id} not found")
                 price, stock = row
@@ -455,7 +458,8 @@ def _(con):
             # 1. Verify order exists and is 'completed'
             order = con.sql(
                 f"SELECT status, total_amount FROM orders WHERE order_id = {order_id}"
-            ).fetchone()
+            ).fetchall()
+            order = order[0] if order else None
             if order is None:
                 raise Exception(f"Order {order_id} not found")
             if order[0] != 'completed':
@@ -474,7 +478,7 @@ def _(con):
                 )
 
             # 4. Create refund record
-            rid = con.sql("SELECT COALESCE(MAX(refund_id),0)+1 FROM refunds").fetchone()[0]
+            rid = con.sql("SELECT COALESCE(MAX(refund_id),0)+1 FROM refunds").fetchall()[0][0]
             con.execute(
                 f"INSERT INTO refunds VALUES ({rid}, {order_id}, CURRENT_DATE, {order[1]}, '{reason}')"
             )

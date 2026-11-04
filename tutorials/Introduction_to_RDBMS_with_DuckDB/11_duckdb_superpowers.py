@@ -167,7 +167,7 @@ def _(mo):
 
 @app.cell
 def _(con, mo):
-    plan_text = con.sql("EXPLAIN SELECT * FROM customers WHERE state = 'CA'").fetchone()[1]
+    plan_text = con.sql("EXPLAIN SELECT * FROM customers WHERE state = 'CA'").fetchall()[0][1]
     mo.md(f"```\n{plan_text}\n```")
     return
 

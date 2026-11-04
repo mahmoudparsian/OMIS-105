@@ -35,7 +35,7 @@ def _():
                  ('product_suppliers','./data/product_suppliers.csv'),
                  ('shipping','./data/shipping.csv')]:
         con.sql(f"CREATE OR REPLACE TABLE {t} AS SELECT * FROM read_csv_auto('{f}')")
-        print(f"Loaded {t}: {con.sql(f'SELECT COUNT(*) FROM {t}').fetchone()[0]} rows")
+        print(f"Loaded {t}: {con.sql(f'SELECT COUNT(*) FROM {t}').fetchall()[0][0]} rows")
     return (con,)
 
 
@@ -374,17 +374,18 @@ def _(con):
             oid = con.sql("""
                 SELECT COALESCE(MAX(order_id),0)+1
                 FROM orders;
-            """).fetchone()[0]
+            """).fetchall()[0][0]
             con.execute(f"INSERT INTO orders VALUES ({oid},{cust_id},CURRENT_DATE,'processing',0)")
             
             total = 0
             iid = con.sql("""
                 SELECT COALESCE(MAX(item_id),0)
                 FROM order_items;
-            """).fetchone()[0]
+            """).fetchall()[0][0]
             for pid, qty in items:
                 iid += 1
-                row = con.sql(f"SELECT price, stock_quantity FROM products WHERE product_id={pid}").fetchone()
+                row = con.sql(f"SELECT price, stock_quantity FROM products WHERE product_id={pid}").fetchall()
+                row = row[0] if row else None
                 if not row: raise Exception(f"Product {pid} not found")
                 if row[1] < qty: raise Exception(f"Product {pid}: need {qty}, have {row[1]}")
                 total += round(row[0] * qty, 2)
