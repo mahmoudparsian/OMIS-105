@@ -1,0 +1,39 @@
+{
+  "orders": {
+    "id": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "item": [
+      "Widget A",
+      "Widget B",
+      "Widget A",
+      "Widget C",
+      "Widget B"
+    ],
+    "price": [
+      10.5,
+      25.0,
+      10.5,
+      50.0,
+      25.0
+    ],
+    "quantity": [
+      2,
+      1,
+      5,
+      1,
+      3
+    ],
+    "region": [
+      "North",
+      "South",
+      "North",
+      "East",
+      "West"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "user_id": 101,
+    "username": "alice",
+    "role": "admin",
+    "details": {
+      "active": true,
+      "login_count": 42
+    }
+  },
+  {
+    "user_id": 102,
+    "username": "bob",
+    "role": "developer",
+    "details": {
+      "active": true,
+      "login_count": 15
+    }
+  },
+  {
+    "user_id": 103,
+    "username": "charlie",
+    "role": "user",
+    "details": {
+      "active": false,
+      "login_count": 3
+    }
+  }
+]

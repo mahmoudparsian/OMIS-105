@@ -1,0 +1,6 @@
+id,item,price,quantity,region
+1,Widget A,10.5,2,North
+2,Widget B,25.0,1,South
+3,Widget A,10.5,5,North
+4,Widget C,50.0,1,East
+5,Widget B,25.0,3,West
