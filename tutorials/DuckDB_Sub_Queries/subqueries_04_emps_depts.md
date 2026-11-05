@@ -1,12 +1,16 @@
 # Mastering DuckDB Subqueries & CTEs: A Beginner's Guide
 
-Welcome to the beginner-friendly guide to DuckDB subqueries and Common Table Expressions (CTEs)!
+Welcome to the beginner-friendly guide to DuckDB 
+subqueries and Common Table Expressions (CTEs)!
 
-Subqueries often intimidate beginners, but they are just separate SQL queries combined together to answer a complex question.
+Subqueries often intimidate beginners, but they are 
+just separate SQL queries combined together to answer 
+a complex question.
 
 ## 1. Setup: Sample Tables & Data
 
-Run the following SQL script in DuckDB to create our two sample tables: **`employees`** and **`departments`**.
+Run the following SQL script in DuckDB to create our 
+two sample tables: **`employees`** and **`departments`**.
 
 ```sql
 -- Create Departments Table
@@ -45,11 +49,14 @@ INSERT INTO employees VALUES
     (8, 'Hannah', 104, 60000.00, '2021-09-30');
 ```
 
+---
+
 ## Scenario 1: Scalar Subquery in `WHERE` (Single Value Comparison)
 
 ### **Question:**
 
-Which employees earn more than the overall average employee salary?
+	Which employees earn more than the 
+	overall average employee salary?
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -70,7 +77,8 @@ Which employees earn more than the overall average employee salary?
 
 ### **Glued Together (Subquery in `WHERE`)(solution-1):**
 
-Replace the hardcoded value with the inner query enclosed in parentheses.
+Replace the hardcoded value with the inner query 
+enclosed in parentheses.
 
 ```sql
 SELECT name, salary 
@@ -105,11 +113,14 @@ FROM employees
 WHERE salary > (SELECT avg_sal FROM overall_avg);
 ```
 
+---
+
 ## Scenario 2: Multi-Row Subquery using `IN`
 
 ### **Question:**
 
-Which employees work in departments located in 'New York'?
+	Which employees work in departments 
+	located in 'New York'?
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -156,11 +167,14 @@ WHERE department_id IN (SELECT department_id
                         FROM ny_departments);
 ```
 
+---
+
 ## Scenario 3: Correlated Subquery with `EXISTS`
 
 ### **Question:**
 
-Which departments have at least one employee working in them?
+	Which departments have at least 
+	one employee working in them?
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -181,7 +195,9 @@ Which departments have at least one employee working in them?
 
 ### **Glued Together (Correlated Subquery with `EXISTS`):**
 
-The inner query checks if a matching row exists in `employees` for *each* department row.
+	The inner query checks if a matching 
+	row exists in `employees` for *each* 
+	department row.
 
 ```sql
 SELECT d.department_name 
@@ -206,11 +222,204 @@ JOIN active_dept_ids a
   ON d.department_id = a.department_id;
 ```
 
-## Scenario 4: Subquery in `FROM` Clause (Derived Table)
+---
+
+## [Understanding `SELECT 1`](./understanding_select_1_in_duckdb.md)
+
+---
+
+## Scenario 4: Find departments that have at least one employee
+
+### Multi-Step Approach (Building with CTEs)
+
+* **Step 1:** Get a unique list of department IDs that appear in the `employees` table.
+* **Step 2:** Join that list back to the `departments` table to retrieve details.
+
+```sql
+WITH active_department_ids AS (
+    -- Step 1: Extract distinct department IDs 
+    --         assigned to employees
+    SELECT DISTINCT department_id 
+    FROM employees
+)
+-- Step 2: Fetch department details 
+--         matching those IDs
+SELECT 
+    d.department_id, 
+    d.department_name, 
+    d.location
+FROM departments d
+JOIN active_department_ids a 
+    ON d.department_id = a.department_id;
+```
+
+### Combined Sub-query Approach (`EXISTS`)
+
+```sql
+SELECT 
+    d.department_id, 
+    d.department_name, 
+    d.location 
+FROM departments d
+WHERE EXISTS (
+    SELECT 1 
+    FROM employees e 
+    WHERE e.department_id = d.department_id
+);
+```
+
+---
+
+## Scenario 5 : Find departments that have NO employees assigned
+
+### Multi-Step Approach (Building with CTEs)
+
+* **Step 1:** Count the number of employees per department.
+* **Step 2:** Join all departments with the employee counts and filter where count is 0 or null.
+
+```sql
+WITH dept_employee_counts AS (
+    -- Step 1: Count employees per department ID
+    SELECT 
+        department_id, 
+        COUNT(employee_id) AS emp_count
+    FROM employees
+    GROUP BY department_id
+)
+-- Step 2: Join departments to counts and 
+--         find missing or zero-count departments
+SELECT 
+    d.department_id, 
+    d.department_name, 
+    d.location
+FROM departments d
+LEFT JOIN dept_employee_counts c 
+    ON d.department_id = c.department_id
+WHERE c.emp_count IS NULL OR c.emp_count = 0;
+```
+
+### Combined Sub-query Approach (`NOT EXISTS`)
+
+```sql
+SELECT 
+    d.department_id, 
+    d.department_name, 
+    d.location 
+FROM departments d
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM employees e 
+    WHERE e.department_id = d.department_id
+);
+```
+
+---
+
+## Scenario 6: Find employees earning more than their department's average salary
+
+### Multi-Step Approach (Building with CTEs)
+
+* **Step 1:** Calculate the average salary for each department.
+* **Step 2:** Join the employee details with the calculated averages and filter employees whose salary exceeds that average.
+
+```sql
+WITH department_averages AS (
+    -- Step 1: Compute average salary per department
+    SELECT 
+        department_id, 
+        AVG(salary) AS avg_salary
+    FROM employees
+    GROUP BY department_id
+)
+-- Step 2: Compare employee salaries against 
+--         their department's average
+SELECT 
+    e.employee_id,
+    e.name, 
+    e.department_id, 
+    e.salary,
+    ROUND(da.avg_salary, 2) AS dept_avg_salary
+FROM employees e
+JOIN department_averages da 
+    ON e.department_id = da.department_id
+WHERE e.salary > da.avg_salary;
+```
+
+### Combined Sub-query Approach (Correlated Sub-query)
+
+```sql
+SELECT 
+    e.employee_id,
+    e.name, 
+    e.department_id, 
+    e.salary
+FROM employees e
+WHERE e.salary > (
+    SELECT AVG(e2.salary) 
+    FROM employees e2 
+    WHERE e2.department_id = e.department_id
+);
+```
+
+---
+
+## Scenario 7: Find departments in 'New York' that employ high earners (salary > 100,000)
+
+### Multi-Step Approach (Building with CTEs)
+
+* **Step 1:** Filter employees earning more than $100,000.
+* **Step 2:** Filter departments located in 'New York'.
+* **Step 3:** Find matching departments present in both filtered sets.
+
+```sql
+WITH high_earners AS (
+    -- Step 1: Identify department IDs containing high earners
+    SELECT DISTINCT department_id
+    FROM employees
+    WHERE salary > 100000.00
+),
+ny_departments AS (
+    -- Step 2: Identify departments in New York
+    SELECT department_id, department_name, budget
+    FROM departments
+    WHERE location = 'New York'
+)
+-- Step 3: Combine filtered CTE results
+SELECT 
+    ny.department_id, 
+    ny.department_name, 
+    ny.budget
+FROM ny_departments ny
+JOIN high_earners he 
+    ON ny.department_id = he.department_id;
+```
+
+### Combined Sub-query Approach (`EXISTS` with Multi-Conditions)
+
+```sql
+SELECT 
+    d.department_id, 
+    d.department_name, 
+    d.budget
+FROM departments d
+WHERE d.location = 'New York'
+  AND EXISTS (
+      SELECT 1 
+      FROM employees e 
+      WHERE e.department_id = d.department_id 
+        AND e.salary > 100000.00
+  );
+```
+
+---
+
+## Scenario 8: Subquery in `FROM` Clause (Derived Table)
 
 ### **Question:**
 
-What is the average salary per department, and which departments have an average salary exceeding \$80,000?
+	What is the average salary per department, 
+	and which departments have an average salary 
+	exceeding $80,000?
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -260,11 +469,15 @@ FROM dept_averages
 WHERE avg_salary > 80000;
 ```
 
-## Scenario 5: Scalar Subquery in `SELECT` Clause
+---
+
+## Scenario 9: Scalar Subquery in `SELECT` Clause
 
 ### **Question:**
 
-List each employee's name, salary, and the difference between their salary and the overall company average salary.
+	List each employee's name, salary, 
+	and the difference between their salary 
+	and the overall company average salary.
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -324,12 +537,14 @@ SELECT
 FROM employees;
 ```
 
+---
 
-## Scenario 6: Subquery with `NOT IN` (Finding Unmatched Records)
+## Scenario 10: Subquery with `NOT IN` (Finding Unmatched Records)
 
 ### **Question:**
 
-Which departments currently have **no** employees assigned to them?
+	Which departments currently have 
+	**no** employees assigned to them?
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -376,11 +591,14 @@ LEFT JOIN assigned_departments ad
 WHERE ad.department_id IS NULL;
 ```
 
-## Scenario 7: Correlated Subquery with Comparison Operator
+---
+
+## Scenario 11: Correlated Subquery with Comparison Operator
 
 ### **Question:**
 
-Which employees earn **more than the average salary of their own department**?
+		Which employees earn **more than the 
+		average salary of their own department**?
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -420,12 +638,15 @@ JOIN dept_avg_salaries das
   ON e.department_id = das.department_id
 WHERE e.salary > das.avg_salary;
 ```
+---
 
-## Scenario 8: Subquery with Quantification (`ALL`)
+## Scenario 12: Subquery with Quantification (`ALL`)
 
 ### **Question:**
 
-Which employees earn more than **all** employees in the 'Marketing' department (department ID 102)?
+		Which employees earn more than 
+		**all** employees in the 'Marketing' 
+		department (department ID 102)?
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -471,11 +692,13 @@ FROM employees e, marketing_max_salary mms
 WHERE e.salary > mms.max_sal;
 ```
 
-## Scenario 9: Multi-Column Subquery
+## Scenario 13: Multi-Column Subquery
 
 ### **Question:**
 
-Find the highest-paid employee(s) in each department (match department and max salary).
+		Find the highest-paid employee(s) 
+		in each department (match department 
+		and max salary).
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -525,11 +748,15 @@ JOIN max_salaries ms
  AND e.salary = ms.max_sal;
 ```
 
-## Scenario 10: Chained CTEs (Multiple `WITH` Blocks)
+---
+
+## Scenario 14: Chained CTEs (Multiple `WITH` Blocks)
 
 ### **Question:**
 
-Find departments whose total employee salary payout consumes **more than 30%** of their department's budget.
+		Find departments whose total employee 
+		salary payout consumes **more than 30%** 
+		of their department's budget.
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -604,11 +831,15 @@ JOIN department_thresholds dt
 WHERE dp.total_payroll > dt.threshold;
 ```
 
-## Scenario 11: Subquery with `ANY` / `SOME`
+---
+
+## Scenario 15: Subquery with `ANY` / `SOME`
 
 ### **Question:**
 
-Find employees who earn more than **at least one** employee in the 'Sales' department (department ID 103).
+		Find employees who earn more than 
+		**at least one** employee in the 
+		'Sales' department (department ID 103).
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -654,13 +885,16 @@ FROM employees e, sales_min_salary sms
 WHERE e.salary > sms.min_sal;
 ```
 
-## Scenario 12: Conditional Categorization with Subquery in `CASE`
+---
+
+
+## Scenario 16: Conditional Categorization with Subquery in `CASE`
 
 ### **Question:**
 
-Categorize each employee's salary status 
-('Above Dept Avg' or 'Below or Equal Dept Avg') 
-based on their department's average salary.
+		Categorize each employee's salary status 
+		('Above Dept Avg' or 'Below or Equal Dept Avg') 
+		based on their department's average salary.
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -720,11 +954,15 @@ JOIN dept_averages da
   ON e.department_id = da.department_id;
 ```
 
-## Scenario 13: CTE with Window Functions (Top-N per Group)
+---
+
+## Scenario 17: CTE with Window Functions (Top-N per Group)
 
 ### **Question:**
 
-Find the top 2 highest-paid employees in each department.
+		Find the top 2 highest-paid  
+		employees in each department.
+	
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -771,11 +1009,15 @@ FROM ranked_employees
 WHERE rank <= 2;
 ```
 
-## Scenario 14: Filtering Aggregates with `HAVING` Subquery
+---
+
+## Scenario 18: Filtering Aggregates with `HAVING` Subquery
 
 ### **Question:**
 
-Find departments whose minimum salary is greater than the average salary of the entire company.
+		Find departments whose minimum salary 
+		is greater than the average salary of 
+		the entire company.
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -824,11 +1066,16 @@ GROUP BY e.department_id, ca.avg_sal
 HAVING MIN(e.salary) > ca.avg_sal;
 ```
 
-## Scenario 15: Recursive CTE (Generating Series / Data Sequences)
+---
+
+## Scenario 19: Recursive CTE (Generating Series / Data Sequences)
 
 ### **Question:**
 
-Generate a timeline of months for the year 2024 and calculate how many total years of tenure the company gains each month (simulated sequence generation).
+		Generate a timeline of months for the 
+		year 2024 and calculate how many total 
+		years of tenure the company gains each 
+		month (simulated sequence generation).
 
 ### **Step-by-Step Without Subqueries:**
 
@@ -858,6 +1105,9 @@ SELECT
     (SELECT COUNT(*) FROM employees WHERE hire_date <= month_date) AS cumulative_hires
 FROM month_series;
 ```
+
+---
+
 
 ## Summary Cheat Sheet
 
