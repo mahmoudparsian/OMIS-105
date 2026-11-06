@@ -55,7 +55,7 @@ information every day.
 |[`README.md`](./README.md)    | The file you are reading/viewing |
 |[`course_information`](./course_information) | Course information (labs, grading, policies, and more) |
 |[`outline-10-weeks`](./outline-10-weeks) | Outline/TOC for 10 Weeks |
-|[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks, plus 2 optional [bonus weeks](./weekly_lectures/bonus) |
+|[`weekly_lectures`](./weekly_lectures) | Weekly Lectures and Notebooks: 10 weeks, plus 3 optional [bonus weeks](./weekly_lectures/bonus) |
 |[`weekly_reviews`](./weekly_reviews) | Weekly Reviews and Notebooks: same week folders, plus [bonus weeks](./weekly_reviews/bonus) |
 |[`sample_lab`](./sample_lab) | A preview in-class lab (Marimo notebook) — see [`sample_lab/README.md`](./sample_lab/README.md), or [view the solution's rendered output](https://mahmoudparsian.github.io/OMIS-105/sample_lab/sample_lab_solution_output.html) |
 |[`books`](./books) | DuckDB and Database Books |
@@ -243,10 +243,11 @@ topic list for the course.
 | 06 | Joins II | `INNER` / `LEFT` / `RIGHT JOIN` practice, finding what is missing, self-joins, 3+ tables |
 | 07 | Subqueries | Scalar subqueries, `IN` / `NOT IN` (and the `NULL` trap), `EXISTS`, subqueries in `FROM`, correlated subqueries, CTEs |
 | 08 | Database Design | Normalization (1NF, 2NF, 3NF), decomposition |
-| 09 | Query Performance | Window functions (`ROW_NUMBER`, `RANK`), `EXPLAIN`, indexes, CTEs |
+| 09 | Ranking Functions | `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `PARTITION BY`, filtering a rank with a CTE |
 | 10 | Transactions & ACID | `BEGIN`, `COMMIT`, `ROLLBACK`, `CHECK`, `NOT NULL` |
 | Bonus | Project Integration *(optional)* | CTEs, subqueries, `EXISTS`, `LAG`, `LEAD`, `NTILE`, `FIRST_VALUE` |
 | Bonus | Review & Modern Data *(optional)* | JSON querying, `PIVOT`, `LIST`, `UNNEST`, `CROSS JOIN` |
+| Bonus | Query Performance *(optional)* | `EXPLAIN`, `CREATE INDEX`, sargable predicates |
 
 **Changed on October 27, 2026.** Joins are the most important skill in
 SQL, and subqueries deserve their own week, so we added **Joins II**
@@ -257,6 +258,12 @@ and Review & Modern Data are now optional bonus weeks, in
 deleted. If you saved an old ZIP link for Weeks 6–10, use the
 [download guide](./course_information/DOWNLOADING_COURSE_FILES.md) for
 the new ones.
+
+**Changed on November 5, 2026.** Week 9 now teaches **ranking functions only**
+(`ROW_NUMBER`, `RANK`, `DENSE_RANK`). Indexing is a senior-level topic, so the
+indexes and query-performance material moved to the optional
+[Bonus Week 13](./weekly_lectures/bonus/week13-query-performance). The Week 9
+folder and ZIP were renamed to `week09-ranking-functions`.
 
 The [`weekly_lectures/`](./weekly_lectures) slide decks and the
 [10-week outline](./outline-10-weeks) describe a somewhat slower pacing.

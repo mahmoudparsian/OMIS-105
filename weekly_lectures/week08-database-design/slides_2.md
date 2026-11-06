@@ -545,11 +545,10 @@ Two deliberate exceptions:
 
 # What Is Next?
 
-**Week 9: Query Performance**
-- Window functions (ROW_NUMBER, RANK)
-- CTEs
-- EXPLAIN and query plans
-- Indexes
+**Week 9: Ranking Functions**
+- `ROW_NUMBER`, `RANK`, `DENSE_RANK`
+- Ranking within groups (`PARTITION BY`)
+- Top-N and "second-highest" questions
 
 ---
 

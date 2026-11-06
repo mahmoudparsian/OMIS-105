@@ -1,5 +1,5 @@
 ---
-title: OMIS 105 - Week 9 (Indexing & Query Performance)
+title: OMIS 105 - Bonus Week 13 (Indexing & Query Performance)
 author: Dr. Mahmoud Parsian
 marp: true
 theme: default
@@ -12,7 +12,7 @@ style: |
 ---
 
 # OMIS 105  
-## Week 9: Indexing & Query Performance
+## Bonus Week 13: Indexing & Query Performance
 
 ---
 
@@ -30,7 +30,7 @@ style: |
 
 # Recap
 
-- Week 8: Design clean databases  
+- Weeks 1–10: write **correct** SQL (Week 9: ranking functions)  
 
 👉 Today: Make queries **fast**
 
@@ -305,12 +305,11 @@ Discuss: was it worth it?
 
 ---
 
-# What’s Next?
+# Where This Fits
 
-Week 10:
-- Transactions (`BEGIN`, `COMMIT`, `ROLLBACK`)
-- ACID properties
-- Constraints (`CHECK`, `NOT NULL`)
+This is an **optional bonus** week.
+- Indexing is a senior-level topic
+- The required course ends with Week 10: Transactions & ACID
 
 ---
 

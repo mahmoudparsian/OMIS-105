@@ -7,7 +7,7 @@
 
 ## Setup
 
-Open a new Marimo notebook **inside the `week09-query-performance` folder**
+Open a new Marimo notebook **inside the `week09-ranking-functions` folder**
 (so the `data/` path works), and run this cell first:
 
 ```python

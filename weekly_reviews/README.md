@@ -23,10 +23,11 @@ anywhere and it still runs.
 | 6 | [`week06-sql-joins-2/`](week06-sql-joins-2/) | Joins II — joins in practice |
 | 7 | [`week07-subqueries/`](week07-subqueries/) | Subqueries — from one value to CTEs |
 | 8 | [`week08-database-design/`](week08-database-design/) | Database design, constraints & views |
-| 9 | [`week09-query-performance/`](week09-query-performance/) | Window functions & query performance |
+| 9 | [`week09-ranking-functions/`](week09-ranking-functions/) | Ranking functions — `ROW_NUMBER`, `RANK`, `DENSE_RANK` |
 | 10 | [`week10-transactions-acid/`](week10-transactions-acid/) | Transactions, ACID & constraints |
 | Bonus | [`bonus/week11-project-integration/`](bonus/week11-project-integration/) | CTEs, subqueries & advanced window functions |
 | Bonus | [`bonus/week12-review-modern-data/`](bonus/week12-review-modern-data/) | Modern DuckDB — JSON, PIVOT & lists |
+| Bonus | [`bonus/week13-query-performance/`](bonus/week13-query-performance/) | Query performance — `EXPLAIN`, indexes |
 
 ## What Is in Each Folder
 
@@ -69,7 +70,7 @@ Copy the week folder closest to what you need and edit it — the notebooks
 are self-contained, so a copy runs immediately:
 
 ```bash
-cp -R week09-query-performance week11-my-topic
+cp -R week09-ranking-functions week14-my-topic
 ```
 
 A week folder is a better starting point than a blank template: it

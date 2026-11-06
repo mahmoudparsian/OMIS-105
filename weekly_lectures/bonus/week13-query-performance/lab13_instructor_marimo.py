@@ -14,10 +14,10 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Lab 7: Performance & Indexing — INSTRUCTOR SOLUTIONS
+    # Lab 13: Performance & Indexing — INSTRUCTOR SOLUTIONS
 
     ## OMIS 105 — Database Management Systems
-    **Week 9 | Answer Key**
+    **Bonus Week 13 | Answer Key**
 
     ---
     """)

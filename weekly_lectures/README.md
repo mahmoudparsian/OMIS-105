@@ -22,19 +22,21 @@ topics.
 | 6 | [`week06-sql-joins-2/`](week06-sql-joins-2/) | Joins II — `INNER`, `LEFT`, `RIGHT JOIN` in practice, self-joins, 3+ tables |
 | 7 | [`week07-subqueries/`](week07-subqueries/) | Subqueries — a query inside a query |
 | 8 | [`week08-database-design/`](week08-database-design/) | Database design & normalization |
-| 9 | [`week09-query-performance/`](week09-query-performance/) | Ranking functions (`ROW_NUMBER`, `RANK`, `DENSE_RANK`) — `ranking_slides_1.md`, `ranking_slides_2.md`; indexes and query performance |
+| 9 | [`week09-ranking-functions/`](week09-ranking-functions/) | Ranking functions (`ROW_NUMBER`, `RANK`, `DENSE_RANK`) — `ranking_slides_1.md`, `ranking_slides_2.md` |
 | 10 | [`week10-transactions-acid/`](week10-transactions-acid/) | Transactions & ACID |
 
 ### Bonus weeks (optional)
 
 Two weeks moved to [`bonus/`](bonus/) when Joins II and Subqueries were
 added, and are now numbered 11 and 12 (folders, files, and contents).
-Nothing was deleted.
+On 2026-11-05 the indexes and query-performance material left Week 9 and
+became Bonus Week 13. Nothing was deleted.
 
 | Folder | Topic |
 |--------|-------|
 | [`bonus/week11-project-integration/`](bonus/week11-project-integration/) | Project & integration — build a real system |
 | [`bonus/week12-review-modern-data/`](bonus/week12-review-modern-data/) | Review, synthesis & real-world perspective |
+| [`bonus/week13-query-performance/`](bonus/week13-query-performance/) | Indexing & query performance (was part of Week 9) |
 
 ## Download a Week as a ZIP
 
@@ -54,10 +56,11 @@ downloads one week as a single ZIP file. Inside it are two folders:
 | 6 | [`week06-sql-joins-2.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-sql-joins-2.zip) |
 | 7 | [`week07-subqueries.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-subqueries.zip) |
 | 8 | [`week08-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-database-design.zip) |
-| 9 | [`week09-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-query-performance.zip) |
+| 9 | [`week09-ranking-functions.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-ranking-functions.zip) |
 | 10 | [`week10-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-transactions-acid.zip) |
 | Bonus | [`bonus-week11-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week11-project-integration.zip) |
 | Bonus | [`bonus-week12-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week12-review-modern-data.zip) |
+| Bonus | [`bonus-week13-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week13-query-performance.zip) |
 
 To use a week, unzip it, open a terminal in the `lectures/` or
 `review/` folder, and run `marimo edit` on a notebook.
@@ -82,10 +85,10 @@ Weeks 2–10 share a common layout:
 **Week 9 is different:** its two sessions teach ranking functions from
 `ranking_slides_1.md` / `ranking_slides_2.md` with `ranking_demo_1.py` /
 `ranking_demo_2.py`; `lab09_student.md` (and `lab09_student_marimo.py`) and
-`quiz.md` practice them. The earlier indexes and query-performance material is
-kept as reference for the short indexes segment at the end of Session 2:
-`slides_1.md`, `slides_2.md`, `demo1.py`, `demo2.py`, `lab09_indexes_student.md`
-(and `lab09_indexes_*_marimo.py`), and `quiz_indexes.md`.
+`quiz.md` practice them. There is no `slides_1.md` / `demo1.py` pair and no
+`lab.md` / `notes.md` / `solution.sql` stubs. The earlier indexes and
+query-performance material (`slides_1/2.md`, `demo1/2.py`, its lab and quiz)
+moved to [`bonus/week13-query-performance/`](bonus/week13-query-performance/).
 
 These folders differ:
 
@@ -107,6 +110,8 @@ These folders differ:
   `week09_project_template_marimo.py`), and `week11_project_example.py`
   (a worked example project) for the capstone, and `week12_notebook_marimo.py`, `week12_review_marimo.py`,
   and `week12_capstone_review.md` for the final review.
+  **Bonus Week 13** (added 2026-11-05) has the usual layout: `slides_1/2.md`,
+  `demo1/2.py`, `lab13_student.md`, `quiz.md`, `data/`, and the stubs.
 
 ### Tutorial subfolders
 

@@ -1,5 +1,5 @@
 """
-perf_plot_util.py — display + plotting helpers for the Week 7 indexing notebook.
+perf_plot_util.py — display + plotting helpers for the Bonus Week 13 indexing notebook.
 
 All presentation code lives here so the notebook itself stays SQL + explanation.
 
@@ -174,7 +174,7 @@ def plot_projection_cost(labels, times):
     Bars showing the cost of reading columns you do not need.
 
     In a columnar database this is often a bigger lever than an index, which is
-    the main point of the Week 7 notebook.
+    the main point of the Bonus Week 13 notebook.
     """
     colors = [SLOW] + [FAST] * (len(labels) - 1)
 

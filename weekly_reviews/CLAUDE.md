@@ -33,7 +33,7 @@ weekly_reviews/
 ├── week06-sql-joins-2/            # new 2026-10-27 (company data)
 ├── week07-subqueries/             # new 2026-10-27 (company data)
 ├── week08-database-design/        # was week06 (renumbered 2026-10-27)
-├── week09-query-performance/      # was week07
+├── week09-ranking-functions/      # was week07 (week09-query-performance until 2026-11-05)
 ├── week10-transactions-acid/      # was week08
 └── bonus/                         # old week09/week10 → week11/week12, folders
                                    # and contents renumbered (2026-10-27)
@@ -68,7 +68,7 @@ since the initial commit and could never have run — it created `orders`,
 `orders_test`, and `sales` but queried `customers` and `products`, which
 it never created. Nobody had noticed, which is a fair sign nobody used
 it. To start a new review notebook, copy the closest week folder
-(`cp -R week09-query-performance week11-my-topic`): it is self-contained,
+(`cp -R week09-ranking-functions week14-my-topic`): it is self-contained,
 already runs, and carries the conventions below.
 
 ## Self-Containment Rule

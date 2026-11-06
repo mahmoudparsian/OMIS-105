@@ -18,16 +18,21 @@ and you have everything for that week.
 | 6 | Joins II | [`week06-sql-joins-2.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week06-sql-joins-2.zip) |
 | 7 | Subqueries | [`week07-subqueries.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week07-subqueries.zip) |
 | 8 | Database Design | [`week08-database-design.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week08-database-design.zip) |
-| 9 | Ranking Functions & Query Performance | [`week09-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-query-performance.zip) |
+| 9 | Ranking Functions | [`week09-ranking-functions.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week09-ranking-functions.zip) |
 | 10 | Transactions & ACID | [`week10-transactions-acid.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/week10-transactions-acid.zip) |
 | Bonus | Project Integration (optional) | [`bonus-week11-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week11-project-integration.zip) |
 | Bonus | Review & Modern Data (optional) | [`bonus-week12-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week12-review-modern-data.zip) |
+| Bonus | Query Performance (optional) | [`bonus-week13-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week13-query-performance.zip) |
 
 **Changed on October 27, 2026:** we added Joins II (Week 6) and
 Subqueries (Week 7). Database Design, Query Performance, and
 Transactions moved to Weeks 8–10. Project Integration and Modern Data
 are now optional bonus weeks. If you saved an old link for Weeks 6–10,
 please use the links above instead.
+
+**Changed on November 5, 2026:** Week 9 now covers ranking functions
+only, and its ZIP is `week09-ranking-functions.zip`. Indexes and query
+performance moved to the optional Bonus Week 13.
 
 ## 🗂️ What Is Inside a ZIP File
 

@@ -13,7 +13,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Week 9: Performance & Indexing — Demo Notebook
+    # Bonus Week 13: Performance & Indexing — Demo Notebook
     ## OMIS 105: Database Management Systems
     """)
     return

@@ -1,0 +1,151 @@
+review_id,product_id,customer_id,rating,review_text,review_date
+1,5,12,5,Worth every penny.,2024-03-09
+2,27,38,2,Very cheaply made.,2024-04-09
+3,39,11,4,Will buy again.,2024-09-16
+4,43,25,5,Highly recommend.,2025-02-16
+5,11,33,5,Worth every penny.,2024-03-28
+6,13,28,3,It's okay.,2024-08-22
+7,51,21,1,Not as described.,2024-10-17
+8,63,15,4,Fast shipping too.,2024-10-08
+9,24,38,5,Excellent quality.,2025-03-31
+10,38,16,5,Excellent quality.,2024-07-16
+11,20,25,5,Highly recommend.,2025-03-14
+12,50,21,4,Excellent quality.,2024-03-03
+13,40,29,4,Love it!,2024-04-22
+14,17,6,3,Nothing special.,2024-12-11
+15,53,7,1,Waste of money.,2024-12-09
+16,12,39,4,Worth every penny.,2024-09-14
+17,2,19,4,Excellent quality.,2025-03-07
+18,32,37,4,Fast shipping too.,2024-05-26
+19,18,18,3,Nothing special.,2024-05-14
+20,9,11,4,Fast shipping too.,2024-08-01
+21,62,5,4,Very satisfied.,2025-03-05
+22,64,39,4,Perfect fit.,2024-04-24
+23,18,20,1,Very cheaply made.,2024-08-18
+24,49,22,4,Fast shipping too.,2025-01-28
+25,18,20,3,Not bad.,2024-11-01
+26,41,12,5,Worth every penny.,2024-07-28
+27,63,37,5,Worth every penny.,2024-09-09
+28,36,26,4,Will buy again.,2024-06-11
+29,24,36,1,Returned it.,2025-02-26
+30,27,29,5,Excellent quality.,2024-09-26
+31,64,9,4,Very satisfied.,2024-07-08
+32,20,28,5,Excellent quality.,2024-10-16
+33,62,38,4,Exceeded expectations.,2025-02-18
+34,54,35,1,Waste of money.,2025-02-23
+35,11,7,5,Worth every penny.,2024-05-25
+36,6,37,5,Fast shipping too.,2025-03-21
+37,43,28,2,Poor quality.,2024-07-11
+38,29,33,5,Exceeded expectations.,2024-12-23
+39,29,29,4,Perfect fit.,2025-03-31
+40,20,23,5,Perfect fit.,2024-04-23
+41,38,27,5,Excellent quality.,2024-04-29
+42,19,23,3,Nothing special.,2024-06-14
+43,62,23,4,Perfect fit.,2025-03-05
+44,58,21,2,Disappointing.,2025-02-27
+45,15,2,5,Excellent quality.,2025-02-10
+46,22,16,4,Exceeded expectations.,2024-05-21
+47,43,36,4,Perfect fit.,2024-06-27
+48,52,12,3,Fair for the price.,2024-09-19
+49,4,40,5,Perfect fit.,2024-12-29
+50,55,25,1,Broke after a week.,2024-06-14
+51,36,5,4,Exceeded expectations.,2024-06-04
+52,47,21,3,It's okay.,2024-07-13
+53,63,34,5,Worth every penny.,2024-12-31
+54,50,40,4,Excellent quality.,2024-08-26
+55,46,30,4,Love it!,2025-01-09
+56,11,9,3,Not bad.,2024-08-04
+57,15,12,4,Highly recommend.,2024-11-17
+58,50,27,4,Will buy again.,2024-09-13
+59,55,12,4,Exceeded expectations.,2025-02-19
+60,23,36,3,Could be better.,2024-05-11
+61,24,21,5,Will buy again.,2024-03-28
+62,46,1,4,Very satisfied.,2024-09-13
+63,64,27,5,Fast shipping too.,2025-02-27
+64,57,32,3,Acceptable.,2024-03-16
+65,29,19,1,Broke after a week.,2024-12-01
+66,37,11,5,Will buy again.,2025-03-16
+67,64,36,4,Will buy again.,2024-04-28
+68,35,35,5,Worth every penny.,2024-12-03
+69,6,29,4,Fast shipping too.,2024-04-22
+70,32,20,5,Great product!,2024-10-17
+71,34,23,5,Excellent quality.,2024-10-11
+72,16,16,3,Acceptable.,2025-02-16
+73,45,40,4,Highly recommend.,2025-01-10
+74,18,14,5,Great product!,2024-12-17
+75,45,35,3,Meets expectations.,2024-05-26
+76,42,19,3,Could be better.,2024-11-19
+77,13,9,5,Fast shipping too.,2024-03-31
+78,36,9,5,Highly recommend.,2024-07-06
+79,19,21,5,Fast shipping too.,2024-11-06
+80,19,37,4,Fast shipping too.,2024-09-09
+81,58,5,4,Excellent quality.,2024-09-23
+82,36,24,4,Perfect fit.,2024-08-15
+83,1,6,5,Perfect fit.,2025-01-20
+84,46,5,5,Fast shipping too.,2024-06-20
+85,55,14,4,Worth every penny.,2024-07-24
+86,44,36,4,Will buy again.,2024-11-04
+87,44,4,1,Returned it.,2024-03-09
+88,16,11,4,Great product!,2024-10-06
+89,26,9,5,Love it!,2024-05-21
+90,36,6,5,Love it!,2024-04-12
+91,48,11,2,Not as described.,2025-03-07
+92,30,28,5,Excellent quality.,2024-03-01
+93,28,31,2,Do not buy.,2024-06-24
+94,57,1,1,Waste of money.,2024-05-01
+95,55,9,4,Very satisfied.,2024-09-13
+96,12,7,2,Waste of money.,2024-08-01
+97,18,25,5,Highly recommend.,2025-01-23
+98,19,5,4,Great product!,2025-01-07
+99,22,29,4,Very satisfied.,2025-01-16
+100,20,27,4,Perfect fit.,2024-06-20
+101,12,7,2,Poor quality.,2024-12-27
+102,50,23,5,Worth every penny.,2024-05-11
+103,32,18,4,Very satisfied.,2024-12-09
+104,37,2,5,Love it!,2024-06-14
+105,25,26,3,Decent product.,2024-07-01
+106,64,25,2,Returned it.,2025-01-21
+107,10,34,5,Great product!,2024-09-01
+108,41,9,4,Will buy again.,2024-10-02
+109,47,35,5,Perfect fit.,2025-03-30
+110,10,2,4,Great product!,2024-07-13
+111,28,3,5,Fast shipping too.,2024-11-15
+112,37,33,5,Fast shipping too.,2025-02-23
+113,52,6,4,Exceeded expectations.,2025-01-10
+114,20,18,2,Poor quality.,2024-11-17
+115,27,10,4,Fast shipping too.,2024-12-26
+116,9,20,5,Very satisfied.,2024-03-30
+117,32,6,5,Excellent quality.,2024-10-19
+118,8,20,5,Highly recommend.,2024-05-01
+119,2,9,5,Highly recommend.,2024-11-10
+120,45,34,4,Love it!,2024-05-25
+121,48,9,5,Love it!,2025-03-11
+122,16,2,3,Fair for the price.,2024-07-18
+123,9,17,5,Will buy again.,2025-01-16
+124,10,32,4,Worth every penny.,2024-03-29
+125,64,37,3,Average quality.,2024-07-09
+126,14,37,5,Excellent quality.,2024-06-25
+127,1,3,5,Great product!,2024-07-04
+128,6,31,4,Highly recommend.,2024-05-31
+129,5,36,5,Fast shipping too.,2024-06-23
+130,42,16,4,Worth every penny.,2024-07-17
+131,10,37,4,Exceeded expectations.,2025-02-08
+132,7,12,3,Meets expectations.,2024-03-24
+133,52,5,5,Love it!,2025-04-01
+134,40,21,2,Returned it.,2024-03-05
+135,48,13,3,Could be better.,2025-03-14
+136,32,30,4,Perfect fit.,2025-03-31
+137,26,35,5,Very satisfied.,2024-05-17
+138,1,27,1,Terrible.,2024-08-25
+139,2,22,1,Very cheaply made.,2025-03-13
+140,40,7,3,Not bad.,2024-10-01
+141,63,4,5,Highly recommend.,2025-02-28
+142,36,6,1,Broke after a week.,2024-11-22
+143,53,24,4,Excellent quality.,2024-12-23
+144,13,33,2,Very cheaply made.,2024-04-08
+145,8,28,5,Highly recommend.,2024-06-30
+146,38,17,5,Fast shipping too.,2025-02-22
+147,42,21,4,Very satisfied.,2024-04-08
+148,26,9,5,Will buy again.,2024-04-25
+149,20,7,3,Nothing special.,2024-08-08
+150,53,8,4,Very satisfied.,2024-10-18

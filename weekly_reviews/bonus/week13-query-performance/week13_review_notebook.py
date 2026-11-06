@@ -22,7 +22,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # OMIS 105 — Week 9 Review: Window Functions & Query Performance
+    # OMIS 105 — Bonus Week 13 Review: Query Performance
 
     **Course:** OMIS 105 — Introduction to Database Management Systems
     **Author:** Dr. Mahmoud Parsian
@@ -30,16 +30,14 @@ def _(mo):
 
     ---
 
-    Two halves. First, window functions that rank and compare without
-    collapsing rows. Second, what the database actually *does* with your
-    query — and how to help it go faster.
+    An **optional bonus** week. What does the database actually *do* with
+    your query — and how can you help it go faster? Indexing is a
+    senior-level topic; the required course ends with Week 10.
 
     ### What This Notebook Covers
 
     | Topic | SQL You Will Use |
     |-------|-----------------|
-    | Number and rank rows | `ROW_NUMBER`, `RANK`, `PARTITION BY` |
-    | Compare to a group | `AVG(...) OVER (PARTITION BY ...)` |
     | See the plan | `EXPLAIN` |
     | Speed up lookups | `CREATE INDEX`, sargable predicates |
     | Keep queries readable | `WITH ... AS`, chained CTEs |
@@ -225,243 +223,7 @@ def _(con):
 def _(mo):
     mo.md("""
     ---
-    ## Part 1: Window Functions
-
-    A **window function** computes a value for each row using a
-    "window" of related rows — without collapsing the result into
-    one row per group (like GROUP BY does).
-
-    Every window function needs an `OVER(...)` clause:
-    - `ORDER BY` — how to sort the window
-    - `PARTITION BY` — how to divide rows into groups
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 1.1 ROW_NUMBER() — Number All Customers by Signup Date
-
-    `ROW_NUMBER()` assigns a unique sequential number to each row.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        -- Number customers by signup date (earliest = 1)
-        SELECT customer_id,
-               company_name,
-               signup_date,
-               ROW_NUMBER() OVER (ORDER BY signup_date) AS signup_rank
-        FROM   customers
-        ORDER BY signup_rank;
-        """
-    ).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 1.2 ROW_NUMBER() with PARTITION BY
-
-    Number payments within each customer (payment 1, 2, 3... per customer).
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        -- Number each customer's payments in chronological order
-        SELECT c.company_name,
-               p.payment_date,
-               p.amount,
-               p.status,
-               ROW_NUMBER() OVER (
-                   PARTITION BY p.customer_id
-                   ORDER BY p.payment_date
-               ) AS payment_num
-        FROM   payments p
-        JOIN   customers c ON p.customer_id = c.customer_id
-        ORDER BY c.company_name, payment_num;
-        """
-    ).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 1.3 RANK() — Rank Customers by Total Revenue
-
-    `RANK()` is like `ROW_NUMBER()`, but ties get the same rank
-    and the next rank is skipped.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        -- Rank customers by total completed payments
-        SELECT c.company_name,
-               SUM(p.amount) AS total_paid,
-               RANK() OVER (ORDER BY SUM(p.amount) DESC) AS revenue_rank
-        FROM   payments p
-        JOIN   customers c ON p.customer_id = c.customer_id
-        WHERE  p.status = 'completed'
-        GROUP BY c.company_name
-        ORDER BY revenue_rank;
-        """
-    ).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 1.4 ROW_NUMBER vs RANK — Side by Side
-
-    Notice: when two customers have the same total, RANK gives
-    them the same number. ROW_NUMBER always gives unique numbers.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        -- Compare ROW_NUMBER and RANK
-        SELECT c.company_name,
-               COUNT(*)    AS num_payments,
-               ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS row_num,
-               RANK()       OVER (ORDER BY COUNT(*) DESC) AS rank_num
-        FROM   payments p
-        JOIN   customers c ON p.customer_id = c.customer_id
-        WHERE  p.status = 'completed'
-        GROUP BY c.company_name
-        ORDER BY row_num;
-        """
-    ).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 1.5 AVG() OVER PARTITION BY — Compare Each Payment to Plan Average
-
-    For each payment, show the average payment for that plan
-    right next to it. No GROUP BY needed.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        -- Each payment vs its plan's average
-        SELECT c.company_name,
-               pl.plan_name,
-               p.amount,
-               ROUND(AVG(p.amount) OVER (PARTITION BY c.plan_id), 2)
-                   AS plan_avg,
-               ROUND(p.amount - AVG(p.amount) OVER (PARTITION BY c.plan_id), 2)
-                   AS diff_from_avg
-        FROM   payments p
-        JOIN   customers c ON p.customer_id = c.customer_id
-        JOIN   plans pl     ON c.plan_id    = pl.plan_id
-        WHERE  p.status = 'completed'
-        ORDER BY pl.plan_name, c.company_name;
-        """
-    ).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 1.6 Top-2 Paying Customers Per Plan
-
-    Use `ROW_NUMBER()` inside a subquery to find the top-2
-    customers by total revenue within each plan.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        -- Top 2 customers per plan by total revenue
-        SELECT plan_name, company_name, total_paid, rn
-        FROM (
-            SELECT pl.plan_name,
-                   c.company_name,
-                   SUM(p.amount) AS total_paid,
-                   ROW_NUMBER() OVER (
-                       PARTITION BY c.plan_id
-                       ORDER BY SUM(p.amount) DESC
-                   ) AS rn
-            FROM   payments p
-            JOIN   customers c ON p.customer_id = c.customer_id
-            JOIN   plans pl     ON c.plan_id    = pl.plan_id
-            WHERE  p.status = 'completed'
-            GROUP BY pl.plan_name, c.company_name, c.plan_id
-        ) ranked
-        WHERE rn <= 2
-        ORDER BY plan_name, rn;
-        """
-    ).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ### 1.7 Window Function on Support Tickets
-
-    Rank tickets within each priority level by how long they
-    took to resolve (fastest first). Unresolved tickets go last.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    con.execute(
-        f"""
-        -- Rank resolved tickets by resolution time within priority
-        SELECT ticket_id,
-               priority,
-               created_date,
-               resolved_date,
-               resolved_date - created_date AS days_to_resolve,
-               ROW_NUMBER() OVER (
-                   PARTITION BY priority
-                   ORDER BY COALESCE(resolved_date - created_date, 9999)
-               ) AS speed_rank
-        FROM   support_tickets
-        ORDER BY priority, speed_rank;
-        """
-    ).fetchdf()
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md("""
-    ---
-    ## Part 2: Query Performance
+    ## Part 1: Query Performance
 
     Databases are fast because they **plan** before executing.
     Understanding query plans helps you write better SQL.
@@ -472,7 +234,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    ### 2.1 Selective Columns — Avoid SELECT *
+    ### 1.1 Selective Columns — Avoid SELECT *
 
     Always request only the columns you need.
     """)
@@ -500,7 +262,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    ### 2.2 EXPLAIN — See the Query Plan
+    ### 1.2 EXPLAIN — See the Query Plan
 
     `EXPLAIN` shows the steps DuckDB takes to answer your query.
     """)
@@ -526,7 +288,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    ### 2.3 CREATE INDEX — Speed Up Lookups
+    ### 1.3 CREATE INDEX — Speed Up Lookups
 
     An index is like the index at the back of a textbook:
     it lets DuckDB jump straight to matching rows.
@@ -562,7 +324,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    ### 2.4 Sargable vs Non-Sargable Predicates
+    ### 1.4 Sargable vs Non-Sargable Predicates
 
     **Sargable** (Search ARGument ABLE): the database can use an
     index. Wrapping a column in a function makes it non-sargable.
@@ -607,7 +369,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    ### 2.5 CTE (Common Table Expression) — Named Subqueries
+    ### 1.5 CTE (Common Table Expression) — Named Subqueries
 
     A CTE is a temporary named result set defined with `WITH`.
     It makes complex queries much easier to read.
@@ -643,7 +405,7 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    ### 2.6 Chained CTEs
+    ### 1.6 Chained CTEs
 
     You can define multiple CTEs separated by commas.
     Each CTE can reference the ones defined before it.
@@ -685,13 +447,7 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ---
-    ## Week 9 Summary
-
-    **Window functions**
-    - `ROW_NUMBER()` assigns unique sequential numbers — no ties
-    - `RANK()` gives ties the same rank, then skips numbers
-    - `PARTITION BY` restarts the calculation for each group
-    - `AVG() OVER (PARTITION BY ...)` compares each row to its group
+    ## Bonus Week 13 Summary
 
     **Query performance**
     - `EXPLAIN` shows the plan the database chose
@@ -702,10 +458,10 @@ def _(mo):
     - Select only the columns you need — `SELECT *` moves data you throw away
     - CTEs cost nothing at runtime and make complex queries readable
 
-    ### Looking Ahead
+    ### Where This Fits
 
-    A fast query is worthless if it leaves the data half-updated. Week 10 covers
-    transactions: making a group of changes all-or-nothing.
+    Ranking functions (Week 9) are in the required course; this bonus week
+    is not. Remember: correct SQL comes first — then make it fast.
     """)
     return
 

@@ -1,4 +1,4 @@
-# Week 9 Lab
+# Bonus Week 13 Lab
 
 1. Create a table
 2. Insert data

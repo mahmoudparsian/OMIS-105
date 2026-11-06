@@ -1,7 +1,7 @@
-# Lab 7: Performance & Indexing
+# Lab 13: Performance & Indexing
 
 ## OMIS 105 — Database Management Systems
-**Week 9 | Estimated time: 75–90 minutes**
+**Bonus Week 13 | Estimated time: 75–90 minutes**
 
 ---
 

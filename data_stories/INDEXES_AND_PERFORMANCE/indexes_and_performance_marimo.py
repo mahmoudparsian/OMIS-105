@@ -14,7 +14,7 @@ def _():
 def _(mo):
     mo.md(r"""
     # ⚡ Indexes & Query Performance
-    ### A Hands-On Tutorial with DuckDB — Week 7
+    ### A Hands-On Tutorial with DuckDB — Bonus Week 13
 
     ---
 
@@ -111,7 +111,7 @@ def _(mo):
     ---
     ## 1 · Build a small table — the way the lab does
 
-    We start where the Week 7 lab starts: a small `sales` table. `range(1000)`
+    We start where the Bonus Week 13 lab starts: a small `sales` table. `range(1000)`
     generates the rows for us, so nothing has to be typed by hand.
 
     The `price` column is deliberately spread out so that any single price matches

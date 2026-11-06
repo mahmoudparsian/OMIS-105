@@ -1,6 +1,6 @@
 # Week 9 Quiz — Ranking Functions
 
-Questions 2–13 use the Week 9 lecture data: 12 `sales_reps` on 3 teams
+Questions 2–13 and 15 use the Week 9 lecture data: 12 `sales_reps` on 3 teams
 (Session 1) and the café chain's `items`, `orders`, and `shops` (Session 2).
 Ties: Ava and Fay (95), Ben and Chloe (88, both in East), Gus and Hal (60).
 
@@ -115,13 +115,13 @@ Which function, filtered to `= 2`, finds the items with the
 - c) "Which stores are in the top 3, including ties?"
 - d) "How many price levels are there?"
 
-**15.** There is an index on `orders.order_date`. Which filter for 2026
-orders lets the index help?
+**15.** Gus and Hal (60) have the lowest sales of all 12 reps. Over **all**
+reps (no `PARTITION BY`), what are their `RANK()` and `DENSE_RANK()`?
 
-- a) `WHERE YEAR(order_date) = 2026`
-- b) `WHERE order_date >= DATE '2026-01-01' AND order_date < DATE '2027-01-01'` ✅
-- c) Both equally
-- d) Neither — indexes do not work with dates
+- a) 11 and 9 ✅
+- b) 11 and 11
+- c) 12 and 9
+- d) 9 and 11
 
 ---
 

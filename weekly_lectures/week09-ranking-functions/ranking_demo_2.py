@@ -316,39 +316,6 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Indexes: two ways to ask for 2026 orders
-
-    Same answer — but only the **range** version lets an index on `order_date` help.
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    _df = con.execute("""
-        SELECT COUNT(*) AS orders_2026
-        FROM orders
-        WHERE YEAR(order_date) = 2026
-    """).fetchdf()
-    _df
-    return
-
-
-@app.cell
-def _(con):
-    _df = con.execute("""
-        SELECT COUNT(*) AS orders_2026
-        FROM orders
-        WHERE order_date >= DATE '2026-01-01'
-          AND order_date <  DATE '2027-01-01'
-    """).fetchdf()
-    _df
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
     ## Your turn
 
     1. Which item has the **third-highest** price? Which function do you use?

@@ -53,7 +53,7 @@ below is mapped to the week whose material it exercises. (Week numbers follow th
 | `sailors_and_boats/` — the five notebooks | **7** (→ 2, 4, 5, 9) |
 | `sailors_and_boats/` — the Streamlit app | Bonus **12** — ⚠️ extra setup, see gap 10 |
 | `fresh_cart_story/` | **8** (→ Bonus 11) |
-| `INDEXES_AND_PERFORMANCE/` | **9** |
+| `INDEXES_AND_PERFORMANCE/` | Bonus **13** |
 | `TRANSACTIONS_AND_ACID/` | **10** |
 | `auto_insurance/` | Bonus **11** |
 | `insurance_dataset/` | Bonus **11** |
@@ -77,10 +77,11 @@ rather than taken on trust:
 | **6** | `week06-sql-joins-2` | `INNER`, `LEFT`, `RIGHT JOIN` practice | Two or more related tables, some rows unmatched |
 | **7** | `week07-subqueries` | Subqueries, `IN`, `EXISTS` | A question that needs a value or list first |
 | **8** | `week08-database-design` | Normalization, splitting tables | A schema worth critiquing or normalizing |
-| **9** | `week09-query-performance` | Indexing, `EXPLAIN` | Query plans, index effects |
+| **9** | `week09-ranking-functions` | `ROW_NUMBER`, `RANK`, `DENSE_RANK` | Rows worth ranking, with ties |
 | **10** | `week10-transactions-acid` | Transactions, ACID | `BEGIN` / `COMMIT` / `ROLLBACK` |
 | Bonus | `bonus/week11-project-integration` | End-to-end build | Full pipeline: load → model → query → report |
 | Bonus | `bonus/week12-review-modern-data` | Synthesis, modern data trends | Beyond core SQL — AI, external services, new formats |
+| Bonus | `bonus/week13-query-performance` | Indexing, `EXPLAIN` | Query plans, index effects |
 
 ---
 
@@ -117,7 +118,7 @@ folder, not from titles.
 | `sales-data-exploration` | 2 | **`JOIN` ×26**, `GROUP BY` ×22 | 5 |
 | `sailors_and_boats` notebooks | 5 | **`EXISTS` ×17, `IN (SELECT …)` ×10, scalar subqueries ×11**, CTE ×12 | 7 |
 | `fresh_cart_story` | 2 | Normalized schema: PK ×3, FK ×2, `JOIN` ×43, `GROUP BY` ×42 | 8 → Bonus 11 |
-| `INDEXES_AND_PERFORMANCE` | 1 | `CREATE INDEX`, `EXPLAIN`, `EXPLAIN ANALYZE`, timed comparisons | 9 |
+| `INDEXES_AND_PERFORMANCE` | 1 | `CREATE INDEX`, `EXPLAIN`, `EXPLAIN ANALYZE`, timed comparisons | Bonus 13 |
 | `TRANSACTIONS_AND_ACID` | 1 | `BEGIN`/`COMMIT`/`ROLLBACK`, `CHECK`, PK, two connections | 10 |
 | `auto_insurance` | 3 | Build → clean → analyse; CTE ×5, window ×4, rank ×8 | Bonus 11 |
 | `insurance_dataset` | 5 | Five-notebook pipeline; `GROUP BY` ×17, CTE ×5 | Bonus 11 |
@@ -150,8 +151,8 @@ folder, not from titles.
   18, 21, 25 and 28 are a second, smaller subquery set.
 - **Week 8** — `fresh_cart_story` is the only story with a properly normalized
   multi-table schema to critique.
-- **Week 9** — `INDEXES_AND_PERFORMANCE` follows the lab exactly (build, query,
-  index, query again), then explains why the speedup is small: DuckDB is columnar.
+- **Week 9** — ranking functions. No story is built around them yet; `auto_insurance`
+  (8 ranking calls) and `super_stores_sales` have the most ranking queries.
 - **Week 10** — `TRANSACTIONS_AND_ACID` demonstrates all four properties on the
   lab's bank-transfer scenario, and answers its challenge question by closing and
   reopening the database.
@@ -163,6 +164,9 @@ folder, not from titles.
   (`CRUD_100_10_rows_flagship/` was once listed for the closing week on the strength
   of its folder name; on inspection it contains no AI code at all and is an ordinary
   CRUD notebook, mapped to Week 3.)
+- **Bonus Week 13** — `INDEXES_AND_PERFORMANCE` follows the lab exactly (build, query,
+  index, query again), then explains why the speedup is small: DuckDB is columnar.
+  (It was Week 9 until 2026-11-05, when Week 9 became ranking-only.)
 
 ---
 
@@ -170,7 +174,7 @@ folder, not from titles.
 
 These are worth knowing before you plan the quarter.
 
-**1. Performance and transactions (Weeks 9 and 10; Weeks 7 and 8 before the restructure) were uncovered — now filled.** A scan of every `.py` and `.md`
+**1. Performance and transactions (now Bonus Week 13 and Week 10; Weeks 7 and 8 before the 2026-10-27 restructure) were uncovered — now filled.** A scan of every `.py` and `.md`
 file for `BEGIN TRANSACTION`, `ROLLBACK`, `CREATE INDEX`, `EXPLAIN ANALYZE` and
 `ACID` originally returned **zero matches**: query performance and transactions were
 taught in `weekly_lectures/` with no supporting story. `INDEXES_AND_PERFORMANCE/`
@@ -251,8 +255,8 @@ out to be misnamed (see gap 5b). If a *second* modern-data story is ever wanted,
 `music_dataset_1950_to_2019/` is the readiest raw material, or a story built on
 DuckDB's Parquet / cloud-source features would fit the "modern data" theme better.
 
-**9. DuckDB limits what Weeks 9 and 10 can show.** Being columnar, DuckDB gets far less
-from an index than a row-store would — the Week 9 story measures ~1.6x on 2M rows
+**9. DuckDB limits what Bonus Week 13 and Week 10 can show.** Being columnar, DuckDB gets far less
+from an index than a row-store would — the indexes story measures ~1.6x on 2M rows
 where PostgreSQL might show 100x, and treats *why* as the lesson. Being embedded and
 single-writer, it also cannot demonstrate deadlocks, lock waits, or isolation levels
 beyond snapshot. Both stories say so explicitly rather than overclaiming.

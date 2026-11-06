@@ -3,11 +3,11 @@ marp: true
 theme: default
 paginate: true
 header: "OMIS 105 – Database Management Systems"
-footer: "Week 9: Performance & Indexing"
+footer: "Bonus Week 13: Performance & Indexing"
 ---
 
 # OMIS 105: Database Management Systems
-## Week 9 — Performance & Indexing
+## Bonus Week 13 — Performance & Indexing
 ### How Queries Execute and How to Make Them Faster
 
 ---
@@ -24,7 +24,7 @@ footer: "Week 9: Performance & Indexing"
 
 # Setup: Load This Week's Data
 
-Run this once (from the `week09-query-performance` folder):
+Run this once (from the `bonus/week13-query-performance` folder):
 
 ```sql
 CREATE OR REPLACE TABLE customers   AS SELECT * FROM read_csv('data/customers.csv');
@@ -497,13 +497,11 @@ DROP INDEX IF EXISTS idx_products_price;
 
 ---
 
-# What Is Next?
+# Where This Fits
 
-**Week 10: Transactions & ACID**
-- `BEGIN`, `COMMIT`, `ROLLBACK`
-- ACID properties
-- Constraints: `CHECK`, `NOT NULL`
-- Data integrity when many users work at once
+This is an **optional bonus** week.
+- Indexing is a senior-level topic
+- The required course ends with Week 10: Transactions & ACID
 
 ---
 

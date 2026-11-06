@@ -6,7 +6,7 @@ write first. This folder teaches both, step by step, with small tables
 you create yourself — no data files are needed.
 
 **Course fit:** Week 7 — Subqueries. The CTE and ranking lessons also
-support Week 9 (window functions and CTEs).
+support Week 9 (ranking functions).
 
 ## Files — read them in this order
 

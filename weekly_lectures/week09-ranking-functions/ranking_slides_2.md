@@ -28,7 +28,6 @@ style: |
 - Ranking `GROUP BY` results with a CTE
 - Best seller per category — `ROW_NUMBER` vs. `RANK`
 - "Second-highest" questions
-- 15 minutes on indexes
 - Hands-on: Lab 5
 
 ---
@@ -311,48 +310,6 @@ All three: `FUNCTION() OVER (PARTITION BY … ORDER BY …)`.
 
 ---
 
-# 15 Minutes on Indexes 📇
-
-- An **index** is like the index at the back of a book: the database
-  finds rows **without reading the whole table**
-- `CREATE INDEX idx_orders_date ON orders (order_date);`
-- Good for: columns you often search with `WHERE` or `JOIN` on
-- Cost: extra storage, and slower `INSERT` / `UPDATE`
-
-More detail: `slides_1.md` (this folder).
-
----
-
-# Write Searches the Index Can Use
-
-Both return the same answer:
-
-```sql
-SELECT COUNT(*) AS orders_2026
-FROM orders
-WHERE YEAR(order_date) = 2026;
-```
-
-```sql
-SELECT COUNT(*) AS orders_2026
-FROM orders
-WHERE order_date >= DATE '2026-01-01'
-  AND order_date <  DATE '2027-01-01';
-```
-
-| orders_2026 |
-|---:|
-| 18 |
-
-- `YEAR(order_date) = 2026` must compute `YEAR()` for **every row** — an
-  index on `order_date` cannot help
-- The **range** compares `order_date` itself — an index can jump
-  straight to 2026
-
-👉 Rule: keep the column **alone** on one side of the comparison.
-
----
-
 # Summary
 
 | Pattern | SQL |
@@ -360,7 +317,6 @@ WHERE order_date >= DATE '2026-01-01'
 | no-gap ranks / price levels | `DENSE_RANK() OVER (ORDER BY col DESC)` |
 | rank a `GROUP BY` result | totals in a CTE, then rank the CTE |
 | filter a rank | rank in a CTE or subquery, `WHERE` outside |
-| index-friendly date filter | `col >= DATE '…' AND col < DATE '…'` |
 
 Demo notebook: `ranking_demo_2.py`
 

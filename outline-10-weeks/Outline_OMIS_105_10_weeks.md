@@ -114,7 +114,7 @@ By the end of this course, you will be able to:
 
 1. **Design** a normalized relational database from business requirements
 2. **Write** complex SQL queries to extract business insights
-3. **Optimize** database performance with indexes and query tuning
+3. **Rank** and compare rows with window functions (`ROW_NUMBER`, `RANK`, `DENSE_RANK`)
 4. **Manage** data integrity through transactions and constraints
 5. **Answer** multi-step business questions with joins and subqueries
 6. **Communicate** database designs using ER diagrams
@@ -171,10 +171,11 @@ The dataset **grows each week**, mirroring real-world complexity.
 | Week 6 | SQL MASTERY | Joins II: joins in practice |
 | Week 7 | SQL MASTERY | Subqueries: a query inside a query |
 | Week 8 | DESIGN | Building databases the right way |
-| Week 9 | PERFORMANCE | Making databases fast |
+| Week 9 | SQL MASTERY | Ranking: who is first, second, third? |
 | Week 10 | TRANSACTIONS | Making databases safe |
 | Bonus | PROJECT | Putting it all together *(optional)* |
 | Bonus | SYNTHESIS | Modern data and what's next *(optional)* |
+| Bonus | PERFORMANCE | Making databases fast *(optional)* |
 
 ---
 
@@ -187,6 +188,9 @@ their own week. So we added two weeks:
 - Database Design, Performance, and Transactions moved to **Weeks 8–10**
 - Project Integration and Modern Data became **optional bonus weeks**
   (`weekly_lectures/bonus/`) — nothing was removed
+
+**November 5, 2026:** Week 9 now teaches **ranking functions** only.
+Indexing and query performance became optional **Bonus Week 13**.
 
 ---
 
@@ -602,28 +606,26 @@ Normalization prevents this by ensuring every fact is stored **exactly once**. I
 ---
 
 # Week 9  
-## Indexing & Performance
+## Ranking Functions
 
-- What is an index?
+- Number rows: `ROW_NUMBER()`
 
-- Why queries can be slow
+- Rank with ties: `RANK()` and `DENSE_RANK()`
 
-- Performance intuition
+- Rank inside groups: `PARTITION BY`
 
-👉 Goal: Think like a system
+👉 Goal: Answer "who is on top?" correctly — even with ties
 
 ---
-# Week 9 — Performance & Indexing
+# Week 9 — Ranking Functions
 
 ### What You Will Learn
-- How a DBMS executes queries: parsing, optimization, execution
-- Full table scans vs. index lookups
-- B-Tree indexes: how they work and when to use them
-- Composite and unique indexes
-- EXPLAIN: reading and interpreting query execution plans
-- Six query optimization techniques
-- DuckDB's columnar storage and vectorized execution
-- Measuring and benchmarking query performance
+- What a window function is: a value for each row, without collapsing rows
+- `ROW_NUMBER()`, `RANK()`, and `DENSE_RANK()` — and how each one treats ties
+- Ranking inside groups with `PARTITION BY`
+- Ranking `GROUP BY` results (totals first, then rank)
+- Filtering on a rank: rank in a CTE, `WHERE` outside
+- Top-N per group, and "second-highest" questions
 
 ---
 
@@ -631,15 +633,15 @@ Normalization prevents this by ensuring every fact is stored **exactly once**. I
 
 ### Why This Matters in the Real World
 
-Imagine a retail company's daily sales report that takes almost an hour to run, because it scans every row of a multi-million-row `orders` table every single time. A DBA adds a few targeted indexes and rewrites the slowest subqueries:
+Managers ask ranking questions every day: *Who are our top 3 sales reps
+in each region? Which product has the second-highest price? Which store
+had the best month?*
 
-- The same report now finishes in seconds instead of tens of minutes
-- The database server has far more headroom to serve other users at the same time
-- Nobody needs to buy bigger, more expensive hardware to fix a query that was just poorly written
+- `LIMIT 3` gives the wrong answer when two reps tie for third
+- `RANK` keeps the tie — and the bonus goes to the right people
+- `PARTITION BY` answers "top N **per** region" in one query
 
-Performance tuning is not about making things "a little faster." It is about the difference between a system that **scales** and one that **collapses** under load. The techniques in this week directly translate to cost savings and user satisfaction.
-
-> A slow query is not just a technical problem — it is a business problem.
+> A ranking that ignores ties is not just a technical mistake — it can be unfair to real people.
 
 ---
 
@@ -785,6 +787,48 @@ Knowing relational databases gives you the vocabulary to evaluate any of these. 
 
 ---
 
+# Bonus Week 13 *(optional)*  
+## Indexing & Performance
+
+- What is an index?
+
+- Why queries can be slow
+
+- Performance intuition
+
+👉 Goal: Think like a system
+
+---
+# Bonus Week 13 — Performance & Indexing *(optional)*
+
+### What You Will Learn
+- How a DBMS executes queries: parsing, optimization, execution
+- Full table scans vs. index lookups
+- B-Tree indexes: how they work and when to use them
+- Composite and unique indexes
+- EXPLAIN: reading and interpreting query execution plans
+- Six query optimization techniques
+- DuckDB's columnar storage and vectorized execution
+- Measuring and benchmarking query performance
+
+---
+
+# Bonus Week 13 — Business Insight
+
+### Why This Matters in the Real World
+
+Imagine a retail company's daily sales report that takes almost an hour to run, because it scans every row of a multi-million-row `orders` table every single time. A DBA adds a few targeted indexes and rewrites the slowest subqueries:
+
+- The same report now finishes in seconds instead of tens of minutes
+- The database server has far more headroom to serve other users at the same time
+- Nobody needs to buy bigger, more expensive hardware to fix a query that was just poorly written
+
+Performance tuning is not about making things "a little faster." It is about the difference between a system that **scales** and one that **collapses** under load. The techniques in this week directly translate to cost savings and user satisfaction.
+
+> A slow query is not just a technical problem — it is a business problem.
+
+---
+
 <!-- _class: lead -->
 
 # Course Policies & Logistics
@@ -887,9 +931,10 @@ optional; we start SQL from the beginning.
 | SQL Querying | Extract insights from any dataset |
 | Joins & Subqueries | Answer multi-step questions across many tables |
 | Normalization | Build maintainable, scalable schemas |
-| Performance Tuning | Make systems fast and cost-effective |
+| Ranking & Analytics | Find top performers, ties, and Nth-highest values |
 | Transaction Management | Ensure data integrity and safety |
 | Project Delivery *(bonus)* | Design, build, present, and defend |
+| Performance Tuning *(bonus)* | Make systems fast and cost-effective |
 
 
 These are the skills hiring managers look for in:
