@@ -314,14 +314,17 @@ def _(mo):
     |------|-------|---------------------------|
     | 1 | Database Foundations | Understand what databases are and why businesses need them |
     | 2 | Relational Modeling | Design tables that avoid data problems |
-    | 3 | SQL Basics | Write SELECT, WHERE, ORDER BY, GROUP BY |
-    | 4 | SQL Aggregation | Compute totals, averages, rankings |
+    | 3 | SQL Basics | Use CASE, string functions, and computed columns |
+    | 4 | SQL Aggregation | Compute totals and averages with GROUP BY |
     | 5 | SQL Joins | Combine data from multiple tables |
-    | 6 | Database Design | Normalize data, define constraints |
-    | 7 | Query Performance | Make queries run fast with indexes |
-    | 8 | Transactions | Keep data safe and consistent |
-    | 9 | Project Integration | Build a complete database project |
-    | 10 | Review & Modern Data | Wrap up and look ahead |
+    | 6 | Joins II | Find what is missing, join a table to itself |
+    | 7 | Subqueries | Ask a question inside a question |
+    | 8 | Database Design | Normalize data, define constraints |
+    | 9 | Ranking Functions | Find the top N, handle ties, find the second-highest |
+    | 10 | Transactions | Keep data safe and consistent |
+
+    Three optional **bonus weeks** go further: a project, modern data
+    (JSON, PIVOT), and query performance (indexes).
 
     Every class will use Marimo notebooks like this one. You'll write SQL,
     see results instantly, and build up your skills week by week.

@@ -28,9 +28,9 @@ footer: "Week 1: Foundations"
 1. How databases store and organize data
 2. The relational model and SQL
 3. Database design and normalization
-4. Performance tuning and indexing
-5. Transactions and data integrity
-6. Building a real-world database project
+4. Joins and subqueries across many tables
+5. Ranking functions (top N, ties, second-highest)
+6. Transactions and data integrity
 
 ---
 
@@ -40,14 +40,16 @@ footer: "Week 1: Foundations"
 |------|-------|
 | 1 | Database Foundations |
 | 2 | Relational Modeling (keys, relationships) |
-| 3 | SQL Basics (functions, CASE, GROUP BY) |
-| 4 | Aggregation and first JOINs |
+| 3 | SQL Basics (CASE, string functions) |
+| 4 | Aggregation (GROUP BY, HAVING) and first JOINs |
 | 5 | SQL Joins |
-| 6 | Database Design & Normalization |
-| 7 | Query Performance (indexes, EXPLAIN) |
-| 8 | Transactions & ACID |
-| 9 | Project Integration (capstone) |
-| 10 | Review & Modern Data |
+| 6 | Joins II (LEFT/RIGHT JOIN, self-joins) |
+| 7 | Subqueries |
+| 8 | Database Design & Normalization |
+| 9 | Ranking Functions (ROW_NUMBER, RANK, DENSE_RANK) |
+| 10 | Transactions & ACID |
+
+Optional bonus weeks: Project Integration, Modern Data, Query Performance
 
 ---
 
