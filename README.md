@@ -7,6 +7,8 @@
 
 **Instructor:** [Dr. Mahmoud Parsian](https://www.scu.edu/business/isa/faculty/parsian/)
 
+📄 **Syllabus:** [SYLLABUS.md](course_information/SYLLABUS.md) · [PDF](course_information/SYLLABUS.pdf) · **Grading:** [ASSIGNMENTS_and_GRADING.md](course_information/ASSIGNMENTS_and_GRADING.md) · **Labs:** [LABS/](LABS/README.md)
+
 # 1. 🏛️ Course Description
 
 * In [this course](https://www.scu.edu/business/isa/academics/courses/), 
