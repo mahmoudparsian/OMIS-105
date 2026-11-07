@@ -6,6 +6,7 @@
 | File Name                    | Description     |
 |------------------------------|-----------------|
 |[`README.md`](./README.md)    | The file you are reading/viewing |
+|[`SYLLABUS.md`](./SYLLABUS.md) ([PDF](./SYLLABUS.pdf)) | **The syllabus** — the whole course on one page: schedule, outcomes, grading, exams, policies |
 |[`INSTRUCTOR.md`](./INSTRUCTOR.md) | Dr. M. Parsian, Instructor |
 |[`QUESTIONS_and_OFFICE_HOURS.md`](./QUESTIONS_and_OFFICE_HOURS.md) | How to Ask Questions; Office Hours |
 |[`REQUIRED_BOOK.md`](./REQUIRED_BOOK.md)| Required Book (none — all materials in this repo) |
