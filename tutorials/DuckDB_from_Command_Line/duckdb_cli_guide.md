@@ -37,13 +37,17 @@ duckdb my_data.duckdb
 2. They control CLI output, formats, and environment settings.
 
 ### `.help` — Get Help
+
 Displays available dot commands.
+
 ```text
 D .help
 ```
 
 ### `.mode` — Change Output Format
-By default, DuckDB uses `duckbox` format. You can switch to markdown, CSV, JSON, or table formatting for easier viewing or exporting.
+
+* By default, DuckDB uses `duckbox` format. 
+* You can switch to markdown, CSV, JSON, or table formatting for easier viewing or exporting.
 
 ```sql
 -- Change display mode to markdown
@@ -55,6 +59,7 @@ By default, DuckDB uses `duckbox` format. You can switch to markdown, CSV, JSON,
 
 ### `.show` — View Current Settings
 Shows the active configuration settings of your CLI session (e.g., active database, output mode).
+
 ```sql
 .show
 ```
@@ -72,6 +77,7 @@ Lists tables and views in the current database, or displays the SQL used to crea
 
 ### `.exit` or `.quit` — Exit DuckDB
 Leaves the DuckDB interactive shell.
+
 ```text
 D .exit
 ```
@@ -83,6 +89,7 @@ D .exit
 One of DuckDB’s greatest features is running SQL directly on flat files without importing them first.
 
 ### Querying a CSV File
+
 ```sql
 SELECT 
     transaction_id, user_id, amount, category
