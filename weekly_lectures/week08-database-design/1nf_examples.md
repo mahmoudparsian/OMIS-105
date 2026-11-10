@@ -175,4 +175,50 @@ Every single item purchased gets its own clean row, linked back to the main orde
 | 5 | 5003 | Desk |
 | 6 | 5003 | Chair |
 
+---
+
+# Example
+
+### Before 1NF: A Vehicle Fleet Table with Repeating Columns
+Imagine a `mechanic_assignment` table used by a garage to 
+track which cars a mechanic is scheduled to fix today using 
+`car1_VIN`, `car1_Model`, `car2_VIN`, and `car2_Model`:
+
+| `mechanic_id` | `mechanic_name` | `car1_VIN` | `car1_Model` | `car2_VIN` | `car2_Model` |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| M401 | Carlos | VIN123 | Toyota Camry | VIN456 | Ford F-150 |
+| M402 | Aisha | VIN789 | Honda Civic | *null* | *null* |
+
+#### Why this violates 1NF:
+* **Repeating groups of columns:** The pair of columns (`VIN` and `Model`) repeats structurally across the row (`Car1...`, `Car2...`).
+* **Wasted storage space:** Aisha is only working on one car today, leaving the `Car2` columns completely empty (`null`).
+* **Inflexible design:** If Carlos gets assigned a 3rd car to fix, a database administrator has to manually alter the table structure to add `Car3_VIN` and `Car3_Model`.
+
+---
+
+### After 1NF: Fixing the Design
+
+To bring this into 1NF, we extract the repeating group of columns into a separate child table so that each vehicle assignment gets its own individual row.
+
+**Table 1: `Mechanics` (Parent Table)**
+This table stores only the core information unique to each mechanic.
+
+| `mechanic_id` | `mechanic_name` |
+| :--- | :--- |
+| M401 | Carlos |
+| M402 | Aisha |
+
+**Table 2: `repair_assignments` (Child Table / Repeating Groups Extracted)**
+This table eliminates the repeating structural column groups. Each vehicle assigned to a mechanic gets its own clean row.
+
+| `assignment_id` | `mechanic_id` | `vehicle_VIN` | `vehicle_Model` |
+| :--- | :--- | :--- | :--- |
+| 1 | M401 | VIN123 | Toyota Camry |
+| 2 | M401 | VIN456 | Ford F-150 |
+| 3 | M402 | VIN789 | Honda Civic |
+
+* **Why it works:** Every cell holds a single, atomic value. 
+* The columns no longer repeat horizontally, and a mechanic 
+can now be assigned an unlimited number of vehicles without 
+changing the database structure.
 
