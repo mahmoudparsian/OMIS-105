@@ -2,11 +2,11 @@
 marp: true
 theme: default
 paginate: true
-header: "OMIS 105 – Database Management Systems"
+header: "OMIS 105 – Introduction to Database Management Systems"
 footer: "Week 8: Normalization & Design"
 ---
 
-# OMIS 105: Database Management Systems
+# OMIS 105: Introduction to Database Management Systems
 ## Week 8 — Database Design & Normalization
 ### Functional Dependencies, 1NF through BCNF
 
@@ -57,7 +57,7 @@ The data can show that an FD is broken, but it cannot prove that it always holds
 | Type | Notation | Example |
 |------|----------|---------|
 | Full FD | Y depends on the **whole** key | `(order_id, product_id) → quantity` |
-| Partial FD | Part of key → Y | In `order_items(order_id, product_id, quantity, order_date)`, `order_id → order_date` depends on only part of the key `(order_id, product_id)` |
+| Partial FD | **Part** of the key → Y | `order_id → order_date`, when the key is `(order_id, product_id)` |
 | Transitive FD | Key → non-key → Z | `product_id → category_id → category_name` |
 
 ---
@@ -110,11 +110,11 @@ Consider our `orders_denormalized` table (`data/orders_denormalized.csv`,
 
 A table is in 1NF if:
 1. All columns contain **atomic** (indivisible) values
-2. Each column has a **single data type**
-3. Each row is **unique** (has a primary key)
-4. No **repeating groups**
+2. There are no **repeating groups** (`phone1`, `phone2`, ...)
+3. Each row is **unique** (there is a primary key)
 
-(Textbooks state 1NF in slightly different ways; rules 1 and 4 are the core.)
+Also: each column has one name and a **single data type**.
+(Textbooks state 1NF in slightly different ways; rules 1 and 2 are the core.)
 
 ---
 
@@ -351,7 +351,8 @@ Does `customer_city → customer_id` hold? No:
 SELECT customer_city, COUNT(DISTINCT customer_id) AS customers
 FROM orders_denormalized
 GROUP BY customer_city
-HAVING COUNT(DISTINCT customer_id) > 1;
+HAVING COUNT(DISTINCT customer_id) > 1
+ORDER BY customers DESC;
 -- Boston has 5 customers, Portland 4, ...
 ```
 
@@ -376,7 +377,9 @@ Partial dependencies on composite key (order_id, product_id):
 **NOT in 2NF.** Decompose:
 - **orders**(order_id, order_date, status, customer_id)
 - **products**(product_id, product_name, category_name, unit_price)
-- **order_items**(order_id, product_id, quantity, unit_price)
+- **order_items**(order_id, product_id, quantity)
+
+`unit_price` goes to **products**: it depends on `product_id` alone.
 
 ---
 
@@ -402,11 +405,12 @@ Final decomposition:
 - **categories**(category_id, category_name)
 - **products**(product_id, product_name, category_id, unit_price)
 - **orders**(order_id, order_date, status, customer_id)
-- **order_items**(order_id, product_id, quantity, unit_price)
+- **order_items**(order_id, product_id, quantity)
 
 **This is our ShopSmart schema!** The real CSV files differ only slightly:
 `customers` splits the name into `first_name`/`last_name` and adds `state`
-and `join_date`; `order_items` has its own `item_id` key.
+and `join_date`; `order_items` has its own `item_id` key and **also** keeps
+`unit_price` — on purpose (see the final schema slide).
 
 ---
 
@@ -431,7 +435,7 @@ SELECT DISTINCT order_id, order_date, status, customer_id
 FROM orders_denormalized;                                   -- 30 rows
 
 CREATE OR REPLACE TABLE n_order_items AS
-SELECT order_id, product_id, quantity, unit_price
+SELECT order_id, product_id, quantity
 FROM orders_denormalized;                                   -- 100 rows
 ```
 

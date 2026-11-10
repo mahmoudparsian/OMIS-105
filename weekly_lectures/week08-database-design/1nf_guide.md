@@ -1,30 +1,39 @@
 # Understanding First Normal Form (1NF) <br> in SQL & DuckDB
 
-Welcome! If you already know basic SQL queries like `SELECT`, `WHERE`, and `JOIN`, you are ready to learn **Database Normalization**. 
+Welcome! If you already know basic SQL queries like `SELECT`, `WHERE`, and `JOIN`,
+you are ready to learn **database normalization**.
 
-* Normalization is the process of organizing data in a database to 
-	* **reduce redundancy**, and 
-	* **improve data integrity**. 
+* **Normalization** is the process of organizing data in a database to
+	* **reduce redundancy** (the same fact stored many times), and
+	* **improve data integrity** (the data stays correct and consistent).
+* The very first step in this process is **First Normal Form (1NF)**.
 
-*  The very first step in this process is **First Normal Form (1NF)**.
+For more small examples, see [`1nf_examples.md`](1nf_examples.md).
+The next step is [`2nf_guide.md`](2nf_guide.md).
 
 ---
 
 ## 1. What is First Normal Form (1NF)?
 
-A table is in **First Normal Form (1NF)** if and only if it meets these four core rules:
+A table is in **First Normal Form (1NF)** when it follows these three rules:
 
-1. **Atomic Values:** Every cell in a column must contain a **single, indivisible value** (no comma-separated lists, arrays, or multiple items in one cell).
-2. **Unique Column Names:** Each column in a table must have a unique name.
-3. **No Repeating Groups:** You should not have multiple columns storing the same type of data (e.g., `Phone1`, `Phone2`, `Phone3`).
-4. **Primary Key:** Every table must have a primary key (a column or set of columns) that uniquely identifies each row.
+1. **One value per cell (atomic values):** every cell holds a **single** value —
+   no comma-separated lists, no arrays, no "several items in one box".
+2. **No repeating groups:** no set of columns that store the same kind of data,
+   such as `phone_1`, `phone_2`, `phone_3`.
+3. **A primary key:** every row is unique. A **primary key** (one column, or a set
+   of columns) identifies each row.
+
+Two simple housekeeping rules come with them: every column has a **unique name**,
+and all values in one column have the **same data type** (for example, all dates).
 
 ---
 
 ## 2. Example 1: Eliminating Multi-Value Strings (Comma-Separated Lists)
 
-### ❌ Before 1NF (Violates Rule 1: Not Atomic)
-Here, the `courses` column contains multiple values separated by commas in a single cell.
+### ❌ Before 1NF (breaks Rule 1: values are not atomic)
+
+Here, the `courses` column holds several values, separated by commas, in one cell.
 
 **Table: `student_courses_bad`**
 
@@ -34,14 +43,16 @@ Here, the `courses` column contains multiple values separated by commas in a sin
 | 102 | Bob | Java, SQL |
 
 > **Why is this bad?** <br>
-> - How do you count how many students take `SQL`? <br>
+> - `WHERE courses = 'SQL'` returns **0 rows**: no cell is exactly `'SQL'`. The values are `'SQL, Python, DuckDB'` and `'Java, SQL'`. <br>
+> - `WHERE courses LIKE '%SQL%'` finds both students, but it would also match a course named `MySQL`. <br>
+> - How do you count how many students take each course? <br>
 > - How do you join this table with a `courses` table?
-> - `WHERE courses = 'SQL'` will fail because the value is `'SQL, Python, DuckDB'`.
 
 ---
 
-### ✅ After 1NF (Atomic Values & Primary Key)
-To fix this, each row must represent **one student taking one course**.
+### ✅ After 1NF (atomic values and a primary key)
+
+To fix this, each row must describe **one student taking one course**.
 
 **Table: `student_courses_1nf`**
 
@@ -53,38 +64,50 @@ To fix this, each row must represent **one student taking one course**.
 | 102 | Bob | Java |
 | 102 | Bob | SQL |
 
-* **Primary Key:** (`student_id`, `course_name`) — a composite primary key.
+* **Primary key:** (`student_id`, `course_name`) — a **composite** primary key
+  (a key made of two or more columns).
+* Notice that `student_name` is now repeated (Alice appears 3 times). That is
+  allowed in 1NF, but it is a new kind of redundancy. **Second Normal Form**
+  fixes it — see [`2nf_guide.md`](2nf_guide.md).
 
 ---
 
-### 🦆 DuckDB Tip: How to convert non-1NF to 1NF using `STRING_SPLIT` & `UNNEST`
-In DuckDB, if you ever inherit messy data like the non-1NF table above, you can unnest it easily:
+### 🦆 DuckDB Tip: Convert a comma-separated list to 1NF with `STRING_SPLIT` and `UNNEST`
+
+If you ever inherit messy data like the table above, DuckDB can split it for you.
+`STRING_SPLIT` turns the text into a list, and `UNNEST` turns the list into rows.
 
 ```sql
--- Create non-1NF sample table
-CREATE TABLE student_courses_bad AS 
+-- Create the non-1NF sample table
+CREATE OR REPLACE TABLE student_courses_bad AS
 SELECT 101 AS student_id, 'Alice' AS student_name, 'SQL, Python, DuckDB' AS courses
 UNION ALL
 SELECT 102, 'Bob', 'Java, SQL';
 
--- Transform into 1NF using DuckDB
-CREATE TABLE student_courses_1nf AS
-SELECT 
-    student_id, 
-    student_name, 
+-- Transform it into 1NF
+CREATE OR REPLACE TABLE student_courses_1nf AS
+SELECT
+    student_id,
+    student_name,
     UNNEST(STRING_SPLIT(courses, ', ')) AS course_name
 FROM student_courses_bad;
 
--- View 1NF result
+-- View the 1NF result (5 rows)
 SELECT * FROM student_courses_1nf;
 ```
+
+> ⚠️ Split on `', '` (comma **and** space). If you split on `','` only, the values
+> after the first one keep a leading space (`' Python'`), and
+> `WHERE course_name = 'Python'` will not find them. `TRIM()` also fixes this.
 
 ---
 
 ## 3. Example 2: Eliminating Repeating Groups (Numbered Columns)
 
-### ❌ Before 1NF (Violates Rule 3: Repeating Groups)
-Sometimes people try to avoid comma-separated strings by creating multiple numbered columns.
+### ❌ Before 1NF (breaks Rule 2: repeating groups)
+
+Sometimes people avoid comma-separated lists by adding numbered columns instead.
+That is still not 1NF.
 
 **Table: `employee_phones_bad`**
 
@@ -94,14 +117,15 @@ Sometimes people try to avoid comma-separated strings by creating multiple numbe
 | 2 | Dave | 555-0199 | NULL | NULL |
 
 > **Why is this bad?** <br>
-> - What if an employee has 4 phone numbers? You have to alter the table schema to add `phone_4`. <br>
-> - Search queries become messy: `WHERE phone_1 = '...' OR phone_2 = '...' OR phone_3 = '...'`. <br>
-> - Lots of `NULL` values waste space and create unnecessary clutter.
+> - What if an employee has 4 phone numbers? You must change the table (add `phone_4`). <br>
+> - Searches become long: `WHERE phone_1 = '...' OR phone_2 = '...' OR phone_3 = '...'`. <br>
+> - Many `NULL` values add clutter.
 
 ---
 
-### ✅ After 1NF (Normalized Rows)
-Move the repeating group into its own rows.
+### ✅ After 1NF (one row per phone number)
+
+Move the repeating group into rows.
 
 **Table: `employee_phones_1nf`**
 
@@ -111,82 +135,100 @@ Move the repeating group into its own rows.
 | 1 | Carol | 555-0102 |
 | 2 | Dave | 555-0199 |
 
-* **Primary Key:** (`emp_id`, `phone_number`)
+* **Primary key:** (`emp_id`, `phone_number`)
 
 ---
 
-### 🦆 DuckDB Tip: Unpivoting Repeating Columns into 1NF
-DuckDB provides an elegant `UNPIVOT` clause to solve this:
+### 🦆 DuckDB Tip: Turn repeating columns into rows
+
+**Way 1 — `UNION ALL` (works in every database).** Select each phone column
+in turn, and skip the empty ones:
 
 ```sql
--- Create non-1NF table with repeating columns
-CREATE TABLE employee_phones_bad (
-    emp_id INT,
+-- Create the non-1NF table with repeating columns
+CREATE OR REPLACE TABLE employee_phones_bad (
+    emp_id   INT,
     emp_name VARCHAR,
-    phone_1 VARCHAR,
-    phone_2 VARCHAR,
-    phone_3 VARCHAR
+    phone_1  VARCHAR,
+    phone_2  VARCHAR,
+    phone_3  VARCHAR
 );
 
-INSERT INTO employee_phones_bad VALUES 
+INSERT INTO employee_phones_bad VALUES
 (1, 'Carol', '555-0101', '555-0102', NULL),
-(2, 'Dave', '555-0199', NULL, NULL);
+(2, 'Dave',  '555-0199', NULL,       NULL);
 
--- Unpivot into 1NF (automatically drops NULLs)
-CREATE TABLE employee_phones_1nf AS
-UNPIVOT employee_phones_bad
-ON phone_1, phone_2, phone_3
-INTO
-    NAME phone_type
-    VALUE phone_number;
+-- One SELECT per phone column
+CREATE OR REPLACE TABLE employee_phones_1nf AS
+SELECT emp_id, emp_name, phone_1 AS phone_number FROM employee_phones_bad WHERE phone_1 IS NOT NULL
+UNION ALL
+SELECT emp_id, emp_name, phone_2 FROM employee_phones_bad WHERE phone_2 IS NOT NULL
+UNION ALL
+SELECT emp_id, emp_name, phone_3 FROM employee_phones_bad WHERE phone_3 IS NOT NULL;
 
--- View 1NF table
-SELECT emp_id, emp_name, phone_number 
-FROM employee_phones_1nf 
-WHERE phone_number IS NOT NULL;
+-- View the 1NF table (3 rows)
+SELECT * FROM employee_phones_1nf ORDER BY emp_id, phone_number;
+```
+
+**Way 2 — `UNPIVOT` (a DuckDB shortcut).** It does the same thing in one step,
+and it drops the `NULL` values for you:
+
+```sql
+SELECT emp_id, emp_name, phone_number
+FROM (
+    UNPIVOT employee_phones_bad
+    ON phone_1, phone_2, phone_3
+    INTO
+        NAME phone_type
+        VALUE phone_number
+)
+ORDER BY emp_id, phone_number;
+-- 3 rows: the NULL phones are gone
 ```
 
 ---
 
-## 4. Example 3: Handling DuckDB Complex Types (`LIST` & `STRUCT`)
+## 4. Example 3: DuckDB List Types (`VARCHAR[]`)
 
-DuckDB supports native array/list data types (`VARCHAR[]`). While useful for temporary analytical queries, storing lists directly inside columns breaks traditional 1NF rules.
+DuckDB has a **list** data type (`VARCHAR[]`, `INTEGER[]`, ...). Lists are useful
+for quick analysis, but a list stored inside a column breaks Rule 1, just like a
+comma-separated string.
 
-### ❌ Non-1NF DuckDB List Type
+### ❌ Not 1NF: a list column
 
 ```sql
-CREATE TABLE orders_bad (
+CREATE OR REPLACE TABLE orders_bad (
     order_id INT,
     customer VARCHAR,
-    items VARCHAR[] -- List/Array type
+    items    VARCHAR[]   -- a list
 );
 
-INSERT INTO orders_bad VALUES 
-(501, 'Eve', ['Laptop', 'Mouse', 'Keyboard']),
+INSERT INTO orders_bad VALUES
+(501, 'Eve',   ['Laptop', 'Mouse', 'Keyboard']),
 (502, 'Frank', ['Monitor']);
 ```
 
-**Table Data:**
+**Table data:**
 
 | order_id | customer | items |
 | :--- | :--- | :--- |
-| 501 | Eve | ['Laptop', 'Mouse', 'Keyboard'] |
-| 502 | Frank | ['Monitor'] |
+| 501 | Eve | [Laptop, Mouse, Keyboard] |
+| 502 | Frank | [Monitor] |
 
 ---
 
-### ✅ 1NF Table Structure
+### ✅ 1NF: one row per item
 
 ```sql
-CREATE TABLE orders_1nf AS
-SELECT 
-    order_id, 
-    customer, 
+CREATE OR REPLACE TABLE orders_1nf AS
+SELECT
+    order_id,
+    customer,
     UNNEST(items) AS item_name
 FROM orders_bad;
 ```
 
-**Table Data:**
+**Table data:**
 
 | order_id | customer | item_name |
 | :--- | :--- | :--- |
@@ -195,21 +237,36 @@ FROM orders_bad;
 | 501 | Eve | Keyboard |
 | 502 | Frank | Monitor |
 
+* **Primary key:** (`order_id`, `item_name`)
+
 ---
 
 ## 5. Summary Checklist for 1NF
 
-Before moving to 2NF or 3NF, check your tables against this checklist:
+Before you move on to 2NF and 3NF, check every table:
 
-| Rule | Questions to Ask | Fix |
+| Rule | Question to ask | Fix |
 | :--- | :--- | :--- |
-| **1. Atomic Values** | Are there comma-separated lists or JSON arrays in any cell? | Split items into individual rows using `UNNEST()`. |
-| **2. No Repeating Groups** | Do you have columns like `tag1`, `tag2`, `tag3`? | Convert columns to rows using `UNPIVOT`. |
-| **3. Unique Columns** | Does every column have a clear, unique name? | Rename duplicate column headers. |
-| **4. Primary Key** | Does every row have a unique identifier? | Add an ID column or composite key. |
+| **1. One value per cell** | Is there a comma-separated list or a list (`[...]`) in any cell? | Split it into rows: `UNNEST(STRING_SPLIT(...))` or `UNNEST(list)`. |
+| **2. No repeating groups** | Are there columns like `tag_1`, `tag_2`, `tag_3`? | Turn the columns into rows: `UNION ALL` or `UNPIVOT`. |
+| **3. A primary key** | Can every row be identified uniquely? | Choose a key column (or columns), or add an ID column. |
+| Housekeeping | Does every column have a unique name and one data type? | Rename columns; fix mixed types. |
+
+**Check a key with SQL:** if this query returns **0 rows**, the columns you chose
+are unique in the current data:
+
+```sql
+SELECT student_id, course_name, COUNT(*) AS copies
+FROM student_courses_1nf
+GROUP BY student_id, course_name
+HAVING COUNT(*) > 1;
+```
 
 ## 6. References
 
-[1. First Normal Form (1NF) - www.geeksforgeeks.org](https://www.geeksforgeeks.org/dbms/first-normal-form-1nf/)
+1. [First Normal Form (1NF) — GeeksforGeeks](https://www.geeksforgeeks.org/dbms/first-normal-form-1nf/)
+2. [First Normal Form (1NF) — upGrad](https://www.upgrad.com/tutorials/software-engineering/dbms-tutorial/first-normal-form-1nf/)
 
-[2. First Normal Form (1NF) - www.upgrad.com](https://www.upgrad.com/tutorials/software-engineering/dbms-tutorial/first-normal-form-1nf/)
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

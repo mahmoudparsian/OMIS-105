@@ -1,173 +1,171 @@
-# First Normal Form (1NF) Examples
-First Normal Form (1NF) means 
+# First Normal Form (1NF) — Examples
 
-* every table cell holds only one single (atomic) value, and 
-* there are no repeating lists or groups packed into a single column
+A table is in **First Normal Form (1NF)** when:
 
+1. **One value per cell (atomic values):** no lists and no comma-separated values in a cell.
+2. **No repeating groups:** no columns like `phone1`, `phone2`, `phone3` for the same kind of data.
+3. **A primary key:** every row is unique, and a key (one column or several) identifies it.
 
+Two housekeeping rules come with them: every column has a **unique name**, and every
+value in a column has the **same data type** (for example, all dates or all text).
 
-# The Problem: Not in 1NF
-
-Imagine a simple student table where one column lists multiple courses separated by commas: 
-
-|`student_id`  | `student_name`   | `courses_enrolled` |
-|------------|----------------|------------------|
-|101         |John Smith      | Math, Physics    |
-|102         | Sarah Lee      | History          |
-|103         | Max Smith      | SQL, Java, AI    |
-
-
-• Why it breaks 1NF: The Courses Enrolled (`courses_enrolled`)
-cell contains multiple values packed together (Math, Physics), 
-which makes searching or sorting difficult.
-
-# The Fix: In 1NF
-
-To make this table follow 1NF, you break the multi-valued 
-cell so each row represents just one single fact/item: 
-
-|`student_id`  | `student_name`   | `course` |
-|------------|----------------|------------------|
-|101         | John Smith      | Math |
-|101         | John Smith     | Physics |
-|102         | Sarah Lee      | History |
-|103         | Max Smith      | SQL |
-|103         | Max Smith      | Java    |
-|103         | Max Smith      |  AI    |
-
-
-## The Core Rules of 1NF
-
-1. **Single Value per Cell**: No lists, arrays, or comma-separated values in a single box.
-2. **Same Data Type**: Every value in a specific column must be the same kind of data (e.g., all dates or all text).
-3. **Unique Rows**: Each row needs a unique identifier (like a Primary Key) so you can tell them apart.
-4. **Unique Column Names**: No two columns can share the same name.
-
-# The Fix: In 1NF : Deeper
-
-Break `student_name` into `first_name` and `last_name`:
-
-|`student_id`  | `first_name` | `last_name`  | `course` |
-|------------|----------------|------------------|-------|
-|101         | John | Smith      | Math |
-|101         | John | Smith     | Physics |
-|102         | Sarah | Lee      | History |
-|103         | Max | Smith      | SQL |
-|103         | Max | Smith      | Java    |
-|103         | Max | Smith      |  AI    |
-
-
-# Example: Repeating Columns
-
-First Normal Form (1NF) requires that every cell in a table holds a single, indivisible value (an atomic value) and that you eliminate repeating groups or columns. 
-
-## Before 1NF: A Table with Repeating Columns
-
-Imagine a Student table that tracks up to three phone numbers using repeated columns (Phone1, Phone2, Phone3): 
-
-|`student_id` |	`student_name`	| `phone1` | `phone2` | `phone3` |
-|-------------|----------------|----------|----------|----------|
-|101          |	Alice          | 555-1111  | 555-2222 | NULL  |
-|102	         |Bob	          | 555-3333  | NULL | NULL |
-|103	         |Charlie	        |555-4444  | 555-5555 |555-6666|
-
-
-## Why this violates 1NF:
-
-* It uses repeating columns (phone1, phone2, phone3) for the exact same type of data. 
-* It leaves empty/null spaces for students who don't have three phone numbers. 
-* It breaks if a student gets a 4th phone number (you’d have to redesign the table structure).
-
-## After 1NF: Fixing It Two Ways
-
-You can fix this violation in two standard ways to achieve 1NF:
-
-### Approach 1: Flattening the Table (Single-Table 1NF)
-
-You remove the repeating columns and give each phone number its own row. Alice now takes up two rows, and Bob takes up one: 
-
-|`student_id`	 |`student_name` |`phone_number` |
-|-------------|----------------|----------|
-|101	|Alice	|555-1111|
-|101	|Alice	|555-2222
-|102	|Bob	|555-3333
-|103	|Charlie	|555-4444
-|103	|Charlie	|555-5555
-|103	|Charlie	|555-6666
-
-* Why it is 1NF: Every cell contains just one atomic value, and there are no duplicate phone columns. 
-
-* The downside: Student names (Alice, Charlie) are repeated, which causes data redundancy. 
-
-### Approach 2: Moving the Repeating Data to a Child Table (Relational 1NF)
-
-Instead of cramming everything into one flat table, you split the data into a main table and a separate `student_phone` table linked by the `student_id`: 
-
-**Table 1: `students`**
-
-|`student_id`	| `student_name`|
-|----|----|
-|101	|Alice|
-|102	|Bob|
-|103	|Charlie|
-
-**Table 2: `student_phone` (Child Table)**
-
-|`phone_id`|	`student_id`| `phone_number`|
-|----|----|----|
-|1	|101	|555-1111|
-|2	|101	|555-2222|
-|3	|102	|555-3333|
-|4	|103	|555-4444|
-|5	|103	|555-5555|
-|6	|103	|555-6666|
-
-* **Why this is best:** <br>
-* It satisfies 1NF completely while keeping your data clean, flexible, and free of wasted blank space. 
-
-----
-
-## Example
-
-### Before 1NF: An Order Table with Repeating Columns
-Imagine an `Order` table that tries to track up to 
-three items purchased in a single transaction using 
-`Item1`, `Item2`, and `Item3`:
-
-| `order_id` | `customer_name` | `Item1` | `Item2` | `Item3` |
-| :--- | :--- | :--- | :--- | :--- |
-| 5001 | David | Laptop | Mouse | *null* |
-| 5002 | Emma | Keyboard | *null* | *null* |
-| 5003 | Frank | Monitor | Desk | Chair |
-
-#### Why this violates 1NF:
-* **Repeating data groups:** `Item1`, `Item2`, and `Item3` are identical types of data stamped across the columns.
-* **Wasted storage:** Emma only bought one thing, leaving two columns empty (`null`).
-* **Hard ceiling limit:** If Frank decides to buy a 4th item (like a lamp), the system breaks because there is no `Item4` column. 
+This page shows four small examples. The SQL behind them (`STRING_SPLIT`, `UNNEST`,
+`UNION ALL`, `UNPIVOT`) is in [`1nf_guide.md`](1nf_guide.md).
 
 ---
 
-### After 1NF: Fixing the Design
+## Example 1: A List in One Cell
 
-To make this table compliant with 1NF and ensure it 
-can handle an unlimited number of items per order, 
-we split it into a parent table and a child table.
+### ❌ Before: not in 1NF
 
-**Table 1: `Orders` (Parent Table)**
-This table only holds information that applies to the 
-entire order as a single event.
+A student table where one column lists several courses, separated by commas:
+
+| `student_id` | `student_name` | `courses_enrolled` |
+|---|---|---|
+| 101 | John Smith | Math, Physics |
+| 102 | Sarah Lee | History |
+| 103 | Max Smith | SQL, Java, AI |
+
+**Why it breaks 1NF:** the `courses_enrolled` cell holds several values packed
+together (`Math, Physics`). That makes searching, counting, and sorting hard:
+`WHERE courses_enrolled = 'Math'` finds **no** rows.
+
+### ✅ After: in 1NF
+
+Split the list so that each row holds **one** fact: one student in one course.
+
+| `student_id` | `student_name` | `course` |
+|---|---|---|
+| 101 | John Smith | Math |
+| 101 | John Smith | Physics |
+| 102 | Sarah Lee | History |
+| 103 | Max Smith | SQL |
+| 103 | Max Smith | Java |
+| 103 | Max Smith | AI |
+
+* **Primary key:** (`student_id`, `course`). Neither column alone is unique.
+* `student_name` is now repeated. 1NF allows this; **2NF** removes it
+  (see [`2nf_guide.md`](2nf_guide.md)).
+
+### Going one step further: splitting a name
+
+"Atomic" means *one value **for how we use the data***. If you often search or
+sort by last name, store the parts of the name separately:
+
+| `student_id` | `first_name` | `last_name` | `course` |
+|---|---|---|---|
+| 101 | John | Smith | Math |
+| 101 | John | Smith | Physics |
+| 102 | Sarah | Lee | History |
+| 103 | Max | Smith | SQL |
+| 103 | Max | Smith | Java |
+| 103 | Max | Smith | AI |
+
+This is a design choice, not a strict 1NF rule. A full name in one column is
+still in 1NF, but `WHERE last_name = 'Smith'` is easier than
+`WHERE student_name LIKE '% Smith'`.
+
+---
+
+## Example 2: Repeating Columns (Phone Numbers)
+
+### ❌ Before: repeating columns
+
+A student table that stores up to three phone numbers in `phone1`, `phone2`, `phone3`:
+
+| `student_id` | `student_name` | `phone1` | `phone2` | `phone3` |
+|---|---|---|---|---|
+| 101 | Alice | 555-1111 | 555-2222 | NULL |
+| 102 | Bob | 555-3333 | NULL | NULL |
+| 103 | Charlie | 555-4444 | 555-5555 | 555-6666 |
+
+**Why this breaks 1NF:**
+
+* Three columns store the **same kind** of data (a phone number).
+* Students with fewer than three phones leave `NULL` gaps.
+* A 4th phone number does not fit. You would have to change the table.
+
+### ✅ After, way 1: one table, one row per phone
+
+Remove the repeating columns and give each phone number its own row:
+
+| `student_id` | `student_name` | `phone_number` |
+|---|---|---|
+| 101 | Alice | 555-1111 |
+| 101 | Alice | 555-2222 |
+| 102 | Bob | 555-3333 |
+| 103 | Charlie | 555-4444 |
+| 103 | Charlie | 555-5555 |
+| 103 | Charlie | 555-6666 |
+
+* **Primary key:** (`student_id`, `phone_number`)
+* **Why it is 1NF:** every cell holds one value, and there are no repeating columns.
+* **The downside:** names (Alice, Charlie) are repeated — redundancy.
+
+### ✅ After, way 2 (better): a parent table and a child table
+
+Split the data into a `students` table and a `student_phones` table, linked by
+`student_id`:
+
+**Table 1: `students`** — primary key `student_id`
+
+| `student_id` | `student_name` |
+|---|---|
+| 101 | Alice |
+| 102 | Bob |
+| 103 | Charlie |
+
+**Table 2: `student_phones`** (child table) — primary key `phone_id`;
+`student_id` is a foreign key to `students`
+
+| `phone_id` | `student_id` | `phone_number` |
+|---|---|---|
+| 1 | 101 | 555-1111 |
+| 2 | 101 | 555-2222 |
+| 3 | 102 | 555-3333 |
+| 4 | 103 | 555-4444 |
+| 5 | 103 | 555-5555 |
+| 6 | 103 | 555-6666 |
+
+**Why this is best:** it is in 1NF, each name is stored **once**, there are no
+empty `NULL` slots, and a student can have any number of phones.
+
+---
+
+## Example 3: Repeating Columns (Items in an Order)
+
+### ❌ Before: repeating columns
+
+An `orders` table that tracks up to three items with `item1`, `item2`, `item3`:
+
+| `order_id` | `customer_name` | `item1` | `item2` | `item3` |
+|---|---|---|---|---|
+| 5001 | David | Laptop | Mouse | NULL |
+| 5002 | Emma | Keyboard | NULL | NULL |
+| 5003 | Frank | Monitor | Desk | Chair |
+
+**Why this breaks 1NF:**
+
+* **Repeating group:** `item1`, `item2`, `item3` hold the same kind of data.
+* **Empty slots:** Emma bought one thing, so two cells are `NULL`.
+* **A hard limit:** a 4th item (a lamp) does not fit — there is no `item4` column.
+
+### ✅ After: a parent table and a child table
+
+**Table 1: `orders`** (parent table) — primary key `order_id`.
+It holds only facts about the **whole** order.
 
 | `order_id` | `customer_name` |
-| :--- | :--- |
+|---|---|
 | 5001 | David |
 | 5002 | Emma |
 | 5003 | Frank |
 
-**Table 2: `order_items` (Child Table / Repeating Group Extracted)**
-Every single item purchased gets its own clean row, linked back to the main order via the `OrderID`.
+**Table 2: `order_items`** (child table) — primary key `order_item_id`;
+`order_id` is a foreign key to `orders`. Each item gets its own row.
 
 | `order_item_id` | `order_id` | `item_name` |
-| :--- | :--- | :--- |
+|---|---|---|
 | 1 | 5001 | Laptop |
 | 2 | 5001 | Mouse |
 | 3 | 5002 | Keyboard |
@@ -175,50 +173,63 @@ Every single item purchased gets its own clean row, linked back to the main orde
 | 5 | 5003 | Desk |
 | 6 | 5003 | Chair |
 
+Now an order can have any number of items.
+
 ---
 
-# Example
+## Example 4: A Repeating *Group* of Columns (Mechanics and Cars)
 
-### Before 1NF: A Vehicle Fleet Table with Repeating Columns
-Imagine a `mechanic_assignment` table used by a garage to 
-track which cars a mechanic is scheduled to fix today using 
-`car1_VIN`, `car1_Model`, `car2_VIN`, and `car2_Model`:
+Sometimes a **pair** of columns repeats, not just one column.
 
-| `mechanic_id` | `mechanic_name` | `car1_VIN` | `car1_Model` | `car2_VIN` | `car2_Model` |
-| :--- | :--- | :--- | :--- | :--- | :--- |
+### ❌ Before: repeating column pairs
+
+A garage tracks which cars each mechanic fixes today, with
+`car1_vin`, `car1_model`, `car2_vin`, `car2_model`
+(a **VIN** is a car's unique Vehicle Identification Number):
+
+| `mechanic_id` | `mechanic_name` | `car1_vin` | `car1_model` | `car2_vin` | `car2_model` |
+|---|---|---|---|---|---|
 | M401 | Carlos | VIN123 | Toyota Camry | VIN456 | Ford F-150 |
-| M402 | Aisha | VIN789 | Honda Civic | *null* | *null* |
+| M402 | Aisha | VIN789 | Honda Civic | NULL | NULL |
 
-#### Why this violates 1NF:
-* **Repeating groups of columns:** The pair of columns (`VIN` and `Model`) repeats structurally across the row (`Car1...`, `Car2...`).
-* **Wasted storage space:** Aisha is only working on one car today, leaving the `Car2` columns completely empty (`null`).
-* **Inflexible design:** If Carlos gets assigned a 3rd car to fix, a database administrator has to manually alter the table structure to add `Car3_VIN` and `Car3_Model`.
+**Why this breaks 1NF:**
 
----
+* **A repeating group:** the pair (`vin`, `model`) repeats across the row (`car1_…`, `car2_…`).
+* **Empty slots:** Aisha works on one car, so the `car2_…` cells are `NULL`.
+* **Not flexible:** a 3rd car for Carlos needs two new columns, `car3_vin` and `car3_model`.
 
-### After 1NF: Fixing the Design
+### ✅ After: a parent table and a child table
 
-To bring this into 1NF, we extract the repeating group of columns into a separate child table so that each vehicle assignment gets its own individual row.
-
-**Table 1: `Mechanics` (Parent Table)**
-This table stores only the core information unique to each mechanic.
+**Table 1: `mechanics`** — primary key `mechanic_id`
 
 | `mechanic_id` | `mechanic_name` |
-| :--- | :--- |
+|---|---|
 | M401 | Carlos |
 | M402 | Aisha |
 
-**Table 2: `repair_assignments` (Child Table / Repeating Groups Extracted)**
-This table eliminates the repeating structural column groups. Each vehicle assigned to a mechanic gets its own clean row.
+**Table 2: `repair_assignments`** — primary key `assignment_id`;
+`mechanic_id` is a foreign key to `mechanics`
 
-| `assignment_id` | `mechanic_id` | `vehicle_VIN` | `vehicle_Model` |
-| :--- | :--- | :--- | :--- |
+| `assignment_id` | `mechanic_id` | `vehicle_vin` | `vehicle_model` |
+|---|---|---|---|
 | 1 | M401 | VIN123 | Toyota Camry |
 | 2 | M401 | VIN456 | Ford F-150 |
 | 3 | M402 | VIN789 | Honda Civic |
 
-* **Why it works:** Every cell holds a single, atomic value. 
-* The columns no longer repeat horizontally, and a mechanic 
-can now be assigned an unlimited number of vehicles without 
-changing the database structure.
+**Why it works:** every cell holds one value, the columns no longer repeat across
+the row, and a mechanic can get any number of cars without changing the table.
 
+---
+
+## Quick Self-Check
+
+For each table you design, ask:
+
+1. Does any cell hold a list? → split it into rows.
+2. Do any columns end in `1`, `2`, `3` (or repeat as a group)? → turn them into rows,
+   usually in a child table.
+3. What is the primary key? → if no column (or set of columns) is unique, add an ID.
+
+---
+
+*OMIS 105 — Introduction to Database Management Systems — Fall 2026*

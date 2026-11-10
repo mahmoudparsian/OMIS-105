@@ -118,16 +118,16 @@ The normal forms are rules about these dependencies.
 # First Normal Form (1NF)
 
 Rules:
-- Each cell holds **one** value (atomic) — no lists
-- No repeating groups (like `phone1`, `phone2`, `phone3`)
-- Each row can be identified by a key
+1. Each cell holds **one** value (atomic) — no lists
+2. No repeating groups (like `phone1`, `phone2`, `phone3`)
+3. A primary key — every row is unique
 
 ❌ Bad:
 | order_id | products |
 |----|----------|
 | 1  | Laptop, Phone |
 
-✅ Good:
+✅ Good (key: `order_id` + `product`):
 | order_id | product |
 |----|---------|
 | 1  | Laptop |
@@ -270,12 +270,16 @@ Foreign keys = relationships
 
 ---
 
-# Hands-On Lab
+# Hands-On Labs
 
-- Identify bad design  
-- Normalize into 3–4 tables  
-- Define primary keys  
-- Define foreign keys  
+**Lab 1 — design and 1NF**
+- Find the 1NF problems (lists in a cell, repeating columns)
+- Split them into rows with SQL
+- Choose a primary key, and check it with SQL
+
+**Lab 2 — 1NF and 2NF**
+- Find the partial dependencies of a composite key
+- Split the table into 2NF tables, then JOIN them back together
 
 ---
 
@@ -293,10 +297,18 @@ Foreign keys = relationships
 
 # What’s Next?
 
-Week 9: Query performance
-- Window functions (ROW_NUMBER, RANK)
-- CTEs
-- EXPLAIN and indexes
+Week 9: Ranking functions
+- `ROW_NUMBER`, `RANK`, `DENSE_RANK`
+- Ranking within groups (`PARTITION BY`)
+- Top-N and "second-highest" questions
+
+---
+
+# Read More
+
+- `1nf_guide.md` and `1nf_examples.md` — First Normal Form, step by step
+- `2nf_guide.md` — Second Normal Form, with DuckDB code
+- `02_database_design_and_normalization.md` — the full deck (up to BCNF)
 
 ---
 
