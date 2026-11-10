@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Lab 10: Comprehensive Review — INSTRUCTOR SOLUTIONS
+    # Lab 12: Comprehensive Review — INSTRUCTOR SOLUTIONS
 
     ## OMIS 105 — Database Management Systems
     **Week 12 | Answer Key**

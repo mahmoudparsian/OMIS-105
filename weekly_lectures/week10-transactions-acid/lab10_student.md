@@ -1,4 +1,4 @@
-# Lab 8: Transactions & ACID
+# Lab 10: Transactions & ACID
 
 ## OMIS 105 — Database Management Systems
 **Week 10 | Estimated time: 75–90 minutes**

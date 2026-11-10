@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Lab 9: Capstone Project Specification & Starter Template
+    # Lab 11: Capstone Project Specification & Starter Template
 
     ## OMIS 105 — Database Management Systems
     **Week 11 | Due: Week 12 (presentation)**

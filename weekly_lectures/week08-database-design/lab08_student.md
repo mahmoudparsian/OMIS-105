@@ -1,4 +1,4 @@
-# Lab 6: Database Design & Normalization
+# Lab 8: Database Design & Normalization
 
 ## OMIS 105 — Database Management Systems
 **Week 8 | Estimated time: 75–90 minutes**

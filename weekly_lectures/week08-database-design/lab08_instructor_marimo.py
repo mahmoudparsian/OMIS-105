@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Lab 6: Database Design & Normalization — INSTRUCTOR SOLUTIONS
+    # Lab 8: Database Design & Normalization — INSTRUCTOR SOLUTIONS
 
     ## OMIS 105 — Database Management Systems
     **Week 8 | Answer Key**

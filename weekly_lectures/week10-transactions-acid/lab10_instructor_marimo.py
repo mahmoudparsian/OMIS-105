@@ -14,7 +14,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Lab 8: Transactions & ACID — INSTRUCTOR SOLUTIONS
+    # Lab 10: Transactions & ACID — INSTRUCTOR SOLUTIONS
 
     ## OMIS 105 — Database Management Systems
     **Week 10 | Answer Key**
