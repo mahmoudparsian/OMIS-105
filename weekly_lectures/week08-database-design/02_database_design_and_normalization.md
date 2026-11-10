@@ -1,9 +1,11 @@
 ---
+
 marp: true
 theme: default
 paginate: true
 header: "OMIS 105 – Introduction to Database Management Systems"
 footer: "Week 8: Normalization & Design"
+
 ---
 
 # OMIS 105: Introduction to Database Management Systems
@@ -25,6 +27,7 @@ footer: "Week 8: Normalization & Design"
 # Why Normalization?
 
 Poor database design causes:
+
 - **Redundancy** — same data stored multiple times
 - **Update anomaly** — changing one fact requires multiple updates
 - **Insertion anomaly** — can't add data without unrelated data
@@ -43,6 +46,7 @@ Normalization removes these problems step by step.
 **X → Y** means: "If you know X, you can determine Y."
 
 Example in `products`:
+
 - `product_id → product_name` (knowing the ID determines the name)
 - `product_id → price` (knowing the ID determines the price)
 - `product_name → price`? **Not guaranteed** — two products could share a name

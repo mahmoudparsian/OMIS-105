@@ -261,6 +261,7 @@ FROM student_courses_1nf
 GROUP BY student_id, course_name
 HAVING COUNT(*) > 1;
 ```
+---
 
 ## 6. References
 

@@ -14,6 +14,23 @@ style: |
 # OMIS 105  
 ## Week 8: Database Design & Normalization
 
+### 1. What is DATABASE DESIGN?
+
+### 2. What is DATABASE NORMALIZATION?
+
+---
+
+## Database Design & Normalization
+
+	**DATABASE DESIGN** is the process of planning 
+	and structuring how data is stored, organized, 
+	and connected in a database. 
+
+	**DATABASE NORMALIZATION** is a key part of 
+	that design process — it breaks down large, 
+	messy tables into smaller, well-organized tables 
+	to reduce duplicate data and prevent errors.
+
 ---
 
 # Agenda
@@ -107,6 +124,7 @@ Result: less redundancy, fewer anomalies, more consistent data.
 (A *determines* B.)
 
 Examples:
+
 - `customer_id → customer_name` (one ID, one name)
 - `product_id → price` (one product, one price)
 - `customer_name → customer_id`? ❌ No — two customers can have the same name
@@ -118,16 +136,19 @@ The normal forms are rules about these dependencies.
 # First Normal Form (1NF)
 
 Rules:
+
 1. Each cell holds **one** value (atomic) — no lists
 2. No repeating groups (like `phone1`, `phone2`, `phone3`)
 3. A primary key — every row is unique
 
 ❌ Bad:
+
 | order_id | products |
 |----|----------|
 | 1  | Laptop, Phone |
 
 ✅ Good (key: `order_id` + `product`):
+
 | order_id | product |
 |----|---------|
 | 1  | Laptop |
@@ -142,7 +163,9 @@ Goal:
 
 It only matters when the key has **two or more columns** (a composite key).
 
-Example: `order_items(order_id, product_id, quantity, product_name)`
+Example: 
+`order_items(order_id, product_id, quantity, product_name)`
+
 - Key = `(order_id, product_id)`
 - `quantity` depends on the **whole** key ✅ (how many of *this* product in *this* order)
 - `product_name` depends only on `product_id` — **part** of the key ❌
