@@ -124,3 +124,55 @@ Instead of cramming everything into one flat table, you split the data into a ma
 
 * **Why this is best:** <br>
 * It satisfies 1NF completely while keeping your data clean, flexible, and free of wasted blank space. 
+
+----
+
+## Example
+
+### Before 1NF: An Order Table with Repeating Columns
+Imagine an `Order` table that tries to track up to 
+three items purchased in a single transaction using 
+`Item1`, `Item2`, and `Item3`:
+
+| `order_id` | `customer_name` | `Item1` | `Item2` | `Item3` |
+| :--- | :--- | :--- | :--- | :--- |
+| 5001 | David | Laptop | Mouse | *null* |
+| 5002 | Emma | Keyboard | *null* | *null* |
+| 5003 | Frank | Monitor | Desk | Chair |
+
+#### Why this violates 1NF:
+* **Repeating data groups:** `Item1`, `Item2`, and `Item3` are identical types of data stamped across the columns.
+* **Wasted storage:** Emma only bought one thing, leaving two columns empty (`null`).
+* **Hard ceiling limit:** If Frank decides to buy a 4th item (like a lamp), the system breaks because there is no `Item4` column. 
+
+---
+
+### After 1NF: Fixing the Design
+
+To make this table compliant with 1NF and ensure it 
+can handle an unlimited number of items per order, 
+we split it into a parent table and a child table.
+
+**Table 1: `Orders` (Parent Table)**
+This table only holds information that applies to the 
+entire order as a single event.
+
+| `order_id` | `customer_name` |
+| :--- | :--- |
+| 5001 | David |
+| 5002 | Emma |
+| 5003 | Frank |
+
+**Table 2: `order_items` (Child Table / Repeating Group Extracted)**
+Every single item purchased gets its own clean row, linked back to the main order via the `OrderID`.
+
+| `order_item_id` | `order_id` | `item_name` |
+| :--- | :--- | :--- |
+| 1 | 5001 | Laptop |
+| 2 | 5001 | Mouse |
+| 3 | 5002 | Keyboard |
+| 4 | 5003 | Monitor |
+| 5 | 5003 | Desk |
+| 6 | 5003 | Chair |
+
+
