@@ -152,7 +152,7 @@ Also: each column has one name and a **single data type**.
 **Fix**: Separate phone table:
 
 | customer_id | name |phone |
-|------------|-------|
+|------------|-------|---|
 | 1 | Alice | 555-1234 |
 | 1 | Alice | 555-5678 |
 
