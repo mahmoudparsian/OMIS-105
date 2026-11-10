@@ -25,6 +25,7 @@ A student table where one column lists several courses, separated by commas:
 | 101 | John Smith | Math, Physics |
 | 102 | Sarah Lee | History |
 | 103 | Max Smith | SQL, Java, AI |
+| 104 | Jane Doe| Introduction to SQL |
 
 **Why it breaks 1NF:** the `courses_enrolled` cell holds several values packed
 together (`Math, Physics`). That makes searching, counting, and sorting hard:
@@ -42,6 +43,7 @@ Split the list so that each row holds **one** fact: one student in one course.
 | 103 | Max Smith | SQL |
 | 103 | Max Smith | Java |
 | 103 | Max Smith | AI |
+| 104 | Jane Doe| Introduction to SQL |
 
 * **Primary key:** (`student_id`, `course`). Neither column alone is unique.
 * `student_name` is now repeated. 1NF allows this; **2NF** removes it
@@ -60,6 +62,7 @@ sort by last name, store the parts of the name separately:
 | 103 | Max | Smith | SQL |
 | 103 | Max | Smith | Java |
 | 103 | Max | Smith | AI |
+| 104 | Jane | Doe| Introduction to SQL |
 
 This is a design choice, not a strict 1NF rule. A full name in one column is
 still in 1NF, but `WHERE last_name = 'Smith'` is easier than
