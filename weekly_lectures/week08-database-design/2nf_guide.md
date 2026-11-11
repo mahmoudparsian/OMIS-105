@@ -4,6 +4,8 @@ Your tables are in **First Normal Form (1NF)**: every cell holds one value, ther
 no repeating groups, and every table has a primary key
 (see [`1nf_guide.md`](1nf_guide.md)). The next step is **Second Normal Form (2NF)**.
 
+For more small examples, see [`2nf_examples.md`](2nf_examples.md).
+
 ---
 
 ## 1. What is Second Normal Form (2NF)?
@@ -288,7 +290,8 @@ Ask yourself three questions:
    move it to a separate table where that part is the key.
 
 **Next:** Third Normal Form (3NF) removes columns that depend on **another non-key column**
-(for example, `product_id → category_id → category_name`). See this week's slides.
+(for example, `product_id → category_id → category_name`). See [`3nf_guide.md`](3nf_guide.md)
+and [`3nf_examples.md`](3nf_examples.md).
 
 ---
 

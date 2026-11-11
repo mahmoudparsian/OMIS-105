@@ -235,4 +235,194 @@ For each table you design, ask:
 
 ---
 
+## Complete Example: From a Non-1NF Table to 1NF, Step by Step
+
+This last example puts everything together. We start with one bad table that
+breaks **both** 1NF rules, and we fix it with SQL, one step at a time. Every
+result below is real DuckDB output, so you can run the code and compare.
+
+### The story
+
+A campus book club keeps its members in one table. The `genres` column holds a
+**list**, and the phone numbers are **repeating columns**.
+
+### Step 1: Create the bad table
+
+```sql
+CREATE OR REPLACE TABLE club_members_bad (
+    member_id   INT,
+    member_name VARCHAR,
+    genres      VARCHAR,     -- a list in one cell        (breaks Rule 1)
+    phone_1     VARCHAR,     -- repeating columns          (breaks Rule 2)
+    phone_2     VARCHAR
+);
+
+INSERT INTO club_members_bad VALUES
+(1, 'Ana',   'Mystery, Sci-Fi',          '408-555-0101', '408-555-0102'),
+(2, 'Ben',   'Romance',                  '650-555-0201', NULL),
+(3, 'Chloe', 'Sci-Fi, History, Mystery', '408-555-0301', NULL);
+
+SELECT * FROM club_members_bad;
+```
+
+| member_id | member_name | genres | phone_1 | phone_2 |
+|---|---|---|---|---|
+| 1 | Ana | Mystery, Sci-Fi | 408-555-0101 | 408-555-0102 |
+| 2 | Ben | Romance | 650-555-0201 | NULL |
+| 3 | Chloe | Sci-Fi, History, Mystery | 408-555-0301 | NULL |
+
+### Step 2: See the problem
+
+Who likes Sci-Fi? Ana and Chloe do — but SQL cannot see it:
+
+```sql
+SELECT member_name
+FROM club_members_bad
+WHERE genres = 'Sci-Fi';
+```
+
+**Result: 0 rows.** No cell is exactly `'Sci-Fi'`; the cells are
+`'Mystery, Sci-Fi'` and `'Sci-Fi, History, Mystery'`. A list in a cell hides
+the data from `WHERE`, `GROUP BY`, and `JOIN`.
+
+### Step 3: Plan the new tables
+
+Ask: *"What does each column describe, and can it have more than one value?"*
+
+| Column | One value or many? | Goes to |
+|---|---|---|
+| `member_name` | one per member | `members`(**member_id**, member_name) |
+| `genres` | **many** per member | `member_genres`(**member_id, genre**) — one row per genre |
+| `phone_1`, `phone_2` | **many** per member | `member_phones`(**member_id, phone**) — one row per phone |
+
+### Step 4: Build `members` — the facts with one value
+
+```sql
+CREATE OR REPLACE TABLE members AS
+SELECT member_id, member_name
+FROM club_members_bad;
+
+SELECT * FROM members ORDER BY member_id;
+```
+
+| member_id | member_name |
+|---|---|
+| 1 | Ana |
+| 2 | Ben |
+| 3 | Chloe |
+
+### Step 5: Fix the list — `STRING_SPLIT` + `UNNEST`
+
+`STRING_SPLIT(genres, ', ')` turns `'Mystery, Sci-Fi'` into the list
+`['Mystery', 'Sci-Fi']`. `UNNEST(...)` turns that list into **rows**. The other
+columns in the `SELECT` (`member_id`) are copied onto each new row.
+
+```sql
+CREATE OR REPLACE TABLE member_genres AS
+SELECT
+    member_id,
+    UNNEST(STRING_SPLIT(genres, ', ')) AS genre
+FROM club_members_bad;
+
+SELECT * FROM member_genres ORDER BY member_id, genre;
+```
+
+| member_id | genre |
+|---|---|
+| 1 | Mystery |
+| 1 | Sci-Fi |
+| 2 | Romance |
+| 3 | History |
+| 3 | Mystery |
+| 3 | Sci-Fi |
+
+3 rows became 6: one row for each (member, genre) pair.
+
+### Step 6: Fix the repeating columns — `UNION ALL`
+
+Take each phone column in turn, and skip the empty ones (`IS NOT NULL`).
+`UNION ALL` stacks the results into one table.
+
+```sql
+CREATE OR REPLACE TABLE member_phones AS
+SELECT member_id, phone_1 AS phone FROM club_members_bad WHERE phone_1 IS NOT NULL
+UNION ALL
+SELECT member_id, phone_2          FROM club_members_bad WHERE phone_2 IS NOT NULL;
+
+SELECT * FROM member_phones ORDER BY member_id, phone;
+```
+
+| member_id | phone |
+|---|---|
+| 1 | 408-555-0101 |
+| 1 | 408-555-0102 |
+| 2 | 650-555-0201 |
+| 3 | 408-555-0301 |
+
+The two `NULL` phones are gone, and a member can now have **any** number of phones.
+
+### Step 7: Check the primary keys
+
+A key must be unique. If these queries return **0 rows**, no
+(member, genre) or (member, phone) pair appears twice:
+
+```sql
+SELECT member_id, genre, COUNT(*) AS copies
+FROM member_genres
+GROUP BY member_id, genre
+HAVING COUNT(*) > 1;            -- 0 rows ✅
+
+SELECT member_id, phone, COUNT(*) AS copies
+FROM member_phones
+GROUP BY member_id, phone
+HAVING COUNT(*) > 1;            -- 0 rows ✅
+```
+
+### Step 8: Ask the question again
+
+Now the Sci-Fi question works, with a JOIN:
+
+```sql
+SELECT m.member_name
+FROM members m
+JOIN member_genres g ON m.member_id = g.member_id
+WHERE g.genre = 'Sci-Fi'
+ORDER BY m.member_name;
+```
+
+| member_name |
+|---|
+| Ana |
+| Chloe |
+
+And a question that was impossible before — how many members like each genre:
+
+```sql
+SELECT genre, COUNT(*) AS members
+FROM member_genres
+GROUP BY genre
+ORDER BY members DESC, genre;
+```
+
+| genre | members |
+|---|---|
+| Mystery | 2 |
+| Sci-Fi | 2 |
+| History | 1 |
+| Romance | 1 |
+
+### What we did
+
+| Step | Rule fixed | SQL tool |
+|---|---|---|
+| 5 | Rule 1: one value per cell | `UNNEST(STRING_SPLIT(...))` |
+| 6 | Rule 2: no repeating groups | `UNION ALL` (or `UNPIVOT`) |
+| 4, 7 | Rule 3: a primary key | a table per "thing" + `GROUP BY … HAVING COUNT(*) > 1` |
+
+One table became three: `members`, `member_genres`, and `member_phones`, linked
+by `member_id`. Each member's name is stored **once**, so these tables are
+already in 2NF too.
+
+---
+
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*

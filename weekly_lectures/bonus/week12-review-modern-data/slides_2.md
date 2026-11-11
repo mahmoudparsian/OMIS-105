@@ -359,7 +359,7 @@ Week 2: Relational Model (keys, relationships) ──┤
 Week 3: SQL Basics (functions, CASE, GROUP BY) ──┤
 Week 4: Aggregation + first JOINs ───────────────┤
 Week 5: JOINs, IS NULL, COALESCE ────────────────┤ → Week 11: Project
-Week 8: Normalization (1NF → BCNF) ──────────────┤
+Week 8: Normalization (1NF → 3NF)  ──────────────┤
 Week 9: Performance (indexes, EXPLAIN) ──────────┤
 Week 10: Transactions (ACID, constraints) ────────┘
                                    Week 12: Review + Modern Data
@@ -470,7 +470,6 @@ WITH cte AS (SELECT ...) SELECT ... FROM cte;
 | 1NF | Atomic values, no repeating groups | Multi-valued cells |
 | 2NF | No partial dependencies | Partial key → non-key |
 | 3NF | No transitive dependencies | Non-key → non-key |
-| BCNF | Every determinant is a superkey | Remaining FD-based anomalies |
 
 **Functional dependency**: X → Y ("knowing X determines Y")
 

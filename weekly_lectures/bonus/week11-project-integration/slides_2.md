@@ -28,7 +28,7 @@ footer: "Week 11: Capstone Project"
 
 This project integrates everything from Weeks 1–10:
 - Relational design & ER diagrams
-- Normalization (3NF/BCNF)
+- Normalization (up to 3NF)
 - SQL (DDL + DML + complex queries)
 - Performance considerations
 - Transaction safety

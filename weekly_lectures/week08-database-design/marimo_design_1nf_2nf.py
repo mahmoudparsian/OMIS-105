@@ -1301,8 +1301,8 @@ def _(mo):
     `orders` **is** in 2NF (its key is one column), but
     `customer_email → customer_name` is a dependency between two
     **non-key** columns. **3NF** moves it into a `customers` table — the
-    last box of the design from Part 2. See the 3NF section of
-    `02_database_design_and_normalization.md`.
+    last box of the design from Part 2. See `3nf_guide.md` and the 3NF
+    slides in `database_design_and_normalization.md`.
 
     > ℹ️ **Real systems** often copy the price into `order_items` too
     > (the price *on the day of the order*), so a later price change does

@@ -1,6 +1,6 @@
 import marimo
 
-__generated_by = "0.1.0"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium")
 
 
@@ -103,8 +103,7 @@ def __(mo):
 @app.cell
 def __(con, mo):
     df_1nf = con.execute("SELECT * FROM student_courses_1nf").df()
-    mo.md(f"### ❌ Table in 1NF (Violates 2NF due to Partial Dependencies)
-{mo.ui.table(df_1nf)}")
+    mo.md(f"### ❌ Table in 1NF (Violates 2NF due to Partial Dependencies)\n{mo.ui.table(df_1nf)}")
     return df_1nf,
 
 

@@ -583,7 +583,7 @@ the company norm?"* — questions every analyst gets in their first month.
 - First Normal Form (1NF): atomic values, no repeating groups
 - Second Normal Form (2NF): eliminating partial dependencies
 - Third Normal Form (3NF): eliminating transitive dependencies
-- Boyce-Codd Normal Form (BCNF)
+- Optional: Boyce-Codd Normal Form (BCNF), not on the exams
 - When and how to denormalize for performance
 - Hands-on: normalizing a messy denormalized table step by step
 

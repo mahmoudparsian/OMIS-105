@@ -1,6 +1,6 @@
 import marimo
 
-__generated_by = "0.1.0"
+__generated_with = "0.24.2"
 app = marimo.App(width="medium")
 
 
@@ -100,8 +100,7 @@ def __(mo):
 @app.cell
 def __(con, mo):
     df_2nf = con.execute("SELECT * FROM employee_departments_2nf").df()
-    mo.md(f"### ❌ Table in 2NF (Violates 3NF due to Transitive Dependencies)
-{mo.ui.table(df_2nf)}")
+    mo.md(f"### ❌ Table in 2NF (Violates 3NF due to Transitive Dependencies)\n{mo.ui.table(df_2nf)}")
     return df_2nf,
 
 
