@@ -1,6 +1,6 @@
 # Week 9 Quiz — Ranking Functions
 
-Questions 2–13 and 15 use the Week 9 lecture data: 12 `sales_reps` on 3 teams
+Questions 2–13 and 15–18 use the Week 9 lecture data: 12 `sales_reps` on 3 teams
 (Session 1) and the café chain's `items`, `orders`, and `shops` (Session 2).
 Ties: Ava and Fay (95), Ben and Chloe (88, both in East), Gus and Hal (60).
 
@@ -122,6 +122,31 @@ reps (no `PARTITION BY`), what are their `RANK()` and `DENSE_RANK()`?
 - b) 11 and 11
 - c) 12 and 9
 - d) 9 and 11
+
+**16.** A manager asks: "Who are the top 4 reps?" Ava and Fay tie at 95 for
+4th place. What does `SELECT rep_name FROM sales_reps ORDER BY sales DESC LIMIT 4` return?
+
+- a) 5 reps — `LIMIT` keeps ties
+- b) 4 reps — only one of Ava and Fay; the other is cut with no warning ✅
+- c) An error, because of the tie
+- d) 3 reps — tied rows are skipped
+
+**17.** You want "the top rep **in each team**" (3 teams). Why does
+`ORDER BY sales DESC LIMIT 3` fail?
+
+- a) `LIMIT` cannot be used with `ORDER BY`
+- b) `LIMIT` works on the whole result, not per team — it returns Eli, Ivy,
+  and Jon: two Central reps and no East rep ✅
+- c) It returns 12 rows
+- d) It works correctly
+
+**18.** The café's prices from the top are 6.00, 6.00, 5.50, 5.50, 4.50, …
+What does `SELECT item_name, price FROM items ORDER BY price DESC LIMIT 1 OFFSET 1` return?
+
+- a) A 5.50 item — the second-highest price
+- b) A 6.00 item — `OFFSET 1` skips one **row**, not one **price** ✅
+- c) No rows
+- d) Both 5.50 items
 
 ---
 

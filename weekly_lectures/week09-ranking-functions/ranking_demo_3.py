@@ -17,7 +17,7 @@ def _(mo):
     # Lab 9: Ranking Functions — `ROW_NUMBER`, `RANK`, `DENSE_RANK`
 
     ## OMIS 105 — Database Management Systems
-    **Week 9 | Estimated time: 75–90 minutes | 10 questions × 3 points = 30 points**
+    **Week 9 | Estimated time: 75–90 minutes | 11 questions — Q1 is a warm-up (0 points), Q2–Q11 × 3 points = 30 points**
 
     ---
     """)
@@ -33,7 +33,7 @@ def _(mo):
 
     **Rules for every query:**
 
-    - **Every answer must use a ranking function** — `ROW_NUMBER`, `RANK`, or `DENSE_RANK`
+    - **Every answer must use a ranking function** — `ROW_NUMBER`, `RANK`, or `DENSE_RANK` (except Q6, which tests `LIMIT` on purpose)
     - To **filter** on a rank, compute it in a subquery or CTE first — `WHERE` cannot see it
     - With `ROW_NUMBER`, always add the tie-breaker the question gives
     - List the columns you need — no `SELECT *` — and use the `ORDER BY` given
@@ -61,7 +61,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Part 1: `ROW_NUMBER` (9 points)
+    ## Part 1: `ROW_NUMBER` (6 points)
 
     Number rows one by one — and restart the numbering in each group.
     """)
@@ -71,7 +71,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Q1. Number the products.** Show `product_name`, `price`, and `rn` — a `ROW_NUMBER()` by price, **highest first**, with `product_id` as the tie-breaker. Order by `rn` and show the first 10 rows.
+    **Q1. Warm-up (0 points): number the products.** Show `product_name`, `price`, and `rn` — a `ROW_NUMBER()` by price, **highest first**, with `product_id` as the tie-breaker. Order by `rn` and show the first 10 rows.
 
     *Expected: 10 rows.*
     """)
@@ -128,9 +128,9 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ## Part 2: Ties — `RANK` and `DENSE_RANK` (12 points)
+    ## Part 2: Ties — `RANK` and `DENSE_RANK` (15 points)
 
-    The data has real ties: three customers with 9 orders, two cities with 6 customers, two with 4.
+    The data has real ties: three customers with 9 orders, two cities with 6 customers, two with 4. Q6 shows what `LIMIT` does with them.
     """)
     return
 
@@ -188,9 +188,11 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Q6. Rank the cities.** In a CTE, count the customers in each `city` (`n_customers`). Show `city`, `n_customers`, and `city_rank` — a `DENSE_RANK` by `n_customers`, highest first. Order by `city_rank`, then `city`.
+    **Q6. 🧩 Can `LIMIT` do it?** A teammate answers "Who are the top 4 customers by number of orders?" **without** a ranking function. Using Q4's CTE, run their query: show `customer_id`, `first_name`, and `n_orders`, ordered by `n_orders` (highest first), then `customer_id`, with `LIMIT 4`. This is the **one** question that uses no ranking function.
 
-    *Expected: 10 rows; the last `city_rank` is 5.*
+    ✍️ **Explain it:** compare with Q5. Which customer is missing, and why did `LIMIT` drop them? Then name one more question that `LIMIT` cannot answer.
+
+    *Expected: 4 rows.*
     """)
     return
 
@@ -207,7 +209,34 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Q7. The 3rd-highest value.** Which city or cities have the **3rd-highest** number of customers? Rank in a CTE with `DENSE_RANK`, then keep `city_rank = 3`. Show `city` and `n_customers`. Order by `city`.
+    *Your answer:*
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Q7. Rank the cities.** In a CTE, count the customers in each `city` (`n_customers`). Show `city`, `n_customers`, and `city_rank` — a `DENSE_RANK` by `n_customers`, highest first. Order by `city_rank`, then `city`.
+
+    *Expected: 10 rows; the last `city_rank` is 5.*
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    _df = con.execute("""
+        SELECT 'Q7: replace this query' AS todo
+    """).fetchdf()
+    _df
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Q8. The 3rd-highest value.** Which city or cities have the **3rd-highest** number of customers? Rank in a CTE with `DENSE_RANK`, then keep `city_rank = 3`. Show `city` and `n_customers`. Order by `city`.
 
     ✍️ **Explain it:** change `DENSE_RANK` to `RANK`. How many rows do you get now, and why?
 
@@ -219,7 +248,7 @@ def _(mo):
 @app.cell
 def _(con):
     _df = con.execute("""
-        SELECT 'Q7: replace this query' AS todo
+        SELECT 'Q8: replace this query' AS todo
     """).fetchdf()
     _df
     return
@@ -246,28 +275,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Q8. Rank a `GROUP BY` result.** In a CTE, compute each category's `revenue` = `SUM(quantity * unit_price)` from `order_items` (join `products` and `categories`), rounded to 2 decimals. Show `category_name`, `revenue`, and `revenue_rank` (`DENSE_RANK`, highest revenue first). Order by `revenue_rank`, then `category_name`.
+    **Q9. Rank a `GROUP BY` result.** In a CTE, compute each category's `revenue` = `SUM(quantity * unit_price)` from `order_items` (join `products` and `categories`), rounded to 2 decimals. Show `category_name`, `revenue`, and `revenue_rank` (`DENSE_RANK`, highest revenue first). Order by `revenue_rank`, then `category_name`.
 
     *Expected: 8 rows.*
-    """)
-    return
-
-
-@app.cell
-def _(con):
-    _df = con.execute("""
-        SELECT 'Q8: replace this query' AS todo
-    """).fetchdf()
-    _df
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(r"""
-    **Q9. Each customer's first order.** Show each customer's **first** order: `customer_id`, `order_id`, `order_date`. Use `ROW_NUMBER()` with `PARTITION BY customer_id`, ordered by `order_date` (tie-breaker `order_id`), in a subquery; keep `rn = 1`. Order by `order_date`, then `customer_id`.
-
-    *Expected: 40 rows.*
     """)
     return
 
@@ -284,7 +294,26 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    **Q10. 🐞 Debug it.** A classmate wanted the **best-rated** products (every product tied for the highest average rating) and wrote:
+    **Q10. Each customer's first order.** Show each customer's **first** order: `customer_id`, `order_id`, `order_date`. Use `ROW_NUMBER()` with `PARTITION BY customer_id`, ordered by `order_date` (tie-breaker `order_id`), in a subquery; keep `rn = 1`. Order by `order_date`, then `customer_id`.
+
+    *Expected: 40 rows.*
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    _df = con.execute("""
+        SELECT 'Q10: replace this query' AS todo
+    """).fetchdf()
+    _df
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    **Q11. 🐞 Debug it.** A classmate wanted the **best-rated** products (every product tied for the highest average rating) and wrote:
 
     ```sql
     WITH product_ratings AS (
@@ -310,7 +339,7 @@ def _(mo):
 @app.cell
 def _(con):
     _df = con.execute("""
-        SELECT 'Q10: replace this query' AS todo
+        SELECT 'Q11: replace this query' AS todo
     """).fetchdf()
     _df
     return
@@ -329,9 +358,9 @@ def _(mo):
     mo.md(r"""
     ## Grading
 
-    - 3 points per question: 2 for a correct result, 1 for using the right
-      ranking function (and `PARTITION BY` / a subquery or CTE where needed)
-    - The short written answers in Q5, Q7, and Q10 are part of their second point
+    - Q1 is a warm-up (0 points). Q2–Q11: 3 points per question — 2 for a correct result, 1 for using the right
+      ranking function (and `PARTITION BY` / a subquery or CTE where needed; in Q6, for the explanation)
+    - The short written answers in Q5, Q6, Q8, and Q11 are part of their second point
 
 
     ---

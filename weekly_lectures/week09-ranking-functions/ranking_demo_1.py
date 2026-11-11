@@ -87,6 +87,7 @@ def _(mo):
     ## `ROW_NUMBER()` — number the rows
 
     `rep_name` is the **tie-breaker**: without it, Ava and Fay could swap numbers 4 and 5.
+    (`LIMIT 8` only shortens the output — it is not part of the ranking.)
     """)
     return
 
@@ -271,6 +272,119 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## ⚠️ Why not just `ORDER BY … LIMIT`? Puzzle 1: the top 4 reps
+
+    `LIMIT 4` counts **rows**. Ava and Fay tie at 95 for 4th place — only one of them fits.
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    _df = con.execute("""
+        SELECT rep_name, team, sales
+        FROM sales_reps
+        ORDER BY sales DESC
+        LIMIT 4
+    """).fetchdf()
+    _df
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ✅ With `RANK() … WHERE rnk <= 4` both reps tied for 4th are kept (5 rows).
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    _df = con.execute("""
+        SELECT rep_name, team, sales, rnk
+        FROM (
+            SELECT rep_name, team, sales,
+                   RANK() OVER (ORDER BY sales DESC) AS rnk
+            FROM sales_reps
+        ) AS ranked
+        WHERE rnk <= 4
+        ORDER BY rnk, rep_name
+    """).fetchdf()
+    _df
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Puzzle 2: the top rep in each team — `LIMIT 3`?
+
+    3 teams, 3 rows… but `LIMIT` never restarts per team: two Central reps, no East rep.
+    The fix is `PARTITION BY team` + `WHERE rn = 1` (the cell above: Ivy, Ava, Eli).
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    _df = con.execute("""
+        SELECT rep_name, team, sales
+        FROM sales_reps
+        ORDER BY sales DESC
+        LIMIT 3
+    """).fetchdf()
+    _df
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Puzzle 3: the lowest sales — `LIMIT 1` shows Gus only, but Hal also has 60
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    _df = con.execute("""
+        SELECT rep_name, team, sales
+        FROM sales_reps
+        ORDER BY sales
+        LIMIT 1
+    """).fetchdf()
+    _df
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ✅ `RANK() OVER (ORDER BY sales)` finds the tie for you: Gus **and** Hal.
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    _df = con.execute("""
+        SELECT rep_name, team, sales
+        FROM (
+            SELECT rep_name, team, sales,
+                   RANK() OVER (ORDER BY sales) AS rnk
+            FROM sales_reps
+        ) AS ranked
+        WHERE rnk = 1
+        ORDER BY rep_name
+    """).fetchdf()
+    _df
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ## ⚠️ Forgetting `PARTITION BY` — only 1 row
     """)
     return
@@ -299,6 +413,7 @@ def _(mo):
     1. Rank the reps **within each team** with `RANK()`. Which team has two reps with the same rank?
     2. Show the **bottom** rep of each team (lowest `sales`). What do you change?
     3. In the West team, Gus and Hal tie at 60. What does `ROW_NUMBER` give them, and what does `RANK` give them?
+    4. A manager asks for "the top 2 reps overall". Compare `ORDER BY sales DESC LIMIT 2` with `RANK() … <= 2`. Do they agree? Would they still agree for the top 4?
     """)
     return
 

@@ -26,7 +26,7 @@ This notebook is self-contained: it rebuilds every table it needs. You do not ha
 
 ## SQL Covered
 
-`ROW_NUMBER`, `RANK`, `DENSE_RANK`, `PARTITION BY`, `AVG() OVER`, filtering a rank with a CTE
+`ROW_NUMBER`, `RANK`, `DENSE_RANK`, `PARTITION BY`, `AVG() OVER`, filtering a rank with a CTE, why `ORDER BY ... LIMIT` cannot rank
 
 ## Dataset
 

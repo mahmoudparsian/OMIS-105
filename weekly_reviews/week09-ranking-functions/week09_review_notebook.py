@@ -500,6 +500,76 @@ def _(con):
 
 @app.cell(hide_code=True)
 def _(mo):
+    mo.md("""
+    ### 1.9 Why `ORDER BY ... LIMIT` Cannot Rank
+
+    `LIMIT n` counts **rows**; a ranking function compares **values**.
+    ClearView Analytics and Falcon Logistics are tied at the top with 4
+    completed payments each.
+
+    **"Who has the most payments?"** `LIMIT 1` returns only ClearView Analytics
+    (the tie-breaker `company_name` picked it). Falcon Logistics is cut with
+    no warning.
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute(
+        f"""
+        WITH counts AS (
+            SELECT c.company_name, COUNT(*) AS num_payments
+            FROM   payments p
+            JOIN   customers c ON p.customer_id = c.customer_id
+            WHERE  p.status = 'completed'
+            GROUP BY c.company_name
+        )
+        SELECT company_name, num_payments
+        FROM   counts
+        ORDER BY num_payments DESC, company_name
+        LIMIT 1;
+        """
+    ).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    **"Who has the second-highest number of payments?"** `LIMIT 1 OFFSET 1`
+    skips one **row**, not one **value**: it returns Falcon Logistics with 4,
+    which is still the highest value. The right answer (section 1.8) is Acme
+    Corp and Harbor Health with 3.
+
+    Also: `LIMIT` cannot restart per group, so "top 2 per plan" (section 1.6)
+    needs `PARTITION BY`. Use `LIMIT` only to make a long result shorter.
+    """)
+    return
+
+
+@app.cell
+def _(con):
+    con.execute(
+        f"""
+        WITH counts AS (
+            SELECT c.company_name, COUNT(*) AS num_payments
+            FROM   payments p
+            JOIN   customers c ON p.customer_id = c.customer_id
+            WHERE  p.status = 'completed'
+            GROUP BY c.company_name
+        )
+        SELECT company_name, num_payments
+        FROM   counts
+        ORDER BY num_payments DESC, company_name
+        LIMIT 1 OFFSET 1;
+        """
+    ).fetchdf()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
     mo.md(r"""
     ---
     ## Week 9 Summary
@@ -515,6 +585,7 @@ def _(mo):
     - `WHERE` runs before window functions, so it cannot see a rank
     - Compute the rank in a CTE (or subquery), then filter outside it
     - "Second-highest value" → `DENSE_RANK() ... = 2`
+    - `ORDER BY ... LIMIT n` / `OFFSET` count **rows**: they cut tied rows and cannot work per group — never use them to rank
 
     ### Looking Ahead
 

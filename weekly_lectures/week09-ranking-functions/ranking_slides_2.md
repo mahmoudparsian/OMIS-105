@@ -28,6 +28,7 @@ style: |
 - Ranking `GROUP BY` results with a CTE
 - Best seller per category — `ROW_NUMBER` vs. `RANK`
 - "Second-highest" questions
+- ⚠️ Why `LIMIT` / `OFFSET` cannot answer them
 - Hands-on: Lab 5
 
 ---
@@ -38,6 +39,9 @@ style: |
 |---|---|---|
 | `ROW_NUMBER()` | different numbers (needs a tie-breaker) | 1, 2, 3, 4 |
 | `RANK()` | same rank, then a **gap** | 1, 2, 2, 4 |
+
+⚠️ `ORDER BY … LIMIT n` counts **rows**: it cuts tied rows and cannot
+work per group.
 
 Today: the third function, `DENSE_RANK()` — 1, 2, 2, **3**.
 
@@ -280,6 +284,98 @@ ORDER BY item_name;
 
 ---
 
+# And `LIMIT 1 OFFSET 1`?
+
+"Skip the first row, take the next one":
+
+```sql
+SELECT item_name, price
+FROM items
+ORDER BY price DESC
+LIMIT 1 OFFSET 1;
+```
+
+| item_name | price |
+|---|---:|
+| Matcha | 6.00 |
+
+❌ `OFFSET 1` skips one **row**, not one **price**. The 2nd row is still a
+6.00 item — the same mistake as `ROW_NUMBER`.
+
+---
+
+# "But `DISTINCT` Fixes It!" — Only Half
+
+```sql
+SELECT DISTINCT price
+FROM items
+ORDER BY price DESC
+LIMIT 1 OFFSET 1;
+```
+
+| price |
+|---:|
+| 5.50 |
+
+- ✅ The right **value**, 5.50
+- ❌ But **which items** cost 5.50? You need a second query
+- ❌ And the second-highest price **in each category**? `LIMIT` cannot
+  restart per group
+
+👉 `DENSE_RANK` answers all three in one query.
+
+---
+
+# "Top 3 Prices" — `LIMIT 3` vs. `DENSE_RANK`
+
+`LIMIT 3` gives 3 **rows**: Mocha 6.00, Matcha 6.00, Latte 5.50 — and
+Cappuccino (also 5.50) is cut.
+
+```sql
+WITH ranked AS (
+    SELECT item_name, price,
+           DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
+    FROM items
+)
+SELECT item_name, price, price_rank
+FROM ranked
+WHERE price_rank <= 3
+ORDER BY price_rank, item_name;
+```
+
+| item_name | price | price_rank |
+|---|---:|---:|
+| Matcha | 6.00 | 1 |
+| Mocha | 6.00 | 1 |
+| Cappuccino | 5.50 | 2 |
+| Latte | 5.50 | 2 |
+| Chai | 4.50 | 3 |
+
+✅ The 3 highest **prices** — 5 items.
+
+---
+
+# "Top 2 Shops by Revenue" — `LIMIT 2`
+
+Using the `shop_revenue` CTE from before:
+
+```sql
+SELECT shop_name, revenue
+FROM shop_revenue
+ORDER BY revenue DESC
+LIMIT 2;
+```
+
+| shop_name | revenue |
+|---|---:|
+| Campus | 57.00 |
+| Downtown | 44.00 |
+
+❌ **Harbor also earned 44.00** — tied with Downtown for 2nd, but cut.
+With `RANK() … WHERE rnk <= 2` you get Campus, Downtown **and** Harbor.
+
+---
+
 # ⚠️ Again: `WHERE` Cannot See the Rank
 
 ```sql
@@ -305,6 +401,7 @@ outside — as on the previous slides.
 | "exactly N per group", "first / last event" | `ROW_NUMBER` + tie-breaker |
 | "top N, include ties" (competition ranking) | `RANK` |
 | "Nth-highest value", "top N price levels" | `DENSE_RANK` |
+| "just show me the first few rows" (no ranking question) | `ORDER BY … LIMIT n` |
 
 All three: `FUNCTION() OVER (PARTITION BY … ORDER BY …)`.
 
@@ -317,6 +414,7 @@ All three: `FUNCTION() OVER (PARTITION BY … ORDER BY …)`.
 | no-gap ranks / price levels | `DENSE_RANK() OVER (ORDER BY col DESC)` |
 | rank a `GROUP BY` result | totals in a CTE, then rank the CTE |
 | filter a rank | rank in a CTE or subquery, `WHERE` outside |
+| ⚠️ `LIMIT` / `OFFSET` | count **rows**: they cut ties and ignore groups — never for ranking |
 
 Demo notebook: `ranking_demo_2.py`
 

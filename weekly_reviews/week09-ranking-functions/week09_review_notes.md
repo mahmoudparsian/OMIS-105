@@ -102,6 +102,8 @@ Students will be able to:
 - Read `ROW_NUMBER`, `RANK`, and `DENSE_RANK` side by side on tied data
 - Filter on a rank by computing it in a CTE, then using `WHERE` outside
 - Answer "second-highest" questions with `DENSE_RANK() ... = 2`
+- Explain why `ORDER BY ... LIMIT n` (and `OFFSET`) cannot answer
+  ranking questions
 
 ### Key Concepts
 
@@ -115,6 +117,11 @@ Students will be able to:
 cannot see a rank. Compute the rank in a CTE or subquery, then filter
 outside it.
 
+**`LIMIT` is not a ranking tool:** `LIMIT n` counts **rows**, a ranking
+function compares **values**. With ties at the cut-off, `LIMIT` silently
+drops tied rows; `OFFSET 1` skips a row, not a value; and `LIMIT` cannot
+restart per group. Use it only to make a long result shorter.
+
 ### Teaching Flow (2 hours)
 
 1. **Recap** (10 min): `ROW_NUMBER` and `RANK` from Session 1.
@@ -127,10 +134,14 @@ outside it.
    returns Harbor Health and Acme Corp. Then change it to `RANK() = 2`:
    no rows. Ask: why?
 
-4. **Top-N per group** (15 min): Revisit Section 1.6. Which
+4. **`LIMIT` vs. ranking** (10 min): Section 1.9 — ask students to
+   predict `LIMIT 1` and `LIMIT 1 OFFSET 1` before running them
+   (ClearView only; Falcon Logistics with 4, not a 3-payment customer).
+
+5. **Top-N per group** (15 min): Revisit Section 1.6. Which
    function would keep ties?
 
-5. **Practice** (50 min): Students rank plans, customers, and
+6. **Practice** (40 min): Students rank plans, customers, and
    tickets, choosing the right function for each question.
 
 ### Discussion Questions
@@ -138,6 +149,8 @@ outside it.
 - When is `RANK` the right answer, and when is `DENSE_RANK`?
 - Why does `ROW_NUMBER` need a tie-breaker?
 - "Top 3 customers" returned 4 rows. Is that a bug?
+- A teammate answers "top 3 customers" with `ORDER BY ... LIMIT 3`.
+  When is that answer wrong, and how would you notice?
 
 ## Homework / Review Exercises
 
@@ -149,6 +162,9 @@ outside it.
 
 3. Find the customers with the **second-highest** number of support
    tickets. Use a CTE and `DENSE_RANK`.
+
+4. Answer exercise 3 again with `ORDER BY ... LIMIT 1 OFFSET 1`.
+   Do you get the same answer? Explain the difference.
 
 ---
 

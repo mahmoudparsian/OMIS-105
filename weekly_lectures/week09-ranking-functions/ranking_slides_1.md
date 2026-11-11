@@ -29,6 +29,7 @@ style: |
 - `PARTITION BY` — restart the numbering for each group
 - **Top N per group** — filter the ranking in a subquery
 - ⚠️ Why `WHERE` cannot see a ranking column
+- ⚠️ Why `ORDER BY … LIMIT n` **cannot** solve ranking puzzles
 - Hands-on: Lab 1
 
 ---
@@ -98,6 +99,9 @@ LIMIT 8;
 | Ben | East | 88 | 6 |
 | Chloe | East | 88 | 7 |
 | Kim | Central | 80 | 8 |
+
+`LIMIT 8` only makes the table fit on the slide. It is **not** part of the
+ranking (more about `LIMIT` later today).
 
 ---
 
@@ -323,6 +327,152 @@ ORDER BY team, rnk, rep_name;
 
 ---
 
+# Why Not Just `ORDER BY … LIMIT`?
+
+You know `LIMIT` from Week 1. Why not rank with it?
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales DESC
+LIMIT 4;
+```
+
+- `LIMIT n` counts **rows**: "stop after n rows"
+- A ranking function compares **values**: "whose sales are in the top 4?"
+
+👉 Next: three puzzles that `LIMIT` gets **wrong** — with no error message.
+
+---
+
+# Puzzle 1: "Who Are the Top 4 Reps?" — `LIMIT 4`
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales DESC
+LIMIT 4;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Eli | West | 120 |
+| Ivy | Central | 105 |
+| Jon | Central | 99 |
+| Fay | West | 95 |
+
+❌ **Ava also has 95.** She is tied with Fay for 4th place, but `LIMIT 4`
+had room for one more row only, so she was cut. Which of the two you get
+is up to the database.
+
+---
+
+# Puzzle 1 — Fixed with `RANK`
+
+```sql
+SELECT rep_name, team, sales, rnk
+FROM (
+    SELECT rep_name, team, sales,
+           RANK() OVER (ORDER BY sales DESC) AS rnk
+    FROM sales_reps
+) AS ranked
+WHERE rnk <= 4
+ORDER BY rnk, rep_name;
+```
+
+| rep_name | team | sales | rnk |
+|---|---|---:|---:|
+| Eli | West | 120 | 1 |
+| Ivy | Central | 105 | 2 |
+| Jon | Central | 99 | 3 |
+| Ava | East | 95 | 4 |
+| Fay | West | 95 | 4 |
+
+✅ **5 rows** — both reps tied for 4th are kept.
+
+---
+
+# Puzzle 2: "The Top Rep in Each Team" — `LIMIT 3`
+
+3 teams, so maybe `LIMIT 3`?
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales DESC
+LIMIT 3;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Eli | West | 120 |
+| Ivy | Central | 105 |
+| Jon | Central | 99 |
+
+❌ **Two** Central reps and **no** East rep. `LIMIT` works on the whole
+result — it never restarts per group.
+
+✅ Fix: `PARTITION BY team` + `WHERE rn = 1` (Ivy, Ava, Eli — see the earlier slide).
+
+---
+
+# Puzzle 3: "Who Has the Lowest Sales?" — `LIMIT 1`
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales
+LIMIT 1;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Gus | West | 60 |
+
+❌ **Hal also has 60.** To get both, you must already know there is a tie
+and write `LIMIT 2`.
+
+---
+
+# Puzzle 3 — Fixed with `RANK`
+
+A ranking finds the tie for you:
+
+```sql
+SELECT rep_name, team, sales
+FROM (
+    SELECT rep_name, team, sales,
+           RANK() OVER (ORDER BY sales) AS rnk
+    FROM sales_reps
+) AS ranked
+WHERE rnk = 1
+ORDER BY rep_name;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Gus | West | 60 |
+| Hal | West | 60 |
+
+✅ Gus **and** Hal — and the query still works if the data changes.
+
+---
+
+# `LIMIT` vs. Ranking Functions
+
+| | `ORDER BY … LIMIT n` | ranking function + `WHERE` outside |
+|---|---|---|
+| counts | **rows** | **values** (with `RANK` / `DENSE_RANK`) |
+| tie at the cut-off | one tied row is silently dropped | tied rows are kept |
+| per group | ❌ whole result only | ✅ `PARTITION BY` |
+| need to know the data first? | yes (how many ties?) | no |
+| good for | making a long result shorter | answering "top N" questions |
+
+👉 `ROW_NUMBER() … WHERE rn <= n` behaves like `LIMIT` on ties — that is
+why it needs a tie-breaker, and why we use it only when we want **exactly** n rows.
+
+---
+
 # `ROW_NUMBER` or `RANK`?
 
 | The question says… | Use |
@@ -363,6 +513,7 @@ WHERE rn = 1;
 | rank with ties | `RANK() OVER (ORDER BY col DESC)` |
 | per group | `... OVER (PARTITION BY group_col ORDER BY ...)` |
 | top N per group | rank in a subquery, then `WHERE rn <= N` outside |
+| top N **with ties** | `RANK`, never `ORDER BY … LIMIT n` |
 
 Demo notebook: `ranking_demo_1.py`
 
@@ -373,7 +524,7 @@ Demo notebook: `ranking_demo_1.py`
 - `DENSE_RANK()` — ranks with **no gaps**
 - All three functions side by side
 - Ranking `GROUP BY` results (with a CTE)
-- "Second-highest" questions
+- "Second-highest" questions — and why `LIMIT 1 OFFSET 1` gets them wrong
 
 ---
 

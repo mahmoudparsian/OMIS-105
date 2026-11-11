@@ -84,7 +84,8 @@ Weeks 2–10 share a common layout:
 
 **Week 9 is different:** its two sessions teach ranking functions from
 `ranking_slides_1.md` / `ranking_slides_2.md` with `ranking_demo_1.py` /
-`ranking_demo_2.py`; `lab09_student.md` (and `lab09_student_marimo.py`) and
+`ranking_demo_2.py`; the lab `ranking_slides_3.md` (and `ranking_demo_3.py`, answers in
+`ranking_demo_4.py`) and
 `quiz.md` practice them. There is no `slides_1.md` / `demo1.py` pair and no
 `lab.md` / `notes.md` / `solution.sql` stubs. The earlier indexes and
 query-performance material (`slides_1/2.md`, `demo1/2.py`, its lab and quiz)
