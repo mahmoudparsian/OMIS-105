@@ -4,6 +4,11 @@
 **Quarter:** Fall 2026  
 **Author:** Dr. Mahmoud Parsian  
 
+> 📢 **Already installed, but still on DuckDB 1.5?** DuckDB **2.0** is the recommended version
+> (since November 10, 2026). Check with `python -c "import duckdb; print(duckdb.__version__)"`.
+> If it shows `1.5.x`, follow **[`upgrade_to_duckdb_2.md`](upgrade_to_duckdb_2.md)** (about 5 minutes).
+> Running Step 2 again does **not** upgrade DuckDB.
+
 ---
 
 ## Overview
@@ -132,6 +137,7 @@ Follow [`step_4_install_qstudio.md`](step_4_install_qstudio.md) — it walks thr
 | `step_3_verification.py` | Marimo notebook that verifies everything works together |
 | `step_4_install_qstudio.md` | Java + qStudio installation, connection, and verification guide |
 | `installation_trouble_shooting.md` | Fixes for common Day-1 problems (qStudio needing Java, PATH issues, getting the files) |
+| `upgrade_to_duckdb_2.md` | Upgrade an existing install from DuckDB 1.5 to 2.0 (the recommended version) |
 
 ---
 
