@@ -199,7 +199,9 @@ several copies of DuckDB, and they can have different versions:
 * **qStudio**, which has its own built-in DuckDB driver
 
 **Fix:** upgrade the older copy so all of them are on 2.0:
-`pip install --upgrade duckdb` for Python, `winget upgrade DuckDB.cli` for the CLI,
+`pip install --upgrade duckdb` for Python; for the CLI, follow Step 4 of
+[`upgrade_to_duckdb_2.md`](upgrade_to_duckdb_2.md) (`winget` cannot: its `DuckDB.cli` stops at 1.5.6),
+or simply remove the CLI with `winget uninstall --id DuckDB.cli --exact` (class notebooks do not need it);
 and the newest qStudio from its download page. Or open the file with
 the same tool that made it. DuckDB **2.0** is recommended for this
 course; 1.5.5 still works for every class notebook.

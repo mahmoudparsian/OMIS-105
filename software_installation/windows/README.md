@@ -181,11 +181,12 @@ If both work, your environment is fully ready for OMIS 105.
 The DuckDB command-line interface is optional but useful for quick
 SQL testing outside of Python.
 
-```
-winget install DuckDB.cli
-```
+Download it from [DuckDB CLI for Windows](https://duckdb.org/install/?platform=windows&environment=cli)
+and follow **Step 4** of [`upgrade_to_duckdb_2.md`](upgrade_to_duckdb_2.md) (unpack it with `tar`,
+then add its folder to PATH).
 
-Or: [DuckDB CLI for Windows](https://duckdb.org/install/?platform=windows&environment=cli)
+> ⚠️ Do **not** use `winget install DuckDB.cli`: WinGet's package stops at DuckDB **1.5.6**,
+> which cannot open database files made by the DuckDB **2.0** Python package.
 
 **Verify:**
 
@@ -197,8 +198,8 @@ duckdb --version
 CLI, and qStudio each have their **own** copy of DuckDB. A database file
 (`.duckdb`) made by a newer version cannot be opened by an older one.
 DuckDB **2.0** is recommended for this course (1.5.5 also works). To
-upgrade the CLI: `winget upgrade DuckDB.cli`. See the troubleshooting guide if a file will
-not open.
+upgrade the CLI, see Step 4 of [`upgrade_to_duckdb_2.md`](upgrade_to_duckdb_2.md) (`winget` cannot:
+it stops at 1.5.6). See the troubleshooting guide if a file will not open.
 
 ---
 

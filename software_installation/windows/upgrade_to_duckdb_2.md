@@ -56,15 +56,40 @@ python -m pip install --upgrade duckdb
 
 ---
 
-## Step 4 — Upgrade the command line tool (only if you installed it)
+## Step 4 — The command line tool (only if you installed it)
+
+**`winget` cannot do this step:** its `DuckDB.cli` package stops at **1.5.6**
+and does not offer 2.0 yet. You have two choices.
+
+**Easiest — remove the command line tool.** Class notebooks, labs, and exams
+do not need it (Marimo uses the Python package from Step 3):
 
 ```
-winget upgrade DuckDB.cli
+winget uninstall --id DuckDB.cli --exact
 ```
 
-Then **close the Command Prompt window and open a new one**, so Windows finds
-the new version. If you did not install the DuckDB command line tool, skip
-this step.
+**Or install the 2.0 command line tool by hand:**
+
+1. In **Settings > System > About**, look at **System type**: x64
+   (Intel/AMD) or Arm.
+2. Remove the old copy: `winget uninstall --id DuckDB.cli --exact`
+3. At [duckdb.org/install](https://duckdb.org/install/), choose **Windows /
+   CLI** and download **duckdb-cli-windows-amd64.tar.gz** (x64) or
+   **duckdb-cli-windows-arm64.tar.gz** (Arm) to your **Downloads** folder.
+4. In Command Prompt, unpack it (Arm: change `amd64` to `arm64`):
+
+   ```
+   mkdir "%USERPROFILE%\duckdb-cli"
+   tar -xzf "%USERPROFILE%\Downloads\duckdb-cli-windows-amd64.tar.gz" -C "%USERPROFILE%\duckdb-cli"
+   ```
+
+   You should now have `duckdb-cli\duckdb.exe`. If the files landed in an
+   extra folder, move **duckdb.exe** up into `duckdb-cli`.
+5. Add that folder to your PATH: Start menu → search **Edit environment
+   variables for your account** → under **User variables**, edit **Path** →
+   **New** → paste the full path of your `duckdb-cli` folder (copy it from
+   File Explorer; no `duckdb.exe`, no quote marks). Keep the existing entries.
+6. **Close Command Prompt and open a new one.**
 
 ---
 
@@ -75,7 +100,9 @@ python -c "import duckdb; print(duckdb.__version__)"
 duckdb --version
 ```
 
-Both should now show **2.0.0** (or newer). **They must match.** Your computer
+Both should now show **2.0.0** (or newer). (If you removed the command line
+tool in Step 4, `duckdb --version` says it is not recognized; that is fine.)
+**They must match.** Your computer
 can have several copies of DuckDB (the Python package, the command line tool,
 and the one inside qStudio), and a database file (`.duckdb`) made by DuckDB 2.0
 **cannot** be opened by an older copy. That is what the "version number 999"
