@@ -17,15 +17,20 @@ The next step is [`2nf_guide.md`](2nf_guide.md).
 
 A table is in **First Normal Form (1NF)** when it follows these three rules:
 
-1. **One value per cell (atomic values):** every cell holds a **single** value —
-   no comma-separated lists, no arrays, no "several items in one box".
+1. **One value per cell (atomic values):** 
+	* every cell holds a **single** value —
+	* no comma-separated lists, no arrays, no "several items in one box".
 2. **No repeating groups:** no set of columns that store the same kind of data,
    such as `phone_1`, `phone_2`, `phone_3`.
-3. **A primary key:** every row is unique. A **primary key** (one column, or a set
+3. **A primary key:** 
+	* every row is unique. 
+	* A **primary key** (one column, or a set
    of columns) identifies each row.
 
-Two simple housekeeping rules come with them: every column has a **unique name**,
-and all values in one column have the **same data type** (for example, all dates).
+**Two simple housekeeping rules come with them** 
+
+* every column has a **unique name**, and
+* all values in one column have the **same data type** (for example, all dates).
 
 ---
 
@@ -70,6 +75,25 @@ To fix this, each row must describe **one student taking one course**.
   allowed in 1NF, but it is a new kind of redundancy. **Second Normal Form**
   fixes it — see [`2nf_guide.md`](2nf_guide.md).
 
+## Better Design: 2 tables
+
+**Table: `students`**
+
+| student_id | student_name | 
+| :--- | :--- | 
+| 101 | Alice | 
+| 102 | Bob | 
+
+
+**Table: `student_courses`**
+
+| student_id  | course_name |
+| :--- | :--- |
+| 101  | SQL |
+| 101  | Python |
+| 101  | DuckDB |
+| 102  | Java |
+| 102  | SQL |
 ---
 
 ### 🦆 DuckDB Tip: Convert a comma-separated list to 1NF with `STRING_SPLIT` and `UNNEST`
@@ -261,7 +285,6 @@ FROM student_courses_1nf
 GROUP BY student_id, course_name
 HAVING COUNT(*) > 1;
 ```
----
 
 ## 6. References
 
