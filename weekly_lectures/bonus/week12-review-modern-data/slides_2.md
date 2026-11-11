@@ -359,8 +359,10 @@ Week 2: Relational Model (keys, relationships) ──┤
 Week 3: SQL Basics (functions, CASE, GROUP BY) ──┤
 Week 4: Aggregation + first JOINs ───────────────┤
 Week 5: JOINs, IS NULL, COALESCE ────────────────┤ → Week 11: Project
+Week 6: Joins II (anti-join, self-join) ─────────┤
+Week 7: Subqueries (IN, EXISTS, CTEs) ───────────┤
 Week 8: Normalization (1NF → 3NF)  ──────────────┤
-Week 9: Performance (indexes, EXPLAIN) ──────────┤
+Week 9: Ranking (ROW_NUMBER, RANK, DENSE_RANK) ──┤
 Week 10: Transactions (ACID, constraints) ────────┘
                                    Week 12: Review + Modern Data
 ```
@@ -475,17 +477,27 @@ WITH cte AS (SELECT ...) SELECT ... FROM cte;
 
 ---
 
-# Review: Performance (Week 9)
+# Review: Ranking Functions (Week 9)
 
-- **Indexes**: trees (B-tree in most databases, ART in DuckDB) that speed up
-  searches returning **few** rows — at a cost on every write
-- **EXPLAIN** shows the plan; **EXPLAIN ANALYZE** runs it and shows real numbers
-- **Optimization tips**:
-  - Select only the columns you need
-  - Avoid functions on filtered columns in WHERE
-  - Use INNER JOIN when LEFT JOIN isn't needed
-  - The optimizer already pushes filters down and treats `IN`/`EXISTS` alike
-- **DuckDB**: columnar storage, vectorized and parallel execution
+Number rows **without** collapsing them (unlike `GROUP BY`):
+
+| name | score | `ROW_NUMBER()` | `RANK()` | `DENSE_RANK()` |
+|------|------:|------:|------:|------:|
+| Ana  | 95 | 1 | 1 | 1 |
+| Ben  | 90 | 2 | 2 | 2 |
+| Cara | 90 | 3 | 2 | 2 |
+| Dan  | 85 | 4 | **4** | **3** |
+
+(all three use `OVER (ORDER BY score DESC)`)
+
+- **`ROW_NUMBER`**: always 1, 2, 3, … — a tie gets different numbers
+  (Ben/Cara could swap: add a tie-breaker, e.g. `ORDER BY score DESC, name`)
+- **`RANK`**: ties share a rank, then it **skips** (2, 2, 4)
+- **`DENSE_RANK`**: ties share a rank, **no gaps** (2, 2, 3)
+- **`PARTITION BY dept`**: restart the numbering in every group
+- **Filter a rank** with a CTE (`WHERE` cannot see a window column):
+  `WITH r AS (SELECT …, DENSE_RANK() OVER (…) AS dr FROM t) SELECT * FROM r WHERE dr = 2;`
+  → the second-highest score: Ben and Cara (90)
 
 ---
 
@@ -632,7 +644,7 @@ Hint: which `CHECK` constraint could the database enforce for you?
 3. **Know when to use** each JOIN type
 4. **Be able to normalize** a table from scratch
 5. **Explain ACID** with real examples
-6. **Read EXPLAIN output** — know what a full (sequential) scan and an index scan mean
+6. **Know the ranking functions** — `ROW_NUMBER`, `RANK`, `DENSE_RANK` on ties, and `PARTITION BY`
 7. **Draw ER diagrams** with correct notation
 
 ---
@@ -671,7 +683,7 @@ This has been a great quarter. You now have solid foundations in:
 - Relational database design
 - SQL querying (basic through advanced)
 - Normalization theory
-- Performance optimization
+- Ranking functions
 - Transaction management
 - Modern data: JSON, lists, PIVOT
 
