@@ -56,16 +56,17 @@ command.
 duckdb --version
 ```
 
-You should see a version number, such as `v1.5.5`. If you see
-`duckdb : The term 'duckdb' is not recognized ...`, install DuckDB first:
+You should see a version number, such as `v2.0.0` (recommended; `v1.5.5`
+also works). If you see `duckdb : The term 'duckdb' is not recognized ...`,
+install DuckDB first, following **slides 7–9 (Option B: download and
+extract)** of the tutorial *DuckDB from the Command Line — Windows*
+([`duckdb_from_command_line_on_windows.md`](../DuckDB_from_Command_Line/duckdb_from_command_line_on_windows.md)).
 
-```powershell
-winget install --id DuckDB.cli --exact
-```
+Do **not** use `winget install DuckDB.cli`: WinGet's package stops at DuckDB
+**1.5.6**, and a 1.5 program cannot open database files made by DuckDB 2.0.
 
 Then **close PowerShell and open a new window**, so it can find the new
-program. (Full install help is in the tutorial *DuckDB from the Command
-Line — Windows*, in the `tutorials/DuckDB_from_Command_Line/` folder.)
+program.
 
 ---
 
@@ -394,7 +395,7 @@ Everything in it disappears when you quit.
 
 | What you see | What it means | What to do |
 |---|---|---|
-| `The term 'duckdb' is not recognized ...` | DuckDB is not installed, or PowerShell cannot find it | Run `winget install --id DuckDB.cli --exact`, then open a **new** PowerShell window |
+| `The term 'duckdb' is not recognized ...` | DuckDB is not installed, or PowerShell cannot find it | Install it by download and extract (see [section 1](#1-before-you-start); not `winget`, which stops at 1.5.6), then open a **new** PowerShell window |
 | `Error: cannot open "db_schema.sql"` | DuckDB cannot find the file in the current folder | `.quit`, then `cd` to the right folder and check with `dir *.sql`. Also check for a hidden `.txt` extension |
 | `Catalog Error: Table with name "..." already exists!` | You ran `db_schema.sql` twice | Rebuild from scratch ([Section 6](#6-start-over-rebuild-from-scratch)) |
 | `Constraint Error: Duplicate key ... violates primary key constraint` | You ran `db_records.sql` twice, or the file has a repeated key | Rebuild from scratch. If it happens on a clean build, fix the repeated value in the file |

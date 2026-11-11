@@ -23,9 +23,10 @@ style: |
 ## Windows: install DuckDB and run your first queries
 OMIS 105 - Fall 2026
 
-Examples were made with **DuckDB 1.5.5**. DuckDB **2.0** is recommended for this course; with 2.0, the version banner and some messages look slightly different.
+DuckDB **2.0** is recommended for this course (1.5.5 also works).
 
-Reviewed October 2, 2026. Start here, then follow the slides in order.
+Reviewed November 11, 2026 for DuckDB 2.0. Start here, then follow the
+slides in order.
 
 ---
 
@@ -85,8 +86,18 @@ Enter. If you already use PowerShell, that also works. Then run:
 ```text
 duckdb --version
 ```
-If you see a version number such as `v1.5.5`, DuckDB is installed and
-your terminal can find it. Skip installation and go to **Open the Tutorial Folder**.
+The next slide explains what the result means.
+
+---
+
+# 4. Before Installing (cont.)
+
+If the version starts with **`v2.`** (for example `v2.0.0`), DuckDB is
+installed and your terminal can find it. Skip installation and go to
+**Open the Tutorial Folder**. If it starts with **`v1.`**, it still works for
+this tutorial, but 2.0 is recommended: a 1.x program cannot open database
+files made by DuckDB 2.0. To upgrade, remove it (if WinGet installed it:
+`winget uninstall --id DuckDB.cli --exact`), then use Option B.
 If you see “command not found” or “not recognized,” follow the installation
 steps next. Choose only one method. For another error, use the help section.
 
@@ -103,41 +114,58 @@ blocks labeled **PowerShell** instead.
 Commands labeled PowerShell and Command Prompt are different.
 Do not use WSL, Git Bash, or a Python prompt for these steps.
 
-Try `duckdb --version`. If not recognized, choose WinGet or the manual
-route below. Windows requires the matching
+Try `duckdb --version`. If not recognized, use the manual route
+(Option B) — WinGet does not offer DuckDB 2.0 yet. Windows requires the matching
 [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
 
 ---
 
-# 6. Windows Option A: WinGet
+# 6. Windows Option A: WinGet (not yet)
 
-**In either shell, one command at a time:**
+As of November 2026, WinGet's `DuckDB.cli` package stops at **1.5.6** —
+not the recommended **2.0**. **Use Option B for now.**
+
+You can check whether WinGet has caught up (in either shell):
 ```text
-winget --version
-winget install --id DuckDB.cli --exact
+winget show --id DuckDB.cli --exact
 ```
-Wait for **Successfully installed**. If it fails, read the error first.
-WinGet is supplied through Microsoft's **App Installer**; it may be
-missing or restricted on managed PCs. Use the manual route if permitted.
-
-Close and reopen the entire terminal application, then try
-`duckdb --version`. If it prints a version number, skip Option B and go
-to **Windows: Open the Tutorial Folder**. Otherwise use the help section.
+Only if the `Version:` line starts with **2.** may you install with
+`winget install --id DuckDB.cli --exact`, close and reopen the terminal,
+and confirm `duckdb --version` starts with `v2.`. Then skip Option B and
+go to **Windows: Open the Tutorial Folder**.
 
 ---
 
 # 7. Windows Option B: Download and Extract
 
-1. At [duckdb.org/install](https://duckdb.org/install/), select **Windows / CLI / current stable**.
-2. In **Settings > System > About**, check **System type**.
-   Use the **amd64** zip for x64 Intel/AMD PCs or **arm64** for Arm PCs.
-3. Right-click the downloaded zip and select **Extract All**.
-4. In File Explorer's address bar, enter `%USERPROFILE%`. Create a
-   folder named **duckdb-cli** and move **duckdb.exe** into it.
+1. In **Settings > System > About**, check **System type**: x64
+   (Intel/AMD) or Arm.
+2. At [duckdb.org/install](https://duckdb.org/install/), select
+   **Windows / CLI / current stable** (2.0 or newer) and download
+   **duckdb-cli-windows-amd64.tar.gz** (x64) or
+   **duckdb-cli-windows-arm64.tar.gz** (Arm) to your **Downloads** folder.
 
-Do not run from inside the zip. Enable **View > Show > File name
-extensions** to check the filename. A user-owned folder avoids needing
-permission to create `C:\duckdb`.
+Since 2.0 the download is a `.tar.gz`, not a `.zip`: on Windows 10,
+**Extract All** does not open it. The next slide extracts it with
+Windows' built-in `tar` command, which works on Windows 10 and 11.
+
+---
+
+# 7. Windows Option B: Download and Extract (cont.)
+
+**Command Prompt** (Arm PCs: change `amd64` to `arm64`):
+```bat
+mkdir "%USERPROFILE%\duckdb-cli"
+tar -xzf "%USERPROFILE%\Downloads\duckdb-cli-windows-amd64.tar.gz" -C "%USERPROFILE%\duckdb-cli"
+```
+**PowerShell:**
+```powershell
+New-Item -ItemType Directory -Force "$env:USERPROFILE\duckdb-cli"
+tar -xzf "$env:USERPROFILE\Downloads\duckdb-cli-windows-amd64.tar.gz" -C "$env:USERPROFILE\duckdb-cli"
+```
+The next slide expects `duckdb-cli\duckdb.exe`. If extraction made an
+extra folder, move **duckdb.exe** up into `duckdb-cli`. A user-owned
+folder avoids needing permission to create `C:\duckdb`.
 
 ---
 
@@ -218,10 +246,11 @@ folder in CMD but changes to the home folder in PowerShell.
 duckdb --version
 duckdb -c "SELECT 6 * 7 AS answer;"
 ```
-The first command should print a version number; the second should return
-**42**. Example version output (do not type this):
+The first command should print a version number (`v2.` recommended); the second
+should return **42**. The version line looks like this — the code at the
+end differs by build (do not type this):
 ```text
-v1.5.5 (Variegata) d8cdaa33fd
+v2.0.0 (Cyanoptera) …
 ```
 If typing `duckdb` still fails, see **Help Only If Needed** at the end.
 It explains how to start DuckDB using the location of its program file.
@@ -501,9 +530,9 @@ duckdb --version
 If not found: verify installation, restart the terminal application, and
 test the full executable path. Reopening alone cannot add a missing entry.
 
-For WinGet, inspect `winget list --id DuckDB.cli --exact`.
-If listed but still not found after restarting, ask the instructor to check
-the installation location, or use the manual route if permitted.
+If you once installed DuckDB with WinGet, `winget list --id DuckDB.cli --exact`
+shows it; it is 1.x (2.0 is recommended) — to upgrade, uninstall it and use the manual route,
+so that the old copy is not found first.
 For manual installation, verify the folder and User Path entry.
 
 In PowerShell, `Get-Command duckdb -All` also reveals aliases or multiple
@@ -537,8 +566,8 @@ the shell closes; the full-path commands also work without changing PATH.
   folder implicitly. Running it this way does not add it to PATH.
 - **VCRUNTIME / MSVCP DLL missing:** install or repair the matching
   Microsoft Visual C++ Redistributable from Microsoft's site.
-- **This app cannot run on your PC:** verify architecture, extract the
-  Windows CLI zip, and check OS support. Do not download random DLLs.
+- **This app cannot run on your PC:** verify architecture (amd64 vs
+  arm64 download), and check OS support. Do not download random DLLs.
 - **Access denied / file disappears:** check device security notices;
   ask IT if execution or extraction is blocked.
 
@@ -603,8 +632,10 @@ A `.csv` extension alone does not prove the file is valid CSV.
 - **Read-only / cannot open:** check the parent folder, permissions,
   disk space, and whether you opened with `-readonly`.
 
-Prefer a local writable folder for the database. Ask the instructor about
-version incompatibility errors; do not overwrite the existing database.
+Prefer a local writable folder for the database. **Version errors:** a
+`.db` file saved by DuckDB 2.0 cannot be opened by DuckDB 1.x (an older CLI,
+Python package, or qStudio) — upgrade that program; never overwrite the
+database to get rid of the error.
 
 ---
 
@@ -649,7 +680,7 @@ Send the instructor:
 - `duckdb --version`, if available; redact private path information.
 
 Use the help pages in this guide and the official references below.
-Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
+Check `.help` and `duckdb -help` for the options of your installed version.
 
 ---
 
@@ -669,5 +700,7 @@ Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
 - [PowerShell: command resolution](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_command_precedence)
 - [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
 
-Windows setup was checked against official documentation, not tested on a
-Windows PC. Shared SQL examples were tested with DuckDB 1.5.5 on macOS.
+Windows setup was checked against official documentation (download names
+on duckdb.org/install and WinGet's package list, 2026-10-25), not tested on
+a Windows PC. Every SQL example and its expected result was re-checked with
+DuckDB 2.0.0; the CLI-only parts were re-tested with CLI 2.0.0 on macOS (2026-11-11).
