@@ -49,7 +49,11 @@ def show(df: pd.DataFrame, max_rows: int = 30, title: str = "") -> None:
     max_rows : cap on rows displayed (0 = unlimited)
     title    : optional title rendered above the table
     """
-    from IPython.display import display, HTML
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    HTML = _mo.Html
 
     if max_rows and len(df) > max_rows:
         view = df.head(max_rows).copy()

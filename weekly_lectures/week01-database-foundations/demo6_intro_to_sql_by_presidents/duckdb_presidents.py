@@ -80,7 +80,7 @@ def _(mo):
 @app.cell
 def _():
     # Install dependencies (safe to re-run; skip if already installed)
-    # packages added via marimo's package management: duckdb pandas matplotlib seaborn !pip install duckdb pandas matplotlib seaborn --quiet
+    # packages added via marimo's package management: duckdb pandas matplotlib !pip install duckdb pandas matplotlib --quiet
     return
 
 

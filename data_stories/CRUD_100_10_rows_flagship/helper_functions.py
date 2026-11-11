@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import pandas as pd
-from IPython.display import display, Markdown, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+Markdown = _mo.md
+HTML = _mo.Html
 import matplotlib.pyplot as plt
 
 

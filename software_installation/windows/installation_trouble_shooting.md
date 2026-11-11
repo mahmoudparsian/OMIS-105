@@ -181,6 +181,30 @@ example, you deleted them by accident but still have the rest):
 
 ## Other Common Problems
 
+### DuckDB says "Trying to read a database file with version number 999"
+
+The full message starts like this:
+
+```
+IO Error: Trying to read a database file with version number 999, but we can only read versions between 64 and 68.
+The database file was created with an newer version of DuckDB.
+```
+
+It means the `.duckdb` file was made by **DuckDB 2.0**, and you are
+opening it with an **older** DuckDB (1.5.x). Your computer can have
+several copies of DuckDB, and they can have different versions:
+
+* the **Python** package (used by Marimo): `python -c "import duckdb; print(duckdb.__version__)"`
+* the **DuckDB CLI**: `duckdb --version`
+* **qStudio**, which has its own built-in DuckDB driver
+
+**Fix:** upgrade the older copy so all of them are on 2.0:
+`pip install --upgrade duckdb` for Python, `winget upgrade DuckDB.cli` for the CLI,
+and the newest qStudio from its download page. Or open the file with
+the same tool that made it. DuckDB **2.0** is recommended for this
+course; 1.5.5 still works for every class notebook.
+
+
 ### Files behave strangely, won't save, or give permission errors inside a OneDrive folder
 
 If your Desktop or Documents folder is synced with OneDrive (common on

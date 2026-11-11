@@ -8,7 +8,8 @@ SQL; this module owns everything about how the results *look*.
 
 Design goals
 ------------
-* One consistent visual theme (seaborn whitegrid + a tuned matplotlib rcParams).
+* One consistent visual theme (matplotlib's built-in seaborn-style whitegrid + tuned rcParams;
+  seaborn itself is not needed, students do not install it).
 * Real, recognisable political-party colours so every chart reads at a glance.
 * Every function takes a tidy ``pandas.DataFrame`` (exactly what
   ``con.execute(sql).df()`` returns in DuckDB) and returns a
@@ -26,9 +27,9 @@ Author: built for OMIS 105, Santa Clara University.
 from __future__ import annotations
 
 import matplotlib.pyplot as plt
+import numpy as np
 import matplotlib.ticker as mticker
 import pandas as pd
-import seaborn as sns
 
 # --------------------------------------------------------------------------- #
 #  Theme & palette
@@ -58,7 +59,7 @@ def set_theme() -> None:
     Call this once near the top of the notebook (the plotting functions also
     call it defensively, so charts look right even if you forget).
     """
-    sns.set_theme(style="whitegrid", context="notebook")
+    plt.style.use("seaborn-v0_8-whitegrid")
     plt.rcParams.update(
         {
             "figure.dpi": 110,
@@ -137,9 +138,17 @@ def plot_term_length_distribution(df: pd.DataFrame,
     years = df[days_col] / 365.25
 
     fig, ax = plt.subplots(figsize=(8.5, 4.8))
-    sns.histplot(years, bins=12, kde=True, color=ACCENT,
-                 edgecolor="white", alpha=0.85, ax=ax)
-    sns.rugplot(years, color="#C8312B", height=0.05, ax=ax)
+    counts, edges, _ = ax.hist(years, bins=12, color=ACCENT,
+                               edgecolor="white", alpha=0.85)
+    # Smooth density curve (Gaussian kernel, Scott's rule), scaled to counts
+    vals = years.dropna().to_numpy()
+    bw = vals.std(ddof=1) * len(vals) ** (-1 / 5)
+    xs = np.linspace(vals.min() - bw, vals.max() + bw, 200)
+    dens = np.exp(-0.5 * ((xs[:, None] - vals[None, :]) / bw) ** 2).sum(axis=1)
+    dens /= len(vals) * bw * np.sqrt(2 * np.pi)
+    ax.plot(xs, dens * len(vals) * (edges[1] - edges[0]), color=ACCENT, linewidth=2)
+    # Rug: one tick per president along the bottom
+    ax.plot(vals, np.zeros_like(vals), "|", color="#C8312B", markersize=12)
 
     mean_years = years.mean()
     ax.axvline(mean_years, color="#C8312B", linestyle="--", linewidth=1.6,

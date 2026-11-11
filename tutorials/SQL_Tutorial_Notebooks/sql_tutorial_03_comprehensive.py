@@ -238,7 +238,10 @@ def _(con):
 @app.cell
 def _(con):
     # Option 2 — Explicit display
-    from IPython.display import display
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
     _result = con.execute("""
         SELECT *
         FROM employees
@@ -250,12 +253,11 @@ def _(con):
 
 @app.cell
 def _(result):
-    # Option 3 — Use tabulate for a styled text table
+    # Option 3 — Print a plain text table (pandas' own to_string; no extra package)
 
 
-    from tabulate import tabulate
     def display_as_table(result):
-        print(tabulate(result, headers='keys', tablefmt='grid', showindex=False))  
+        print(result.to_string(index=False))
     return (display_as_table,)
 
 

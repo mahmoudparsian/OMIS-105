@@ -22,7 +22,11 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-from IPython.display import display, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
 import duckdb as _duckdb
 
 # ── Colour constants (used by both table and chart helpers) ───────────────────

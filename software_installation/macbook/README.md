@@ -17,11 +17,12 @@ This folder contains everything you need to set up your Mac for OMIS 105. Follow
 | Software | What It Is | Minimum Version | Installed In | Verified In |
 |----------|-----------|-----------------|---------------|-------------|
 | [Python](https://www.python.org) | Programming language — the foundation everything else runs on | 3.10+ (3.12+ recommended) | Step 1 | Steps 1, 2, 3 |
-| [DuckDB](https://duckdb.org) | In-process SQL database engine — no server to install or configure | 1.0+ | Step 2 | Steps 2, 3 |
+| [DuckDB](https://duckdb.org) | In-process SQL database engine — no server to install or configure | 1.5.5+ (**2.0 recommended**) | Step 2 | Steps 2, 3 |
 | [Marimo](https://marimo.io) | Interactive notebook environment (replaces Jupyter for this course) | any recent | Step 2 | Steps 2, 3 |
 | [Pandas](https://pandas.pydata.org) | Data manipulation library — DuckDB query results come back as Pandas tables | any recent | Step 2 | Steps 2, 3 |
 | [Matplotlib](https://matplotlib.org) | Charting library — the class notebooks that draw charts import it | any recent | Step 2 | Steps 2, 3 |
 | [sqlglot](https://github.com/tobymao/sqlglot) | SQL parser Marimo itself needs to run SQL cells | any recent | Step 2 | Steps 2, 3 |
+| Optional extras: seaborn, altair, jinja2, tabulate, pyarrow, polars | Used only by some data stories (charts, styled tables); class notebooks do not need them | any recent | Step 2 | — |
 | [Java](https://adoptium.net) | Required by qStudio — qStudio is written in Java and won't open without it | 21 (recommended) | Step 4 | Step 4 |
 | [qStudio](https://www.timestored.com/qstudio/download) | Free SQL editor for writing and exploring queries visually | any recent | Step 4 | Step 4 |
 
@@ -189,6 +190,13 @@ Or: [DuckDB CLI for Mac](https://duckdb.org/install/?platform=macos&environment=
 ```
 duckdb --version
 ```
+
+**Keep your DuckDB versions the same.** The Python package (Step 2), the
+CLI, and qStudio each have their **own** copy of DuckDB. A database file
+(`.duckdb`) made by a newer version cannot be opened by an older one.
+DuckDB **2.0** is recommended for this course (1.5.5 also works). To
+upgrade the CLI: `brew upgrade duckdb`. See the troubleshooting guide if a file will
+not open.
 
 ---
 

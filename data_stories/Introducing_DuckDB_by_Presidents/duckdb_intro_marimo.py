@@ -566,21 +566,24 @@ def _(con):
 
 @app.cell
 def _(con):
-    # ── Polars ────────────────────────────────────────────────────────────────────
-    df_pl = con.sql("""
-        SELECT
-            p.sequence,
-            p.last_name,
-            p.first_name,
-            pt.party_name,
-            YEAR(p.term_start) AS term_start_year,
-            (p.term_end - p.term_start) AS days_in_office
-        FROM presidents p
-        JOIN parties pt ON p.party_id = pt.party_id;
-    """).pl()
-
-    print(type(df_pl))
-    df_pl.head()
+    # ── Polars (optional: needs `pip install polars`) ──────────────────────────────
+    try:
+        df_pl = con.sql("""
+            SELECT
+                p.sequence,
+                p.last_name,
+                p.first_name,
+                pt.party_name,
+                YEAR(p.term_start) AS term_start_year,
+                (p.term_end - p.term_start) AS days_in_office
+            FROM presidents p
+            JOIN parties pt ON p.party_id = pt.party_id;
+        """).pl()
+        print(type(df_pl))
+        _out = df_pl.head()
+    except ImportError:
+        _out = "Polars is not installed. To try this cell: pip install polars"
+    _out
     return
 
 

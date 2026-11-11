@@ -27,7 +27,11 @@ def _():
     # Setup: imports and display options
     import duckdb
     import pandas as pd
-    from IPython.display import display, HTML
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    HTML = _mo.Html
 
     pd.set_option('display.max_columns', 50)
     pd.set_option('display.width', 120)
@@ -49,42 +53,49 @@ def _(HTML, df, display):
         shown_count = len(display_df)
         caption_text = caption or f"Showing {shown_count:,} of {row_count:,} rows"
 
-        styler = (
-            display_df.style
-            .set_caption(caption_text)
-            .set_table_styles([
-                {'selector': 'caption', 'props': [
-                    ('caption-side', 'top'),
-                    ('font-size', '15px'),
-                    ('font-weight', '700'),
-                    ('color', '#0f172a'),
-                    ('padding', '8px 0')
-                ]},
-                {'selector': 'th', 'props': [
-                    ('background-color', '#0f172a'),
-                    ('color', 'white'),
-                    ('font-weight', '700'),
-                    ('text-align', 'left'),
-                    ('padding', '8px'),
-                    ('border', '1px solid #334155')
-                ]},
-                {'selector': 'td', 'props': [
-                    ('padding', '7px 8px'),
-                    ('border', '1px solid #e2e8f0')
-                ]},
-                {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f8fafc')]},
-                {'selector': 'tr:nth-child(odd)', 'props': [('background-color', '#ffffff')]},
-                {'selector': 'tr:hover', 'props': [('background-color', '#dbeafe')]},
-                {'selector': 'table', 'props': [
-                    ('border-collapse', 'collapse'),
-                    ('font-family', 'Arial, sans-serif'),
-                    ('font-size', '13px'),
-                    ('width', '100%')
-                ]},
-            ])
-            .format(precision=2)
-        )
-        display(styler)
+        # Plain pandas HTML + CSS (DataFrame.style would need jinja2,
+        # which students do not install)
+        styles = [
+            {'selector': 'caption', 'props': [
+                ('caption-side', 'top'),
+                ('font-size', '15px'),
+                ('font-weight', '700'),
+                ('color', '#0f172a'),
+                ('padding', '8px 0')
+            ]},
+            {'selector': 'th', 'props': [
+                ('background-color', '#0f172a'),
+                ('color', 'white'),
+                ('font-weight', '700'),
+                ('text-align', 'left'),
+                ('padding', '8px'),
+                ('border', '1px solid #334155')
+            ]},
+            {'selector': 'td', 'props': [
+                ('padding', '7px 8px'),
+                ('border', '1px solid #e2e8f0')
+            ]},
+            {'selector': 'tr:nth-child(even)', 'props': [('background-color', '#f8fafc')]},
+            {'selector': 'tr:nth-child(odd)', 'props': [('background-color', '#ffffff')]},
+            {'selector': 'tr:hover', 'props': [('background-color', '#dbeafe')]},
+            {'selector': 'table', 'props': [
+                ('border-collapse', 'collapse'),
+                ('font-family', 'Arial, sans-serif'),
+                ('font-size', '13px'),
+                ('width', '100%')
+            ]},
+        ]
+        css = "".join(
+            f".teach-table {st['selector']}{{" + ";".join(f"{k}:{v}" for k, v in st["props"]) + "}"
+            for st in styles if st["selector"] != "caption"
+        ).replace(".teach-table table", "table.teach-table")
+        cap = next(st["props"] for st in styles if st["selector"] == "caption")
+        cap_css = ";".join(f"{k}:{v}" for k, v in cap if k != "caption-side")
+        display(HTML(
+            f"<style>{css}</style><div style='{cap_css}'>{caption_text}</div>"
+            + display_df.to_html(classes="teach-table", border=0,
+                                 float_format=lambda v: f"{v:.2f}")
+        ))
         display(HTML(f"<div style='font-family:Arial; color:#475569; margin:4px 0 18px 0;'>Total rows returned by SQL: <b>{row_count:,}</b></div>"))
     return (show,)
 

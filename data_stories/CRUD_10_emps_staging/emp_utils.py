@@ -20,7 +20,12 @@ from matplotlib.gridspec import GridSpec
 import seaborn as sns
 import pandas as pd
 import io, base64, urllib.request
-from IPython.display import display, HTML, Markdown
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
+Markdown = _mo.md
 
 warnings.filterwarnings("ignore")
 

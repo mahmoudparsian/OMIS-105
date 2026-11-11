@@ -66,7 +66,10 @@ def show(sql, title=None, row_numbers=True):
         df_display.insert(0, "#", range(1, len(df_display) + 1))
     else:
         df_display = df
-    from IPython.display import display as ipd
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def ipd(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
     ipd(df_display.style
         .set_properties(**{
             "text-align": "left",
@@ -118,7 +121,11 @@ def show_before_after(sql_transform, table="employees",
 
 def _pretty_sql(sql):
     """Print SQL in a highlighted box."""
-    from IPython.display import display, Markdown
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    Markdown = _mo.md
     display(Markdown(f"```sql\n{textwrap.dedent(sql).strip()}\n```"))
 
 
@@ -140,7 +147,11 @@ def show_with_images(sql, title=None, img_col="image_url",
     img_col  : str  – column name containing the image URL
     img_size : int  – avatar width/height in pixels
     """
-    from IPython.display import display, HTML
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    HTML = _mo.Html
 
     df = duckdb.sql(sql).fetchdf()
 

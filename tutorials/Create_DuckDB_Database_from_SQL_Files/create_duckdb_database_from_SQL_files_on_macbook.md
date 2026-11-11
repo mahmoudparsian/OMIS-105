@@ -16,7 +16,7 @@ This folder includes a small practice `db_schema.sql` and `db_records.sql`
 (2 tables: `departments` and `employees`). Use them the first time.
 Later, the same steps work with any pair of SQL files.
 
-Examples use **DuckDB 1.5.5**. A newer version is fine.
+Examples were made with **DuckDB 1.5.5**. DuckDB **2.0** is recommended for this course. A database file made with 2.0 cannot be opened by 1.5 — use the same DuckDB version everywhere.
 
 ---
 

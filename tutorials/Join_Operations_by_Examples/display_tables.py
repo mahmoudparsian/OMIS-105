@@ -5,7 +5,11 @@ Beautiful HTML table rendering utilities for the SQL JOINs tutorial.
 Import and use these functions in the Jupyter notebook.
 """
 
-from IPython.display import display, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
 import pandas as pd
 
 

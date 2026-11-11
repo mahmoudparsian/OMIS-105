@@ -117,6 +117,21 @@ def install_packages():
             print("    Write down this error and bring it to office hours.")
             print()
 
+    # Optional extras. The class notebooks do NOT need them; some data
+    # stories (data_stories/) draw charts with seaborn or altair, show
+    # styled tables (jinja2), or demo tabulate / pyarrow / polars.
+    extras = ["seaborn", "altair", "jinja2", "tabulate", "pyarrow", "polars"]
+    print()
+    print("  Installing optional extras (used by some data stories)...")
+    print()
+    for pkg in extras:
+        print(f"  Installing {pkg}...", end=" ", flush=True)
+        result = pip_install(pkg)
+        if result.returncode != 0 and is_externally_managed(result):
+            result = pip_install(pkg, ["--break-system-packages"])
+        print("done" if result.returncode == 0
+              else "skipped (optional, not needed for class)")
+
 
 # ════════════════════════════════════════════════════════════════
 #  STEP 3: Verify each package
@@ -126,7 +141,7 @@ def verify_packages():
     print()
     results = []
 
-    # DuckDB — the course needs 1.5.5 or newer (2.0 is fine)
+    # DuckDB — the course needs 1.5.5 or newer (2.0 is recommended)
     try:
         import duckdb
         r = duckdb.query("SELECT 42 AS answer").fetchall()[0]

@@ -13,7 +13,11 @@ Usage
 """
 
 import pandas as pd
-from IPython.display import display, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
 
 # ── Colour palette (SCU-inspired) ──────────────────────────────────────────
 _HEADER_BG   = "#2C3E50"   # dark blue-grey

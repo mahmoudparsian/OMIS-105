@@ -15,7 +15,11 @@ plot_null_dept_pie(n_assigned, n_null) — pie: employees with/without dept
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-from IPython.display import display, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
 
 # ── Colour palette ────────────────────────────────────────────────────────────
 PALETTE   = ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B2"]

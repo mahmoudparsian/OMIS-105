@@ -261,10 +261,13 @@ where PostgreSQL might show 100x, and treats *why* as the lesson. Being embedded
 single-writer, it also cannot demonstrate deadlocks, lock waits, or isolation levels
 beyond snapshot. Both stories say so explicitly rather than overclaiming.
 
-**10. `sailors_and_boats/` needs setup beyond the course standard.** Every other
-story in this folder runs on the plain `pip install duckdb pandas marimo matplotlib sqlglot`
-from `software_installation/` (see its `README.md`) — no server, no virtual
-environment, no API key. `sailors_and_boats/` doesn't fit that path:
+**10. Some stories need the optional extras; `sailors_and_boats/` needs more.** Many stories
+draw charts with `seaborn` or `altair`, show styled tables (pandas `.style`, which needs `jinja2`),
+or demo `tabulate` / `pyarrow` / `polars`. These are **not** in the course's five packages
+(`duckdb pandas marimo matplotlib sqlglot`). `step_2_setup_software.py` installs them as
+optional extras (since 2026-11-10); if you installed earlier, run:
+`pip install seaborn altair jinja2 tabulate pyarrow polars`. Still no server and no API key.
+`sailors_and_boats/` goes further:
 
 - Its `pyproject.toml` / `uv.lock` are meant to be installed with
   [`uv`](https://docs.astral.sh/uv/) (`uv sync`), a tool the course doesn't
@@ -276,7 +279,7 @@ environment, no API key. `sailors_and_boats/` doesn't fit that path:
   and account a student may not have.
 
 The **five Marimo notebooks** (`notebooks/notebook_level_01.py` … `_04.py` and
-`notebook_guided.py`) only need `duckdb`, `pandas`, and `marimo` and run fine
+`notebook_guided.py`) need the course packages plus `altair` (an optional extra) and run fine
 without `uv` or an API key — open them the same way as any other story. It is
 only `./run_app.sh` and its LLM page that require the extra install. Treat
 this story as **advanced / optional**: fine to demo or offer as a stretch

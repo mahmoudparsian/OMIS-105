@@ -43,28 +43,24 @@ def setup_style():
 
 
 def styled_table(df):
-    """Render a DataFrame as a styled HTML table."""
-    fmt = {c: '{:,.2f}' for c in df.select_dtypes('float').columns}
-    fmt.update({c: '{:,}' for c in df.select_dtypes('int').columns})
-    return (
-        df.style
-          .format(fmt)
-          .set_table_styles([
-              {'selector': 'thead th',
-               'props': [('background-color','#1e2235'),('color','#a8d8ea'),
-                         ('font-weight','bold'),('border-bottom','2px solid #6c8ebf'),
-                         ('text-align','center'),('padding','8px 14px')]},
-              {'selector': 'tbody td',
-               'props': [('background-color','#161929'),('color','#e0e0f0'),
-                         ('border-bottom','1px solid #2a2d40'),('padding','6px 14px')]},
-              {'selector': 'tbody tr:hover td',
-               'props': [('background-color','#252840')]},
-              {'selector': 'table',
-               'props': [('border-collapse','collapse'),('border-radius','8px'),
-                         ('overflow','hidden'),('font-size','13px')]},
-          ])
-          .hide(axis='index')
+    """Render a DataFrame as a styled HTML table.
+
+    Uses plain pandas HTML + CSS: DataFrame.style would need jinja2,
+    which students do not install.
+    """
+    import marimo as _mo
+    fmt = {c: '{:,.2f}'.format for c in df.select_dtypes('float').columns}
+    fmt.update({c: '{:,}'.format for c in df.select_dtypes('int').columns})
+    css = (
+        '.ins-table{border-collapse:collapse;border-radius:8px;overflow:hidden;font-size:13px}'
+        '.ins-table thead th{background-color:#1e2235;color:#a8d8ea;font-weight:bold;'
+        'border-bottom:2px solid #6c8ebf;text-align:center;padding:8px 14px}'
+        '.ins-table tbody td{background-color:#161929;color:#e0e0f0;'
+        'border-bottom:1px solid #2a2d40;padding:6px 14px}'
+        '.ins-table tbody tr:hover td{background-color:#252840}'
     )
+    return _mo.Html(f'<style>{css}</style>' + df.to_html(
+        index=False, classes='ins-table', border=0, formatters=fmt))
 
 
 # ─────────────────────────────────────────────────────────────────────────────

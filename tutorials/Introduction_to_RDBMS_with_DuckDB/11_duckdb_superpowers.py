@@ -234,7 +234,7 @@ def _(con, export_dir):
     import os as _os
 
     products_path = _os.path.join(export_dir, "products_export.parquet")
-    con.sql("SELECT * FROM products").df().to_parquet(products_path, index=False)
+    con.sql(f"COPY products TO '{products_path}' (FORMAT parquet)")  # DuckDB writes Parquet itself; no pyarrow needed
     f"Wrote {products_path}"
     return (products_path,)
 

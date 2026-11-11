@@ -16,7 +16,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import textwrap, warnings
-from IPython.display import display, HTML, Markdown
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
+Markdown = _mo.md
 
 # ── Suppress noisy warnings in student notebooks ────────────────────
 warnings.filterwarnings("ignore", category=UserWarning)

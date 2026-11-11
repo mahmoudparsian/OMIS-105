@@ -1,5 +1,9 @@
 import pandas as pd
-from IPython.display import display, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
 
 def show(df, title=None, add_row_numbers=True, max_rows=None):
     """
@@ -46,13 +50,14 @@ def show(df, title=None, add_row_numbers=True, max_rows=None):
         ])
     ]
 
-    styled = (
-        df_display.style
-        .set_table_styles(styles)
-        .hide(axis="index")
+    # Plain pandas HTML + the same CSS (DataFrame.style would need jinja2,
+    # which students do not install)
+    css = "".join(
+        f".rank-table {s['selector']}{{" + ";".join(f"{k}:{v}" for k, v in s["props"]) + "}"
+        for s in styles
     )
-
-    html = styled.to_html()
+    html = f"<style>{css}</style>" + df_display.to_html(
+        index=False, classes="rank-table", border=0)
 
     header = ""
     if title:

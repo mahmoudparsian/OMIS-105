@@ -39,7 +39,11 @@ def _(df):
 
     import duckdb
     import pandas as pd
-    from IPython.display import display, HTML
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    HTML = _mo.Html
 
     # ── show() ─────────────────────────────────────────────────────────────────
     # All SQL results render through show(): dark navy headers, alternating rows,

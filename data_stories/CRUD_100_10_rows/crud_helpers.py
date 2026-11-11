@@ -20,7 +20,11 @@ import textwrap
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-from IPython.display import display, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
 import duckdb
 
 try:

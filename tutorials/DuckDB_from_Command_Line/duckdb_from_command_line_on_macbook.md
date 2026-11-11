@@ -23,7 +23,7 @@ style: |
 ## macOS: install DuckDB and run your first queries
 OMIS 105 - Fall 2026
 
-Examples use **DuckDB 1.5.5**. Your installation may show a newer version.
+Examples were made with **DuckDB 1.5.5**. DuckDB **2.0** is recommended for this course; with 2.0, the version banner and some messages look slightly different.
 
 Reviewed October 2, 2026. Start here, then follow the slides in order.
 

@@ -734,7 +734,12 @@ def _(mo):
 
 @app.cell
 def _():
-    from IPython.display import SVG, display, HTML
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    SVG = _mo.Html
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    HTML = _mo.Html
 
     # ============================================================
     # SVG Diagram: One-to-One (1:1)

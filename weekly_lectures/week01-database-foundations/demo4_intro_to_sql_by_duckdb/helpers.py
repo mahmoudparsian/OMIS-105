@@ -8,17 +8,19 @@ plotting utilities so the notebook cells stay focused on SQL.
 Usage in notebook:
     from mysql101_helpers import display_result, plot_bar, plot_hbar, plot_pie, plot_line
 
-Dependencies: pandas, tabulate, matplotlib, seaborn
+Dependencies: pandas, matplotlib (no seaborn, tabulate or jinja2: students do not install them)
 """
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-from tabulate import tabulate
-from IPython.display import display, HTML
+import marimo as _mo  # marimo's own display tools (students do not install IPython)
+def display(*objs):
+    for _obj in objs:
+        _mo.output.append(_obj)
+HTML = _mo.Html
 
 # ─── Global Style Setup ────────────────────────────────────────────────────────
-sns.set_theme(style="whitegrid", palette="muted", font_scale=1.05)
+plt.style.use("seaborn-v0_8-whitegrid")  # built into matplotlib; seaborn itself is not needed
 plt.rcParams.update({
     "figure.figsize": (9, 4.5),
     "axes.titlesize": 13,
@@ -31,7 +33,7 @@ plt.rcParams.update({
 })
 
 # Color palette for consistency
-COLORS = sns.color_palette("Set2", 12)
+COLORS = (list(plt.get_cmap("Set2").colors) * 2)[:12]
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -68,37 +70,18 @@ def display_result(df, title=None, max_rows=25):
             f'border-bottom:2px solid #27ae60; padding-bottom:4px;">{title}</h4>'
         )
 
-    # Style the table
-    styled = (
-        show_df.style
-        .set_table_styles([
-            {"selector": "th", "props": [
-                ("background-color", "#27ae60"),
-                ("color", "white"),
-                ("padding", "8px 12px"),
-                ("text-align", "center"),
-                ("font-size", "11px"),
-            ]},
-            {"selector": "td", "props": [
-                ("padding", "6px 12px"),
-                ("text-align", "left"),
-                ("font-size", "11px"),
-            ]},
-            {"selector": "tr:nth-child(even)", "props": [
-                ("background-color", "#f0fff4"),
-            ]},
-            {"selector": "tr:hover", "props": [
-                ("background-color", "#d4efdf"),
-            ]},
-            {"selector": "table", "props": [
-                ("border-collapse", "collapse"),
-                ("margin", "8px 0"),
-                ("box-shadow", "0 1px 3px rgba(0,0,0,0.1)"),
-            ]},
-        ])
-        .format(precision=2)
+    # Style the table (plain pandas HTML + CSS; DataFrame.style would need jinja2)
+    html_parts.append(
+        "<style>"
+        ".result-table{border-collapse:collapse;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,0.1)}"
+        ".result-table th{background-color:#27ae60;color:white;padding:8px 12px;text-align:center;font-size:11px}"
+        ".result-table td{padding:6px 12px;text-align:left;font-size:11px}"
+        ".result-table tr:nth-child(even){background-color:#f0fff4}"
+        ".result-table tr:hover{background-color:#d4efdf}"
+        "</style>"
     )
-    html_parts.append(styled.to_html())
+    html_parts.append(show_df.to_html(classes="result-table", border=0,
+                                      float_format=lambda v: f"{v:.2f}"))
 
     if total_rows > max_rows:
         html_parts.append(

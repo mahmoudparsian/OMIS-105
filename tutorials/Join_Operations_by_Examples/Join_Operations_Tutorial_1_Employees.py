@@ -120,7 +120,11 @@ def _(
 ):
     render_section_header(1, "Dataset Overview", "A quick look at all three tables", "")
 
-    from IPython.display import display, HTML
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    HTML = _mo.Html
     display(HTML("""
     <div style="background:#0d2137;border-left:4px solid #f5a623;border-radius:0 8px 8px 0;
                 padding:12px 18px;margin:8px 0 16px 0;font-family:system-ui;color:#eaeaea;font-size:13px;">

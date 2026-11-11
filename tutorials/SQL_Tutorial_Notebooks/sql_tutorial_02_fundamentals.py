@@ -176,7 +176,11 @@ def _(mo):
 
 @app.cell
 def _(con):
-    from IPython.display import display, HTML
+    import marimo as _mo  # marimo's own display tools (students do not install IPython)
+    def display(*objs):
+        for _obj in objs:
+            _mo.output.append(_obj)
+    HTML = _mo.Html
 
     def run(sql, title=""):
         """Execute SQL and display the result as a styled HTML table."""
