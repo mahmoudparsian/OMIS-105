@@ -24,8 +24,8 @@ bring it to office hours (see the end of this document).
 **Symptom:** qStudio fails to launch, or shows an error message
 mentioning "Java" or "JRE" (Java Runtime Environment) when you double-click it.
 
-qStudio needs Java to run. The Mac download from timestored.com is
-labeled "with Java," but some students still saw this error — the
+qStudio needs Java to run. The qStudio Mac download includes its own
+Java, but some students still saw this error — the
 bundled Java didn't work on their Mac. The fix is to install your own
 copy of Java. **Java 21 works fine for this course.**
 

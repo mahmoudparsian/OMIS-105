@@ -108,8 +108,9 @@ and the one inside qStudio), and a database file (`.duckdb`) made by DuckDB 2.0
 **cannot** be opened by an older copy. That is what the "version number 999"
 error means.
 
-If qStudio cannot open a `.duckdb` file after your upgrade, install the newest
-qStudio from its [download page](https://www.timestored.com/qstudio/download).
+If qStudio cannot open a `.duckdb` file after your upgrade, you need
+**qStudio 5.09 or newer** (check **Help → About**); install it from its
+[download page](https://www.timestored.com/qstudio/download).
 
 ---
 

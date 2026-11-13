@@ -29,7 +29,7 @@ This folder contains everything you need to set up your Mac for OMIS 105. Follow
 | [sqlglot](https://github.com/tobymao/sqlglot) | SQL parser Marimo itself needs to run SQL cells | any recent | Step 2 | Steps 2, 3 |
 | Optional extras: seaborn, altair, jinja2, tabulate, pyarrow, polars | Used only by some data stories (charts, styled tables); class notebooks do not need them | any recent | Step 2 | — |
 | [Java](https://adoptium.net) | Required by qStudio — qStudio is written in Java and won't open without it | 21 (recommended) | Step 4 | Step 4 |
-| [qStudio](https://www.timestored.com/qstudio/download) | Free SQL editor for writing and exploring queries visually | any recent | Step 4 | Step 4 |
+| [qStudio](https://github.com/timestored/qstudio/releases/latest) | Free SQL editor for writing and exploring queries visually | 5.09 or newer | Step 4 | Step 4 |
 
 This table is just a reference — **the actual install commands are in the steps below, not here.**
 
@@ -152,7 +152,7 @@ Step 0:  Download ZIP from GitHub, unzip, open Terminal in software_installation
 Step 1:  Install Python                          (follow the guide, then verify)
 Step 2:  python3 step_2_setup_software.py        (installs + verifies DuckDB, Pandas, Marimo, Matplotlib, sqlglot)
 Step 3:  marimo edit step_3_verification.py      (final check — everything together, in Marimo)
-Step 4:  Install Java, then qStudio              (Java via Homebrew, qStudio from timestored.com, then verify)
+Step 4:  Install Java, then qStudio              (Java via Homebrew, qStudio from GitHub, then verify)
 ```
 
 ---

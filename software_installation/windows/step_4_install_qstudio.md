@@ -136,6 +136,12 @@ If you installed with the installer, you can also just double-click a `.duckdb` 
 
 qStudio also ships with a built-in example: **File → Open DuckDB Example .sql**.
 
+> **"Trying to read a database file with version number 999"?**
+> That file was made by DuckDB **2.0**, and only **qStudio 5.09 or newer** can
+> read it (older versions, 5.01–5.08, ship DuckDB 1.4). Check your version
+> under **Help → About**. If it is older than 5.09, install the latest version
+> (Step 1) and open the file again.
+
 ---
 
 ## Troubleshooting
@@ -158,7 +164,7 @@ recognizes by default. Click **"More info"**, then **"Run anyway"**.
 
 You may have an older version of qStudio. Go to
 **https://www.timestored.com/qstudio/download/** and download the latest
-version (5.08 or newer).
+version (5.09 or newer).
 
 ### My tables disappeared
 
