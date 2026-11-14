@@ -75,7 +75,7 @@ DuckDB protects your data from getting mixed up or overwritten by refusing to le
 
 ```sql
 % duckdb
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 
 duckdb ▸ CREATE TABLE pets (
              pet_id INTEGER PRIMARY KEY,

@@ -72,7 +72,7 @@ def _(mo):
     utilities, and opens a DuckDB connection.
 
     > **DuckDB** is a fast, in-process SQL engine that runs entirely inside
-    > this notebook — no server or installation needed beyond `pip install duckdb`.
+    > this notebook — no server or installation needed beyond `pip install "duckdb>=2.0"`.
     """)
     return
 

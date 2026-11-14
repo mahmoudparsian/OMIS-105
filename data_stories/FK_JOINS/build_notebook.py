@@ -54,7 +54,7 @@ md(
 "Install dependencies (safe to re-run), import libraries, and connect to DuckDB.",
 ),
 
-code("! pip install duckdb pandas matplotlib ipython notebook --quiet"),
+code("! pip install 'duckdb>=2.0' pandas matplotlib ipython notebook --quiet"),
 
 code(
 "import duckdb\n",

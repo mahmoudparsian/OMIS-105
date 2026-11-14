@@ -5,7 +5,7 @@ command, then everything was created in memory
 and when do ".exit", everything is wiped out.
 
 % duckdb
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 memory D .schema
 memory D CREATE OR REPLACE TABLE employees (

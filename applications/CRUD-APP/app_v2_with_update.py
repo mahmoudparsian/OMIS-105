@@ -12,7 +12,7 @@ Tabs:
   6. SQL Explorer      — Free-form SQL for learning
 
 Usage:
-    pip install streamlit duckdb pandas
+    pip install streamlit "duckdb>=2.0" pandas
     streamlit run app_with_update.py
 """
 

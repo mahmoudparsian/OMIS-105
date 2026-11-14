@@ -37,7 +37,7 @@ def _(mo):
 @app.cell
 def _():
     # Uncomment to install:
-    # !pip install duckdb pandas matplotlib
+    # !pip install "duckdb>=2.0" pandas matplotlib
 
     import duckdb
     import pandas as pd

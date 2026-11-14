@@ -8,7 +8,7 @@ Concepts covered:
     query timing and performance
 
 Run:
-    pip install streamlit duckdb pandas
+    pip install streamlit "duckdb>=2.0" pandas
     streamlit run app_level3.py
 """
 

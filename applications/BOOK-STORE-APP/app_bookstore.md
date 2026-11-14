@@ -24,7 +24,7 @@ every serious application in the world.
 
 ```bash
 # One-time setup
-pip install duckdb streamlit pandas matplotlib
+pip install "duckdb>=2.0" streamlit pandas matplotlib
 python seed.py          # loads the database
 
 # Launch

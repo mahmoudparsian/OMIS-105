@@ -55,7 +55,7 @@ realistic spread and ties.
 ## Requirements
 
 ```bash
-pip install marimo duckdb pandas matplotlib faker
+pip install marimo "duckdb>=2.0" pandas matplotlib faker
 ```
 
 ## How to run

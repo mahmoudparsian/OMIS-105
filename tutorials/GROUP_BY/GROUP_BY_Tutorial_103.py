@@ -42,7 +42,7 @@ def _(mo):
     3. **Result Table** — the output displayed as rows and columns
 
     ### Prerequisites
-    - Python 3.8+ with `duckdb` installed (`pip install duckdb`)
+    - Python 3.11+ with DuckDB 2.0 installed (`pip install "duckdb>=2.0"`)
     - Basic SQL knowledge (SELECT, WHERE, ORDER BY)
 
     ---

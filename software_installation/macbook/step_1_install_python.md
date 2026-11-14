@@ -10,7 +10,7 @@
 
 | Item | Requirement |
 |------|-------------|
-| Python version | **3.10 or higher** (we recommend 3.12+) |
+| Python version | **3.11 or higher** (DuckDB 2.0 needs it; we recommend 3.12+) |
 | Operating system | macOS |
 | Internet connection | Required for download and package installation |
 | Disk space | ~600 MB (Python itself, plus the packages Step 2 installs) |
@@ -27,9 +27,9 @@ Open **Terminal** (press `Cmd + Space`, type `Terminal`, press Enter) and type:
 python3 --version
 ```
 
-If you see `Python 3.10.x` or higher (e.g., `Python 3.12.4`), **you're done — skip to "Verify Your Installation" below.**
+If you see `Python 3.11.x` or higher (e.g., `Python 3.12.4`), **you're done — skip to "Verify Your Installation" below.**
 
-If you see `Python 2.x.x`, or `command not found`, or anything below 3.10, continue to Step 2.
+If you see `Python 2.x.x`, or `command not found`, or anything below 3.11, continue to Step 2.
 
 ## Step 2 — Download Python
 
@@ -110,7 +110,7 @@ guesswork:
 
 ```
 python3 --version
-pip3 install duckdb
+pip3 install "duckdb>=2.0"
 ```
 
 ### "pip3" is not recognized
@@ -134,7 +134,7 @@ the message and installs anyway. If you hit it while typing a `pip3`
 command by hand, add the flag the script uses:
 
 ```
-pip3 install --break-system-packages duckdb
+pip3 install --break-system-packages "duckdb>=2.0"
 ```
 
 ### Permission denied errors
@@ -142,7 +142,7 @@ pip3 install --break-system-packages duckdb
 If you see "Permission denied" when installing packages:
 
 ```
-pip3 install --user duckdb pandas marimo matplotlib
+pip3 install --user "duckdb>=2.0" pandas marimo matplotlib
 ```
 
 The `--user` flag installs packages in your home folder, avoiding permission issues.

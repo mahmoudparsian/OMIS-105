@@ -16,7 +16,7 @@ Tabs:
   7. SQL Explorer            — free-form practice
 
 Usage:
-    pip install streamlit duckdb pandas
+    pip install streamlit "duckdb>=2.0" pandas
     streamlit run app_ranking.py
 """
 

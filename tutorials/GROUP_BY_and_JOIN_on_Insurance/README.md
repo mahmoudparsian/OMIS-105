@@ -68,7 +68,7 @@ with `regions` table — that is what Cell 4b and Part 2 do.
 ## Requirements
 
 ```bash
-pip install duckdb marimo pandas matplotlib
+pip install "duckdb>=2.0" marimo pandas matplotlib
 ```
 
 ## How to Run

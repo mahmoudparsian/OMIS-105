@@ -10,7 +10,7 @@ a consistent story:
   - Seniors and juniors spend more per transaction than freshmen
 
 Run:
-    pip install duckdb
+    pip install "duckdb>=2.0"
     python seed.py
 
 Re-running drops and recreates all tables cleanly.

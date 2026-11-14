@@ -15,7 +15,7 @@
 ## Setup
 
 1. Open a Marimo Notebook or Python environment
-2. Install DuckDB: `pip install duckdb`
+2. Install DuckDB: `pip install "duckdb>=2.0"`
 3. Place `./data/products.csv` in your working directory
 
 ```python

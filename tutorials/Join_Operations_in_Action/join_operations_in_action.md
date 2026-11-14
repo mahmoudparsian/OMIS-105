@@ -1,5 +1,5 @@
 # Join Operation in Action
-* Database: DuckDB version 1.5.5
+* Database: DuckDB version 2.0.0 (re-checked 2026-11-13)
 
 
 ![](./images/sql_joins.png)

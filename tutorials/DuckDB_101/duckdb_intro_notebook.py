@@ -16,7 +16,7 @@ def _(mo):
     # Introduction to DuckDB with Python
 
     **DuckDB** is a fast, in-process analytical database.  
-    Think of it as *SQLite for analytics* — no server needed, just `pip install duckdb` and go.
+    Think of it as *SQLite for analytics* — no server needed, just `pip install "duckdb>=2.0"` and go.
 
     ---
 
@@ -51,7 +51,7 @@ def _():
     # Install DuckDB (only needed once)
 
     ### OR -------------------------
-    ### !pip3 install duckdb --quiet
+    ### !pip3 install "duckdb>=2.0" --quiet
     ### ----------------------------
     return
 

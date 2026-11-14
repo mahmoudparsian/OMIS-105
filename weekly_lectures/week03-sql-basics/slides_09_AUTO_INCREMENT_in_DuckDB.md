@@ -13,7 +13,7 @@
   pieces: a **`SEQUENCE`** (a number counter) and a
   **`DEFAULT nextval(...)`** on the column.
 
-*All DuckDB examples were tested with DuckDB v1.5.5.*
+*All DuckDB examples were tested with DuckDB 2.0.0 (re-checked 2026-11-13).*
 
 ---
 

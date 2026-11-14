@@ -150,7 +150,7 @@ one of them doesn't, and where each tool normally lives:
 | Java (`java`) | Homebrew, automatically, once `brew` itself is on PATH | inside `/opt/homebrew/opt/temurin@21` or similar |
 | Python (`python3`, `pip3`) | the python.org installer | `/usr/local/bin` or `/Library/Frameworks/Python.framework/...` |
 | Marimo (`marimo`) | `pip3 install marimo` (Step 2 of the main setup) | wherever `pip3` installs command-line scripts for your Python |
-| DuckDB (Python package) | `pip3 install duckdb` | not a command — it's a Python import, no PATH needed |
+| DuckDB (Python package) | `pip3 install "duckdb>=2.0"` | not a command — it's a Python import, no PATH needed |
 
 **If a command still says "not found" after installing it:**
 
@@ -240,10 +240,10 @@ several copies of DuckDB, and they can have different versions:
 * **qStudio**, which has its own built-in DuckDB driver
 
 **Fix:** upgrade the older copy so all of them are on 2.0:
-`pip3 install --upgrade duckdb` for Python, `brew upgrade duckdb` for the CLI,
+`pip3 install --upgrade "duckdb>=2.0"` for Python, `brew upgrade duckdb` for the CLI,
 and the newest qStudio from its download page. Or open the file with
-the same tool that made it. DuckDB **2.0** is recommended for this
-course; 1.5.5 still works for every class notebook.
+the same tool that made it. DuckDB **2.0** or newer is required for this
+course.
 
 
 ### A popup interrupted the Homebrew install asking about "Command Line Developer Tools"
@@ -291,7 +291,7 @@ last few weeks), some packages this course needs may not have a
 ready-made install for it yet, and `pip` tries to compile it from
 scratch — which fails without extra developer tools. Simplest fix:
 uninstall it and install **Python 3.12** instead (still meets the
-3.10+ requirement, and everything has ready-made installs for it). See
+3.11+ requirement, and everything has ready-made installs for it). See
 [`step_1_install_python.md`](step_1_install_python.md).
 
 ### `marimo edit` doesn't open a browser tab by itself

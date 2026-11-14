@@ -7,7 +7,7 @@ tables in a relational database, with DuckDB SQL examples for each:
 - **1-M (One-to-Many)**
 - **M-M (Many-to-Many)**
 
-Every example was run against DuckDB 1.5.5 to confirm it works as written.
+Every example was run against DuckDB 2.0.0 to confirm it works as written.
 
 ## Table of Contents
 

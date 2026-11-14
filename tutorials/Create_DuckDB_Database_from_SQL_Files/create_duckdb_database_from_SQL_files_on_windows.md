@@ -16,7 +16,7 @@ This folder includes a small practice `db_schema.sql` and `db_records.sql`
 (2 tables: `departments` and `employees`). Use them the first time.
 Later, the same steps work with any pair of SQL files.
 
-Examples were made with **DuckDB 1.5.5**. DuckDB **2.0** is recommended for this course. A database file made with 2.0 cannot be opened by 1.5 — use the same DuckDB version everywhere.
+The examples show **DuckDB 2.0.0** (re-checked 2026-11-13). DuckDB **2.0** or newer is required for this course. A database file made with 2.0 cannot be opened by 1.5 — use the same DuckDB version everywhere.
 
 ---
 
@@ -56,8 +56,7 @@ command.
 duckdb --version
 ```
 
-You should see a version number, such as `v2.0.0` (recommended; `v1.5.5`
-also works). If you see `duckdb : The term 'duckdb' is not recognized ...`,
+You should see a version number, such as `v2.0.0` (the course requires 2.0 or newer). If you see `duckdb : The term 'duckdb' is not recognized ...`,
 install DuckDB first, following **slides 7–9 (Option B: download and
 extract)** of the tutorial *DuckDB from the Command Line — Windows*
 ([`duckdb_from_command_line_on_windows.md`](../DuckDB_from_Command_Line/duckdb_from_command_line_on_windows.md)).
@@ -261,7 +260,7 @@ prompt. The two highlighted lines load your SQL files into the database.
 <pre>
 PS C:\OMIS105&gt; Remove-Item my_database.duckdb, my_database.duckdb.wal -ErrorAction SilentlyContinue
 PS C:\OMIS105&gt; duckdb my_database.duckdb
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 <mark><b>D .read db_schema.sql</b></mark>
 <mark><b>D .read db_records.sql</b></mark>

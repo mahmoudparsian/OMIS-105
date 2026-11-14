@@ -8,7 +8,7 @@ Demonstrates full CRUD interaction between Streamlit and DuckDB:
   - Search customers by email (partial match)
 
 Usage:
-    pip install streamlit duckdb
+    pip install streamlit "duckdb>=2.0"
     streamlit run app.py
 """
 

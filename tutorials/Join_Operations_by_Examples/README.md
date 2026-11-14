@@ -24,7 +24,7 @@ look like real-world data rather than a perfectly even toy dataset.
 Run either notebook with:
 
 ```bash
-pip install marimo duckdb pandas matplotlib
+pip install marimo "duckdb>=2.0" pandas matplotlib
 marimo edit Join_Operations_Tutorial_1_Employees.py
 # or
 marimo edit Join_Operations_Tutorial_2.py

@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "OMIS 105 - Sailors & Boats: DuckDB schema, Marimo notebook, and Streamlit application"
 requires-python = ">=3.11"
 dependencies = [
-    "duckdb>=1.1.0",
+    "duckdb>=2.0",
     "pandas>=2.2.0",
     "marimo>=0.9.0",
     "streamlit>=1.39.0",

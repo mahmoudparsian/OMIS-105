@@ -1,16 +1,15 @@
 # Upgrade to DuckDB 2.0 (Windows)
 
-**DuckDB 2.0 is the recommended version for OMIS 105** (since November 10, 2026).
+**DuckDB 2.0 or newer is required for OMIS 105** (since November 13, 2026).
 Most of the class already has it. This page is for you if your DuckDB is still
 **1.5.x**. It takes about 5 minutes.
 
-DuckDB 1.5.5 still works for every class notebook, so this upgrade is
-recommended, not required. But if you see the error
-`Trying to read a database file with version number 999`, you **must** upgrade
-(see Step 5).
+DuckDB 1.5 is no longer supported in this course. If you see the error
+`Trying to read a database file with version number 999`, that is an old copy of
+DuckDB trying to open a newer file (see Step 5).
 
-> ⚠️ **Running `step_2_setup_software.py` again does not upgrade DuckDB.** It
-> only installs packages that are missing. Use the commands below.
+> 💡 **Shortcut:** running `step_2_setup_software.py` again now upgrades DuckDB to 2.0 for you
+> (it installs `duckdb>=2.0`). The steps below do the same by hand.
 
 ---
 
@@ -51,7 +50,7 @@ error.
 ## Step 3 — Upgrade the Python package
 
 ```
-python -m pip install --upgrade duckdb
+python -m pip install --upgrade "duckdb>=2.0"
 ```
 
 ---

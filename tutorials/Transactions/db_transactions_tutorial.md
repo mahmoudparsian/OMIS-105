@@ -222,7 +222,7 @@ style: |
 
 This tutorial uses **MySQL** syntax. In class we use **DuckDB**, which
 supports the core commands but not everything shown here
-(checked with DuckDB 1.5.5):
+(checked with DuckDB 2.0.0):
 
 | Command | DuckDB |
 |---|---|

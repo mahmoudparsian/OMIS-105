@@ -323,7 +323,7 @@ import duckdb          # That's it. You're ready!
 
 **Why DuckDB is perfect for learning:**
 
-- 🚀 **Zero setup** — install with `pip install duckdb`
+- 🚀 **Zero setup** — install with `pip install "duckdb>=2.0"`
 - 🐍 **Python-native** — works perfectly in Jupyter notebooks
 - ⚡ **Blazing fast** — column-oriented storage engine
 - 📁 **Reads anything** — CSV, Parquet, JSON, Excel, even Pandas DataFrames
@@ -749,7 +749,7 @@ LEFT JOIN orders ON customers.customer_id = orders.customer_id;
 
 ```python
 # Install (run once in terminal)
-# pip install duckdb pandas matplotlib seaborn
+# pip install "duckdb>=2.0" pandas matplotlib seaborn
 
 import duckdb
 import pandas as pd

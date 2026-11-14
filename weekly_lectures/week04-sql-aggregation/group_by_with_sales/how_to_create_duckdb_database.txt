@@ -12,7 +12,7 @@ Step-2: View/Inspect the Database
 
 % duckdb sales_db.duckdb
 -- Loading resources from /Users/max/.duckdbrc
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 
 duckdb ▸ .schema

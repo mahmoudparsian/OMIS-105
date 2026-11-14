@@ -19,7 +19,7 @@ app does and why, written for students.
 **Setup:**
 
 ```bash
-pip install duckdb streamlit pandas matplotlib
+pip install "duckdb>=2.0" streamlit pandas matplotlib
 python seed.py                # creates bookstore.duckdb
 streamlit run app_level1.py   # or app_level2.py / app_level3.py / app_bookstore.py
 ```

@@ -22,7 +22,7 @@ CTEs, views, and window functions.
 ## Requirements
 
 ```bash
-pip install marimo duckdb pandas
+pip install marimo "duckdb>=2.0" pandas
 ```
 
 ## How to run

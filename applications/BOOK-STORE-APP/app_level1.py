@@ -6,7 +6,7 @@ Concepts covered:
     SELECT, FROM, WHERE, ORDER BY, LIMIT, BETWEEN, comparison operators
 
 Run:
-    pip install streamlit duckdb pandas
+    pip install streamlit "duckdb>=2.0" pandas
     streamlit run app_level1.py
 """
 

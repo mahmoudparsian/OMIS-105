@@ -28,7 +28,7 @@ def _(mo):
 
     ## Prerequisites
 
-    You only need **Python 3**, **marimo**, and the **duckdb** package (`pip install marimo duckdb`).
+    You only need **Python 3**, **marimo**, and the **duckdb** package, version 2.0 or newer (`pip install marimo "duckdb>=2.0"`).
     """)
     return
 

@@ -23,7 +23,7 @@ SVG diagrams.
 Run it with:
 
 ```bash
-pip install marimo duckdb
+pip install marimo "duckdb>=2.0"
 marimo edit relational_db_relationships_tutorial.py
 ```
 

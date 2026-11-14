@@ -40,7 +40,7 @@ notebook). Run the setup block first, then the examples in order.
 You need the course software (see `software_installation/`):
 
 ```bash
-pip install duckdb marimo pandas
+pip install "duckdb>=2.0" marimo pandas
 ```
 
 Open a terminal in this folder and run:

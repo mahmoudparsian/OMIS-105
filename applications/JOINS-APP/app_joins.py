@@ -12,7 +12,7 @@ producing 2 × 3 = 6 rows on an INNER JOIN — a vivid demonstration
 of the Cartesian-product behavior of joins on duplicate keys.
 
 Usage:
-    pip install streamlit duckdb pandas
+    pip install streamlit "duckdb>=2.0" pandas
     streamlit run app_joins.py
 """
 

@@ -17,6 +17,6 @@ and how ties make them behave differently.
 Run it with:
 
 ```bash
-pip install streamlit duckdb pandas
+pip install streamlit "duckdb>=2.0" pandas
 streamlit run app_ranking.py
 ```

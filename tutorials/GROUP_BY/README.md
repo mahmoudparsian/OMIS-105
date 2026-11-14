@@ -47,7 +47,7 @@ Suggested order: `100` → `101` → `102` → `103`.
 ## Requirements
 
 ```bash
-pip install marimo duckdb pandas matplotlib
+pip install marimo "duckdb>=2.0" pandas matplotlib
 ```
 
 `matplotlib` is only needed for `GROUP_BY_Tutorial_101.py`, which adds

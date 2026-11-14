@@ -20,7 +20,7 @@ D .read db_schema_and_records.sql
 
 ```sql
 % duckdb emps_depts_db.duckdb
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 
 duckdb ▸ .schema
 CREATE TABLE departments(

@@ -30,7 +30,7 @@ duckdb emps_depts_db.duckdb -c ".read db_schema.sql" -c ".read db_records.sql"
 ```
 % duckdb emps_depts_db.duckdb
 -- Loading resources from /Users/max/.duckdbrc
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 duckdb ▸ .schema
 CREATE TABLE departments(

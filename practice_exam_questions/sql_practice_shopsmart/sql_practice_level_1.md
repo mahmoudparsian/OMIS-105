@@ -6,7 +6,7 @@
 	e-commerce database.
 
 	All queries and results in this file were
-	validated with DuckDB v1.5.5.
+	validated with DuckDB 2.0.0 (re-checked 2026-11-13).
 
 
 ## 1. The ShopSmart Database
@@ -754,7 +754,7 @@ FROM customers;
 
 ### Q26. Show the query plan for a filter on `orders.status`
 
-DuckDB reads the table with a `SEQ_SCAN` and applies the filter during the
+DuckDB reads the table with a `Seq Scan` and applies the filter during the
 scan. Notice that only the columns the query needs are listed under
 `Projections` — DuckDB is a columnar database.
 
@@ -768,34 +768,20 @@ WHERE status = 'cancelled';
 **Result:**
 
 ```text
-┌─────────────────────────────┐
-│┌───────────────────────────┐│
-││       Physical Plan       ││
-│└───────────────────────────┘│
-└─────────────────────────────┘
-┌───────────────────────────┐
-│          SEQ_SCAN         │
-│    ────────────────────   │
-│           Table:          │
-│   shopsmart.main.orders   │
-│                           │
-│   Type: Sequential Scan   │
-│                           │
-│        Projections:       │
-│          order_id         │
-│        total_amount       │
-│                           │
-│          Filters:         │
-│     status='cancelled'    │
-│                           │
-│          ~50 rows         │
-└───────────────────────────┘
+╭─ Seq Scan ────────────────────╮
+│ Table: shopsmart.main.orders  │
+│ Type: Sequential Scan         │
+│ Projections: order_id,        │
+│              total_amount     │
+│ Filters: status = 'cancelled' │
+│ ~50 rows                      │
+╰───────────────────────────────╯
 ```
 
 ### Q27. Show the query plan for a primary-key lookup on `customers`
 
 Even with a primary key (which DuckDB backs with an index), the plan for a
-40-row table is still a `SEQ_SCAN`: scanning a tiny table is cheaper than
+40-row table is still a `Seq Scan`: scanning a tiny table is cheaper than
 using an index. Indexes pay off on large tables and very selective filters.
 
 ```sql
@@ -808,33 +794,17 @@ WHERE customer_id = 7;
 **Result:**
 
 ```text
-┌─────────────────────────────┐
-│┌───────────────────────────┐│
-││       Physical Plan       ││
-│└───────────────────────────┘│
-└─────────────────────────────┘
-┌───────────────────────────┐
-│          SEQ_SCAN         │
-│    ────────────────────   │
-│           Table:          │
-│  shopsmart.main.customers │
-│                           │
-│   Type: Sequential Scan   │
-│                           │
-│        Projections:       │
-│        customer_id        │
-│         first_name        │
-│         last_name         │
-│           email           │
-│            city           │
-│           state           │
-│         join_date         │
-│                           │
-│          Filters:         │
-│       customer_id=7       │
-│                           │
-│           ~1 row          │
-└───────────────────────────┘
+╭─ Seq Scan ──────────────────────╮
+│ Table: shopsmart.main.customers │
+│ Type: Sequential Scan           │
+│ Projections: customer_id,       │
+│              first_name,        │
+│              last_name, email,  │
+│              city, state,       │
+│              join_date          │
+│ Filters: customer_id = 7        │
+│ ~1 row                          │
+╰─────────────────────────────────╯
 ```
 
 ### Q28. Show the query plan for a 3-table join. Which join algorithm does DuckDB use?
@@ -852,83 +822,45 @@ GROUP BY c.category_name;
 **Result:**
 
 ```text
-┌─────────────────────────────┐
-│┌───────────────────────────┐│
-││       Physical Plan       ││
-│└───────────────────────────┘│
-└─────────────────────────────┘
-┌───────────────────────────┐
-│         PROJECTION        │
-│    ────────────────────   │
-│__internal_decompress_strin│
-│           g(#0)           │
-│             #1            │
-│                           │
-│          ~4 rows          │
-└─────────────┬─────────────┘
-┌─────────────┴─────────────┐
-│       HASH_GROUP_BY       │
-│    ────────────────────   │
-│         Groups: #0        │
-│    Aggregates: sum(#1)    │
-│                           │
-│          ~4 rows          │
-└─────────────┬─────────────┘
-┌─────────────┴─────────────┐
-│         PROJECTION        │
-│    ────────────────────   │
-│       category_name       │
-│          quantity         │
-│                           │
-│         ~566 rows         │
-└─────────────┬─────────────┘
-┌─────────────┴─────────────┐
-│         PROJECTION        │
-│    ────────────────────   │
-│             #0            │
-│__internal_compress_string_│
-│        uhugeint(#1)       │
-│                           │
-│         ~566 rows         │
-└─────────────┬─────────────┘
-┌─────────────┴─────────────┐
-│         HASH_JOIN         │
-│    ────────────────────   │
-│      Join Type: INNER     │
-│                           │
-│        Conditions:        ├──────────────┐
-│  product_id = product_id  │              │
-│                           │              │
-│         ~566 rows         │              │
-└─────────────┬─────────────┘              │
-┌─────────────┴─────────────┐┌─────────────┴─────────────┐
-│          SEQ_SCAN         ││         HASH_JOIN         │
-│    ────────────────────   ││    ────────────────────   │
-│           Table:          ││      Join Type: INNER     │
-│ shopsmart.main.order_items││                           │
-│                           ││        Conditions:        │
-│   Type: Sequential Scan   ││ category_id = category_id │
-│                           ││                           ├──────────────┐
-│        Projections:       ││                           │              │
-│         product_id        ││                           │              │
-│          quantity         ││                           │              │
-│                           ││                           │              │
-│         ~607 rows         ││          ~56 rows         │              │
-└───────────────────────────┘└─────────────┬─────────────┘              │
-                             ┌─────────────┴─────────────┐┌─────────────┴─────────────┐
-                             │          SEQ_SCAN         ││          SEQ_SCAN         │
-                             │    ────────────────────   ││    ────────────────────   │
-                             │           Table:          ││           Table:          │
-                             │  shopsmart.main.products  ││ shopsmart.main.categories │
-                             │                           ││                           │
-                             │   Type: Sequential Scan   ││   Type: Sequential Scan   │
-                             │                           ││                           │
-                             │        Projections:       ││        Projections:       │
-                             │         product_id        ││        category_id        │
-                             │        category_id        ││       category_name       │
-                             │                           ││                           │
-                             │          ~64 rows         ││          ~8 rows          │
-                             └───────────────────────────┘└───────────────────────────┘
+╭─ Projection ─────────────────────────────╮
+│ Projections:                             │
+│ __internal_decompress_string(#0), #1     │
+│ ~8 rows                                  │
+╰─────────────────────┬────────────────────╯
+╭─ Hash Group By ─────┴────────────────────╮
+│ Groups: #0                               │
+│ Aggregates: sum(#1)                      │
+│ ~8 rows                                  │
+╰─────────────────────┬────────────────────╯
+╭─ Projection ────────┴────────────────────╮
+│ Projections: category_name, quantity     │
+│ ~566 rows                                │
+╰─────────────────────┬────────────────────╯
+╭─ Projection ────────┴────────────────────╮
+│ Projections:                             │
+│ #0,                                      │
+│ __internal_compress_string_uhugeint(#1)  │
+│ ~566 rows                                │
+╰─────────────────────┬────────────────────╯
+╭─ Hash Join ─────────┴────────────────────╮
+│ Join Type: INNER                         │
+│ Conditions: product_id = product_id      │
+│ ~566 rows                                │
+╰─────────────────────┬────────────────────╯
+                      ├───────────────────────────────────────────╮
+╭─ Seq Scan ──────────┴────────────────────╮  ╭─ Hash Join ───────┴───────────────────╮
+│ Table: shopsmart.main.order_items        │  │ Join Type: INNER                      │
+│ Type: Sequential Scan                    │  │ Conditions: category_id = category_id │
+│ Projections: product_id, quantity        │  │ ~56 rows                              │
+│ ~607 rows                                │  ╰───────────────────┬───────────────────╯
+╰──────────────────────────────────────────╯                      ├────────────────────────────────────────╮
+                                              ╭─ Seq Scan ────────┴───────────────────╮  ╭─ Seq Scan ──────┴────────────────╮
+                                              │ Table: shopsmart.main.products        │  │ Table: shopsmart.main.categories │
+                                              │ Type: Sequential Scan                 │  │ Type: Sequential Scan            │
+                                              │ Projections: product_id, category_id  │  │ Projections: category_id,        │
+                                              │ ~64 rows                              │  │              category_name       │
+                                              ╰───────────────────────────────────────╯  │ ~8 rows                          │
+                                                                                         ╰──────────────────────────────────╯
 ```
 
 ### Q29. Create an index on `reviews(product_id)` and list the indexes in the database

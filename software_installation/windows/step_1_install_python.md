@@ -10,7 +10,7 @@
 
 | Item | Requirement |
 |------|-------------|
-| Python version | **3.10 or higher** (we recommend 3.12+) |
+| Python version | **3.11 or higher** (DuckDB 2.0 needs it; we recommend 3.12+) |
 | Operating system | Windows 10 or Windows 11 |
 | Internet connection | Required for download and package installation |
 | Disk space | ~600 MB (Python itself, plus the packages Step 2 installs) |
@@ -27,9 +27,9 @@ Open **Command Prompt** (press `Win` key, type `cmd`, press Enter) and type:
 python --version
 ```
 
-If you see `Python 3.10.x` or higher (e.g., `Python 3.12.4`), **you're done — skip to "Verify Your Installation" below.**
+If you see `Python 3.11.x` or higher (e.g., `Python 3.12.4`), **you're done — skip to "Verify Your Installation" below.**
 
-If you see an error, or the Microsoft Store opens, or you see a version below 3.10, continue to Step 2.
+If you see an error, or the Microsoft Store opens, or you see a version below 3.11, continue to Step 2.
 
 ## Step 2 — Download Python
 
@@ -137,7 +137,7 @@ python -m ensurepip --upgrade
 After that, use `python -m pip install` instead of `pip install`:
 
 ```
-python -m pip install duckdb
+python -m pip install "duckdb>=2.0"
 ```
 
 ### Permission denied errors

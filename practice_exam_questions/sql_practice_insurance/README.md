@@ -1,7 +1,7 @@
 # SQL Practice: Insurance Dataset (DuckDB)
 
 100 practice queries with answers on a single `insurance` table.
-Every query and result was validated with DuckDB v1.5.5.
+Every query and result was validated with DuckDB 2.0.0 (re-checked 2026-11-13).
 
 | File | Coverage |
 |------|----------|
@@ -129,7 +129,7 @@ SELECT * FROM insurance LIMIT 5;
 % duckdb insurance_db.duckdb "CREATE TABLE insurance (age INTEGER, gender VARCHAR, bmi DOUBLE, children INTEGER, smoker VARCHAR, region VARCHAR, charges DOUBLE); COPY insurance FROM 'insurance_1440_records.csv' (HEADER true);"
 
 % duckdb insurance_db.duckdb
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 
 D .schema

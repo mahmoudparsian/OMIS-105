@@ -2,7 +2,7 @@
 
 100 practice queries with answers for **Weeks 6-10**, on the multi-table
 ShopSmart e-commerce database used in the Week 6-10 labs.
-Every query and result was validated with DuckDB v1.5.5.
+Every query and result was validated with DuckDB 2.0.0 (re-checked 2026-11-13).
 
 | File | Coverage |
 |------|----------|

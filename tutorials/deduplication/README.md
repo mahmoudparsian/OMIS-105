@@ -187,7 +187,7 @@ script — run #3–#8 directly against `users.db`; #9 uses its own
 ## 5. Requirements
 
 ```bash
-pip install duckdb pandas
+pip install "duckdb>=2.0" pandas
 ```
 
 ## 6. Usage

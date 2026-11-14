@@ -2,7 +2,7 @@
 
 ```
 % duckdb
-DuckDB v1.5.2 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 
 memory D CREATE TABLE scores (country VARCHAR, score INT);

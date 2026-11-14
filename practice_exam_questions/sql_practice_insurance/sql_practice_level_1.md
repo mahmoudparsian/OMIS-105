@@ -5,7 +5,7 @@
 	table and perform some data analytics.
 
 	All queries and results in this file were
-	validated with DuckDB v1.5.5.
+	validated with DuckDB 2.0.0 (re-checked 2026-11-13).
 
 
 ## 1. Insurance Data

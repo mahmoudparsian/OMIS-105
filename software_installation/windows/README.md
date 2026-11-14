@@ -4,10 +4,9 @@
 **Quarter:** Fall 2026  
 **Author:** Dr. Mahmoud Parsian  
 
-> 📢 **Already installed, but still on DuckDB 1.5?** DuckDB **2.0** is the recommended version
-> (since November 10, 2026). Check with `python -c "import duckdb; print(duckdb.__version__)"`.
-> If it shows `1.5.x`, follow **[`upgrade_to_duckdb_2.md`](upgrade_to_duckdb_2.md)** (about 5 minutes).
-> Running Step 2 again does **not** upgrade DuckDB.
+> 📢 **Already installed, but still on DuckDB 1.5?** DuckDB **2.0** or newer is **required** (since November 13, 2026).
+> Check with `python -c "import duckdb; print(duckdb.__version__)"`. If it shows `1.5.x`, run Step 2 again (it now
+> upgrades DuckDB to 2.0), or follow **[`upgrade_to_duckdb_2.md`](upgrade_to_duckdb_2.md)** (about 5 minutes).
 
 ---
 
@@ -21,8 +20,8 @@ This folder contains everything you need to set up your Windows computer for OMI
 
 | Software | What It Is | Minimum Version | Installed In | Verified In |
 |----------|-----------|-----------------|---------------|-------------|
-| [Python](https://www.python.org) | Programming language — the foundation everything else runs on | 3.10+ (3.12+ recommended) | Step 1 | Steps 1, 2, 3 |
-| [DuckDB](https://duckdb.org) | In-process SQL database engine — no server to install or configure | 1.5.5+ (**2.0 recommended**) | Step 2 | Steps 2, 3 |
+| [Python](https://www.python.org) | Programming language — the foundation everything else runs on | 3.11+ (3.12+ recommended; DuckDB 2.0 needs 3.11+) | Step 1 | Steps 1, 2, 3 |
+| [DuckDB](https://duckdb.org) | In-process SQL database engine — no server to install or configure | **2.0+** (required) | Step 2 | Steps 2, 3 |
 | [Marimo](https://marimo.io) | Interactive notebook environment (replaces Jupyter for this course) | any recent | Step 2 | Steps 2, 3 |
 | [Pandas](https://pandas.pydata.org) | Data manipulation library — DuckDB query results come back as Pandas tables | any recent | Step 2 | Steps 2, 3 |
 | [Matplotlib](https://matplotlib.org) | Charting library — the class notebooks that draw charts import it | any recent | Step 2 | Steps 2, 3 |
@@ -137,7 +136,7 @@ Follow [`step_4_install_qstudio.md`](step_4_install_qstudio.md) — it walks thr
 | `step_3_verification.py` | Marimo notebook that verifies everything works together |
 | `step_4_install_qstudio.md` | Java + qStudio installation, connection, and verification guide |
 | `installation_trouble_shooting.md` | Fixes for common Day-1 problems (qStudio needing Java, PATH issues, getting the files) |
-| `upgrade_to_duckdb_2.md` | Upgrade an existing install from DuckDB 1.5 to 2.0 (the recommended version) |
+| `upgrade_to_duckdb_2.md` | Upgrade an existing install from DuckDB 1.5 to 2.0 (required since November 13, 2026) |
 
 ---
 
@@ -197,7 +196,7 @@ duckdb --version
 **Keep your DuckDB versions the same.** The Python package (Step 2), the
 CLI, and qStudio each have their **own** copy of DuckDB. A database file
 (`.duckdb`) made by a newer version cannot be opened by an older one.
-DuckDB **2.0** is recommended for this course (1.5.5 also works). To
+DuckDB **2.0** or newer is required for this course. To
 upgrade the CLI, see Step 4 of [`upgrade_to_duckdb_2.md`](upgrade_to_duckdb_2.md) (`winget` cannot:
 it stops at 1.5.6). See the troubleshooting guide if a file will not open.
 

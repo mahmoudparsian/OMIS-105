@@ -21,7 +21,7 @@ students can see exactly which rows were collapsed into each group.
 Run either app with:
 
 ```bash
-pip install streamlit duckdb pandas
+pip install streamlit "duckdb>=2.0" pandas
 streamlit run app_aggregation_single.py
 # or
 streamlit run app_aggregation_3_tables.py

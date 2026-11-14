@@ -30,15 +30,15 @@ This course was built and tested against:
 
 ```
 python        3.13
-marimo        0.23.10
-duckdb        1.5.5
-pandas        2.2.3
+marimo        0.25.2
+duckdb        2.0.0
+pandas        3.1.1
 ```
 
 If you're setting this up somewhere new:
 
 ```bash
-pip install marimo duckdb pandas
+pip install marimo "duckdb>=2.0" pandas
 ```
 
 No other setup, accounts, or servers required — DuckDB runs entirely

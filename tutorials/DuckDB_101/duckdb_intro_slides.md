@@ -365,7 +365,7 @@ This runs in seconds on a laptop — no loading, no memory limits.
 
 **Install:**
 ```bash
-pip install duckdb
+pip install "duckdb>=2.0"
 ```
 
 **In-memory (ephemeral):**
@@ -405,4 +405,4 @@ github.com/duckdb/duckdb — Source code
 duckdb.org/docs/guides — Tutorials and recipes
 
 **Install now:**
-`pip install duckdb`
+`pip install "duckdb>=2.0"`

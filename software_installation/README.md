@@ -4,7 +4,7 @@
 **Quarter:** Fall 2026  
 **Author:** Dr. Mahmoud Parsian  
 
-> 📢 **Still on DuckDB 1.5?** DuckDB **2.0** is the recommended version (since November 10, 2026).
+> 📢 **Still on DuckDB 1.5?** DuckDB **2.0** or newer is **required** (since November 13, 2026).
 > Upgrade guides: **[Mac](macbook/upgrade_to_duckdb_2.md)** · **[Windows](windows/upgrade_to_duckdb_2.md)**
 > (about 5 minutes; your files keep working).
 

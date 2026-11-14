@@ -38,7 +38,7 @@ def _(mo):
 
     ### Prerequisites
 
-    - Python 3.8+ with `duckdb` installed (`pip install duckdb`)
+    - Python 3.11+ with DuckDB 2.0 installed (`pip install "duckdb>=2.0"`)
     - Basic familiarity with running Jupyter notebooks
 
     ### How to Use This Notebook

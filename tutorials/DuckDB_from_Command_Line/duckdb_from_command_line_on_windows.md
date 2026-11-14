@@ -23,7 +23,7 @@ style: |
 ## Windows: install DuckDB and run your first queries
 OMIS 105 - Fall 2026
 
-DuckDB **2.0** is recommended for this course (1.5.5 also works).
+DuckDB **2.0** or newer is required for this course.
 
 Reviewed November 11, 2026 for DuckDB 2.0. Start here, then follow the
 slides in order.
@@ -94,8 +94,8 @@ The next slide explains what the result means.
 
 If the version starts with **`v2.`** (for example `v2.0.0`), DuckDB is
 installed and your terminal can find it. Skip installation and go to
-**Open the Tutorial Folder**. If it starts with **`v1.`**, it still works for
-this tutorial, but 2.0 is recommended: a 1.x program cannot open database
+**Open the Tutorial Folder**. If it starts with **`v1.`**, upgrade it: this course
+requires DuckDB 2.0, and a 1.x program cannot open database
 files made by DuckDB 2.0. To upgrade, remove it (if WinGet installed it:
 `winget uninstall --id DuckDB.cli --exact`), then use Option B.
 If you see “command not found” or “not recognized,” follow the installation
@@ -123,7 +123,7 @@ Try `duckdb --version`. If not recognized, use the manual route
 # 6. Windows Option A: WinGet (not yet)
 
 As of November 2026, WinGet's `DuckDB.cli` package stops at **1.5.6** —
-not the recommended **2.0**. **Use Option B for now.**
+not the required **2.0**. **Use Option B for now.**
 
 You can check whether WinGet has caught up (in either shell):
 ```text
@@ -531,7 +531,7 @@ If not found: verify installation, restart the terminal application, and
 test the full executable path. Reopening alone cannot add a missing entry.
 
 If you once installed DuckDB with WinGet, `winget list --id DuckDB.cli --exact`
-shows it; it is 1.x (2.0 is recommended) — to upgrade, uninstall it and use the manual route,
+shows it; it is 1.x (the course requires 2.0) — to upgrade, uninstall it and use the manual route,
 so that the old copy is not found first.
 For manual installation, verify the folder and User Path entry.
 

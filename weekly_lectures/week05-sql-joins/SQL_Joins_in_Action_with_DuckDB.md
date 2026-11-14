@@ -278,7 +278,7 @@ shell. You can copy each query and run it yourself.
 
 ```sql
 % duckdb
-DuckDB v1.5.5 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 
 duckdb ▸ CREATE TABLE A (

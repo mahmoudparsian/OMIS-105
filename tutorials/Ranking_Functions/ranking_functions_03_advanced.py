@@ -35,7 +35,7 @@ def _(mo):
 @app.cell
 def _(df):
     # ─── Cell 1 · Setup & show() helper ────────────────────────────────────────
-    # !pip install duckdb   # uncomment if needed
+    # !pip install "duckdb>=2.0"   # uncomment if needed
 
     import duckdb
     import pandas as pd

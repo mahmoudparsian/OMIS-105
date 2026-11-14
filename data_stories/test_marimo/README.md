@@ -50,7 +50,7 @@ Expected result from the last cell: **one row — `alex`, `20`.**
 | Symptom | Likely fix |
 |---|---|
 | `ModuleNotFoundError: marimo` | `pip install marimo` |
-| `ModuleNotFoundError: duckdb` | `pip install duckdb` |
+| `ModuleNotFoundError: duckdb` | `pip install "duckdb>=2.0"` |
 | `marimo: command not found` | Marimo installed, but not on your `PATH` — try `python -m marimo edit test_marimo.py` |
 | Cells show results but nothing renders | Check you opened it with `marimo edit`, not a plain text editor |
 

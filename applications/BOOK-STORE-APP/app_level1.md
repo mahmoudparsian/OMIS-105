@@ -31,7 +31,7 @@ All of this lives in five tables in a single file called `bookstore.duckdb`.
 ## How to Run It
 
 ```bash
-pip install streamlit duckdb pandas
+pip install streamlit "duckdb>=2.0" pandas
 streamlit run app_level1.py
 ```
 

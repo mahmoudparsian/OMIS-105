@@ -61,7 +61,7 @@ def _(mo):
 @app.cell
 def _():
     # ── install packages (run once) ──
-    # !pip install duckdb pandas matplotlib
+    # !pip install "duckdb>=2.0" pandas matplotlib
     return
 
 

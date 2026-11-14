@@ -23,7 +23,7 @@ style: |
 ## macOS: install DuckDB and run your first queries
 OMIS 105 - Fall 2026
 
-Examples were made with **DuckDB 1.5.5**. DuckDB **2.0** is recommended for this course; with 2.0, the version banner and some messages look slightly different.
+Examples were made with DuckDB 1.5.5 and re-checked on **DuckDB 2.0.0** (2026-11-13). DuckDB **2.0** or newer is required for this course; the version banner and some messages look slightly different from the examples.
 
 Reviewed October 2, 2026. Start here, then follow the slides in order.
 
@@ -85,8 +85,8 @@ Then run:
 ```text
 duckdb --version
 ```
-If you see a version number such as `v1.5.5`, DuckDB is installed and
-your terminal can find it. Skip installation and go to **Open the Tutorial Folder**.
+If you see a version number such as `v2.0.0`, DuckDB is installed and
+your terminal can find it (if it starts with `v1.`, run `brew upgrade duckdb`: the course requires 2.0). Skip installation and go to **Open the Tutorial Folder**.
 If you see “command not found” or “not recognized,” follow the installation
 steps next. Choose only one method. For another error, use the help section.
 
@@ -201,7 +201,7 @@ duckdb -c "SELECT 6 * 7 AS answer;"
 The first command should print a version number; the second should return
 **42**. Example version output (do not type this):
 ```text
-v1.5.5 (Variegata) d8cdaa33fd
+v2.0.0 (Cyanoptera) d54cbbe3df
 ```
 If typing `duckdb` still fails, see **Help Only If Needed** at the end.
 It explains how to start DuckDB using the location of its program file.
@@ -624,7 +624,7 @@ Send the instructor:
 - `duckdb --version`, if available; redact private path information.
 
 Use the help pages in this guide and the official references below.
-Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
+Examples were made with 1.5.5 and re-checked on 2.0.0; check `.help` and `duckdb -help` for your installed version.
 
 ---
 
@@ -639,4 +639,4 @@ Examples use 1.5.5; check `.help` and `duckdb -help` for your installed version.
 - [Apple: opening downloaded applications safely](https://support.apple.com/en-us/102445)
 
 SQL, CSV, scripts, saved databases, and full-path commands were tested
-on macOS with DuckDB 1.5.5. Installation permissions depend on your Mac.
+on macOS with DuckDB 1.5.5 and re-checked with DuckDB 2.0.0. Installation permissions depend on your Mac.

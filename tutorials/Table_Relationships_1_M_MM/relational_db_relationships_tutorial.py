@@ -50,7 +50,7 @@ def _(mo):
 
     First, install DuckDB if you haven't already:
     ```bash
-    pip install duckdb
+    pip install "duckdb>=2.0"
     ```
     """)
     return

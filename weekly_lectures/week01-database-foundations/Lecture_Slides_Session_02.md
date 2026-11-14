@@ -273,7 +273,7 @@ Now DuckDB rejects a product with a negative price, or with no name.
 **Python (pip)**:
 
 ```bash
-pip install duckdb marimo
+pip install "duckdb>=2.0" marimo
 ```
 
 (Full steps for Mac and Windows: the `software_installation/` folder.)

@@ -13,7 +13,7 @@ schemas, multi-file loading, and error handling.
 ## Requirements
 
 ```bash
-pip install duckdb marimo pandas
+pip install "duckdb>=2.0" marimo pandas
 ```
 
 ## How to Run

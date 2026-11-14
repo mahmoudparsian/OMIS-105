@@ -87,7 +87,7 @@ def _(mo):
 @app.cell
 def _():
     # Install DuckDB (run once)
-    # !pip install duckdb
+    # !pip install "duckdb>=2.0"
 
     import duckdb
 

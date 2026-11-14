@@ -7,7 +7,7 @@ DuckDB + Streamlit. Read-write: managers can record new purchases and
 register new students. Every insight is one SQL query away.
 
 Run:
-    pip install streamlit duckdb pandas matplotlib
+    pip install streamlit "duckdb>=2.0" pandas matplotlib
     streamlit run app_bookstore.py
 
 Reset data anytime:
