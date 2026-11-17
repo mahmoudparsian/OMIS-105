@@ -81,14 +81,14 @@ Ben and Chloe (88), Gus and Hal (60).
 # Our Data: in DuckDB
 
 ```sql
-CREATE TABLE rep_sales (
+CREATE TABLE sales_reps (
     rep_id INTEGER PRIMARY KEY,
     rep_name VARCHAR,
     team VARCHAR,
     sales INTEGER
 );
 
-INSERT INTO rep_sales (rep_id, rep_name, team, sales) 
+INSERT INTO sales_reps (rep_id, rep_name, team, sales) 
 VALUES
     (1, 'Ava', 'East', 95),
     (2, 'Ben', 'East', 88),
@@ -107,7 +107,7 @@ VALUES
 OR
 
 ```sql
-CREATE TABLE rep_sales AS
+CREATE TABLE sales_reps AS
 SELECT * FROM (VALUES
     (1, 'Ava', 'East', 95),
     (2, 'Ben', 'East', 88),
@@ -129,7 +129,8 @@ SELECT * FROM (VALUES
 
 ```sql
 SELECT rep_name, team, sales,
-       ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) AS rn
+       ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) 
+          AS rn
 FROM sales_reps
 ORDER BY rn
 LIMIT 8;
@@ -241,7 +242,8 @@ LIMIT 8;
 ```sql
 SELECT team, rep_name, sales,
        ROW_NUMBER() OVER (PARTITION BY team
-                          ORDER BY sales DESC, rep_name) AS rn
+                          ORDER BY sales DESC, rep_name) 
+         AS rn
 FROM sales_reps
 ORDER BY team, rn;
 ```
@@ -275,7 +277,8 @@ We want only the top rep, so we try:
 
 ```sql
 SELECT rep_name, sales,
-       ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) AS rn
+       ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) 
+          AS rn
 FROM sales_reps
 WHERE rn = 1;
 ```
