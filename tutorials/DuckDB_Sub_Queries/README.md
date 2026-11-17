@@ -159,7 +159,7 @@ helper defined in the first code cell.
 - Window functions (`RANK()` and friends) cannot go in `WHERE`.
   Compute them in a CTE, then filter on the result.
 
-**Next steps:** `tutorials/Ranking_Functions/` and
+**Next steps:** `tutorials/ranking_functions_notebooks/` and
 `tutorials/LIMIT_vs_RANK/` go deeper into ranking; the Week 7 lecture
 folder (`weekly_lectures/week07-subqueries/`) has slides, demos, and a
 lab on the same topics.

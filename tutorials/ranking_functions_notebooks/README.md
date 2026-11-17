@@ -68,7 +68,7 @@ marimo edit ranking_functions_02_basics_modular.py
 marimo edit ranking_functions_03_advanced.py
 ```
 
-Run from inside the `Ranking_Functions/` folder so the relative
+Run from inside the `ranking_functions_notebooks/` folder so the relative
 `data/...csv` paths resolve correctly.
 
 ---
