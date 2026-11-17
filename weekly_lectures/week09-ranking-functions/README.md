@@ -22,6 +22,9 @@ puzzles that `LIMIT` gets wrong.
 
 ## Session 1 — `ROW_NUMBER` and `RANK`
 
+- [`ranking_slides_0.md`](ranking_slides_0.md) — **start here**: a one-page warm-up
+  on 5 scores with one tie (85, 85), comparing `RANK()`, `DENSE_RANK()` and
+  `ROW_NUMBER()` row by row
 - [`ranking_slides_1.md`](ranking_slides_1.md) — slide deck
 - [`ranking_demo_1.py`](ranking_demo_1.py) — Marimo notebook on 12 sales reps
   (`data/sales_reps.csv`; ties at 95, 88 and 60): `ROW_NUMBER`, `RANK`,
@@ -52,6 +55,7 @@ puzzles that `LIMIT` gets wrong.
 
 | File | What It Is |
 |------|-----------|
+| `ranking_slides_0.md` | Warm-up: `RANK()` vs. `DENSE_RANK()` on 5 scores |
 | `ranking_slides_1.md`, `ranking_slides_2.md` | Slide decks — Session 1 and Session 2 |
 | `ranking_slides_3.md` | The lab, with blanks to fill in |
 | `ranking_demo_1.py`, `ranking_demo_2.py` | Live-demo Marimo notebooks — Session 1 and Session 2 |
@@ -66,6 +70,27 @@ Run the notebooks from inside this folder:
 cd weekly_lectures/week09-ranking-functions
 marimo edit ranking_demo_1.py
 ```
+
+## Extra Reading — the Ranking Functions Guide
+
+[`../../tutorials/ranking_functions_guide/`](../../tutorials/ranking_functions_guide/)
+has 8 short reading guides on ranking functions. Every result in them is
+real DuckDB output.
+
+- **Reading order:** the guide's
+  [`README.md`](../../tutorials/ranking_functions_guide/README.md) lists the
+  guides in order. Guides 1 and 7 (cat tricks) are the gentlest start: the
+  cat table has 3-way ties, so it shows the difference between `RANK`,
+  `DENSE_RANK` and `ROW_NUMBER` at a glance.
+- **Two points to remember:**
+  - The `ORDER BY` inside `OVER (...)` decides the ranks. It does **not**
+    sort the output; add an `ORDER BY` at the end of the query for that.
+  - `ROW_NUMBER()` needs a tie-breaker, or tied rows can get their numbers
+    in either order.
+- **`LIMIT` vs. ranking:** guide 6 shows that with a 3-way tie at 84 in
+  Math, a "top 2 per subject" query with `ROW_NUMBER()` keeps only 2 of the
+  3 students, while `RANK()` keeps all 3. Keep this in mind for the lab's
+  `LIMIT` question (Q6 in [`ranking_slides_3.md`](ranking_slides_3.md)).
 
 ## Before You Start
 
