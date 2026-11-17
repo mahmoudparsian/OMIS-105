@@ -10,7 +10,7 @@ The main difference between `RANK()` and `DENSE_RANK()` is **how they handle tie
 
 ```sql
 -- 1. Create the table
-CREATE TABLE scores (
+CREATE OR REPLACE TABLE scores (
     name VARCHAR,
     score INTEGER
 );
@@ -66,12 +66,14 @@ FROM scores;
 
 ### Generate a `row_number` column to enumerate rows:
 
+Without `ORDER BY`, the numbers follow whatever order DuckDB reads the rows: fine for counting, not for ranking.
+
 ```sql
 
 SELECT name, 
        score,
        row_number() OVER ()
-FROM sales;
+FROM scores;
 ```
 
 
@@ -81,7 +83,7 @@ FROM sales;
 SELECT name,
        score, 
        row_number() OVER (ORDER BY score)
-FROM sales;
+FROM scores;
 ```
 
 ### Compute the difference between the current and the previous-by-score amount:
@@ -89,7 +91,7 @@ FROM sales;
 ```sql
 SELECT name, 
        score, 
-       score - lag(score) OVER (ORDER BY time)
-FROM sales;
+       score - lag(score) OVER (ORDER BY score)
+FROM scores;
 ```
 
