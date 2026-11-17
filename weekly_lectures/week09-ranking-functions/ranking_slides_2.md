@@ -1,5 +1,5 @@
 ---
-title: OMIS 105 - Week 9 (Ranking Functions — DENSE_RANK and Ranking Results)
+title: OMIS 105 - Week 9 (Ranking Functions — ROW_NUMBER and RANK)
 author: Dr. Mahmoud Parsian
 marp: true
 theme: default
@@ -16,394 +16,492 @@ style: |
 ---
 
 # OMIS 105: Week 9
-## Ranking Functions — Session 2 <br> `DENSE_RANK` and Ranking Results
+## Ranking Functions — Session 1 <br> `ROW_NUMBER` and `RANK`
 
 ---
 
 # Agenda
 
-- Recap: `ROW_NUMBER` and `RANK`
-- `DENSE_RANK()` — ties share a rank, **no gaps**
-- All three functions side by side
-- Ranking `GROUP BY` results with a CTE
-- Best seller per category — `ROW_NUMBER` vs. `RANK`
-- "Second-highest" questions
-- ⚠️ Why `LIMIT` / `OFFSET` cannot answer them
-- Hands-on: Lab 5
+- Why `GROUP BY` cannot rank rows
+- Our data: 12 sales reps on 3 teams
+- `ROW_NUMBER()` — number the rows 1, 2, 3, …
+- `RANK()` — what happens with **ties**
+- `PARTITION BY` — restart the numbering for each group
+- **Top N per group** — filter the ranking in a subquery
+- ⚠️ Why `WHERE` cannot see a ranking column
+- ⚠️ Why `ORDER BY … LIMIT n` **cannot** solve ranking puzzles
+- Hands-on: Lab 1
 
 ---
 
-# Recap from Session 1
+# What You Already Know
 
-| Function | Ties | Example |
-|---|---|---|
-| `ROW_NUMBER()` | different numbers (needs a tie-breaker) | 1, 2, 3, 4 |
-| `RANK()` | same rank, then a **gap** | 1, 2, 2, 4 |
+- `GROUP BY` + `MAX` gives **one row per group** (Week 4)
+- Subqueries in `FROM` (Week 7)
 
-⚠️ `ORDER BY … LIMIT n` counts **rows**: it cuts tied rows and cannot
-work per group.
-
-Today: the third function, `DENSE_RANK()` — 1, 2, 2, **3**.
-
----
-
-# Our Data: A Small Café Chain ☕
-
-```
-shops ──< orders >── items
+```sql
+SELECT team, MAX(sales) AS top_sales
+FROM sales_reps
+GROUP BY team
+ORDER BY team;
 ```
 
-| Table | Rows | Columns |
-|---|---|---|
-| `shops` | 4 | `shop_id`, `shop_name`, `city` |
-| `items` | 11 | `item_id`, `item_name`, `category`, `price` |
-| `orders` | 18 | `order_id`, `shop_id`, `item_id`, `qty`, `order_date` |
+| team | top_sales |
+|---|---:|
+| Central | 105 |
+| East | 95 |
+| West | 120 |
+
+👉 But **who** is the top rep? And who is **2nd**? `GROUP BY` folds the
+rows away — we lose the names.
 
 ---
 
-# `items` (11 rows)
+# Our Data: `sales_reps` (12 rows)
 
-| item_id | item_name | category | price |
+| rep_id | rep_name | team | sales |
 |---:|---|---|---:|
-| 101 | Latte | Coffee | 5.50 |
-| 102 | Cappuccino | Coffee | 5.50 |
-| 103 | Espresso | Coffee | 3.50 |
-| 104 | Mocha | Coffee | 6.00 |
-| 201 | Croissant | Bakery | 4.00 |
-| 202 | Muffin | Bakery | 4.00 |
-| 203 | Bagel | Bakery | 3.00 |
-| 204 | Scone | Bakery | 3.50 |
-| 301 | Matcha | Tea | 6.00 |
-| 302 | Chai | Tea | 4.50 |
-| 303 | Green Tea | Tea | 3.00 |
+| 1 | Ava | East | 95 |
+| 2 | Ben | East | 88 |
+| 3 | Chloe | East | 88 |
+| 4 | Dan | East | 70 |
+| 5 | Eli | West | 120 |
+| 6 | Fay | West | 95 |
+| 7 | Gus | West | 60 |
+| 8 | Hal | West | 60 |
+| 9 | Ivy | Central | 105 |
+| 10 | Jon | Central | 99 |
+| 11 | Kim | Central | 80 |
+| 12 | Leo | Central | 75 |
 
-Price ties: 6.00 (Mocha, Matcha), 5.50, 4.00, 3.50, 3.00.
+`sales` is in thousands of dollars. Watch the **ties**: Ava and Fay (95),
+Ben and Chloe (88), Gus and Hal (60).
 
 ---
 
-# All Three, Side by Side
+# `ROW_NUMBER()` — Number the Rows
 
 ```sql
-SELECT item_name, price,
-       ROW_NUMBER() OVER (ORDER BY price DESC, item_name) AS row_num,
-       RANK()       OVER (ORDER BY price DESC)            AS rnk,
-       DENSE_RANK() OVER (ORDER BY price DESC)            AS dense_rnk
-FROM items
-ORDER BY row_num;
+SELECT rep_name, team, sales,
+       ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) AS rn
+FROM sales_reps
+ORDER BY rn
+LIMIT 8;
 ```
 
----
+| rep_name | team | sales | rn |
+|---|---|---:|---:|
+| Eli | West | 120 | 1 |
+| Ivy | Central | 105 | 2 |
+| Jon | Central | 99 | 3 |
+| Ava | East | 95 | 4 |
+| Fay | West | 95 | 5 |
+| Ben | East | 88 | 6 |
+| Chloe | East | 88 | 7 |
+| Kim | Central | 80 | 8 |
 
-# All Three — Result
-
-| item_name | price | row_num | rnk | dense_rnk |
-|---|---:|---:|---:|---:|
-| Matcha | 6.00 | 1 | 1 | 1 |
-| Mocha | 6.00 | 2 | 1 | 1 |
-| Cappuccino | 5.50 | 3 | 3 | 2 |
-| Latte | 5.50 | 4 | 3 | 2 |
-| Chai | 4.50 | 5 | 5 | 3 |
-| Croissant | 4.00 | 6 | 6 | 4 |
-| Muffin | 4.00 | 7 | 6 | 4 |
-| Espresso | 3.50 | 8 | 8 | 5 |
-| Scone | 3.50 | 9 | 8 | 5 |
-| Bagel | 3.00 | 10 | 10 | 6 |
-| Green Tea | 3.00 | 11 | 10 | 6 |
+`LIMIT 8` only makes the table fit on the slide. It is **not** part of the
+ranking (more about `LIMIT` later today).
 
 ---
 
-# Reading the Three Columns
-
-- `row_num` — always **1, 2, 3, …** (ties broken by `item_name`)
-- `rnk` — ties share a rank, then a **gap** (1, 1, **3**)
-- `dense_rnk` — ties share a rank, **no gap** (1, 1, **2**)
-
-👉 `dense_rnk` counts **price levels**: there are 6 different prices,
-so it ends at 6.
-
----
-
-# Ranking `GROUP BY` Results with a CTE
-
-Rank the shops by revenue (`qty × price`):
+# How to Read a Window Function
 
 ```sql
-WITH shop_revenue AS (
-    SELECT s.shop_name,
-           SUM(o.qty * i.price) AS revenue
-    FROM orders AS o
-    JOIN items  AS i ON i.item_id = o.item_id
-    JOIN shops  AS s ON s.shop_id = o.shop_id
-    GROUP BY s.shop_name
-)
-SELECT shop_name, revenue,
-       RANK()       OVER (ORDER BY revenue DESC) AS rnk,
-       DENSE_RANK() OVER (ORDER BY revenue DESC) AS dense_rnk
-FROM shop_revenue
-ORDER BY revenue DESC, shop_name;
+ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name)
 ```
+
+- `ROW_NUMBER()` — the function: give each row the next number
+- `OVER (...)` — the **window**: which rows, in what order
+- `ORDER BY sales DESC` — highest sales gets number 1
+- `, rep_name` — the **tie-breaker**
+
+👉 Every row **stays** in the result — nothing is grouped away.
 
 ---
 
-# Shop Ranking — Result
+# ⚠️ `ROW_NUMBER` and Ties
 
-| shop_name | revenue | rnk | dense_rnk |
+Ava and Fay both have 95. `ROW_NUMBER` must still give them **different**
+numbers (4 and 5).
+
+- **Without** a tie-breaker, SQL may give 4 to either one — and the
+  answer can change from run to run
+- **With** `ORDER BY sales DESC, rep_name`, Ava (A) is always 4
+
+👉 **Rule:** with `ROW_NUMBER`, always add a tie-breaker column.
+
+---
+
+# `RANK()` — Ties Share a Rank
+
+```sql
+SELECT rep_name, team, sales,
+       RANK() OVER (ORDER BY sales DESC) AS rnk
+FROM sales_reps
+ORDER BY rnk, rep_name
+LIMIT 8;
+```
+
+| rep_name | team | sales | rnk |
+|---|---|---:|---:|
+| Eli | West | 120 | 1 |
+| Ivy | Central | 105 | 2 |
+| Jon | Central | 99 | 3 |
+| Ava | East | 95 | 4 |
+| Fay | West | 95 | 4 |
+| Ben | East | 88 | 6 |
+| Chloe | East | 88 | 6 |
+| Kim | Central | 80 | 8 |
+
+---
+
+# `RANK()` Leaves a Gap
+
+- Ava and Fay tie → **both** get rank **4**
+- The next rep, Ben, gets rank **6** — rank 5 is **skipped**
+- Like a race: two runners tie for 4th, so nobody finishes 5th
+
+👉 `RANK` needs no tie-breaker: tied rows **should** get the same rank.
+
+---
+
+# Side by Side
+
+```sql
+SELECT rep_name, sales,
+       ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) AS rn,
+       RANK()       OVER (ORDER BY sales DESC)           AS rnk
+FROM sales_reps
+ORDER BY rn
+LIMIT 8;
+```
+
+| rep_name | sales | rn | rnk |
 |---|---:|---:|---:|
-| Campus | 57.00 | 1 | 1 |
-| Downtown | 44.00 | 2 | 2 |
-| Harbor | 44.00 | 2 | 2 |
-| Airport | 40.00 | 4 | 3 |
-
-- Downtown and Harbor tie at 44.00
-- Airport is **4th** by `RANK` (three shops earned more) but **3rd**
-  by `DENSE_RANK` (two revenue levels are above it)
+| Eli | 120 | 1 | 1 |
+| Ivy | 105 | 2 | 2 |
+| Jon | 99 | 3 | 3 |
+| Ava | 95 | 4 | 4 |
+| Fay | 95 | 5 | 4 |
+| Ben | 88 | 6 | 6 |
+| Chloe | 88 | 7 | 6 |
+| Kim | 80 | 8 | 8 |
 
 ---
 
-# Units Sold per Item
+# `PARTITION BY` — Restart for Each Group
 
 ```sql
-SELECT i.category, i.item_name,
-       SUM(o.qty) AS units_sold
-FROM items AS i
-JOIN orders AS o ON o.item_id = i.item_id
-GROUP BY i.category, i.item_name
-ORDER BY i.category, units_sold DESC, i.item_name;
+SELECT team, rep_name, sales,
+       ROW_NUMBER() OVER (PARTITION BY team
+                          ORDER BY sales DESC, rep_name) AS rn
+FROM sales_reps
+ORDER BY team, rn;
 ```
 
 ---
 
-# Units Sold — Result
+# `PARTITION BY` — Result
 
-| category | item_name | units_sold |
-|---|---|---:|
-| Bakery | Croissant | 5 |
-| Bakery | Muffin | 5 |
-| Bakery | Bagel | 3 |
-| Bakery | Scone | 2 |
-| Coffee | Cappuccino | 6 |
-| Coffee | Latte | 5 |
-| Coffee | Mocha | 4 |
-| Coffee | Espresso | 2 |
-| Tea | Chai | 3 |
-| Tea | Matcha | 3 |
-| Tea | Green Tea | 2 |
+| team | rep_name | sales | rn |
+|---|---|---:|---:|
+| Central | Ivy | 105 | 1 |
+| Central | Jon | 99 | 2 |
+| Central | Kim | 80 | 3 |
+| Central | Leo | 75 | 4 |
+| East | Ava | 95 | 1 |
+| East | Ben | 88 | 2 |
+| East | Chloe | 88 | 3 |
+| East | Dan | 70 | 4 |
+| West | Eli | 120 | 1 |
+| West | Fay | 95 | 2 |
+| West | Gus | 60 | 3 |
+| West | Hal | 60 | 4 |
 
-Ties at the top: Croissant and Muffin (Bakery), Chai and Matcha (Tea).
+👉 The numbering **restarts at 1** for every team.
 
 ---
 
-# Best Seller per Category — `ROW_NUMBER`
+# ⚠️ You Cannot Filter `rn` in `WHERE`
+
+We want only the top rep, so we try:
 
 ```sql
-WITH units AS (
-    SELECT i.category, i.item_name, SUM(o.qty) AS units_sold
-    FROM items AS i
-    JOIN orders AS o ON o.item_id = i.item_id
-    GROUP BY i.category, i.item_name
-),
-ranked AS (
-    SELECT *, ROW_NUMBER() OVER (PARTITION BY category
-                                 ORDER BY units_sold DESC, item_name) AS rn
-    FROM units
-)
-SELECT category, item_name, units_sold
-FROM ranked
-WHERE rn = 1
-ORDER BY category;
-```
-
----
-
-# Best Seller — `ROW_NUMBER` Result
-
-| category | item_name | units_sold |
-|---|---|---:|
-| Bakery | Croissant | 5 |
-| Coffee | Cappuccino | 6 |
-| Tea | Chai | 3 |
-
-⚠️ Exactly one row per category. Muffin and Matcha also sold the most
-— they were cut only by the tie-breaker (`item_name`).
-
----
-
-# Best Seller per Category — `RANK`
-
-Change one line in the `ranked` CTE:
-
-```sql
-SELECT *, RANK() OVER (PARTITION BY category
-                       ORDER BY units_sold DESC) AS rnk
-...
-WHERE rnk = 1
-```
-
-| category | item_name | units_sold |
-|---|---|---:|
-| Bakery | Croissant | 5 |
-| Bakery | Muffin | 5 |
-| Coffee | Cappuccino | 6 |
-| Tea | Chai | 3 |
-| Tea | Matcha | 3 |
-
-👉 **5 rows**: both tied items are shown for Bakery and Tea.
-
----
-
-# "What Is the Second-Highest Price?"
-
-```sql
-WITH ranked AS (
-    SELECT item_name, price,
-           DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
-    FROM items
-)
-SELECT item_name, price
-FROM ranked
-WHERE price_rank = 2
-ORDER BY item_name;
-```
-
-| item_name | price |
-|---|---:|
-| Cappuccino | 5.50 |
-| Latte | 5.50 |
-
----
-
-# Why Not `RANK` or `ROW_NUMBER`?
-
-| Version | `= 2` returns | Why |
-|---|---|---|
-| `DENSE_RANK` | Cappuccino, Latte (5.50) ✅ | 5.50 is the 2nd price **level** |
-| `RANK` | **no rows** ❌ | two items tie at 1, so the next rank is 3 |
-| `ROW_NUMBER` (tie-breaker `item_name`) | Mocha (6.00) ❌ | the 2nd **row** is still a 6.00 item |
-
-👉 For "Nth-highest **value**" questions, use `DENSE_RANK`.
-
----
-
-# And `LIMIT 1 OFFSET 1`?
-
-"Skip the first row, take the next one":
-
-```sql
-SELECT item_name, price
-FROM items
-ORDER BY price DESC
-LIMIT 1 OFFSET 1;
-```
-
-| item_name | price |
-|---|---:|
-| Matcha | 6.00 |
-
-❌ `OFFSET 1` skips one **row**, not one **price**. The 2nd row is still a
-6.00 item — the same mistake as `ROW_NUMBER`.
-
----
-
-# "But `DISTINCT` Fixes It!" — Only Half
-
-```sql
-SELECT DISTINCT price
-FROM items
-ORDER BY price DESC
-LIMIT 1 OFFSET 1;
-```
-
-| price |
-|---:|
-| 5.50 |
-
-- ✅ The right **value**, 5.50
-- ❌ But **which items** cost 5.50? You need a second query
-- ❌ And the second-highest price **in each category**? `LIMIT` cannot
-  restart per group
-
-👉 `DENSE_RANK` answers all three in one query.
-
----
-
-# "Top 3 Prices" — `LIMIT 3` vs. `DENSE_RANK`
-
-`LIMIT 3` gives 3 **rows**: Mocha 6.00, Matcha 6.00, Latte 5.50 — and
-Cappuccino (also 5.50) is cut.
-
-```sql
-WITH ranked AS (
-    SELECT item_name, price,
-           DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
-    FROM items
-)
-SELECT item_name, price, price_rank
-FROM ranked
-WHERE price_rank <= 3
-ORDER BY price_rank, item_name;
-```
-
-| item_name | price | price_rank |
-|---|---:|---:|
-| Matcha | 6.00 | 1 |
-| Mocha | 6.00 | 1 |
-| Cappuccino | 5.50 | 2 |
-| Latte | 5.50 | 2 |
-| Chai | 4.50 | 3 |
-
-✅ The 3 highest **prices** — 5 items.
-
----
-
-# "Top 2 Shops by Revenue" — `LIMIT 2`
-
-Using the `shop_revenue` CTE from before:
-
-```sql
-SELECT shop_name, revenue
-FROM shop_revenue
-ORDER BY revenue DESC
-LIMIT 2;
-```
-
-| shop_name | revenue |
-|---|---:|
-| Campus | 57.00 |
-| Downtown | 44.00 |
-
-❌ **Harbor also earned 44.00** — tied with Downtown for 2nd, but cut.
-With `RANK() … WHERE rnk <= 2` you get Campus, Downtown **and** Harbor.
-
----
-
-# ⚠️ Again: `WHERE` Cannot See the Rank
-
-```sql
-SELECT item_name, price,
-       DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
-FROM items
-WHERE price_rank = 2;
+SELECT rep_name, sales,
+       ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) AS rn
+FROM sales_reps
+WHERE rn = 1;
 ```
 
 ```
 Binder Error: WHERE clause cannot contain window functions!
 ```
 
-👉 Fix: compute the rank in a **CTE** (or subquery), then filter it
-outside — as on the previous slides.
+👉 `WHERE` runs **before** the window function, so `rn` does not exist yet.
 
 ---
 
-# Which Ranking Function?
+# ✅ Fix: Rank in a Subquery, Filter Outside
+
+```sql
+SELECT team, rep_name, sales
+FROM (
+    SELECT team, rep_name, sales,
+           ROW_NUMBER() OVER (PARTITION BY team
+                              ORDER BY sales DESC, rep_name) AS rn
+    FROM sales_reps
+) AS ranked
+WHERE rn = 1
+ORDER BY team;
+```
+
+| team | rep_name | sales |
+|---|---|---:|
+| Central | Ivy | 105 |
+| East | Ava | 95 |
+| West | Eli | 120 |
+
+---
+
+# Top 2 per Team with `ROW_NUMBER`
+
+```sql
+SELECT team, rep_name, sales, rn
+FROM (
+    SELECT team, rep_name, sales,
+           ROW_NUMBER() OVER (PARTITION BY team
+                              ORDER BY sales DESC, rep_name) AS rn
+    FROM sales_reps
+) AS ranked
+WHERE rn <= 2
+ORDER BY team, rn;
+```
+
+---
+
+# Top 2 per Team — Result
+
+| team | rep_name | sales | rn |
+|---|---|---:|---:|
+| Central | Ivy | 105 | 1 |
+| Central | Jon | 99 | 2 |
+| East | Ava | 95 | 1 |
+| East | Ben | 88 | 2 |
+| West | Eli | 120 | 1 |
+| West | Fay | 95 | 2 |
+
+👉 Exactly **2 rows per team** — but East has a tie at 88
+(Ben and Chloe). Chloe is left out only because of the tie-breaker.
+
+---
+
+# Top 2 per Team with `RANK`
+
+```sql
+SELECT team, rep_name, sales, rnk
+FROM (
+    SELECT team, rep_name, sales,
+           RANK() OVER (PARTITION BY team ORDER BY sales DESC) AS rnk
+    FROM sales_reps
+) AS ranked
+WHERE rnk <= 2
+ORDER BY team, rnk, rep_name;
+```
+
+---
+
+# Top 2 per Team with `RANK` — Result
+
+| team | rep_name | sales | rnk |
+|---|---|---:|---:|
+| Central | Ivy | 105 | 1 |
+| Central | Jon | 99 | 2 |
+| East | Ava | 95 | 1 |
+| East | Ben | 88 | 2 |
+| East | Chloe | 88 | 2 |
+| West | Eli | 120 | 1 |
+| West | Fay | 95 | 2 |
+
+👉 **7 rows**: East returns Ava, Ben **and** Chloe — tied rows are kept.
+
+---
+
+# Why Not Just `ORDER BY … LIMIT`?
+
+You know `LIMIT` from Week 1. Why not rank with it?
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales DESC
+LIMIT 4;
+```
+
+- `LIMIT n` counts **rows**: "stop after n rows"
+- A ranking function compares **values**: "whose sales are in the top 4?"
+
+👉 Next: three puzzles that `LIMIT` gets **wrong** — with no error message.
+
+---
+
+# Puzzle 1: "Who Are the Top 4 Reps?" — `LIMIT 4`
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales DESC
+LIMIT 4;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Eli | West | 120 |
+| Ivy | Central | 105 |
+| Jon | Central | 99 |
+| Fay | West | 95 |
+
+❌ **Ava also has 95.** She is tied with Fay for 4th place, but `LIMIT 4`
+had room for one more row only, so she was cut. Which of the two you get
+is up to the database.
+
+---
+
+# Puzzle 1 — Fixed with `RANK`
+
+```sql
+SELECT rep_name, team, sales, rnk
+FROM (
+    SELECT rep_name, team, sales,
+           RANK() OVER (ORDER BY sales DESC) AS rnk
+    FROM sales_reps
+) AS ranked
+WHERE rnk <= 4
+ORDER BY rnk, rep_name;
+```
+
+| rep_name | team | sales | rnk |
+|---|---|---:|---:|
+| Eli | West | 120 | 1 |
+| Ivy | Central | 105 | 2 |
+| Jon | Central | 99 | 3 |
+| Ava | East | 95 | 4 |
+| Fay | West | 95 | 4 |
+
+✅ **5 rows** — both reps tied for 4th are kept.
+
+---
+
+# Puzzle 2: "The Top Rep in Each Team" — `LIMIT 3`
+
+3 teams, so maybe `LIMIT 3`?
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales DESC
+LIMIT 3;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Eli | West | 120 |
+| Ivy | Central | 105 |
+| Jon | Central | 99 |
+
+❌ **Two** Central reps and **no** East rep. `LIMIT` works on the whole
+result — it never restarts per group.
+
+✅ Fix: `PARTITION BY team` + `WHERE rn = 1` (Ivy, Ava, Eli — see the earlier slide).
+
+---
+
+# Puzzle 3: "Who Has the Lowest Sales?" — `LIMIT 1`
+
+```sql
+SELECT rep_name, team, sales
+FROM sales_reps
+ORDER BY sales
+LIMIT 1;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Gus | West | 60 |
+
+❌ **Hal also has 60.** To get both, you must already know there is a tie
+and write `LIMIT 2`.
+
+---
+
+# Puzzle 3 — Fixed with `RANK`
+
+A ranking finds the tie for you:
+
+```sql
+SELECT rep_name, team, sales
+FROM (
+    SELECT rep_name, team, sales,
+           RANK() OVER (ORDER BY sales) AS rnk
+    FROM sales_reps
+) AS ranked
+WHERE rnk = 1
+ORDER BY rep_name;
+```
+
+| rep_name | team | sales |
+|---|---|---:|
+| Gus | West | 60 |
+| Hal | West | 60 |
+
+✅ Gus **and** Hal — and the query still works if the data changes.
+
+---
+
+# `LIMIT` vs. Ranking Functions
+
+| | `ORDER BY … LIMIT n` | ranking function + `WHERE` outside |
+|---|---|---|
+| counts | **rows** | **values** (with `RANK` / `DENSE_RANK`) |
+| tie at the cut-off | one tied row is silently dropped | tied rows are kept |
+| per group | ❌ whole result only | ✅ `PARTITION BY` |
+| need to know the data first? | yes (how many ties?) | no |
+| good for | making a long result shorter | answering "top N" questions |
+
+👉 `ROW_NUMBER() … WHERE rn <= n` behaves like `LIMIT` on ties — that is
+why it needs a tie-breaker, and why we use it only when we want **exactly** n rows.
+
+---
+
+# `ROW_NUMBER` or `RANK`?
 
 | The question says… | Use |
 |---|---|
-| "exactly N per group", "first / last event" | `ROW_NUMBER` + tie-breaker |
-| "top N, include ties" (competition ranking) | `RANK` |
-| "Nth-highest value", "top N price levels" | `DENSE_RANK` |
-| "just show me the first few rows" (no ranking question) | `ORDER BY … LIMIT n` |
+| "exactly N rows per group" (a fixed list) | `ROW_NUMBER` + a tie-breaker |
+| "the top N, and **include ties**" (fair to everyone) | `RANK` |
+| "number the rows" (pagination, first/last event) | `ROW_NUMBER` |
 
-All three: `FUNCTION() OVER (PARTITION BY … ORDER BY …)`.
+---
+
+# ⚠️ Common Mistake: Forgetting `PARTITION BY`
+
+"The top rep **in each team**", without `PARTITION BY`:
+
+```sql
+SELECT team, rep_name, sales
+FROM (
+    SELECT team, rep_name, sales,
+           ROW_NUMBER() OVER (ORDER BY sales DESC, rep_name) AS rn
+    FROM sales_reps
+) AS ranked
+WHERE rn = 1;
+```
+
+| team | rep_name | sales |
+|---|---|---:|
+| West | Eli | 120 |
+
+👉 Only **1 row** — the numbering ran over all 12 reps, not per team.
 
 ---
 
@@ -411,12 +509,22 @@ All three: `FUNCTION() OVER (PARTITION BY … ORDER BY …)`.
 
 | Pattern | SQL |
 |---|---|
-| no-gap ranks / price levels | `DENSE_RANK() OVER (ORDER BY col DESC)` |
-| rank a `GROUP BY` result | totals in a CTE, then rank the CTE |
-| filter a rank | rank in a CTE or subquery, `WHERE` outside |
-| ⚠️ `LIMIT` / `OFFSET` | count **rows**: they cut ties and ignore groups — never for ranking |
+| number the rows | `ROW_NUMBER() OVER (ORDER BY col DESC, tie_breaker)` |
+| rank with ties | `RANK() OVER (ORDER BY col DESC)` |
+| per group | `... OVER (PARTITION BY group_col ORDER BY ...)` |
+| top N per group | rank in a subquery, then `WHERE rn <= N` outside |
+| top N **with ties** | `RANK`, never `ORDER BY … LIMIT n` |
 
-Demo notebook: `ranking_demo_2.py`
+Demo notebook: `ranking_demo_1.py`
+
+---
+
+# Next Session
+
+- `DENSE_RANK()` — ranks with **no gaps**
+- All three functions side by side
+- Ranking `GROUP BY` results (with a CTE)
+- "Second-highest" questions — and why `LIMIT 1 OFFSET 1` gets them wrong
 
 ---
 
