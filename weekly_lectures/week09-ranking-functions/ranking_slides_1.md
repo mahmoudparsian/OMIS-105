@@ -78,6 +78,7 @@ rows away — we lose the names.
 Ben and Chloe (88), Gus and Hal (60).
 
 ---
+# Our Data: in DuckDB
 
 ```sql
 CREATE TABLE rep_sales (
@@ -101,6 +102,26 @@ VALUES
     (10, 'Jon', 'Central', 99),
     (11, 'Kim', 'Central', 80),
     (12, 'Leo', 'Central', 75);
+```
+
+OR
+
+```sql
+CREATE TABLE rep_sales AS
+SELECT * FROM (VALUES
+    (1, 'Ava', 'East', 95),
+    (2, 'Ben', 'East', 88),
+    (3, 'Chloe', 'East', 88),
+    (4, 'Dan', 'East', 70),
+    (5, 'Eli', 'West', 120),
+    (6, 'Fay', 'West', 95),
+    (7, 'Gus', 'West', 60),
+    (8, 'Hal', 'West', 60),
+    (9, 'Ivy', 'Central', 105),
+    (10, 'Jon', 'Central', 99),
+    (11, 'Kim', 'Central', 80),
+    (12, 'Leo', 'Central', 75)
+) AS t(rep_id, rep_name, team, sales);
 ```
 ---
 
