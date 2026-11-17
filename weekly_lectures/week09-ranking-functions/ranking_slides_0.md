@@ -24,7 +24,7 @@ INSERT INTO scores VALUES
 ('Evan', 60);
 
 -- 3. Query the table to verify
-SELECT * FROM student_scores;
+SELECT * FROM scores;
 ```
 
 
@@ -61,3 +61,35 @@ SELECT
     DENSE_RANK() OVER (ORDER BY score DESC) AS dense_rnk
 FROM scores;
 ```
+
+---
+
+### Generate a `row_number` column to enumerate rows:
+
+```sql
+
+SELECT name, 
+       score,
+       row_number() OVER ()
+FROM sales;
+```
+
+
+### Generate a `row_number` column to enumerate rows, ordered by score:
+
+```sql
+SELECT name,
+       score, 
+       row_number() OVER (ORDER BY score)
+FROM sales;
+```
+
+### Compute the difference between the current and the previous-by-score amount:
+
+```sql
+SELECT name, 
+       score, 
+       score - lag(score) OVER (ORDER BY time)
+FROM sales;
+```
+
