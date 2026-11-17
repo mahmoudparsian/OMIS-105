@@ -1,427 +1,215 @@
----
-title: OMIS 105 - Week 9 (Ranking Functions — DENSE_RANK and Ranking Results)
-author: Dr. Mahmoud Parsian
-marp: true
-theme: default
-paginate: true
-class: lead
-style: |
-  section {
-    justify-content: flex-start;
-  }
-  table {
-    font-size: 0.7em;
-  }
+# Lab 9: Ranking Functions — `ROW_NUMBER`, `RANK`, `DENSE_RANK`
+
+## OMIS 105 — Database Management Systems
+**Week 9 | Estimated time: 75–90 minutes | 11 questions — Q1 is a warm-up (0 points), Q2–Q11 × 3 points = 30 points**
 
 ---
 
-# OMIS 105: Week 9
-## Ranking Functions — Session 2 <br> `DENSE_RANK` and Ranking Results
+## Setup
 
----
+Open a new Marimo notebook **inside the `week09-ranking-functions` folder**
+(so the `data/` path works), and run this cell first:
 
-# Agenda
-
-- Recap: `ROW_NUMBER` and `RANK`
-- `DENSE_RANK()` — ties share a rank, **no gaps**
-- All three functions side by side
-- Ranking `GROUP BY` results with a CTE
-- Best seller per category — `ROW_NUMBER` vs. `RANK`
-- "Second-highest" questions
-- ⚠️ Why `LIMIT` / `OFFSET` cannot answer them
-- Hands-on: Lab 5
-
----
-
-# Recap from Session 1
-
-| Function | Ties | Example |
-|---|---|---|
-| `ROW_NUMBER()` | different numbers (needs a tie-breaker) | 1, 2, 3, 4 |
-| `RANK()` | same rank, then a **gap** | 1, 2, 2, 4 |
-
-⚠️ `ORDER BY … LIMIT n` counts **rows**: it cuts tied rows and cannot
-work per group.
-
-Today: the third function, `DENSE_RANK()` — 1, 2, 2, **3**.
-
----
-
-# Our Data: A Small Café Chain ☕
-
-```
-shops ──< orders >── items
+```python
+import duckdb
+con = duckdb.connect(database=":memory:")
+for t in ["customers", "orders", "order_items", "products", "categories", "reviews"]:
+    con.execute(f"CREATE OR REPLACE TABLE {t} AS SELECT * FROM read_csv('data/{t}.csv')")
 ```
 
-| Table | Rows | Columns |
-|---|---|---|
-| `shops` | 4 | `shop_id`, `shop_name`, `city` |
-| `items` | 11 | `item_id`, `item_name`, `category`, `price` |
-| `orders` | 18 | `order_id`, `shop_id`, `item_id`, `qty`, `order_date` |
+Then write each answer in its own cell:
 
----
-
-# `items` (11 rows)
-
-| item_id | item_name | category | price |
-|---:|---|---|---:|
-| 101 | Latte | Coffee | 5.50 |
-| 102 | Cappuccino | Coffee | 5.50 |
-| 103 | Espresso | Coffee | 3.50 |
-| 104 | Mocha | Coffee | 6.00 |
-| 201 | Croissant | Bakery | 4.00 |
-| 202 | Muffin | Bakery | 4.00 |
-| 203 | Bagel | Bakery | 3.00 |
-| 204 | Scone | Bakery | 3.50 |
-| 301 | Matcha | Tea | 6.00 |
-| 302 | Chai | Tea | 4.50 |
-| 303 | Green Tea | Tea | 3.00 |
-
-Price ties: 6.00 (Mocha, Matcha), 5.50, 4.00, 3.50, 3.00.
-
----
-
-# All Three, Side by Side
-
-```sql
-SELECT item_name, price,
-       ROW_NUMBER() OVER (ORDER BY price DESC, item_name) AS row_num,
-       RANK()       OVER (ORDER BY price DESC)            AS rnk,
-       DENSE_RANK() OVER (ORDER BY price DESC)            AS dense_rnk
-FROM items
-ORDER BY row_num;
+```python
+con.execute("""
+    SELECT ...
+""").fetchdf()
 ```
 
----
+**The tables:**
 
-# All Three — Result
-
-| item_name | price | row_num | rnk | dense_rnk |
-|---|---:|---:|---:|---:|
-| Matcha | 6.00 | 1 | 1 | 1 |
-| Mocha | 6.00 | 2 | 1 | 1 |
-| Cappuccino | 5.50 | 3 | 3 | 2 |
-| Latte | 5.50 | 4 | 3 | 2 |
-| Chai | 4.50 | 5 | 5 | 3 |
-| Croissant | 4.00 | 6 | 6 | 4 |
-| Muffin | 4.00 | 7 | 6 | 4 |
-| Espresso | 3.50 | 8 | 8 | 5 |
-| Scone | 3.50 | 9 | 8 | 5 |
-| Bagel | 3.00 | 10 | 10 | 6 |
-| Green Tea | 3.00 | 11 | 10 | 6 |
-
----
-
-# Reading the Three Columns
-
-- `row_num` — always **1, 2, 3, …** (ties broken by `item_name`)
-- `rnk` — ties share a rank, then a **gap** (1, 1, **3**)
-- `dense_rnk` — ties share a rank, **no gap** (1, 1, **2**)
-
-👉 `dense_rnk` counts **price levels**: there are 6 different prices,
-so it ends at 6.
-
----
-
-# Ranking `GROUP BY` Results with a CTE
-
-Rank the shops by revenue (`qty × price`):
-
-```sql
-WITH shop_revenue AS (
-    SELECT s.shop_name,
-           SUM(o.qty * i.price) AS revenue
-    FROM orders AS o
-    JOIN items  AS i ON i.item_id = o.item_id
-    JOIN shops  AS s ON s.shop_id = o.shop_id
-    GROUP BY s.shop_name
-)
-SELECT shop_name, revenue,
-       RANK()       OVER (ORDER BY revenue DESC) AS rnk,
-       DENSE_RANK() OVER (ORDER BY revenue DESC) AS dense_rnk
-FROM shop_revenue
-ORDER BY revenue DESC, shop_name;
-```
-
----
-
-# Shop Ranking — Result
-
-| shop_name | revenue | rnk | dense_rnk |
-|---|---:|---:|---:|
-| Campus | 57.00 | 1 | 1 |
-| Downtown | 44.00 | 2 | 2 |
-| Harbor | 44.00 | 2 | 2 |
-| Airport | 40.00 | 4 | 3 |
-
-- Downtown and Harbor tie at 44.00
-- Airport is **4th** by `RANK` (three shops earned more) but **3rd**
-  by `DENSE_RANK` (two revenue levels are above it)
-
----
-
-# Units Sold per Item
-
-```sql
-SELECT i.category, i.item_name,
-       SUM(o.qty) AS units_sold
-FROM items AS i
-JOIN orders AS o ON o.item_id = i.item_id
-GROUP BY i.category, i.item_name
-ORDER BY i.category, units_sold DESC, i.item_name;
-```
-
----
-
-# Units Sold — Result
-
-| category | item_name | units_sold |
-|---|---|---:|
-| Bakery | Croissant | 5 |
-| Bakery | Muffin | 5 |
-| Bakery | Bagel | 3 |
-| Bakery | Scone | 2 |
-| Coffee | Cappuccino | 6 |
-| Coffee | Latte | 5 |
-| Coffee | Mocha | 4 |
-| Coffee | Espresso | 2 |
-| Tea | Chai | 3 |
-| Tea | Matcha | 3 |
-| Tea | Green Tea | 2 |
-
-Ties at the top: Croissant and Muffin (Bakery), Chai and Matcha (Tea).
-
----
-
-# Best Seller per Category — `ROW_NUMBER`
-
-```sql
-WITH units AS (
-    SELECT i.category, i.item_name, SUM(o.qty) AS units_sold
-    FROM items AS i
-    JOIN orders AS o ON o.item_id = i.item_id
-    GROUP BY i.category, i.item_name
-),
-ranked AS (
-    SELECT *, ROW_NUMBER() OVER (PARTITION BY category
-                                 ORDER BY units_sold DESC, item_name) AS rn
-    FROM units
-)
-SELECT category, item_name, units_sold
-FROM ranked
-WHERE rn = 1
-ORDER BY category;
-```
-
----
-
-# Best Seller — `ROW_NUMBER` Result
-
-| category | item_name | units_sold |
-|---|---|---:|
-| Bakery | Croissant | 5 |
-| Coffee | Cappuccino | 6 |
-| Tea | Chai | 3 |
-
-⚠️ Exactly one row per category. Muffin and Matcha also sold the most
-— they were cut only by the tie-breaker (`item_name`).
-
----
-
-# Best Seller per Category — `RANK`
-
-Change one line in the `ranked` CTE:
-
-```sql
-SELECT *, RANK() OVER (PARTITION BY category
-                       ORDER BY units_sold DESC) AS rnk
-...
-WHERE rnk = 1
-```
-
-| category | item_name | units_sold |
-|---|---|---:|
-| Bakery | Croissant | 5 |
-| Bakery | Muffin | 5 |
-| Coffee | Cappuccino | 6 |
-| Tea | Chai | 3 |
-| Tea | Matcha | 3 |
-
-👉 **5 rows**: both tied items are shown for Bakery and Tea.
-
----
-
-# "What Is the Second-Highest Price?"
-
-```sql
-WITH ranked AS (
-    SELECT item_name, price,
-           DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
-    FROM items
-)
-SELECT item_name, price
-FROM ranked
-WHERE price_rank = 2
-ORDER BY item_name;
-```
-
-| item_name | price |
-|---|---:|
-| Cappuccino | 5.50 |
-| Latte | 5.50 |
-
----
-
-# Why Not `RANK` or `ROW_NUMBER`?
-
-| Version | `= 2` returns | Why |
-|---|---|---|
-| `DENSE_RANK` | Cappuccino, Latte (5.50) ✅ | 5.50 is the 2nd price **level** |
-| `RANK` | **no rows** ❌ | two items tie at 1, so the next rank is 3 |
-| `ROW_NUMBER` (tie-breaker `item_name`) | Mocha (6.00) ❌ | the 2nd **row** is still a 6.00 item |
-
-👉 For "Nth-highest **value**" questions, use `DENSE_RANK`.
-
----
-
-# And `LIMIT 1 OFFSET 1`?
-
-"Skip the first row, take the next one":
-
-```sql
-SELECT item_name, price
-FROM items
-ORDER BY price DESC
-LIMIT 1 OFFSET 1;
-```
-
-| item_name | price |
-|---|---:|
-| Matcha | 6.00 |
-
-❌ `OFFSET 1` skips one **row**, not one **price**. The 2nd row is still a
-6.00 item — the same mistake as `ROW_NUMBER`.
-
----
-
-# "But `DISTINCT` Fixes It!" — Only Half
-
-```sql
-SELECT DISTINCT price
-FROM items
-ORDER BY price DESC
-LIMIT 1 OFFSET 1;
-```
-
-| price |
-|---:|
-| 5.50 |
-
-- ✅ The right **value**, 5.50
-- ❌ But **which items** cost 5.50? You need a second query
-- ❌ And the second-highest price **in each category**? `LIMIT` cannot
-  restart per group
-
-👉 `DENSE_RANK` answers all three in one query.
-
----
-
-# "Top 3 Prices" — `LIMIT 3` vs. `DENSE_RANK`
-
-`LIMIT 3` gives 3 **rows**: Mocha 6.00, Matcha 6.00, Latte 5.50 — and
-Cappuccino (also 5.50) is cut.
-
-```sql
-WITH ranked AS (
-    SELECT item_name, price,
-           DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
-    FROM items
-)
-SELECT item_name, price, price_rank
-FROM ranked
-WHERE price_rank <= 3
-ORDER BY price_rank, item_name;
-```
-
-| item_name | price | price_rank |
-|---|---:|---:|
-| Matcha | 6.00 | 1 |
-| Mocha | 6.00 | 1 |
-| Cappuccino | 5.50 | 2 |
-| Latte | 5.50 | 2 |
-| Chai | 4.50 | 3 |
-
-✅ The 3 highest **prices** — 5 items.
-
----
-
-# "Top 2 Shops by Revenue" — `LIMIT 2`
-
-Using the `shop_revenue` CTE from before:
-
-```sql
-SELECT shop_name, revenue
-FROM shop_revenue
-ORDER BY revenue DESC
-LIMIT 2;
-```
-
-| shop_name | revenue |
-|---|---:|
-| Campus | 57.00 |
-| Downtown | 44.00 |
-
-❌ **Harbor also earned 44.00** — tied with Downtown for 2nd, but cut.
-With `RANK() … WHERE rnk <= 2` you get Campus, Downtown **and** Harbor.
-
----
-
-# ⚠️ Again: `WHERE` Cannot See the Rank
-
-```sql
-SELECT item_name, price,
-       DENSE_RANK() OVER (ORDER BY price DESC) AS price_rank
-FROM items
-WHERE price_rank = 2;
-```
-
-```
-Binder Error: WHERE clause cannot contain window functions!
-```
-
-👉 Fix: compute the rank in a **CTE** (or subquery), then filter it
-outside — as on the previous slides.
-
----
-
-# Which Ranking Function?
-
-| The question says… | Use |
+| Table | Columns |
 |---|---|
-| "exactly N per group", "first / last event" | `ROW_NUMBER` + tie-breaker |
-| "top N, include ties" (competition ranking) | `RANK` |
-| "Nth-highest value", "top N price levels" | `DENSE_RANK` |
-| "just show me the first few rows" (no ranking question) | `ORDER BY … LIMIT n` |
+| `customers` | `customer_id`, `first_name`, `last_name`, `email`, `city`, `state`, `join_date` |
+| `orders` | `order_id`, `customer_id`, `order_date`, `status`, `total_amount` |
+| `order_items` | `item_id`, `order_id`, `product_id`, `quantity`, `unit_price` |
+| `products` | `product_id`, `product_name`, `category_id`, `price`, `stock_quantity` |
+| `categories` | `category_id`, `category_name`, `description` |
+| `reviews` | `review_id`, `product_id`, `customer_id`, `rating`, `review_text`, `review_date` |
 
-All three: `FUNCTION() OVER (PARTITION BY … ORDER BY …)`.
+**Rules for every query:**
 
----
-
-# Summary
-
-| Pattern | SQL |
-|---|---|
-| no-gap ranks / price levels | `DENSE_RANK() OVER (ORDER BY col DESC)` |
-| rank a `GROUP BY` result | totals in a CTE, then rank the CTE |
-| filter a rank | rank in a CTE or subquery, `WHERE` outside |
-| ⚠️ `LIMIT` / `OFFSET` | count **rows**: they cut ties and ignore groups — never for ranking |
-
-Demo notebook: `ranking_demo_2.py`
+- **Every answer must use a ranking function** — `ROW_NUMBER`, `RANK`, or `DENSE_RANK` (except Q6, which tests `LIMIT` on purpose)
+- To **filter** on a rank, compute it in a subquery or CTE first — `WHERE` cannot see it
+- With `ROW_NUMBER`, always add the tie-breaker the question gives
+- List the columns you need — no `SELECT *` — and use the `ORDER BY` given
+- The **expected row count** is given for each question. If yours is different, check your ranking first
 
 ---
 
-# Questions?
+## Part 1: `ROW_NUMBER` (6 points)
 
-Thank you!
+Number rows one by one — and restart the numbering in each group.
+
+**Q1. Warm-up (0 points): number the products.** Show `product_name`, `price`, and `rn` — a `ROW_NUMBER()` by price, **highest first**, with `product_id` as the tie-breaker. Order by `rn` and show the first 10 rows.
+
+*Expected: 10 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q2. Restart for each category.** Join `products` to `categories`. Show `category_name`, `product_name`, `price`, and `rn` — a `ROW_NUMBER()` that **restarts at 1 in each category** (highest price first, tie-breaker `product_id`). Order by `category_name`, then `rn`.
+
+*Expected: 64 rows; exactly 8 rows have `rn = 1`.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q3. The most expensive product in each category.** Use Q2's query as a **subquery** and keep only `rn = 1`. Show `category_name`, `product_name`, and `price`. Order by `category_name`.
+
+*Expected: 8 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+## Part 2: Ties — `RANK` and `DENSE_RANK` (15 points)
+
+The data has real ties: three customers with 9 orders, two cities with 6 customers, two with 4. Q6 shows what `LIMIT` does with them.
+
+**Q4. All three, side by side.** In a CTE, count each customer's orders: `customer_id`, `first_name`, `n_orders` (join `customers` and `orders`). Then show those three columns plus `row_num` (`ROW_NUMBER`, tie-breaker `customer_id`), `rnk` (`RANK`), and `dense_rnk` (`DENSE_RANK`) — all ordered by `n_orders`, highest first. Order by `row_num` and show the first 10 rows.
+
+🔮 **Predict first:** three customers have 9 orders. What will `rnk` and `dense_rnk` be for the customer with **8** orders?
+
+*Expected: 10 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q5. Top 4 — keeping ties.** Using Q4's CTE, show `customer_id`, `first_name`, `n_orders`, and `rnk` (`RANK`) for every customer with `rnk <= 4`. Order by `rnk`, then `customer_id`.
+
+✍️ **Explain it:** you asked for the top **4** — why are there more than 4 rows? How many rows would `ROW_NUMBER() <= 4` return?
+
+*Expected: 5 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q6. 🧩 Can `LIMIT` do it?** A teammate answers "Who are the top 4 customers by number of orders?" **without** a ranking function. Using Q4's CTE, run their query: show `customer_id`, `first_name`, and `n_orders`, ordered by `n_orders` (highest first), then `customer_id`, with `LIMIT 4`. This is the **one** question that uses no ranking function.
+
+✍️ **Explain it:** compare with Q5. Which customer is missing, and why did `LIMIT` drop them? Then name one more question that `LIMIT` cannot answer.
+
+*Expected: 4 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q7. Rank the cities.** In a CTE, count the customers in each `city` (`n_customers`). Show `city`, `n_customers`, and `city_rank` — a `DENSE_RANK` by `n_customers`, highest first. Order by `city_rank`, then `city`.
+
+*Expected: 10 rows; the last `city_rank` is 5.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q8. The 3rd-highest value.** Which city or cities have the **3rd-highest** number of customers? Rank in a CTE with `DENSE_RANK`, then keep `city_rank = 3`. Show `city` and `n_customers`. Order by `city`.
+
+✍️ **Explain it:** change `DENSE_RANK` to `RANK`. How many rows do you get now, and why?
+
+*Expected: 2 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+## Part 3: Ranking Results and Patterns (9 points)
+
+Rank a `GROUP BY` result, find the first event per group, and fix a common error.
+
+**Q9. Rank a `GROUP BY` result.** In a CTE, compute each category's `revenue` = `SUM(quantity * unit_price)` from `order_items` (join `products` and `categories`), rounded to 2 decimals. Show `category_name`, `revenue`, and `revenue_rank` (`DENSE_RANK`, highest revenue first). Order by `revenue_rank`, then `category_name`.
+
+*Expected: 8 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q10. Each customer's first order.** Show each customer's **first** order: `customer_id`, `order_id`, `order_date`. Use `ROW_NUMBER()` with `PARTITION BY customer_id`, ordered by `order_date` (tie-breaker `order_id`), in a subquery; keep `rn = 1`. Order by `order_date`, then `customer_id`.
+
+*Expected: 40 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+**Q11. 🐞 Debug it.** A classmate wanted the **best-rated** products (every product tied for the highest average rating) and wrote:
+
+```sql
+WITH product_ratings AS (
+    SELECT p.product_name,
+           ROUND(AVG(r.rating), 2) AS avg_rating
+    FROM products AS p
+    JOIN reviews AS r ON r.product_id = p.product_id
+    GROUP BY p.product_name
+)
+SELECT product_name, avg_rating,
+       DENSE_RANK() OVER (ORDER BY avg_rating DESC) AS rating_rank
+FROM product_ratings
+WHERE rating_rank = 1;
+```
+
+DuckDB answers: **`WHERE clause cannot contain window functions!`** Explain in one sentence why `WHERE` cannot see `rating_rank`, then fix the query. Show `product_name` and `avg_rating`. Order by `product_name`.
+
+*Expected: 10 rows.*
+
+```sql
+-- your query here
+
+```
+
+---
+
+## Grading
+
+- Q1 is a warm-up (0 points). Q2–Q11: 3 points per question — 2 for a correct result, 1 for using the right
+  ranking function (and `PARTITION BY` / a subquery or CTE where needed; in Q6, for the explanation)
+- The short written answers in Q5, Q6, Q8, and Q11 are part of their second point
+
+
+---
 
 *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
