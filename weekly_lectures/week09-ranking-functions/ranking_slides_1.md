@@ -79,6 +79,31 @@ Ben and Chloe (88), Gus and Hal (60).
 
 ---
 
+```sql
+CREATE TABLE rep_sales (
+    rep_id INTEGER PRIMARY KEY,
+    rep_name VARCHAR,
+    team VARCHAR,
+    sales INTEGER
+);
+
+INSERT INTO rep_sales (rep_id, rep_name, team, sales) 
+VALUES
+    (1, 'Ava', 'East', 95),
+    (2, 'Ben', 'East', 88),
+    (3, 'Chloe', 'East', 88),
+    (4, 'Dan', 'East', 70),
+    (5, 'Eli', 'West', 120),
+    (6, 'Fay', 'West', 95),
+    (7, 'Gus', 'West', 60),
+    (8, 'Hal', 'West', 60),
+    (9, 'Ivy', 'Central', 105),
+    (10, 'Jon', 'Central', 99),
+    (11, 'Kim', 'Central', 80),
+    (12, 'Leo', 'Central', 75);
+```
+---
+
 # `ROW_NUMBER()` — Number the Rows
 
 ```sql
