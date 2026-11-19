@@ -81,6 +81,89 @@ Price ties: 6.00 (Mocha, Matcha), 5.50, 4.00, 3.50, 3.00.
 
 ---
 
+# Our Data in DuckDB: `shops`
+
+```sql
+CREATE TABLE shops (
+    shop_id   INTEGER PRIMARY KEY,
+    shop_name VARCHAR,
+    city      VARCHAR
+);
+
+INSERT INTO shops (shop_id, shop_name, city)
+VALUES
+    (1, 'Downtown', 'San Jose'),
+    (2, 'Campus',   'Santa Clara'),
+    (3, 'Airport',  'San Jose'),
+    (4, 'Harbor',   'Santa Cruz');
+```
+
+---
+
+# Our Data in DuckDB: `items`
+
+```sql
+CREATE TABLE items (
+    item_id   INTEGER PRIMARY KEY,
+    item_name VARCHAR,
+    category  VARCHAR,
+    price     DECIMAL(5, 2)
+);
+
+INSERT INTO items (item_id, item_name, category, price)
+VALUES
+    (101, 'Latte',      'Coffee', 5.50),
+    (102, 'Cappuccino', 'Coffee', 5.50),
+    (103, 'Espresso',   'Coffee', 3.50),
+    (104, 'Mocha',      'Coffee', 6.00),
+    (201, 'Croissant',  'Bakery', 4.00),
+    (202, 'Muffin',     'Bakery', 4.00),
+    (203, 'Bagel',      'Bakery', 3.00),
+    (204, 'Scone',      'Bakery', 3.50),
+    (301, 'Matcha',     'Tea',    6.00),
+    (302, 'Chai',       'Tea',    4.50),
+    (303, 'Green Tea',  'Tea',    3.00);
+```
+
+---
+
+# Our Data in DuckDB: `orders`
+
+```sql
+CREATE TABLE orders (
+    order_id   INTEGER PRIMARY KEY,
+    shop_id    INTEGER REFERENCES shops (shop_id),
+    item_id    INTEGER REFERENCES items (item_id),
+    qty        INTEGER,
+    order_date DATE
+);
+
+INSERT INTO orders (order_id, shop_id, item_id, qty, order_date)
+VALUES
+    (1,  1, 101, 3, DATE '2026-11-02'),
+    (2,  1, 201, 2, DATE '2026-11-02'),
+    (3,  2, 102, 4, DATE '2026-11-02'),
+    (4,  3, 104, 2, DATE '2026-11-03'),
+    (5,  4, 301, 2, DATE '2026-11-03'),
+    (6,  2, 202, 3, DATE '2026-11-03'),
+    (7,  1, 103, 2, DATE '2026-11-04'),
+    (8,  3, 302, 2, DATE '2026-11-04'),
+    (9,  4, 203, 3, DATE '2026-11-04'),
+    (10, 2, 101, 2, DATE '2026-11-05'),
+    (11, 3, 201, 3, DATE '2026-11-05'),
+    (12, 1, 302, 1, DATE '2026-11-05'),
+    (13, 4, 102, 2, DATE '2026-11-06'),
+    (14, 2, 303, 2, DATE '2026-11-06'),
+    (15, 3, 204, 2, DATE '2026-11-06'),
+    (16, 1, 202, 2, DATE '2026-11-07'),
+    (17, 4, 104, 2, DATE '2026-11-07'),
+    (18, 2, 301, 1, DATE '2026-11-07');
+```
+
+Create `shops` and `items` first: `orders` **references** both.
+
+---
+
 # All Three, Side by Side
 
 ```sql

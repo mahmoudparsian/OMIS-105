@@ -36,7 +36,10 @@ def _(mo):
     The setup cell loads `data/sales_reps.csv` — 12 sales reps on 3 teams
     (`sales` in thousands of dollars). Watch the **ties**: Ava and Fay (95), Ben and
     Chloe (88), Gus and Hal (60).
+    The `CREATE TABLE` + `INSERT` for this table are in the slides ("Our Data: in DuckDB").
+
     ---
+
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
     """)
     return
@@ -110,7 +113,7 @@ def _(mo):
     mo.md(r"""
     ## `RANK()` — ties share a rank, then a gap
 
-    Ava and Fay are both 4, so the next rep (Ben) is 6.
+    Ava and Fay are both 4, so the next reps (Ben and Chloe) are both **6** — rank 5 is skipped.
     """)
     return
 
@@ -321,7 +324,7 @@ def _(mo):
     ## Puzzle 2: the top rep in each team — `LIMIT 3`?
 
     3 teams, 3 rows… but `LIMIT` never restarts per team: two Central reps, no East rep.
-    The fix is `PARTITION BY team` + `WHERE rn = 1` (the cell above: Ivy, Ava, Eli).
+    The fix is `PARTITION BY team` + `WHERE rn = 1` (see "Rank in a subquery, filter outside" earlier: Ivy, Ava, Eli).
     """)
     return
 
@@ -386,6 +389,9 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ## ⚠️ Forgetting `PARTITION BY` — only 1 row
+
+    We wanted the top rep **per team**, but without `PARTITION BY` the numbering runs over the whole
+    table: only Eli (West) gets `rn = 1`.
     """)
     return
 
@@ -408,6 +414,16 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## Summary
+
+    | Pattern | SQL |
+    |---|---|
+    | number the rows | `ROW_NUMBER() OVER (ORDER BY col DESC, tie_breaker)` |
+    | rank with ties | `RANK() OVER (ORDER BY col DESC)` |
+    | per group | `... OVER (PARTITION BY group_col ORDER BY ...)` |
+    | top N per group | rank in a subquery, then `WHERE rn <= N` outside |
+    | top N **with ties** | `RANK`, never `ORDER BY … LIMIT n` |
+
     ## Your turn
 
     1. Rank the reps **within each team** with `RANK()`. Which team has two reps with the same rank?

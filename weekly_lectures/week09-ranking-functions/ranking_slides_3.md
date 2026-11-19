@@ -36,6 +36,78 @@ con.execute("""
 | `categories` | `category_id`, `category_name`, `description` |
 | `reviews` | `review_id`, `product_id`, `customer_id`, `rating`, `review_text`, `review_date` |
 
+**The same tables in SQL** (column types and keys). You can also run this instead of the
+Python cell above, for example in qStudio or the DuckDB command line, started inside
+the `week09-ranking-functions` folder. The `DROP` lines let you run it again; they go in
+reverse order, because a table that is **referenced** can only be dropped after the
+tables that reference it.
+
+```sql
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS categories;
+
+CREATE TABLE categories (
+    category_id   INTEGER PRIMARY KEY,
+    category_name VARCHAR,
+    description   VARCHAR
+);
+
+CREATE TABLE customers (
+    customer_id INTEGER PRIMARY KEY,
+    first_name  VARCHAR,
+    last_name   VARCHAR,
+    email       VARCHAR,
+    city        VARCHAR,
+    state       VARCHAR,
+    join_date   DATE
+);
+
+CREATE TABLE products (
+    product_id     INTEGER PRIMARY KEY,
+    product_name   VARCHAR,
+    category_id    INTEGER REFERENCES categories (category_id),
+    price          DECIMAL(10, 2),
+    stock_quantity INTEGER
+);
+
+CREATE TABLE orders (
+    order_id     INTEGER PRIMARY KEY,
+    customer_id  INTEGER REFERENCES customers (customer_id),
+    order_date   DATE,
+    status       VARCHAR,
+    total_amount DECIMAL(10, 2)
+);
+
+CREATE TABLE order_items (
+    item_id    INTEGER PRIMARY KEY,
+    order_id   INTEGER REFERENCES orders (order_id),
+    product_id INTEGER REFERENCES products (product_id),
+    quantity   INTEGER,
+    unit_price DECIMAL(10, 2)
+);
+
+CREATE TABLE reviews (
+    review_id   INTEGER PRIMARY KEY,
+    product_id  INTEGER REFERENCES products (product_id),
+    customer_id INTEGER REFERENCES customers (customer_id),
+    rating      INTEGER,
+    review_text VARCHAR,
+    review_date DATE
+);
+
+-- load the rows from the CSV files (8, 40, 64, 200, 607, and 150 rows)
+INSERT INTO categories  SELECT * FROM read_csv('data/categories.csv');
+INSERT INTO customers   SELECT * FROM read_csv('data/customers.csv');
+INSERT INTO products    SELECT * FROM read_csv('data/products.csv');
+INSERT INTO orders      SELECT * FROM read_csv('data/orders.csv');
+INSERT INTO order_items SELECT * FROM read_csv('data/order_items.csv');
+INSERT INTO reviews     SELECT * FROM read_csv('data/reviews.csv');
+```
+
 **Rules for every query:**
 
 - **Every answer must use a ranking function** — `ROW_NUMBER`, `RANK`, or `DENSE_RANK` (except Q6, which tests `LIMIT` on purpose)

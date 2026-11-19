@@ -52,7 +52,11 @@ def _(mo):
     | `shops` | 4 |
     | `items` | 11 |
     | `orders` | 18 |
+
+    The `CREATE TABLE` + `INSERT` for all three tables are in the slides ("Our Data in DuckDB").
+
     ---
+
     *OMIS 105 — Introduction to Database Management Systems — Fall 2026*
     """)
     return
@@ -81,6 +85,8 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ## All three functions, side by side
+
+    `dense_rnk` counts **price levels**: 6 different prices, so it ends at 6.
     """)
     return
 
@@ -156,6 +162,8 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ## Best seller per category — `ROW_NUMBER` (exactly 1 per category)
+
+    ⚠️ Muffin (Bakery) and Matcha (Tea) also sold the most — the tie-breaker `item_name` cut them.
     """)
     return
 
@@ -243,6 +251,8 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ## Same question with `RANK` — no rows ❌
+
+    Mocha and Matcha tie at 1, so the next rank is **3**: no item has rank 2.
     """)
     return
 
@@ -268,6 +278,8 @@ def _(con):
 def _(mo):
     mo.md(r"""
     ## Same question with `ROW_NUMBER` — the wrong item ❌
+
+    Row 2 is Mocha — still a 6.00 item. `ROW_NUMBER` counts **rows**, not prices.
     """)
     return
 
@@ -464,6 +476,15 @@ def _(con):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    ## Which ranking function?
+
+    | The question says… | Use |
+    |---|---|
+    | "exactly N per group", "first / last event" | `ROW_NUMBER` + tie-breaker |
+    | "top N, include ties" (competition ranking) | `RANK` |
+    | "Nth-highest value", "top N price levels" | `DENSE_RANK` |
+    | "just show me the first few rows" (no ranking question) | `ORDER BY … LIMIT n` |
+
     ## Your turn
 
     1. Which item has the **third-highest** price? Which function do you use?

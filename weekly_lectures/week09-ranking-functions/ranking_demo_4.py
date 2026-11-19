@@ -30,6 +30,7 @@ def _(mo):
     ## Setup
 
     Run the next cell first. It connects to DuckDB and loads `customers`, `orders`, `order_items`, `products`, `categories`, `reviews` from this folder's `data/` directory.
+    The same tables written out in SQL (`CREATE TABLE` with column types and keys) are in `ranking_slides_3.md`.
 
     **Rules for every query:**
 
