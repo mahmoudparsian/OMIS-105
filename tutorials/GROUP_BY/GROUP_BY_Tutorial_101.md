@@ -34,7 +34,7 @@
 
 ```sql
 % duckdb
-DuckDB v1.5.3 (Variegata)
+DuckDB v2.0.0 (Cyanoptera)
 Enter ".help" for usage hints.
 ```
 
@@ -230,18 +230,35 @@ duckdb ▸ SELECT player,
                 STRING_AGG(score::VARCHAR, ', ') AS scores_csv,
                 LIST(score) AS scores_list
          FROM scores 
-         GROUP BY player;
-┌─────────┬────────────┬──────────────────┐
-│ player  │ scores_csv │   scores_list    │
-│ varchar │  varchar   │    int32[]       │
-├─────────┼────────────┼──────────────────┤
-│ Alex    │ 10, 20, 30 │ [10, 20, 30]     │
-│ Jane    │ 70, 90     │ [70, 90]         │
-└─────────┴────────────┴──────────────────┘
+         GROUP BY player
+         ORDER BY player;
+┌─────────┬────────────┬──────────────────────┐
+│ player  │ scores_csv │     scores_list      │
+│ varchar │  varchar   │       int32[]        │
+├─────────┼────────────┼──────────────────────┤
+│ Alex    │ 10, 20, 30 │ [10, 20, 30, NULL]   │
+│ Jane    │ 70, 90     │ [70, 90, NULL, NULL] │
+└─────────┴────────────┴──────────────────────┘
 ```
 
-**NOTE:** Both `STRING_AGG()` and `LIST()` skip 
-`NULL` values by default.
+**NOTE:** `STRING_AGG()` skips `NULL` values, but `LIST()`
+**keeps** them. To leave the `NULL`s out of the list, add
+`FILTER (WHERE score IS NOT NULL)`:
+
+```sql
+duckdb ▸ SELECT player, 
+                LIST(score) FILTER (WHERE score IS NOT NULL) AS scores_list
+         FROM scores 
+         GROUP BY player
+         ORDER BY player;
+┌─────────┬──────────────┐
+│ player  │ scores_list  │
+│ varchar │   int32[]    │
+├─────────┼──────────────┤
+│ Alex    │ [10, 20, 30] │
+│ Jane    │ [70, 90]     │
+└─────────┴──────────────┘
+```
 
 
 ## GROUP BY with multiple columns
