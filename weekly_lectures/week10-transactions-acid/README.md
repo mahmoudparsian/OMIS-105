@@ -23,10 +23,12 @@ crash).
 ## Session — December 1
 
 1. [`transactions_are_explained.md`](transactions_are_explained.md) — the slide
-   deck (50 slides). **Part 1:** transactions and ACID on a two-row bank table
-   (Alice $500, Bob $200). **Part 2:** the ShopSmart store with rules (`CHECK`,
+   deck (57 slides). **Part 1:** transactions and ACID on a two-row bank table
+   (Alice $500, Bob $200), with the **life of a transaction** (auto-commit →
+   active → aborted). **Part 2:** the ShopSmart store with rules (`CHECK`,
    `REFERENCES`), orders and returns as transactions, the four concurrency
-   problems, isolation levels, and what DuckDB does.
+   problems, isolation levels, and what DuckDB does. It ends with a **cheat
+   sheet** and six **"Check yourself"** questions (with answers) for the final exam.
 2. [`transactions_demo_1.py`](transactions_demo_1.py) — Marimo notebook for
    Part 1: auto-commit, `COMMIT`, `ROLLBACK`, a failed statement that aborts the
    transaction, `COMMIT` after an error (saves nothing), `PRIMARY KEY` /
@@ -35,8 +37,9 @@ crash).
 3. [`transactions_demo_2.py`](transactions_demo_2.py) — Marimo notebook for
    Part 2 on ShopSmart (`data/`): one order = one transaction, a wrong product
    and too little stock (both rolled back), `place_order()`, `process_return()`
-   (only `completed` orders), and four experiments with **two users** on one
-   database file: dirty read, non-repeatable read, phantom read, lost update.
+   (only `completed` orders; the refund is what the items cost, not the stored
+   `total_amount`), and four experiments with **two users** on one database
+   file: dirty read, non-repeatable read, phantom read, lost update.
 
 Each notebook shows a **transcript** for every experiment: each SQL statement in
 order, and what DuckDB answered (✅ or ❌ with the error message). Every section

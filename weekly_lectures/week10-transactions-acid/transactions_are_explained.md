@@ -199,6 +199,27 @@ An aborted transaction can **only** be rolled back. `COMMIT` saves nothing.
 
 ---
 
+# The Life of a Transaction
+
+```
+ auto-commit ──BEGIN──▶ ACTIVE ──COMMIT──▶ saved ✅ (back to auto-commit)
+ (each statement           │
+  saved at once)           ├──ROLLBACK──▶ undone ↩️ (back to auto-commit)
+                           │
+                           └──a statement fails──▶ ABORTED
+                                                     │  every next statement:
+                                                     │  "Current transaction is aborted (please ROLLBACK)"
+                                                     └──ROLLBACK (or COMMIT)──▶ undone ↩️
+```
+
+| You type | In auto-commit | In an active transaction | In an aborted transaction |
+|---|---|---|---|
+| `UPDATE …` | saved at once | visible to you only, until `COMMIT` | ❌ refused |
+| `COMMIT` | ❌ no transaction is active | saves everything | saves **nothing** |
+| `ROLLBACK` | ❌ no transaction is active | undoes everything | undoes everything |
+
+---
+
 # ACID: Four Guarantees
 
 | Property | Meaning | In the bank |
@@ -474,10 +495,17 @@ A product return at ShopSmart (only a `completed` order can be returned):
 
 1. set the order's `status` to `'cancelled'`
 2. put each item's `quantity` back into `stock_quantity`
-3. insert a `refunds` row (`refund_amount` = the order's `total_amount`)
+3. insert a `refunds` row (`refund_amount` = `SUM(quantity × unit_price)` of the order's items)
 
 All three — or none. `transactions_demo_2.py` has `place_order()` and
 `process_return()` in Python, with tests that succeed and tests that roll back.
+
+Why not refund `orders.total_amount`? It matches the items in **0 of 200** orders
+(order 3: $538.49 stored, $998.35 of items). Refund what was actually bought.
+
+---
+
+# Which Statements Belong Together?
 
 | Task | Statements in one transaction |
 |---|---|
@@ -626,6 +654,7 @@ Choose the **weakest level** that gives you the **correctness you need**.
 ```sql
 -- PostgreSQL / MySQL / SQL Server syntax — NOT supported in DuckDB
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+-- DuckDB: Parser Error: syntax error at or near "ISOLATION"
 ```
 
 **DuckDB** has no levels to choose from: it always uses **snapshot isolation** —
@@ -642,7 +671,7 @@ runs the four problems:
 | Problem | Result in DuckDB |
 |---|---|
 | Dirty read | ✅ prevented — B still sees 12 while A's 0 is uncommitted |
-| Non-repeatable read | ✅ prevented — B still sees $321.52 until B's transaction ends |
+| Non-repeatable read | ✅ prevented — A still sees $321.52 until A's transaction ends |
 | Phantom read | ✅ prevented — A's count stays 30 until A's transaction ends |
 | Lost update | ✅ prevented — B's write fails: `Conflict on update!` |
 
@@ -740,6 +769,57 @@ Questions:
 - Thinking an `UPDATE` that matched no row is an error ❌ — it just changes 0 rows
 - "Read, compute in Python, write back" ❌ — a lost update waiting to happen
 - Keeping a transaction open for a long time ❌
+
+---
+
+# Cheat Sheet: Transactions at a Glance
+
+| I want to … | Write |
+|---|---|
+| group statements | `BEGIN;` … `COMMIT;` |
+| undo everything since `BEGIN` | `ROLLBACK;` |
+| keep part of the work (no `SAVEPOINT` in DuckDB) | commit that part in its **own** transaction |
+| make the database reject bad data | `PRIMARY KEY`, `NOT NULL`, `CHECK (…)`, `REFERENCES …` |
+| change a number safely with many users | `SET x = x - 1` (one statement), never read → compute → write |
+| handle a write conflict in DuckDB | `ROLLBACK`, then try the transaction again |
+| survive a crash | a database **file** + `COMMIT` |
+| in Python | `try: BEGIN … COMMIT` / `except: ROLLBACK` |
+
+---
+
+# Check Yourself (Final-Exam Style)
+
+Start each question from Alice $500, Bob $200 (`CHECK (balance >= 0)`).
+
+1. Without `BEGIN`: `UPDATE accounts SET balance = balance - 100 WHERE id = 1;` then `ROLLBACK;`. What is Alice's balance, and what does `ROLLBACK` answer?
+2. `BEGIN;` Bob +600; Alice −600 (fails); `COMMIT;`. What is Bob's balance?
+3. `UPDATE accounts SET balance = 0 WHERE id = 99;` — is it an error?
+
+---
+
+# Check Yourself (cont.)
+
+4. Name the ACID property: (a) Bob's +600 is undone because Alice's −600 failed; (b) the `CHECK` stops a negative balance; (c) B still sees stock 12 while A's uncommitted 0 is pending; (d) after `COMMIT`, a power failure does not lose the transfer.
+5. In DuckDB, users A and B both read stock 12, and both write `SET stock_quantity = 11`. What happens?
+6. Which SQL-standard isolation level is the weakest one that prevents phantom reads? Which isolation does DuckDB use?
+
+---
+
+# Check Yourself: Answers
+
+1. **$400**: the `UPDATE` was saved at once (auto-commit). `ROLLBACK` answers `TransactionContext Error: cannot rollback - no transaction is active`.
+2. **$200**: the failed statement aborted the transaction; `COMMIT` of an aborted transaction saves nothing.
+3. **No**: it changes 0 rows. (That is why `transfer()` counts the accounts first.)
+
+---
+
+# Check Yourself: Answers (cont.)
+
+4. (a) **A**tomicity (b) **C**onsistency (c) **I**solation (d) **D**urability.
+5. A's `UPDATE` works; B's fails at once with `Conflict on update!`. A commits (stock 11); B rolls back and retries with
+   `SET stock_quantity = stock_quantity - 1` → **10**: both sales counted.
+6. **SERIALIZABLE** (REPEATABLE READ may still allow phantoms). DuckDB always uses **snapshot isolation**; in our tests it prevented
+   dirty, non-repeatable and phantom reads, and turned a lost update into an error.
 
 ---
 

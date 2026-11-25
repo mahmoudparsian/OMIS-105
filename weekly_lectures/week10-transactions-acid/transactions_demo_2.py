@@ -320,8 +320,8 @@ def _(mo):
     3. puts the stock back: for each `order_items` row of the order,
        `stock_quantity` + `quantity`;
     4. inserts a `refunds` row: `refund_id` = the largest `refund_id` + 1 (1 for
-       the first), `refund_date` = `2025-01-20` (fixed), `refund_amount` = the
-       order's `total_amount`, and the `reason`;
+       the first), `refund_date` = `2025-01-20` (fixed), `refund_amount` = what the
+       customer paid for the items, `SUM(quantity × unit_price)`, and the `reason`;
     5. commits and returns `True` — or rolls back and returns `False`.
 
     The `refunds` table (created in `load()`):
@@ -347,11 +347,11 @@ def _():
         try:
             con.execute("BEGIN")
             found = con.execute(
-                "SELECT status, total_amount FROM orders WHERE order_id = ?", [order_id]
+                "SELECT status FROM orders WHERE order_id = ?", [order_id]
             ).fetchall()
             if not found:
                 raise ValueError(f"order {order_id} does not exist")
-            status, total_amount = found[0]
+            status = found[0][0]
             if status != "completed":
                 raise ValueError(f"order {order_id} is '{status}', only 'completed' orders can be returned")
             con.execute("UPDATE orders SET status = 'cancelled' WHERE order_id = ?", [order_id])
@@ -363,13 +363,16 @@ def _():
                     "UPDATE products SET stock_quantity = stock_quantity + ? WHERE product_id = ?",
                     [quantity, product_id],
                 )
+            refund_amount = con.execute(
+                "SELECT SUM(quantity * unit_price) FROM order_items WHERE order_id = ?", [order_id]
+            ).fetchall()[0][0]
             refund_id = con.execute("SELECT COALESCE(MAX(refund_id), 0) + 1 FROM refunds").fetchall()[0][0]
             con.execute(
                 "INSERT INTO refunds VALUES (?, ?, ?, ?, ?)",
-                [refund_id, order_id, RETURN_DATE, total_amount, reason],
+                [refund_id, order_id, RETURN_DATE, refund_amount, reason],
             )
             con.execute("COMMIT")
-            print(f"✅ order {order_id} returned: {len(items)} item(s) back in stock, refund ${total_amount}")
+            print(f"✅ order {order_id} returned: {len(items)} item(s) back in stock, refund ${refund_amount}")
             return True
         except Exception as e:
             con.execute("ROLLBACK")
@@ -394,8 +397,12 @@ def _(con, load, process_return):
 def _(mo):
     mo.md(r"""
     Only (a) was saved: order 3 is now `cancelled`, its 5 products are back in
-    stock, and there is exactly **one** refund. (b) failed because order 3 is no
+    stock, and there is exactly **one** refund, of **$998.35**. (b) failed because order 3 is no
     longer `completed` — the same order cannot be refunded twice.
+
+    Why not refund `orders.total_amount`? In this data set it matches the items in **none** of the
+    200 orders (order 3: `total_amount` = $538.49, items = $998.35). A stored total can be wrong;
+    the items are what the customer actually bought, so the refund is computed from them.
 
     ## 6. Isolation: two users at the same time
 
@@ -445,8 +452,8 @@ def _(mo):
     mo.md(r"""
     ### (b) Non-repeatable read — prevented
 
-    B reads the price twice inside one transaction. In between, A changes the price
-    and commits. B still sees $321.52 until B's transaction ends; after that, B sees
+    A reads the price twice inside one transaction. In between, B changes the price
+    (auto-commit: saved at once). A still sees $321.52 until A's transaction ends; after that, A sees
     the new price.
     """)
     return
@@ -456,12 +463,12 @@ def _(mo):
 def _(load, run, user_a, user_b):
     load()
     run([
-        ("B", user_b, "BEGIN"),
-        ("B", user_b, "SELECT price FROM products WHERE product_id = 1"),
-        ("A", user_a, "UPDATE products SET price = 299.99 WHERE product_id = 1"),
-        ("B", user_b, "SELECT price FROM products WHERE product_id = 1"),
-        ("B", user_b, "COMMIT"),
-        ("B", user_b, "SELECT price FROM products WHERE product_id = 1"),
+        ("A", user_a, "BEGIN"),
+        ("A", user_a, "SELECT price FROM products WHERE product_id = 1"),
+        ("B", user_b, "UPDATE products SET price = 299.99 WHERE product_id = 1"),
+        ("A", user_a, "SELECT price FROM products WHERE product_id = 1"),
+        ("A", user_a, "COMMIT"),
+        ("A", user_a, "SELECT price FROM products WHERE product_id = 1"),
     ])
     return
 
