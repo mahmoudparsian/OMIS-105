@@ -49,7 +49,7 @@ work:
 
 ```bash
 cd weekly_lectures/week04-sql-aggregation
-marimo edit notebook_01_Aggregation_GROUP_BY.py.py
+marimo edit notebook_01_Aggregation_GROUP_BY.py
 ```
 
 ## Next Week
