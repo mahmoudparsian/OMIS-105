@@ -35,6 +35,7 @@ Start with that folder's [README](group_by_with_emps_depts/README.md).
 | `slides_2.md` | Marp slide deck, session 2 — joins and multi-table queries |
 | `notebook_01_Aggregation_GROUP_BY.py` | Live-demo Marimo notebook, session 1 — aggregation and `GROUP BY` |
 | `notebook_02_Joins_GROUP_BY.py` | Live-demo Marimo notebook, session 2 — joins and multi-table queries |
+| [`notebook_04_how_sql_executes_select.py`](notebook_04_how_sql_executes_select.py) | How a SQL engine executes a `SELECT`: why `WHERE` can't use `SUM` and `HAVING` can, step by step; a first look at `EXPLAIN` (more in [Bonus Week 13](../bonus/week13-query-performance/)). No data files needed |
 | `sample_lab_01_student.md` | The week's lab (joins and multi-table queries), with blanks to fill in |
 | `sample_lab_01_instructor.md` | Solution to `sample_lab_01_student.md` |
 | `notebook_03_student.py` | The lab as a Marimo notebook |

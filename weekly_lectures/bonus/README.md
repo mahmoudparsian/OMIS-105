@@ -17,7 +17,7 @@ ranking functions only (`ROW_NUMBER`, `RANK`, `DENSE_RANK`).
 |--------|-------|----------|
 | [`week11-project-integration/`](week11-project-integration/) | Project integration — CTEs, `LAG`, `LEAD`, `NTILE`, `FIRST_VALUE`, a capstone project | [`bonus-week11-project-integration.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week11-project-integration.zip) |
 | [`week12-review-modern-data/`](week12-review-modern-data/) | Modern data — JSON, `PIVOT`, lists, `UNNEST` | [`bonus-week12-review-modern-data.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week12-review-modern-data.zip) |
-| [`week13-query-performance/`](week13-query-performance/) | Query performance — indexes, `EXPLAIN`, sargable predicates | [`bonus-week13-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week13-query-performance.zip) |
+| [`week13-query-performance/`](week13-query-performance/) | Query performance — indexes, `EXPLAIN`, sargable predicates (first look at `EXPLAIN`: [Week 4's `notebook_04_how_sql_executes_select.py`](../week04-sql-aggregation/notebook_04_how_sql_executes_select.py)) | [`bonus-week13-query-performance.zip`](https://github.com/mahmoudparsian/OMIS-105/releases/download/weekly-zips/bonus-week13-query-performance.zip) |
 
 Each ZIP holds that week's `lectures/` folder and its matching `review/`
 folder from [`../../weekly_reviews/bonus/`](../../weekly_reviews/bonus/).
