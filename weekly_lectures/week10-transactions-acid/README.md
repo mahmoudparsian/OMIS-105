@@ -23,12 +23,18 @@ crash).
 ## Session — December 1
 
 1. [`transactions_are_explained.md`](transactions_are_explained.md) — the slide
-   deck (57 slides). **Part 1:** transactions and ACID on a two-row bank table
-   (Alice $500, Bob $200), with the **life of a transaction** (auto-commit →
-   active → aborted). **Part 2:** the ShopSmart store with rules (`CHECK`,
-   `REFERENCES`), orders and returns as transactions, the four concurrency
-   problems, isolation levels, and what DuckDB does. It ends with a **cheat
-   sheet** and six **"Check yourself"** questions (with answers) for the final exam.
+   deck (94 slides). Almost every example is a **DuckDB session**: what you type
+   at the `D ` prompt, and what DuckDB 2.0 answers (result tables and error
+   messages, copied from real runs). **Part 1:** transactions and ACID on a
+   two-row bank table (Alice $500, Bob $200) and a library: auto-commit, `BEGIN` /
+   `COMMIT` / `ROLLBACK`, why one statement is already all or nothing, the
+   **life of a transaction** (auto-commit → active → aborted), `UPDATE …
+   RETURNING`, a `CREATE TABLE` undone by `ROLLBACK`, and durability tested with
+   a database file and its write-ahead log. **Part 2:** the ShopSmart store with
+   rules (`CHECK`, `REFERENCES`), an order and a return as transactions, the four
+   concurrency problems, isolation levels, and the same four problems run in
+   DuckDB with **two users** (`A> ` / `B> `). It ends with a **cheat sheet** and
+   nine **"Check yourself"** questions (with answers) for the final exam.
 2. [`transactions_demo_1.py`](transactions_demo_1.py) — Marimo notebook for
    Part 1: auto-commit, `COMMIT`, `ROLLBACK`, a failed statement that aborts the
    transaction, `COMMIT` after an error (saves nothing), `PRIMARY KEY` /
@@ -66,7 +72,7 @@ For this week's topic on its own, see
 
 | File | What It Is |
 |------|-----------|
-| `transactions_are_explained.md` | Slide deck — Part 1 and Part 2 |
+| `transactions_are_explained.md` | Slide deck — Part 1 and Part 2, with real DuckDB sessions |
 | `transactions_demo_1.py` | Part 1 notebook: the `accounts` table (bank) |
 | `transactions_demo_2.py` | Part 2 notebook: ShopSmart orders, returns, two users |
 | `course_review_weeks_01_to_10.py` | December 3: the whole course, Weeks 1–10, in one notebook |
