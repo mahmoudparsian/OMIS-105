@@ -81,6 +81,6 @@ Two lessons in that one line:
   into recognisable titles. That before/after is the whole of Week 4 in one example.
 - Ask students to justify their threshold. There is no correct number, and defending
   a choice is a more useful skill than being handed one.
-- If you also teach **ISBA-2402**, its `books_users_ratings` data story (different
+- If you also teach **MSIS-2402**, its `books_users_ratings` data story (different
   repo, different book dataset) has the same minimum-votes trap. Worth knowing if you
   run both courses.

@@ -27,7 +27,7 @@ def _(mo):
     | 1 | Database foundations | 1 |
     | 2 | Relational modeling: keys and relationships | 2 |
     | 3 | SQL basics: `SELECT`, `WHERE`, `ORDER BY`, `NULL`, CRUD, `ENUM`, sequences | 3 |
-    | 4 | Aggregation: `GROUP BY`, `HAVING` | 4 |
+    | 4 | Aggregation: `GROUP BY`, `HAVING`; how a `SELECT` query is executed | 4 |
     | 5 | Joins: `INNER JOIN`, `LEFT JOIN` | 5 |
     | 6 | Joins II: 3+ tables, `RIGHT JOIN`, self-join | 6 |
     | 7 | Subqueries and CTEs | 7 |
@@ -505,6 +505,65 @@ def _(plt, sql):
     _ax.set_title("Orders per month, 2024")
     _fig.tight_layout()
     _fig
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### How a `SELECT` query is executed: the logical order
+
+    You **write** the clauses in one order, but the engine **reads** them in another.
+    The numbers show that order for the review query above:
+
+    ```sql
+    SELECT   product_id, COUNT(*) AS num_reviews,          -- 5
+             ROUND(AVG(rating), 2) AS average_rating
+    FROM     reviews                                       -- 1
+    WHERE    ...                                           -- 2 (this query has none)
+    GROUP BY product_id                                    -- 3
+    HAVING   COUNT(*) >= 5                                 -- 4
+    ORDER BY num_reviews DESC, product_id                  -- 6
+    LIMIT    ...;                                          -- 7 (this query has none)
+    ```
+
+    | Step | Clause | What it does |
+    |:---:|---|---|
+    | 1 | `FROM` / `JOIN` | find the rows and combine the tables |
+    | 2 | `WHERE` | keep only the rows you want (**one row at a time**) |
+    | 3 | `GROUP BY` | put the rows into groups; compute `COUNT`, `SUM`, `AVG`, … |
+    | 4 | `HAVING` | keep only the groups you want (**one group at a time**) |
+    | 5 | `SELECT` | pick and name the output columns (aliases are born here) |
+    | 6 | `ORDER BY` | sort the result |
+    | 7 | `LIMIT` | keep the first *n* rows |
+
+    Short version: **F**ROM → **W**HERE → **G**ROUP BY → **H**AVING → **S**ELECT → **O**RDER BY → **L**IMIT.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### What the logical order explains
+
+    - **No aggregate in `WHERE`.** `WHERE COUNT(*) >= 5` fails: `WHERE` (step 2) runs before the
+      groups exist (step 3). Rule of thumb: **row condition → `WHERE`; group condition → `HAVING`.**
+    - **Every `SELECT` column is grouped or aggregated.** After step 3 there is one row per
+      `product_id`, so a column such as `customer_id` (many values per product) causes an error.
+      Add it to `GROUP BY`, or aggregate it.
+    - **`ORDER BY` can use an alias** (`ORDER BY num_reviews`): it runs after `SELECT`, so the
+      name already exists.
+    - **An alias in `WHERE`** should not work, since step 2 runs before step 5. DuckDB accepts it
+      as a convenience, but PostgreSQL, MySQL and SQL Server reject it: repeat the expression instead.
+
+    **Logical order ≠ what the engine really does.** The logical order defines **what** the answer
+    is. The **optimizer** may do the work in a faster order that gives the same answer, for example
+    applying `WHERE` while it reads the table. `EXPLAIN <query>` shows that plan without running
+    the query; `EXPLAIN ANALYZE <query>` runs it and shows the real row counts and times.
+
+    More in Week 4: `notebook_04_how_sql_executes_select.py` (every step run on a small table).
+    """)
     return
 
 
@@ -1019,7 +1078,7 @@ def _(mo):
     | 1 | explain what a database, a table, a row and a column are? |
     | 2 | name the primary key and the foreign keys of a table, and spot a 1:N vs. an M:N relationship? |
     | 3 | filter, sort and limit rows; handle `NULL` with `IS NULL`; write `INSERT` / `UPDATE` / `DELETE`? |
-    | 4 | aggregate with `GROUP BY`, and know when to use `WHERE` vs. `HAVING`? |
+    | 4 | aggregate with `GROUP BY`, know when to use `WHERE` vs. `HAVING`, and list the logical order of a `SELECT`? |
     | 5 | choose `INNER JOIN` vs. `LEFT JOIN`, and find "rows without a match"? |
     | 6 | join 3+ tables, use `RIGHT JOIN`, and join a table to itself? |
     | 7 | write scalar, `IN`, `EXISTS` and correlated subqueries, and a CTE — and avoid the `NOT IN` trap? |
