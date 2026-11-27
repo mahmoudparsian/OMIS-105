@@ -12,24 +12,32 @@ style: |
   table {
     font-size: 0.7em;
   }
+  blockquote {
+    border-left: 6px solid #2a7ae2;
+    background: #eef5ff;
+    padding: 0.3em 0.8em;
+    color: #222;
+  }
 ---
 
 # OMIS 105: Week 10
-## Transactions & ACID <br> Keeping Data Correct and Reliable
+## Transactions & ACID <br> Keeping Data Correct and Reliable — in DuckDB
 
 ---
 
 # Agenda
 
-**Part 1 — Transactions and ACID** (a tiny bank: Alice and Bob)
+**Part 1 — Transactions and ACID** (a tiny bank, and a library)
+
 - What a transaction is, and why we need one
 - `BEGIN`, `COMMIT`, `ROLLBACK` — and auto-commit
-- ACID: Atomicity, Consistency, Isolation, Durability
-- Rules the database enforces: `PRIMARY KEY`, `NOT NULL`, `CHECK`, `REFERENCES`
+- ACID: **A**tomicity, **C**onsistency, **I**solation, **D**urability
+- Rules DuckDB enforces: `PRIMARY KEY`, `NOT NULL`, `CHECK`, `REFERENCES`
 
 **Part 2 — Transactions in a Store, and Many Users** (ShopSmart)
+
 - Orders and returns as transactions
-- Concurrency problems and isolation levels
+- Four concurrency problems
 - How DuckDB handles two users at once
 
 ---
@@ -43,16 +51,16 @@ Run them from inside `weekly_lectures/week10-transactions-acid/`:
 | `transactions_demo_1.py` | Part 1 on the `accounts` table: auto-commit, `COMMIT`, `ROLLBACK`, a failed statement, `transfer()`, no `SAVEPOINT`, durability with a file |
 | `transactions_demo_2.py` | Part 2 on ShopSmart: one order = one transaction, `place_order()`, `process_return()`, and four two-user experiments |
 
-Every result on these slides comes from running the SQL in DuckDB 2.0.
+> ✅ Every result on these slides comes from running the SQL in **DuckDB 2.0**.
 
 ---
 
 # Recap
 
-- Week 9: ranking functions — `ROW_NUMBER`, `RANK`, `DENSE_RANK`
-- Weeks 3–9: **reading** data with `SELECT`
+- **Week 9:** ranking functions — `ROW_NUMBER`, `RANK`, `DENSE_RANK`
+- **Weeks 3–9:** **reading** data with `SELECT`
 
-👉 Today: **changing** data safely — so it stays **correct and reliable**
+👉 **Today:** **changing** data safely — so it stays **correct and reliable**
 
 ---
 
@@ -66,16 +74,22 @@ A **transaction** is a group of SQL statements that the database treats as
 **one unit**.
 
 Either:
+
 - **all** of them take effect ✅
 - or **none** of them do ❌
 
 There is no "half done".
 
+> 💡 **Key idea:** a transaction is **all or nothing**.
+
 ---
 
 # The Classic Example: A Bank Transfer
 
-Move $100 from Alice to Bob:
+* Alice has `$500`
+* Bob has `$200`
+
+**Move `$100` from Alice to Bob:**
 
 ```
 Step 1: Subtract $100 from Alice   ($500 → $400)
@@ -84,9 +98,9 @@ Step 2: Add $100 to Bob            ($200 → $300)
 
 What if the system crashes **after Step 1 but before Step 2**?
 
-- Alice lost $100 ❌
+- Alice lost `$100` ❌
 - Bob never received it ❌
-- $100 has disappeared — the data is now **wrong**
+- `$100` has disappeared — the data is now **wrong**
 
 👉 Both steps must happen — or neither.
 
@@ -101,31 +115,55 @@ CREATE OR REPLACE TABLE accounts (
     balance DECIMAL(10, 2) NOT NULL CHECK (balance >= 0)   -- never negative
 );
 
-INSERT INTO accounts VALUES (1, 'Alice', 500.00), (2, 'Bob', 200.00);
+INSERT INTO accounts VALUES
+(1, 'Alice', 500.00),
+(2, 'Bob',   200.00);
 ```
 
 - `NOT NULL`: the column must always have a value
 - `CHECK (condition)`: every row must make the condition true
 
-Alice $500 + Bob $200 = **$700**. A transfer must never change the total.
+Alice `$500` + Bob `$200` = **`$700`**. A transfer must **never** change the total.
 
 ---
 
 # The Three Commands
 
 ```sql
-BEGIN;      -- start a transaction  (also: BEGIN TRANSACTION)
+BEGIN;      -- start a transaction
 COMMIT;     -- save all changes since BEGIN
 ROLLBACK;   -- undo all changes since BEGIN
 ```
 
-**Auto-commit:** without `BEGIN`, each statement is its **own** transaction and is
-saved immediately. Then there is nothing to undo:
+**Auto-commit:** without `BEGIN`, DuckDB runs each statement as its **own**
+transaction and saves it immediately. Then there is nothing to undo:
 
 ```sql
-UPDATE accounts SET balance = balance - 100 WHERE id = 1;   -- saved at once
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;   -- saved at once
 ROLLBACK;
 -- TransactionContext Error: cannot rollback - no transaction is active
+```
+
+---
+
+# Other Spellings DuckDB Accepts
+
+All of these work in DuckDB — pick one style and stay with it:
+
+| Meaning | You can write |
+|---|---|
+| start a transaction | `BEGIN;` · `BEGIN TRANSACTION;` · `START TRANSACTION;` |
+| save the work | `COMMIT;` · `COMMIT TRANSACTION;` · `END;` |
+| undo the work | `ROLLBACK;` · `ROLLBACK TRANSACTION;` · `ABORT;` |
+| read, but never write | `BEGIN TRANSACTION READ ONLY;` |
+
+A write inside a `READ ONLY` transaction is refused:
+
+```
+TransactionContext Error: Cannot write to database "memory"
+- transaction is launched in read-only mode
 ```
 
 ---
@@ -135,25 +173,38 @@ ROLLBACK;
 ```sql
 BEGIN;
 
-UPDATE accounts SET balance = balance - 100 WHERE id = 1;   -- Alice: 500 → 400
-UPDATE accounts SET balance = balance + 100 WHERE id = 2;   -- Bob:   200 → 300
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;   -- Alice: 500 → 400
+
+UPDATE accounts
+SET balance = balance + 100
+WHERE id = 2;   -- Bob:   200 → 300
 
 COMMIT;
 ```
 
-Both changes are saved **together**. Total money: still $700.
+Both changes are saved **together**. Total money: still **`$700`** ✅
 
 ---
 
 # Change Your Mind: `ROLLBACK`
 
-Starting again from Alice $500, Bob $200:
+Starting again from Alice `$500`, Bob `$200`:
 
 ```sql
 BEGIN;
-UPDATE accounts SET balance = balance - 100 WHERE id = 1;
-SELECT balance FROM accounts WHERE id = 1;   -- 400 (you see your own change)
+
+UPDATE accounts
+SET balance = balance - 100
+WHERE id = 1;
+
+SELECT balance
+FROM accounts
+WHERE id = 1;   -- 400 (you see your own change)
+
 ROLLBACK;
+
 SELECT balance FROM accounts WHERE id = 1;   -- 500 (undone)
 ```
 
@@ -163,7 +214,8 @@ SELECT balance FROM accounts WHERE id = 1;   -- 500 (undone)
 
 # What If a Statement Fails?
 
-Alice has $500. Try to move **$600** to Bob:
+* Alice has **`$500`**.
+* Try to move **`$600`** to Bob:
 
 ```sql
 BEGIN;
@@ -176,8 +228,8 @@ SELECT * FROM accounts;
 ROLLBACK;
 ```
 
-After an error, DuckDB marks the transaction as **aborted**. Bob's +600 is **not**
-saved: Alice $500, Bob $200.
+After an error, DuckDB marks the transaction as **aborted**. Bob's `+600` is **not**
+saved: Alice `$500`, Bob `$200`.
 
 ---
 
@@ -193,9 +245,80 @@ COMMIT;                                                     -- answers "OK" ...
 SELECT balance FROM accounts WHERE id = 2;                  -- ... but Bob has 200
 ```
 
-An aborted transaction can **only** be rolled back. `COMMIT` saves nothing.
+* An aborted transaction can **only** be rolled back.
+* In DuckDB, `COMMIT` of an aborted transaction gives **no error** — and saves **nothing**.
 
 👉 Always check for errors. Write `ROLLBACK` to make your intent clear.
+
+---
+
+# One More Example: Borrowing a Library Book
+
+A student borrows a book. **Two** things must happen together:
+
+1. add a row to `loans`
+2. lower `copies_available` by 1
+
+```sql
+CREATE OR REPLACE TABLE books (
+    book_id          INTEGER PRIMARY KEY,
+    title            VARCHAR NOT NULL,
+    copies_available INTEGER NOT NULL CHECK (copies_available >= 0)
+);
+CREATE OR REPLACE TABLE loans (
+    loan_id INTEGER PRIMARY KEY,
+    book_id INTEGER NOT NULL REFERENCES books(book_id),
+    student VARCHAR NOT NULL
+);
+INSERT INTO books VALUES
+(1, 'Learning SQL',     1),     -- only ONE copy left
+(2, 'DuckDB in Action', 3);
+```
+
+---
+
+# Maria Borrows the Last Copy ✅
+
+```sql
+BEGIN;
+
+INSERT INTO loans VALUES (1, 1, 'Maria');
+
+UPDATE books
+SET copies_available = copies_available - 1
+WHERE book_id = 1;              -- 1 → 0
+
+COMMIT;
+```
+
+| `loans` | `books` (book 1) |
+|---|---|
+| 1 row: loan 1, Maria | `copies_available` = **0** |
+
+The loan and the lower count are saved **together**.
+
+---
+
+# Kevin Tries to Borrow It Too ❌
+
+```sql
+BEGIN;
+
+INSERT INTO loans VALUES (2, 1, 'Kevin');   -- OK so far ...
+
+UPDATE books
+SET copies_available = copies_available - 1
+WHERE book_id = 1;                          -- 0 → -1 !
+-- Constraint Error: CHECK constraint failed on table "books"
+-- with expression CHECK((copies_available >= 0))
+
+ROLLBACK;
+```
+
+Result: `loans` still has **only Maria's** row; book 1 still has **0** copies.
+
+> 💡 Kevin's loan row was **undone** too. Without a transaction, Kevin would
+> have a loan for a book that the library does not have.
 
 ---
 
@@ -222,12 +345,12 @@ An aborted transaction can **only** be rolled back. `COMMIT` saves nothing.
 
 # ACID: Four Guarantees
 
-| Property | Meaning | In the bank |
-|---|---|---|
-| **A**tomicity | All or nothing | Never subtract from Alice without adding to Bob |
-| **C**onsistency | Every rule holds before and after | `CHECK (balance >= 0)`: no negative balance |
-| **I**solation | Transactions at the same time don't interfere | Two withdrawals at once: none is "lost" |
-| **D**urability | After `COMMIT`, the change survives a crash | The transfer is still there after a power failure |
+| Property | Meaning | In the bank | In the library |
+|---|---|---|---|
+| **A**tomicity | All or nothing | Never subtract from Alice without adding to Bob | No loan without lowering the count |
+| **C**onsistency | Every rule holds before and after | `CHECK (balance >= 0)` | `CHECK (copies_available >= 0)` |
+| **I**solation | Transactions at the same time don't interfere | Two withdrawals at once: none is "lost" | Two students, one copy: only one gets it |
+| **D**urability | After `COMMIT`, the change survives a crash | The transfer is still there after a power failure | Maria's loan is still there tomorrow |
 
 ---
 
@@ -237,8 +360,9 @@ An aborted transaction can **only** be rolled back. `COMMIT` saves nothing.
 - If **any** statement fails, **all** its changes are undone
 - No "half-done" transactions
 
-Example: the $600 transfer above — Bob's +600 was undone because Alice's −600
-failed.
+**Examples:**
+- the `$600` transfer — Bob's `+600` was undone because Alice's `−600` failed
+- Kevin's loan row was undone because the copy count could not go below 0
 
 ---
 
@@ -255,8 +379,33 @@ INSERT INTO accounts VALUES (1, 'Carol', 50.00);
 -- Constraint Error: Duplicate key "id: 1" violates primary key constraint.
 ```
 
-The database checks only the rules you **declare**. A rule that lives only in your
-head (or in your app) is not checked.
+* DuckDB checks only the rules you **declare**.
+* A rule that lives only in your head (or in your app) is **not** checked.
+
+---
+
+# DuckDB: See the Rules of a Table
+
+DuckDB lists every declared rule in the table function `duckdb_constraints()`:
+
+```sql
+SELECT constraint_type, 
+       expression, 
+       constraint_column_names
+FROM duckdb_constraints()
+WHERE table_name = 'accounts'
+ORDER BY constraint_index;
+```
+
+| `constraint_type` | `expression` | `constraint_column_names` |
+|---|---|---|
+| PRIMARY KEY | NULL | [id] |
+| NOT NULL | NULL | [owner] |
+| CHECK | `(balance >= 0)` | [balance] |
+| NOT NULL | NULL | [balance] |
+| NOT NULL | NULL | [id] |
+
+👉 A `PRIMARY KEY` column is also `NOT NULL` — DuckDB adds that rule for you.
 
 ---
 
@@ -266,7 +415,7 @@ Many users work at the same time:
 
 👉 Each transaction behaves **as if it were alone**.
 
-Example: two people withdraw from the same account at the same moment — the
+**Example:** two people withdraw from the same account at the same moment — the
 database must not "lose" one of the withdrawals.
 
 Part 2 shows four concurrency problems, and what DuckDB does about each.
@@ -278,17 +427,20 @@ Part 2 shows four concurrency problems, and what DuckDB does about each.
 After `COMMIT`, the change is saved **permanently** — even if the program crashes
 or the power fails.
 
-How: **write-ahead logging (WAL)**
+**How DuckDB does it: the write-ahead log (WAL)**
 
 ```
-1. Write the changes and a "committed" record to a log file on disk
+1. Write the changes to a log file on disk:
+   bank.duckdb.wal
 2. Only then report "COMMIT succeeded"
-3. Later, copy the changes into the main database file
--- After a crash, the database replays the log on restart:
+3. Later, at a CHECKPOINT, copy the changes
+   into bank.duckdb and empty the log
+-- After a crash, DuckDB replays the log on restart:
 -- committed changes are kept, uncommitted ones are dropped
 ```
 
-DuckDB's log is the `.wal` file next to your `.duckdb` file.
+DuckDB checkpoints **automatically** (when the log reaches `16.0 MiB`, and when
+the database is closed). You can also type `CHECKPOINT;` yourself.
 
 ---
 
@@ -300,8 +452,10 @@ con = duckdb.connect()                # in memory → lost when the program ends
 ```
 
 `transactions_demo_1.py`, Section 10, tests it with a file:
-- Alice's −100 is **committed**, then the connection is closed → **kept**
-- Bob's +100 is **never committed**, then the connection is closed → **gone**
+- Alice's `−100` is **committed**, then the connection is closed → **kept** ✅
+- Bob's `+100` is **never committed**, then the connection is closed → **gone** ❌
+
+> 💡 An in-memory DuckDB still gives you **A**, **C** and **I** — but not **D**.
 
 ---
 
@@ -328,35 +482,33 @@ def transfer(con, from_id, to_id, amount):
 
 # A Safe Transfer in Python (cont.)
 
-Why count the accounts first?
+**Why count the accounts first?**
 
 An `UPDATE` whose `WHERE` matches **no row** is **not** an error — it changes
-0 rows. Without the check, a transfer to account 99 would subtract $100 from Alice
+0 rows. Without the check, a transfer to account 99 would subtract `$100` from Alice
 and add it to **nobody**.
 
 | Test | Returns |
 |---|---|
-| Alice → Bob, $100 | `True` |
-| Alice → Bob, $1,000 (`CHECK` fails) | `False` |
+| Alice → Bob, `$100` | `True` |
+| Alice → Bob, `$1,000` (`CHECK` fails) | `False` |
 | Alice → account 99 (does not exist) | `False` |
 
 ---
 
-# Undo Part of a Transaction? `SAVEPOINT`
+# Undo Part of a Transaction? Not in DuckDB
 
-PostgreSQL, MySQL, Oracle and SQL Server can undo **part** of a transaction:
+Some databases can undo **part** of a transaction with a `SAVEPOINT`.
+**DuckDB has no `SAVEPOINT`:**
 
 ```sql
--- PostgreSQL / MySQL syntax — NOT supported in DuckDB
 BEGIN;
 INSERT INTO accounts VALUES (3, 'Dave', 300.00);
 SAVEPOINT after_dave;
-INSERT INTO accounts VALUES (4, 'Eve', 400.00);
-ROLLBACK TO SAVEPOINT after_dave;     -- undo Eve, keep Dave
-COMMIT;
+-- Parser Error: syntax error at or near "SAVEPOINT"
 ```
 
-DuckDB answers: `Parser Error: syntax error at or near "SAVEPOINT"`
+In DuckDB, a transaction is undone **as a whole** — or not at all.
 
 ---
 
@@ -374,7 +526,7 @@ INSERT INTO accounts VALUES (4, 'Eve', 400.00);
 ROLLBACK;               -- Eve is undone
 ```
 
-Result: Dave is kept, Eve is not.
+**Result:** Dave is kept, Eve is not.
 
 ---
 
@@ -429,14 +581,19 @@ CREATE OR REPLACE TABLE order_items (
 INSERT INTO order_items SELECT * FROM read_csv('data/order_items.csv'); -- 607 rows
 ```
 
-To run the setup again, drop `order_items` first: a table that another table
-references cannot be replaced.
+To run the setup again, drop `order_items` first. DuckDB will not replace a table
+that another table references:
+
+```
+Catalog Error: Could not drop the table because this table is
+main key table of the table "order_items"
+```
 
 ---
 
 # One Order = One Transaction
 
-Customer 5 buys 2 × product 1 (Smartphone X12, $321.52; **12** in stock):
+Customer 5 buys 2 × product 1 (Smartphone X12, `$321.52`; **12** in stock):
 
 ```sql
 BEGIN;
@@ -446,7 +603,7 @@ UPDATE products SET stock_quantity = stock_quantity - 2 WHERE product_id = 1;
 COMMIT;
 ```
 
-Order 201 is saved, and the stock goes from 12 to 10.
+Order 201 is saved, and the stock goes from **12** to **10**.
 
 An order without its item, or an item without the stock going down, would leave
 the data wrong — so the statements belong **together**.
@@ -465,7 +622,7 @@ ROLLBACK;
 ```
 
 Order 201 is **not** saved either:
-`SELECT COUNT(*) FROM orders WHERE order_id = 201` returns 0.
+`SELECT COUNT(*) FROM orders WHERE order_id = 201` returns **0**.
 
 ---
 
@@ -485,7 +642,7 @@ UPDATE products SET price = -5 WHERE product_id = 1;
 -- with expression CHECK((price > 0))       -- product 1 still costs 321.52
 ```
 
-The database protects the stock — even if the application forgot to check it.
+👉 DuckDB protects the stock — even if the application forgot to check it.
 
 ---
 
@@ -500,8 +657,8 @@ A product return at ShopSmart (only a `completed` order can be returned):
 All three — or none. `transactions_demo_2.py` has `place_order()` and
 `process_return()` in Python, with tests that succeed and tests that roll back.
 
-Why not refund `orders.total_amount`? It matches the items in **0 of 200** orders
-(order 3: $538.49 stored, $998.35 of items). Refund what was actually bought.
+**Why not refund `orders.total_amount`?** It matches the items in **0 of 200** orders
+(order 3: `$538.49` stored, `$998.35` of items). Refund what was actually bought.
 
 ---
 
@@ -509,15 +666,16 @@ Why not refund `orders.total_amount`? It matches the items in **0 of 200** order
 
 | Task | Statements in one transaction |
 |---|---|
+| Transfer money | subtract from one account → add to another |
+| Borrow a book | insert loan → lower `copies_available` |
 | Place an order | insert order → insert items → lower stock → set total |
 | Process a return | change status → restore stock → insert refund |
-| Transfer money | subtract from one account → add to another |
 
 ---
 
 # Why Concurrency Matters
 
-Real databases serve many users at the same time:
+Real systems serve many users at the same time:
 - 100 customers checking out at once
 - the stock must stay accurate
 - reports must not show half-updated data
@@ -535,8 +693,8 @@ problems.
 4. **Lost update** — two users change the same row, and one change is lost
 
 The next four slides show each one **as it could happen** in a database without
-enough isolation. The values are ShopSmart's: product 1 has 12 in stock and costs
-$321.52; 30 orders are `processing`.
+enough isolation. The values are ShopSmart's: product 1 has **12** in stock and costs
+`$321.52`; **30** orders are `processing`.
 
 ---
 
@@ -576,7 +734,7 @@ WHERE product_id = 1;
 COMMIT;
 ```
 
-Same query, different result, inside the same transaction.
+Same query, different result, inside the **same** transaction.
 
 ---
 
@@ -598,7 +756,7 @@ WHERE status = 'processing';
 COMMIT;
 ```
 
-A new row "appeared" (a phantom) between two identical queries.
+A new row "appeared" (a **phantom**) between two identical queries.
 
 ---
 
@@ -621,15 +779,15 @@ COMMIT;                        COMMIT;
 
 Two items sold, but the stock went down by only 1!
 
-Tip: let the database do the math in **one** statement:
+**Tip:** let the database do the math in **one** statement:
 `SET stock_quantity = stock_quantity - 1`.
 
 ---
 
 # Isolation Levels (SQL Standard)
 
-The SQL standard defines four levels, from weakest to strongest. The table shows
-what each level **must** prevent (real databases often prevent more):
+The SQL standard names four **isolation levels**, from weakest to strongest. The table
+shows what each level **must** prevent:
 
 | Level | Dirty read | Non-repeatable read | Phantom read |
 |---|---|---|---|
@@ -638,28 +796,27 @@ what each level **must** prevent (real databases often prevent more):
 | REPEATABLE READ | prevented | prevented | possible |
 | SERIALIZABLE | prevented | prevented | prevented |
 
+**SERIALIZABLE** = transactions behave as if they ran **one after another**.
 Stronger = safer, but fewer transactions can run at the same time.
-Choose the **weakest level** that gives you the **correctness you need**.
 
 ---
 
-# Isolation Levels in Practice
+# Isolation in DuckDB: One Level, Always On
 
-- **READ UNCOMMITTED** — almost never used
-- **READ COMMITTED** — the default in PostgreSQL, Oracle, SQL Server
-- **REPEATABLE READ** — the default in MySQL
-- **SERIALIZABLE** — transactions behave as if they ran one after another;
-  for money and the last item in stock
+DuckDB has **no levels to choose from**:
 
 ```sql
--- PostgreSQL / MySQL / SQL Server syntax — NOT supported in DuckDB
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
--- DuckDB: Parser Error: syntax error at or near "ISOLATION"
+-- Parser Error: syntax error at or near "ISOLATION"
 ```
 
-**DuckDB** has no levels to choose from: it always uses **snapshot isolation** —
-each transaction sees the data as it was when the transaction **started**, plus
-its own changes.
+DuckDB always uses **snapshot isolation** (built on **MVCC** — multi-version
+concurrency control):
+
+- each transaction sees the data **as it was when the transaction started**,
+  plus its **own** changes
+- DuckDB keeps the old version of a changed row while others may still need it
+- so **readers never wait** for writers, and writers never wait for readers
 
 ---
 
@@ -671,35 +828,34 @@ runs the four problems:
 | Problem | Result in DuckDB |
 |---|---|
 | Dirty read | ✅ prevented — B still sees 12 while A's 0 is uncommitted |
-| Non-repeatable read | ✅ prevented — A still sees $321.52 until A's transaction ends |
+| Non-repeatable read | ✅ prevented — A still sees `$321.52` until A's transaction ends |
 | Phantom read | ✅ prevented — A's count stays 30 until A's transaction ends |
 | Lost update | ✅ prevented — B's write fails: `Conflict on update!` |
 
-When two transactions change the **same row**, DuckDB does not make one wait: the
-second gets an error, must `ROLLBACK`, and tries again (the final stock is 10 —
-both sales counted).
-
 ---
 
-# Locks and Deadlocks (Other Databases)
+# Two Writers in DuckDB
 
-PostgreSQL, MySQL and SQL Server use **locks**: a writer locks a row, and others
-**wait**.
+**Different rows → both succeed.** A sells product 1, B sells product 2, at the
+same time: both `COMMIT`, both changes are kept.
+
+**Same row → the second writer gets an error at once:**
 
 ```
-Transaction A          Transaction B
-─────────────          ─────────────
-LOCK row 1             LOCK row 2
-REQUEST lock row 2     REQUEST lock row 1
-(waits for B)          (waits for A)
-           DEADLOCK! 🔒
+A: BEGIN;                         B: BEGIN;
+A: UPDATE products SET stock_quantity = 11 WHERE product_id = 1;   -- OK
+                                  B: UPDATE products SET stock_quantity = 11
+                                     WHERE product_id = 1;
+                                  -- TransactionContext Error: Conflict on update!
+A: COMMIT;                        -- stock = 11
+                                  B: ROLLBACK;
+                                  B: UPDATE products
+                                     SET stock_quantity = stock_quantity - 1
+                                     WHERE product_id = 1;   -- retry → stock = 10
 ```
 
-The database detects the deadlock and rolls back one transaction.
-Avoid it: lock rows in the same order, and keep transactions short.
-
-DuckDB keeps **multiple versions** of changed rows (MVCC): readers never wait, and
-a conflicting write fails **at once** — so classic deadlocks do not occur there.
+DuckDB does not make B **wait** — so DuckDB transactions never get stuck waiting
+for each other (no **deadlocks**). Both sales are counted: **10**.
 
 ---
 
@@ -715,7 +871,13 @@ except Exception as e:
     print(f"Transaction rolled back: {e}")
 ```
 
-DuckDB's Python API also has `con.begin()`, `con.commit()` and `con.rollback()`.
+DuckDB's Python API also has methods for the same three commands:
+
+```python
+con.begin()      # = BEGIN
+con.commit()     # = COMMIT
+con.rollback()   # = ROLLBACK
+```
 
 ---
 
@@ -727,7 +889,8 @@ DuckDB's Python API also has `con.begin()`, `con.commit()` and `con.rollback()`.
    (send the confirmation email **after** `COMMIT`)
 4. Always **handle errors**: `ROLLBACK` on failure
 5. Let the database do the math: `SET x = x - 1`, not "read, compute, write"
-6. Declare your rules (`CHECK`, `NOT NULL`, keys) — the database enforces them
+6. Declare your rules (`CHECK`, `NOT NULL`, keys) — DuckDB enforces them
+7. In DuckDB, on `Conflict on update!`: `ROLLBACK`, then **try again**
 
 ---
 
@@ -736,12 +899,12 @@ DuckDB's Python API also has `con.begin()`, `con.commit()` and `con.rollback()`.
 | Property | DuckDB |
 |---|---|
 | Atomicity | `BEGIN` / `COMMIT` / `ROLLBACK` (no `SAVEPOINT`) |
-| Consistency | `PRIMARY KEY`, `FOREIGN KEY`, `CHECK`, `UNIQUE`, `NOT NULL` enforced |
-| Isolation | snapshot isolation; a conflicting write fails with an error |
-| Durability | with a database **file** (and its write-ahead log) |
+| Consistency | `PRIMARY KEY`, `FOREIGN KEY`, `CHECK`, `UNIQUE`, `NOT NULL` enforced; list them with `duckdb_constraints()` |
+| Isolation | snapshot isolation (MVCC); a conflicting write fails with `Conflict on update!` |
+| Durability | with a database **file**: write-ahead log (`.wal`) + `CHECKPOINT` |
 
 Only **one program** at a time can open a DuckDB file for writing. DuckDB is built
-for analytics, not for thousands of users writing at once.
+for **analytics**, not for thousands of users writing at once.
 
 ---
 
@@ -753,7 +916,7 @@ Design a safe transaction for **placing an order** with two products:
 - add the two order items
 - lower the stock of each product
 
-Questions:
+**Questions:**
 - Which statements go between `BEGIN` and `COMMIT`?
 - Which rule stops the stock from going below 0?
 - What should happen if the second product is out of stock?
@@ -769,68 +932,74 @@ Questions:
 - Thinking an `UPDATE` that matched no row is an error ❌ — it just changes 0 rows
 - "Read, compute in Python, write back" ❌ — a lost update waiting to happen
 - Keeping a transaction open for a long time ❌
+- Expecting durability from `duckdb.connect()` (in memory) ❌ — use a file
 
 ---
 
-# Cheat Sheet: Transactions at a Glance
+# Cheat Sheet: Transactions in DuckDB
 
 | I want to … | Write |
 |---|---|
 | group statements | `BEGIN;` … `COMMIT;` |
-| undo everything since `BEGIN` | `ROLLBACK;` |
-| keep part of the work (no `SAVEPOINT` in DuckDB) | commit that part in its **own** transaction |
+| undo everything since `BEGIN` | `ROLLBACK;` (or `ABORT;`) |
+| only read, safely | `BEGIN TRANSACTION READ ONLY;` |
+| keep part of the work (no `SAVEPOINT`) | commit that part in its **own** transaction |
 | make the database reject bad data | `PRIMARY KEY`, `NOT NULL`, `CHECK (…)`, `REFERENCES …` |
+| see a table's rules | `SELECT * FROM duckdb_constraints() WHERE table_name = '…';` |
 | change a number safely with many users | `SET x = x - 1` (one statement), never read → compute → write |
-| handle a write conflict in DuckDB | `ROLLBACK`, then try the transaction again |
-| survive a crash | a database **file** + `COMMIT` |
+| handle `Conflict on update!` | `ROLLBACK`, then try the transaction again |
+| survive a crash | a database **file** + `COMMIT` (+ `CHECKPOINT;` to empty the `.wal`) |
 | in Python | `try: BEGIN … COMMIT` / `except: ROLLBACK` |
 
 ---
 
 # Check Yourself (Final-Exam Style)
 
-Start each question from Alice $500, Bob $200 (`CHECK (balance >= 0)`).
+Start each question from Alice `$500`, Bob `$200` (`CHECK (balance >= 0)`).
 
 1. Without `BEGIN`: `UPDATE accounts SET balance = balance - 100 WHERE id = 1;` then `ROLLBACK;`. What is Alice's balance, and what does `ROLLBACK` answer?
-2. `BEGIN;` Bob +600; Alice −600 (fails); `COMMIT;`. What is Bob's balance?
+2. `BEGIN;` Bob `+600`; Alice `−600` (fails); `COMMIT;`. What is Bob's balance?
 3. `UPDATE accounts SET balance = 0 WHERE id = 99;` — is it an error?
+4. Library: book 1 has **0** copies. `BEGIN;` insert Kevin's loan; lower the count (fails); `ROLLBACK;`. How many rows are in `loans` for book 1 — Maria's only, or Maria's and Kevin's?
 
 ---
 
 # Check Yourself (cont.)
 
-4. Name the ACID property: (a) Bob's +600 is undone because Alice's −600 failed; (b) the `CHECK` stops a negative balance; (c) B still sees stock 12 while A's uncommitted 0 is pending; (d) after `COMMIT`, a power failure does not lose the transfer.
-5. In DuckDB, users A and B both read stock 12, and both write `SET stock_quantity = 11`. What happens?
-6. Which SQL-standard isolation level is the weakest one that prevents phantom reads? Which isolation does DuckDB use?
+5. Name the ACID property: (a) Bob's `+600` is undone because Alice's `−600` failed; (b) the `CHECK` stops a negative balance; (c) B still sees stock 12 while A's uncommitted 0 is pending; (d) after `COMMIT`, a power failure does not lose the transfer.
+6. In DuckDB, users A and B both read stock 12, and both write `SET stock_quantity = 11`. What happens?
+7. Which SQL-standard isolation level is the weakest one that prevents phantom reads? Which isolation does DuckDB use?
 
 ---
 
 # Check Yourself: Answers
 
-1. **$400**: the `UPDATE` was saved at once (auto-commit). `ROLLBACK` answers `TransactionContext Error: cannot rollback - no transaction is active`.
-2. **$200**: the failed statement aborted the transaction; `COMMIT` of an aborted transaction saves nothing.
+1. **`$400`**: the `UPDATE` was saved at once (auto-commit). `ROLLBACK` answers `TransactionContext Error: cannot rollback - no transaction is active`.
+2. **`$200`**: the failed statement aborted the transaction; `COMMIT` of an aborted transaction saves nothing.
 3. **No**: it changes 0 rows. (That is why `transfer()` counts the accounts first.)
+4. **Maria's only** (1 row): `ROLLBACK` undid Kevin's loan together with the failed `UPDATE`.
 
 ---
 
 # Check Yourself: Answers (cont.)
 
-4. (a) **A**tomicity (b) **C**onsistency (c) **I**solation (d) **D**urability.
-5. A's `UPDATE` works; B's fails at once with `Conflict on update!`. A commits (stock 11); B rolls back and retries with
+5. (a) **A**tomicity (b) **C**onsistency (c) **I**solation (d) **D**urability.
+6. A's `UPDATE` works; B's fails at once with `Conflict on update!`. A commits (stock 11); B rolls back and retries with
    `SET stock_quantity = stock_quantity - 1` → **10**: both sales counted.
-6. **SERIALIZABLE** (REPEATABLE READ may still allow phantoms). DuckDB always uses **snapshot isolation**; in our tests it prevented
+7. **SERIALIZABLE** (REPEATABLE READ may still allow phantoms). DuckDB always uses **snapshot isolation**; in our tests it prevented
    dirty, non-repeatable and phantom reads, and turned a lost update into an error.
 
 ---
 
 # Summary
 
-- A **transaction** = a group of statements: all or nothing
+- A **transaction** = a group of statements: **all or nothing**
 - `BEGIN` / `COMMIT` / `ROLLBACK`; without `BEGIN`, every statement is saved at once
 - **ACID**: Atomicity, Consistency, Isolation, Durability
 - Declared rules (`PRIMARY KEY`, `NOT NULL`, `CHECK`, `REFERENCES`) keep data valid
 - Concurrency problems: dirty read, non-repeatable read, phantom, lost update
-- DuckDB: snapshot isolation; a write conflict is an **error** — roll back and retry
+- **DuckDB:** snapshot isolation (MVCC); a write conflict is an **error** — roll back and retry;
+  durability needs a **file**
 
 👉 Fast systems are good. **Correct** systems are essential.
 
